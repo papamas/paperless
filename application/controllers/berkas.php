@@ -120,6 +120,7 @@ class Berkas extends MY_Controller {
 					<th>TERIMA</th>
 					<th>LAYANAN</th>
 					<th>STATUS</th>
+					<th>ALASAN</th>
 					<th>BERKAS YANG DI UPLOAD</th>
 					'; 
 		$html 	.= '</tr>';
@@ -132,7 +133,8 @@ class Berkas extends MY_Controller {
 				$html .= "<td>{$r->agenda_nousul}</td>";
 				$html .= "<td>{$r->agenda_timestamp}</td>";				
 				$html .= "<td>{$r->layanan_nama}</td>";
-				$html .= "<td>{$r->nomi_status}</td>";				
+				$html .= "<td>{$r->nomi_status}</td>";		
+                $html .= "<td>{$r->nomi_alasan}</td>";					
 				$html .= "<td>{$r->upload_dokumen}</td>";					
 				$html .= "</tr>";
 				$i++;

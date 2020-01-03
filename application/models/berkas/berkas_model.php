@@ -46,7 +46,7 @@ class Berkas_model extends CI_Model {
                 $sql = " AND a.nip = '999999999' ";		
 		}		
       
-		$q="SELECT a.agenda_id,a.nip,a.nomi_locked,a.nomi_status,
+		$q="SELECT a.agenda_id,a.nip,a.nomi_locked,a.nomi_status,a.nomi_alasan,
 CASE a.nomi_status
     WHEN 'ACC' THEN 'badge bg-green'
     WHEN 'TMS' THEN 'badge bg-red'

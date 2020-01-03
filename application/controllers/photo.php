@@ -196,12 +196,13 @@ class Photo extends MY_Controller {
 		$instansi  = $this->myencrypt->decode($this->input->get('id'));
 		$file      = $this->myencrypt->decode($this->input->get('f'));
 		$size      = $this->myencrypt->decode($this->input->get('s'));
+		$nip       = $this->myencrypt->decode($this->input->get('n'));
 		
 		ob_clean();		
 		header('Pragma:public');
 		header('Cache-Control:no-store, no-cache, must-revalidate');
 		header('Content-type:image/jpeg');
-		header('Content-Disposition:inline; filename=pasphoto.jpeg');  
+		header('Content-Disposition:inline; filename='.$nip.'.jpeg');  
 		readfile(base_url().'photo/'.$instansi.'/'.$file);
 	}	
 	

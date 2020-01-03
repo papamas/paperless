@@ -106,7 +106,7 @@
 							<?php if($daftar->num_rows() > 0):?>
 							<?php  foreach($daftar->result() as $value):?>							
 							<tr>
-								<td><button class="btn btn-primary btn-xs" data-tooltip="tooltip"  title="Lihat Photo" data-toggle="modal" data-target="#photoModal" data-id="?s=<?php echo $this->myencrypt->encode($value->file_size)?>&id=<?php echo $this->myencrypt->encode($value->id_instansi)?>&f=<?php echo $this->myencrypt->encode($value->orig_name)?>"><i class="fa fa-search"></i></button></td>
+								<td><button class="btn btn-primary btn-xs" data-tooltip="tooltip"  title="Lihat Photo" data-toggle="modal" data-target="#photoModal" data-id="?s=<?php echo $this->myencrypt->encode($value->file_size)?>&id=<?php echo $this->myencrypt->encode($value->id_instansi)?>&f=<?php echo $this->myencrypt->encode($value->orig_name)?>&n=<?php echo $this->myencrypt->encode($value->nip)?>"><i class="fa fa-search"></i></button></td>
 								<td><?php echo $value->instansi?></td>
 								<td><?php echo $value->nip?></td>
 								<td><?php echo $value->nama?></td>

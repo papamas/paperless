@@ -139,7 +139,7 @@
 									if(IS_NULL($value->entry_by))
 									{  
 										echo '<button class="btn btn-primary btn-xs" data-tooltip="tooltip"  title="Input Persetujuan" data-toggle="modal" data-target="#skModal" data-agenda="'.$this->myencrypt->encode($value->agenda_id).'" data-nip="'.$this->myencrypt->encode($value->nip).'"><i class="fa fa-edit"></i></button>';
-									    if($layanan === "10" || $layanan === "11" || $layanan === "12")
+									    if($layanan === "9" || $layanan === "10" || $layanan === "11")
 										{  
 											echo '&nbsp;<a href="#dPhoto" class="btn btn-danger btn-xs" data-tooltip="tooltip"  title="Unduh Photo" id="?id='.$this->myencrypt->encode($value->id_instansi).'&f='.$this->myencrypt->encode($value->orig_name).'&n='.$this->myencrypt->encode($value->nip).'"><i class="fa fa-search"></i></a>';
 										}
