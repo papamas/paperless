@@ -443,7 +443,7 @@ GROUP BY a.nip,b.layanan_id";
 				break;
 				case 34:
 					// mulai dari sini pengawas cuma paraf				
-					$set['tahapan_id']   	  = 7;                					
+					$set['tahapan_id']   	  = 7;                    				
 				break;
 				case 41:
 					$set['tahapan_id']   	  = 7;				
@@ -470,6 +470,15 @@ GROUP BY a.nip,b.layanan_id";
 				$set['alasan_level_satu'] = $data['catatan'];
 				$set['verifby_level_satu']= $this->session->userdata('user_id');
 				$this->db->set('verifdate_level_satu','NOW()',FALSE);
+				$status					  = $data['status'];
+				// jika status BTL atau TMS maka berkas berakhir di eselon 4
+				if($status == 'BTL' || $status == 'TMS')
+				{
+					$set['nomi_status']   	  = $data['status'];
+					$set['nomi_alasan']		  = $data['catatan'];
+					$set['nomi_verifby']	  = $this->session->userdata('user_id');
+					$this->db->set('verify_date','NOW()',FALSE);
+				}
 			break;
 			// eselon 3
 			case 2:
