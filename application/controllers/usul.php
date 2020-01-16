@@ -85,17 +85,65 @@ class Usul extends MY_Controller {
 		$html .='<tr>
 					<th>NO</th>
 					<th>NIP</th>
+					<th>GOL</th>
 					<th>NAMA</th>
-					<th>KELENGKAPAN</th>
+					<th>TAHAP</th>	
+					<th>STATUS</th>	
+                    <th>LEVEL 1</th> 
+					<th>NOTE LEVEL 1</th>
+					<th>LEVEL 2</th> 
+					<th>NOTE LEVEL 2</th>
 					'; 
 		$html 	.= '</tr>';
-		if($q->num_rows() > 0){
-			$i = 1;		        
-			foreach ($q->result() as $r) {
+		if($q->num_rows() > 0){									
+			$i = 1;		
+					
+			foreach ($q->result() as $r) {			
+				switch($r->tahapan_id){
+					case 4:
+						$n = $r->work_name;
+					break;
+					case 5:
+						$n = $r->work_name;
+					break;
+					case 6:
+						$n = $r->lock_name;
+					break;
+					case 7:
+						$n = $r->verif_name_satu;
+					break;
+					case 8:
+						$n = $r->verif_name_dua;
+					break;
+					case 9:
+						$n = $r->verif_name_dua;
+					break;
+					case 10:
+						$n = $r->verif_name_tiga;
+					break;
+					case 11:
+						$n = $r->verif_name_tiga;
+					break;
+					case 12:
+						$n = $r->entry_proses_name;
+					break;
+					case 13:
+						$n = $r->entry_name;
+					break;					
+					default:
+					   $n = "";
+				}	
+				
 				$html .= "<tr><td>$i</td>";				
-				$html .= "<td class=str>{$r->nip}</td>";	
+				$html .= "<td class=str>{$r->nip}</td>";
+                $html .= "<td>{$r->golongan}</td>";					
                 $html .= "<td>{$r->nama}</td>";	
-				$html .= "<td width=450>{$r->syarat_terpenuhi}</td>";					
+				$html .= "<td>{$r->tahapan_nama}".' '."{$n}</td>";
+				$html .= "<td>{$r->nomi_status}</td>";	
+				$html .= "<td>{$r->status_level_satu}".'<br/>'."{$r->verifdate_level_satu}</td>";
+				$html .= "<td>{$r->alasan_level_satu}</td>";
+				$html .= "<td>{$r->status_level_dua}".'<br/>'."{$r->verifdate_level_dua}</td>";
+				$html .= "<td>{$r->alasan_level_dua}</td>";
 				$html .= "</tr>";
 				$i++;
 			}

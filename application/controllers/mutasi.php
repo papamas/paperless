@@ -1,7 +1,7 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 class Mutasi extends MY_Controller {
 	
-	var $menu_id    = 19;
+	var $menu_id    = 26;
 	var $allow 		= FALSE;
 	
 	function __construct()
@@ -36,8 +36,8 @@ class Mutasi extends MY_Controller {
 	
 	public function getLaporan()
 	{
-		$this->form_validation->set_rules('instansi', 'instansi', 'required');
-		$this->form_validation->set_rules('layanan', 'layanan', 'trim');
+		$this->form_validation->set_rules('instansi', 'instansi', 'trim');
+		$this->form_validation->set_rules('layanan', 'layanan', 'trim|required');
 		$this->form_validation->set_rules('reportrange', 'Periode', 'required');
 		
 		$instansi  				= $this->input->post('instansi');
@@ -95,15 +95,14 @@ class Mutasi extends MY_Controller {
 						<th>NIP</th>
 						<th>NAMA</th>
 						<th>INSTANSI</th>
+						<th>LAYANAN</th>
 						<th>USUL</th>
 						<th>TANGGAL USUL</th>
 						<th>TANGGAL VERIFIKATOR</th>
-						<th>VERIFIKATOR</th>
-						<th>TANGGAL ENTRY</th>
-						<th>ENTRY BY</th>
-						<th>STATUS</th>
-						<th>ALASAN</th>
-						<th>LAYANAN</th>
+                        <th>STATUS</th>
+						<th>ALASAN</th>						
+						<th>ENTRY</th>						
+						
 						'; 
 			$html 	.= '</tr>';
 			if($q->num_rows() > 0){
@@ -113,15 +112,13 @@ class Mutasi extends MY_Controller {
 					$html .= "<td class=str>{$r->nip}</td>";	
 					$html .= "<td>{$r->nama}</td>";					
 					$html .= "<td>{$r->instansi}</td>";	
+					$html .= "<td>{$r->layanan_nama}</td>";	
 					$html .= "<td>{$r->agenda_nousul}</td>";	
 					$html .= "<td>{$r->agenda_timestamp}</td>";	
 					$html .= "<td>{$r->verify_date}</td>";
-					$html .= "<td>{$r->last_name}</td>";
-					$html .= "<td>{$r->entry_date}</td>";
-					$html .= "<td>{$r->entry_name}</td>";
-					$html .= "<td>{$r->nomi_status}</td>";
-					$html .= "<td>{$r->nomi_alasan}</td>";	
-					$html .= "<td>{$r->layanan_nama}</td>";	
+					$html .= "<td>{$r->nomi_status}".'<br/>'."{$r->verif_name}</td>";
+					$html .= "<td>{$r->nomi_alasan}</td>";				
+					$html .= "<td>{$r->entry_name}".'<br/>'."{$r->entry_date}</td>";									
 					$html .= "</tr>";
 					$i++;
 				}

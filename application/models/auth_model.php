@@ -4,6 +4,7 @@ class Auth_model extends CI_Model {
     var $username;
 	var $password;
 	var $table_user = 'app_user' ;
+	var $tableunit  = 'unit_kerja';
     
 	function __construct()
     {
@@ -52,9 +53,17 @@ class Auth_model extends CI_Model {
 		$this->db->set('ip_address',$ip);
 		$this->db->where('user_id',$user_id );
 		return $this->db->update($this->table_user);
+	}
+
+    public function getBidang($id)
+    {
+		$this->db->select('*');
+		$this->db->where('id_bidang',$id);
+        $query = $this->db->get($this->tableunit);
+		return $query;		
 	}	
 	
-	 public function getAuthMenu($user_id)
+	public function getAuthMenu($user_id)
 	{
 	    $r  = array();
 			

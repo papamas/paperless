@@ -6,7 +6,47 @@
 	<link rel="stylesheet" href="<?php echo base_url()?>assets/dist/css/custom.css">   
   </head> 	
 	<style>
-    </style>
+    /*Bootstrap modal size iframe*/
+	@media (max-width: 1280px){
+		.md-dialog  {
+			height:630px;
+			width:800px;
+		}
+		.md-body {
+			height: 500px;	
+		}
+	}
+	@media screen and (min-width:1281px) and (max-width:1600px){
+		.md-dialog  {
+			height:700px;
+			width:1000px;
+		}
+		.md-body {
+			height: 550px;	
+		}
+	}
+	@media screen and (min-width:1601px) and (max-width:1920px){
+		.md-dialog  {
+			height:830px;
+			width:1200px;
+		}
+		.md-body {
+			height: 700px;	
+		}
+	}
+
+	
+	.md-content {
+		/* Bootstrap sets the size of the modal in the modal-dialog class, we need to inherit it */
+		width:inherit;
+		height:inherit;
+		/* To center horizontally */
+		margin: 0 auto;
+		pointer-events: all;
+	}
+	
+	
+	</style>
   </head>
   <body class="hold-transition skin-yellow">
   <div class="wrapper">	
@@ -29,8 +69,8 @@
            <section class="content-header">          
 			  <ol class="breadcrumb">
 				<li><a href="#"><i class="fa fa-dashboard"></i>Home</a></li>
-				<li class="">DMS</li>
-				<li class="active">Cek Berkas</li>
+				<li class="">Instansi</li>
+				<li class="active">Lacak Berkas Usul</li>
 			  </ol>
 			</section>     
         </section>
@@ -41,7 +81,7 @@
 		        <div class="col-md-12">
 					<div class="box box-primary">
 						<div class="box-header with-border">
-						  <h3 class="box-title">Cek Berkas</h3>
+						  <h3 class="box-title">Lacak Berkas Usul</h3>
 						</div><!-- /.box-header -->
 						<!-- form start -->
 						<form class="form-horizontal" role="form" method="post" action="<?php echo site_url()?>/berkas/getBerkas">
@@ -97,7 +137,8 @@
 							<table class="table table-striped table-condensed">
 							<thead>
 								<tr>
-									<th>NO AGENDA</th>									
+									<th></th>	
+									<th>NOUSUL</th>									
 									<th>NIP</th>
 									<th>NAMA</th>
 									<th>UPDATE</th>
@@ -110,6 +151,9 @@
 								<?php if($usul->num_rows() > 0):?>
 								<?php  foreach($usul->result() as $value):?>
 								<tr>
+									<td style="width:25px;">
+									<a href="#" class="btn bg-orange btn-flat btn-xs" data-tooltip="tooltip"  title="Lihat Kelengkapan Berkas" data-toggle="modal" data-target="#lihatModal" data-id="<?php echo '?n='.$this->myencrypt->encode($value->nip).'&l='.$this->myencrypt->encode($value->layanan_nama)?>"><i class="fa fa-search"></i></a>
+									</td>
 									<td><?php echo $value->agenda_nousul?></td>									
 									<td style="width:16%"><?php echo ($value->nomi_locked == "1" ?  '<i class="fa fa-lock"></i>'.$value->nip : $value->nip)?></td>
 									<td><?php echo $value->nama?></td>
@@ -133,10 +177,55 @@
       </div><!-- /.content-wrapper -->     
     </div><!-- ./wrapper -->
 	
+	<!-- Modal -->
+	<div class="modal fade" id="lihatModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog modal-md" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+					<h4 class="modal-title" id="">Infomasi Kelengkapan Berkas</h4>
+				</div>
+							
+			</div>
+		</div>	
+    </div>
 	
+	<div class="modal" id="lihatFileModal" tabindex="-1" role="dialog" aria-hidden="true">
+	    <div class="modal-dialog  md-dialog modal-lg">
+		  <div class="modal-content md-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title" >File Dokumen</h4>
+				</div>	
+				<div class="modal-body md-body">
+					<iframe  id="frame" width="100%" height="100%" frameborder="0" ></iframe>	
+					
+				</div>
+		  </div>
+		</div>
+	</div>	
 	
 	<script src="<?php echo base_url()?>assets/plugins/jQuery/jQuery-2.1.4.min.js"></script>    
     <script src="<?php echo base_url()?>assets/bootstrap/js/bootstrap.min.js"></script> 
     <script src="<?php echo base_url()?>assets/dist/js/app.min.js"></script>
+	<script>	
+	$(document).ready(function () {
+	    $('[data-tooltip="tooltip"]').tooltip();
+		
+		$('#lihatModal').on('show.bs.modal',function(e) {    		
+			var id=  $(e.relatedTarget).attr('data-id');
+			$.get('<?php echo site_url()?>/berkas/getKelengkapan/'+id, function(data){
+				$('#lihatModal').find('.modal-content').html(data);
+			})			
+	    });
+	
+		$('#lihatFileModal').on('show.bs.modal',function(e) {    		 
+			var id=  $(e.relatedTarget).attr('data-id');
+			var iframe = $('#frame');
+			iframe.attr('src', '<?php echo site_url()?>'+'/berkas/getInline/'+id);
+					
+	    });
+	});
+    </script>	
 	</body>
 </html>

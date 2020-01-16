@@ -140,7 +140,7 @@ class Auth {
             'created_date'					=> $data->created_date,		
             'session_instansi'				=> $data->id_instansi,	
 			'session_bidang'				=> $data->id_bidang,
-			'session_tipe'				    => $data->user_tipe,
+			'session_user_tipe'				=> $data->user_tipe,
 			'gender'						=> $data->gender,
 			'logged_in'					    => TRUE
 		);
@@ -196,6 +196,20 @@ class Auth {
 	public function getJabatan()
     {
 		return $this->ci->session->userdata('jabatan');
+    }
+	
+	public function getBidang()
+    {
+		$r 			= NULL;
+		$id  		=  $this->ci->session->userdata('session_bidang');
+		$this->ci->load->model('Auth_model','users');
+		$query 		= $this->ci->users->getBidang($id);
+		if($query->num_rows() > 0)
+		{
+			$row  = $query->row();
+			$r    = $row->nama_unit;
+		}	
+		return $r;
     }
 	
 	public function getCreated()

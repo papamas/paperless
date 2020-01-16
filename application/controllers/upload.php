@@ -226,7 +226,7 @@ class upload extends MY_Controller {
 			foreach ($q->result() as $r) {
 				$jenis_sk     = $r->nama_dokumen;
 														
-				if($jenis_sk != "IJAZAH" && $jenis_sk != "TRANSKRIP") 
+				if($jenis_sk != "IJAZAH" && $jenis_sk != "TRANSKRIP" && $jenis_sk != "IBEL" && $jenis_sk != "MOU")
 				{
 					switch($r->minor_dok){
 						case 45:

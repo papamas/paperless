@@ -88,7 +88,7 @@ class Verifikator extends MY_Controller {
 		$data['id_agenda'] 	=  $this->myencrypt->decode($this->input->get('i'));
 		$data['nip'] 		=  $this->myencrypt->decode($this->input->get('n'));
 		$data['layanan_id'] =  $this->myencrypt->decode($this->input->get('p'));
-		
+		//$data['tahapan_id'] =  $this->myencrypt->decode($this->input->get('t'));
 		
 		$this->session->set_userdata($data);
 		
@@ -101,6 +101,7 @@ class Verifikator extends MY_Controller {
 		$data['tabs']  	  = $this->verifikator->getAllTab($data['nip']);
 		$data['dokumen']  = $this->verifikator->getAllDokumen($data['nip']);
 		$data['usul']	  = $this->verifikator->getVerifyUsul($data);
+		
 		if(!$this->allow)
 		{
 			$this->load->view('403/index',$data);
@@ -115,6 +116,8 @@ class Verifikator extends MY_Controller {
 	{
 		
 		$data['nip'] 		=  $this->input->post('nip');
+		//$data['tahapan_id'] =  $this->input->post('tahapan');
+		
 		$data['id_agenda']  =  $this->session->userdata('id_agenda');
 		$data['layanan_id'] =  $this->session->userdata('layanan_id');
 		
@@ -243,7 +246,8 @@ class Verifikator extends MY_Controller {
 		$data['nip']		    = $this->input->post('nip');
 		$data['id_agenda']      = $this->input->post('id_agenda');
 		$data['layanan_id']     = $this->input->post('layanan_id');
-		
+		$data['golongan']       = $this->input->post('golongan');
+		$data['finish']         = $this->input->post('finish');		
 		
 
 		if ($this->form_validation->run() == FALSE)
@@ -295,7 +299,7 @@ class Verifikator extends MY_Controller {
 	public function getKinerja()
 	{	
 	
-	    $this->form_validation->set_rules('instansi', 'instansi', 'required');
+	    $this->form_validation->set_rules('instansi', 'instansi','trim' );
 		$this->form_validation->set_rules('layanan', 'layanan', 'trim');
 		$this->form_validation->set_rules('reportrange', 'Periode', 'required');
 		

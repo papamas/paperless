@@ -12,6 +12,7 @@ class Berkas_model extends CI_Model {
 	private     $tableuser		= 'app_user';
 	private     $tablesyarat 	= 'syarat_layanan';
 	private     $tabletahapan 	= 'tahapan';
+	private     $tableupload    = 'upload_dokumen';
 		
     function __construct()
     {
@@ -61,9 +62,9 @@ GROUP_CONCAT(IF(e.flag = 1,e.nama_dokumen, NULL) SEPARATOR ',')  main_dokumen,
 GROUP_CONCAT(h.id_dokumen SEPARATOR ',')  upload_dokumen_id,
 GROUP_CONCAT(i.nama_dokumen SEPARATOR ',')  upload_dokumen,
 GROUP_CONCAT(IF(i.flag = 1,h.file_name, NULL) SEPARATOR ',')  main_upload_dokumen,
-j.last_name ln_work,
+j.first_name ln_work,
 k.tahapan_nama,
-l.last_name  ln_locked
+l.first_name  ln_locked
 FROM nominatif a
 LEFT JOIN $this->tableagenda b ON a.agenda_id = b.agenda_id
 LEFT JOIN $this->tablelayanan c ON b.layanan_id = c.layanan_id
@@ -93,4 +94,13 @@ GROUP BY a.nip,b.layanan_id
 		return $this->db->query($sql);
 		
 	}	
+	
+	public function getUploadDokumen($nip)
+	{
+		$sql="SELECT a.*, b.nama_dokumen 
+		FROM $this->tableupload a
+		LEFT JOIN $this->tabledokumen b ON a.id_dokumen = b.id_dokumen
+		WHERE a.nip='$nip' ";
+		return $this->db->query($sql);
+	}
 }

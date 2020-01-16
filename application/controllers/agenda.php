@@ -184,14 +184,7 @@ class Agenda extends MY_Controller {
 		
 		$target_dir  		= './agenda/'.$instansi;
 
-		//Tolak No Usul dan Layanan yang sama
-		$cek_usul_layanan 	= $this->magenda->mcek_usul_layanan($no_usul, $layanan_id);
 		
-		if($cek_usul_layanan > 0){
-		  $this->session->set_flashdata('gagal', "No Usul dan Layanan yang sama sudah pernah dibuat");
-		  redirect('agenda');
-		}
-
 		//Cek Batas KP
 		if($layanan_grup == 'KP'){
 		  if($tanggal_sekarang <= $batas_kp){
@@ -205,10 +198,10 @@ class Agenda extends MY_Controller {
 		}
 
 		$data = array(
-					   'agenda_nousul' => $no_usul,
-					   'layanan_id' => $layanan_id,
-					   'agenda_jumlah' => $this->input->post('input_jumlah'),
-					   'kp_periode' => $kp_periode
+					   'agenda_nousul' 			=> trim($no_usul),
+					   'layanan_id' 			=> $layanan_id,
+					   'agenda_jumlah' 			=> $this->input->post('input_jumlah'),
+					   'kp_periode' 			=> $kp_periode
 					 );
 
 		//Data Dokumen
@@ -243,10 +236,26 @@ class Agenda extends MY_Controller {
 
 		}
 
+		$db_debug 			= $this->db->db_debug; 
+		$this->db->db_debug = FALSE; 
+		
 		$cond = array('agenda_id' => $id);
-
-		$this->magenda->mubah_agenda($data, $cond);
-		$this->session->set_flashdata('berhasil', "Agenda Berhasil Diubah");
+		
+		if (!$this->magenda->mubah_agenda($data, $cond)) {
+			$error = $this->db->_error_message(); 
+			
+			if(!empty($error))
+			{
+				$this->session->set_flashdata('gagal', $error);
+			}
+			else
+			{
+				$this->session->set_flashdata('berhasil', 'Agenda Berhasil Diubah');
+			}
+			
+		}
+		
+		$this->db->db_debug = $db_debug; //restore setting		
 		redirect('agenda');
 
 	}
@@ -278,6 +287,8 @@ class Agenda extends MY_Controller {
 	$data['detail_agenda']  = $this->magenda->mdetail_agenda($agenda_id);
     $data['list_nominatif'] = $this->magenda->mlist_nominatif($agenda_id);
 	
+	$this->session->set_userdata('layanan_id',$data['detail_agenda']->layanan_id);
+	
 	$data['pesan']          = !empty($this->session->flashdata('berhasil')) ? $this->session->flashdata('berhasil') : $this->session->flashdata('gagal') ;
 	$data['tipe']           = !empty($this->session->flashdata('berhasil')) ? 'success' : 'error' ;
 	$data['title']          = !empty($this->session->flashdata('berhasil')) ? 'Berhasil !' : 'Gagal !' ;
@@ -302,17 +313,17 @@ class Agenda extends MY_Controller {
   //CARI NOMINATIF
   public function autocomplete(){
 
-		$instansi = $this->session->userdata['session_instansi'];
+		$instansi    = $this->session->userdata['session_instansi'];
 	 		
-		 $nip= $this->input->get('kirim');
-		 $result = $this->magenda->mcari_nominatif($nip, $instansi);
+		$nip         = $this->input->get('kirim');
+		$result      = $this->magenda->mcari_nominatif($nip, $instansi);
 
 		 if (!empty($result))
 		 {
-			  foreach ($result as $row):
-				   printf('<div id="item" onClick="kirim(\'%s\',\'%s\',\'%s\',\'%s\',\'%s\');">%s - %s</div> ', $row->pns_nipbaru, $row->pns_pnsnam, $row->gol_golnam, $row->dik_namdik, $row->ins_namins,$row->pns_nipbaru, $row->pns_pnsnam);
+			foreach ($result as $row):
+				printf('<div id="item" onClick="kirim(\'%s\',\'%s\',\'%s\',\'%s\',\'%s\');">%s - %s</div> ', $row->pns_nipbaru, $row->pns_pnsnam, $row->gol_golnam, $row->dik_namdik, $row->ins_namins,$row->pns_nipbaru, $row->pns_pnsnam);
 
-			  endforeach;
+			 endforeach;
 		 }
 		 else
 		 {

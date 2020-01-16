@@ -94,7 +94,7 @@
 		        <div class="col-md-12">
 					<div class="box box-primary">
 						<div class="box-header with-border">
-						  <h3 class="box-title">Daftar Usul Instansi</h3>
+						  <h3 class="box-title">Daftar Antrian Pelayanan Teknis</h3>
 						</div><!-- /.box-header -->
 					    <div class="table-responsive">						
 							<table class="table table-striped">
@@ -109,7 +109,8 @@
 								</tr>
 							</thead>   
 							<tbody>
-								<?php if($usul->num_rows() > 0):?>
+							    <?php $total=0;?>
+								<?php if($usul->num_rows() > 0):?>								
 								<?php  foreach($usul->result() as $value):?>
 								<tr>
 									<td><?php echo $value->agenda_nousul?></td>
@@ -123,9 +124,13 @@
 									<a href="#dExcel" class="btn btn-primary btn-xs" data-tooltip="tooltip"  title="Cetak Nominatif" id="?id=<?php echo $value->agenda_id?>" ><i class="fa fa-file-excel-o"></i></a>
 									</td>
 								</tr>
+								<?php $total = $total + $value->jumlah_usul;?>
 								<?php endforeach;?>
 								<?php endif;?>
-														
+								<tr><td colspan="7" class="full-right">
+								    <label class="form-label">Jumlah Seluruh Berkas : <?php echo $total;?></label>
+									</td>
+								</tr>							
 							</tbody>
 							</table>
 						</div>

@@ -2,15 +2,17 @@
 class Verifikator_model extends CI_Model {
 
 	private     $rawName;
-	private     $table    = 'upload_dokumen';
-	private     $tablenom = 'nominatif';
-	private     $tablepupns = 'mirror.pupns';
-	private     $tableagenda = 'agenda';
-	private     $tabledokumen= 'dokumen';
-	private     $tablelayanan= 'layanan';
-	private     $tableinstansi= 'mirror.instansi';
-	private     $tableuser= 'app_user';
-	private     $tablesyarat = 'syarat_layanan';
+	private     $table          = 'upload_dokumen';
+	private     $tablenom       = 'nominatif';
+	private     $tablepupns     = 'mirror.pupns';
+	private     $tableagenda    = 'agenda';
+	private     $tabledokumen   = 'dokumen';
+	private     $tablelayanan   = 'layanan';
+	private     $tableinstansi  = 'mirror.instansi';
+	private     $tableuser      = 'app_user';
+	private     $tablesyarat    = 'syarat_layanan';
+	private     $tabletahapan   = 'tahapan';
+	private     $tablegolru     = 'mirror.golru';
 		
     function __construct()
     {
@@ -51,6 +53,8 @@ class Verifikator_model extends CI_Model {
 		$search    = $search['search'];		
 		
 		$bidang  = $this->session->userdata('session_bidang');
+		$user_id = $this->session->userdata('user_id');
+		$tipe    = $this->session->userdata('session_user_tipe');
 		
 		switch($searchby){
             case 1:
@@ -68,18 +72,43 @@ class Verifikator_model extends CI_Model {
             break;
             default:
                 $sql = " AND a.nip = '999999999' ";		
-		}		
+		}	
+
+        if($bidang == 1)
+		{
+		    // tipe 2 = kabid , tipe 3 kanreg
+			if($tipe  == 2 || $tipe == 3)
+			{	
+				$sql_work =" ";
+			}
+			else
+			{
+				$sql_work =" AND a.work_by = '$user_id'  "; 
+			}
+		}
+        else
+        {
+            $sql_work =" ";
+        }			
       
-		$q="SELECT a.agenda_id,a.nip,a.nomi_locked,a.nomi_status,a.locked_by,
+		$q="SELECT a.* FROM ( SELECT a.*, b.user_id, b.id_instansi FROM (SELECT a.agenda_id,a.tahapan_id, a.nip,a.nomi_locked,a.nomi_status,a.locked_by,
 b.layanan_id,b.agenda_ins,b.agenda_nousul,b.agenda_timestamp,b.agenda_dokumen,
-c.layanan_nama, f.INS_NAMINS instansi, g.PNS_PNSNAM nama,
+c.layanan_nama, f.INS_NAMINS instansi,
+g.PNS_PNSNAM nama,l.GOL_GOLNAM golongan,
 group_concat(d.dokumen_id SEPARATOR ',') dokumen_id , 
 group_concat(e.nama_dokumen SEPARATOR ',') nama_dokumen,
 GROUP_CONCAT(IF(e.flag = 1,e.nama_dokumen, NULL) SEPARATOR ',')  main_dokumen,
 GROUP_CONCAT(h.id_dokumen SEPARATOR ',')  upload_dokumen_id,
 GROUP_CONCAT(i.nama_dokumen SEPARATOR ',')  upload_dokumen,
 GROUP_CONCAT(IF(i.flag = 1,h.file_name, NULL) SEPARATOR ',')  main_upload_dokumen,
-j.last_name
+j.first_name lock_name,
+k.tahapan_nama,
+m.first_name work_name,
+n.first_name verif_name_satu,
+o.first_name verif_name_dua,
+p.first_name verif_name_tiga,
+q.first_name entry_proses_name,
+r.first_name entry_name
 FROM $this->tablenom a
 LEFT JOIN $this->tableagenda b ON a.agenda_id = b.agenda_id
 LEFT JOIN $this->tablelayanan c ON b.layanan_id = c.layanan_id
@@ -90,10 +119,22 @@ LEFT JOIN $this->tablepupns g ON g.PNS_NIPBARU = a.nip
 LEFT JOIN $this->table h ON (a.nip = h.nip AND d.dokumen_id = h.id_dokumen)
 LEFT JOIN $this->tabledokumen i ON  i.id_dokumen = h.id_dokumen
 LEFT JOIN $this->tableuser j ON j.user_id = a.locked_by
+LEFT JOIN $this->tabletahapan k ON a.tahapan_id = k.tahapan_id
+LEFT JOIN $this->tablegolru l ON g.PNS_GOLRU = l.GOL_KODGOL
+LEFT JOIN $this->tableuser m ON m.user_id = a.work_by
+LEFT JOIN $this->tableuser n ON n.user_id = a.verifby_level_satu
+LEFT JOIN $this->tableuser o ON o.user_id = a.verifby_level_dua
+LEFT JOIN $this->tableuser p ON p.user_id = a.verifby_level_tiga
+LEFT JOIN $this->tableuser q ON q.user_id = a.entry_proses_by
+LEFT JOIN $this->tableuser r ON r.user_id = a.entry_by
 where 1=1 $sql  
 AND a.nomi_status='BELUM'
 AND c.layanan_bidang='$bidang'
-GROUP BY a.nip,b.layanan_id
+AND a.tahapan_id IN ('4','5','6','7','8','9','10','11','12')  $sql_work
+GROUP BY a.nip,b.layanan_id ) a
+LEFT JOIN user_layanan_role b ON (a.layanan_id=b.layanan_id AND a.agenda_ins = b.id_instansi AND b.user_id='$user_id')
+) a
+WHERE id_instansi IS NOT NULL
 ";
 		//var_dump($q);
 		$query 		= $this->db->query($q);
@@ -103,17 +144,40 @@ GROUP BY a.nip,b.layanan_id
 	
 	public function getVerifyUsul($data)
 	{	
-		// flag sedang dikerjakan
-		$this->setSedangKerja($data);
+		$bidang  		= $this->session->userdata('session_bidang');
+		
+		$this->setSedangKerja($data);		
 		
 		$nip  			= $data['nip'];
 		$layanan_id		= $data['layanan_id'];
 		$id_agenda      = $data['id_agenda'];
 		
+		
+		$bidang  = $this->session->userdata('session_bidang');
+		$user_id = $this->session->userdata('user_id');
+		$tipe    = $this->session->userdata('session_user_tipe');
+		
+		if($bidang == 1)
+		{
+		    // tipe 2 = kabid , tipe 3 kanreg
+			if($tipe  == 2 || $tipe == 3)
+			{	
+				$sql_work =" ";
+			}
+			else
+			{
+				$sql_work =" AND a.work_by = '$user_id'  "; 
+			}
+		}
+        else
+        {
+            $sql_work =" ";
+        }		
 	    
-		$q ="SELECT a.agenda_id,a.nip,a.nomi_locked,a.nomi_status,a.locked_by,
+		$q ="SELECT a.agenda_id,a.tahapan_id, a.nip,a.nomi_locked,a.nomi_status,a.locked_by,
 b.layanan_id,b.agenda_ins,b.agenda_nousul,b.agenda_timestamp,b.agenda_dokumen,
-c.layanan_nama, f.INS_NAMINS instansi, g.PNS_PNSNAM nama,
+c.layanan_nama, f.INS_NAMINS instansi,
+g.PNS_PNSNAM nama,g.PNS_GOLRU,
 group_concat(d.dokumen_id SEPARATOR ',') dokumen_id , 
 group_concat(e.nama_dokumen SEPARATOR ',') nama_dokumen,
 GROUP_CONCAT(IF(e.flag = 1,e.nama_dokumen, NULL) SEPARATOR ',')  main_dokumen,
@@ -121,7 +185,8 @@ GROUP_CONCAT(h.raw_name SEPARATOR ',')  upload_raw_name,
 GROUP_CONCAT(i.nama_dokumen SEPARATOR ',')  upload_dokumen,
 GROUP_CONCAT(IF(i.flag = 1,h.file_name, NULL) SEPARATOR ',')  main_upload_dokumen,
 GROUP_CONCAT(IF(i.flag = 1,h.file_type, NULL) SEPARATOR ',')  file_type,
-j.last_name
+j.first_name lock_name,
+k.tahapan_nama
 FROM $this->tablenom a
 LEFT JOIN $this->tableagenda b ON a.agenda_id = b.agenda_id
 LEFT JOIN $this->tablelayanan c ON b.layanan_id = c.layanan_id
@@ -132,7 +197,11 @@ LEFT JOIN $this->tablepupns g ON g.PNS_NIPBARU = a.nip
 LEFT JOIN $this->table h ON (a.nip = h.nip AND d.dokumen_id = h.id_dokumen)
 LEFT JOIN $this->tabledokumen i ON  i.id_dokumen = h.id_dokumen
 LEFT JOIN $this->tableuser j ON j.user_id = a.locked_by
-where a.nip='$nip' AND b.layanan_id='$layanan_id'  AND a.agenda_id='$id_agenda' 
+LEFT JOIN $this->tabletahapan k ON a.tahapan_id = k.tahapan_id
+where a.nip='$nip' 
+AND b.layanan_id='$layanan_id'  
+AND a.agenda_id='$id_agenda' 
+$sql_work
 GROUP BY a.nip,b.layanan_id";  
         //var_dump($q);exit;
 		$query 		= $this->db->query($q);
@@ -159,12 +228,62 @@ GROUP BY a.nip,b.layanan_id";
 		return $query;
 	}
 	
-	
+	function getTahap($data)
+	{
+	    $nip  			= $data['nip'];
+		$agenda         = $data['id_agenda'];
+		
+		// default tahapan sedang kerja
+		$tahapan_id     = 5;
+		
+		$sql="SELECT tahapan_id FROM $this->tablenom WHERE agenda_id='$agenda' AND nip='$nip' "	;
+		$query   =  $this->db->query($sql);
+		
+		if($query->num_rows() > 0)
+		{
+            $row  = $query->row();
+			$tahapan_id   = $row->tahapan_id;
+		}			
+		
+		return $tahapan_id;
+	}	
 
 	public function setSedangKerja($data)
 	{
-		$set['tahapan_id']    = 3;	
-		$set['work_by']	      = $this->session->userdata('user_id');
+		$tahapan_id			  = $this->getTahap($data);
+		$bidang  			  = $this->session->userdata('session_bidang');
+		switch($tahapan_id){
+			case 4:
+			   $set['tahapan_id']    = 5;	
+			break;
+			case 5:
+			   $set['tahapan_id']    = 6;	
+			break;
+			case 6:
+			   $set['tahapan_id']    = 6;	
+			break;
+			case 7:
+			   $set['tahapan_id']    = 7;	
+			break;
+			case 8:
+			   $set['tahapan_id']    = 9;	
+			break;
+			case 9:
+			   $set['tahapan_id']    = 9;	
+			break;
+			case 10:
+			   $set['tahapan_id']    = 11;	
+			break;
+			default:
+			    $set['tahapan_id']    = $tahapan_id;
+		}	
+		
+		// jika bidang pensiun
+		if($bidang == 2)
+		{
+		    $set['work_by']	      = $this->session->userdata('user_id');
+        }
+		
 		
 		$this->db->set($set);
 		$this->db->where('agenda_id', $data['id_agenda']);		
@@ -174,10 +293,23 @@ GROUP BY a.nip,b.layanan_id";
 	
 	public function setKerja($data)
 	{
+		
 		$r					  = FALSE;
-		$set['nomi_locked']   = '1';
-		$set['tahapan_id']    = 4;	
+		$set['nomi_locked']   = '1';		
 		$set['locked_by']	  = $this->session->userdata('user_id');
+		
+		$tipe    = $this->session->userdata('session_user_tipe');
+		switch($tipe){
+		    case 1:
+			    $set['tahapan_id']    = 6;	
+			break;
+			case 2:
+			    $set['tahapan_id']    = 8;	
+			break;
+			case 3:
+			    $set['tahapan_id']    = 10;	
+			break;
+		}
 		
         $this->db->trans_start();
 		$db_debug 			= $this->db->db_debug; 
@@ -217,13 +349,185 @@ GROUP BY a.nip,b.layanan_id";
 	
 	public function setVerifikator($data)
 	{
-		$set['nomi_status']   	  = $data['status'];
-		$set['nomi_alasan']		  = $data['catatan'];
-		$set['nomi_verifby']	  = $this->session->userdata('user_id');
-		$set['tahapan_id']   	  = 5;
+		$golongan                     = $data['golongan'];
+		$finish					      = $data['finish'];
+		$layanan_id                   = $data['layanan_id'];
 		
-		$this->db->set($set);
-		$this->db->set('verify_date','NOW()',FALSE);
+		$tipe    				      = $this->session->userdata('session_user_tipe');
+		
+		// jika layanan pindah instansi hanya eeselon 2 spesimen
+		// eselon 4 dan 3 hanya periksa , kaalau PG eselon 4 periksa 
+		// eselon 3 ttd surat
+		if($layanan_id == 13 || $layanan_id == 14)
+		{
+	        $set['tahapan_id']   	  = 7;
+	    }
+		else
+		{	
+			switch($golongan){
+				case 11:
+					$set['nomi_status']   	  = $data['status'];
+					$set['nomi_alasan']		  = $data['catatan'];
+					$set['nomi_verifby']	  = $this->session->userdata('user_id');
+					$set['tahapan_id']   	  = 7;
+					$this->db->set('verify_date','NOW()',FALSE);
+				break;
+				case 12:
+					$set['nomi_status']   	  = $data['status'];
+					$set['nomi_alasan']		  = $data['catatan'];
+					$set['nomi_verifby']	  = $this->session->userdata('user_id');
+					$set['tahapan_id']   	  = 7;		
+					$this->db->set('verify_date','NOW()',FALSE);				
+				break;
+				case 13:
+					$set['nomi_status']   	  = $data['status'];
+					$set['nomi_alasan']		  = $data['catatan'];
+					$set['nomi_verifby']	  = $this->session->userdata('user_id');
+					$set['tahapan_id']   	  = 7;	
+					$this->db->set('verify_date','NOW()',FALSE);				
+				break;
+				case 14:
+					$set['nomi_status']   	  = $data['status'];
+					$set['nomi_alasan']		  = $data['catatan'];
+					$set['nomi_verifby']	  = $this->session->userdata('user_id');
+					$set['tahapan_id']   	  = 7;	
+					$this->db->set('verify_date','NOW()',FALSE);				
+				break;
+				case 21:
+					$set['nomi_status']   	  = $data['status'];
+					$set['nomi_alasan']		  = $data['catatan'];
+					$set['nomi_verifby']	  = $this->session->userdata('user_id');
+					$set['tahapan_id']   	  = 7;	
+					$this->db->set('verify_date','NOW()',FALSE);				
+				break;
+				case 22:
+					$set['nomi_status']   	  = $data['status'];
+					$set['nomi_alasan']		  = $data['catatan'];
+					$set['nomi_verifby']	  = $this->session->userdata('user_id');
+					$set['tahapan_id']   	  = 7;					
+				break;
+				case 23:
+					$set['nomi_status']   	  = $data['status'];
+					$set['nomi_alasan']		  = $data['catatan'];
+					$set['nomi_verifby']	  = $this->session->userdata('user_id');
+					$set['tahapan_id']   	  = 7;		
+					$this->db->set('verify_date','NOW()',FALSE);				
+				break;
+				case 24:
+					$set['nomi_status']   	  = $data['status'];
+					$set['nomi_alasan']		  = $data['catatan'];
+					$set['nomi_verifby']	  = $this->session->userdata('user_id');
+					$set['tahapan_id']   	  = 7;		
+					$this->db->set('verify_date','NOW()',FALSE); 				
+				break;
+				case 31:
+					$set['nomi_status']   	  = $data['status'];
+					$set['nomi_alasan']		  = $data['catatan'];
+					$set['nomi_verifby']	  = $this->session->userdata('user_id');
+					$set['tahapan_id']   	  = 7;	
+					$this->db->set('verify_date','NOW()',FALSE);				
+				break;
+				case 32:
+					$set['nomi_status']   	  = $data['status'];
+					$set['nomi_alasan']		  = $data['catatan'];
+					$set['nomi_verifby']	  = $this->session->userdata('user_id');
+					$set['tahapan_id']   	  = 7;		
+					$this->db->set('verify_date','NOW()',FALSE);				
+				break;
+				case 33:
+					$set['nomi_status']   	  = $data['status'];
+					$set['nomi_alasan']		  = $data['catatan'];
+					$set['nomi_verifby']	  = $this->session->userdata('user_id');
+					$set['tahapan_id']   	  = 7;	// end verifikasi jika KP sampai III/D	
+					$this->db->set('verify_date','NOW()',FALSE);				
+				break;
+				case 34:
+					// mulai dari sini pengawas cuma paraf				
+					$set['tahapan_id']   	  = 7;                					
+				break;
+				case 41:
+					$set['tahapan_id']   	  = 7;				
+				break;
+				case 42:
+					$set['tahapan_id']   	  = 7;				
+				break;
+				case 43:
+					$set['tahapan_id']   	  = 7;				
+				break;
+				case 44:
+					$set['tahapan_id']   	  = 7;				
+				break;
+				case 45:
+					$set['tahapan_id']   	  = 7;				
+				break;
+			}	
+		}
+		
+		switch($tipe){
+			// eselon 4
+		    case 1:
+			    $set['status_level_satu'] = $data['status'];
+				$set['alasan_level_satu'] = $data['catatan'];
+				$set['verifby_level_satu']= $this->session->userdata('user_id');
+				$this->db->set('verifdate_level_satu','NOW()',FALSE);
+			break;
+			// eselon 3
+			case 2:
+			    $set['status_level_dua'] = $data['status'];
+				$set['alasan_level_dua'] = $data['catatan'];
+				$set['verifby_level_dua']= $this->session->userdata('user_id');
+				$set['tahapan_id']   	  = 9;
+				$this->db->set('verifdate_level_dua','NOW()',FALSE);
+				
+				if($finish == 1)				{
+					$set['nomi_status']   	  = $data['status'];
+					$set['nomi_alasan']		  = $data['catatan'];
+					$set['nomi_verifby']	  = $this->session->userdata('user_id');
+					$this->db->set('verify_date','NOW()',FALSE);					
+				}
+				
+			break;
+			// eselon 2
+			case 3:
+			    $set['status_level_tiga'] = $data['status'];
+				$set['alasan_level_tiga'] = $data['catatan'];
+				$set['verifby_level_tiga']= $this->session->userdata('user_id');
+				$set['tahapan_id']   	  = 11;
+				$this->db->set('verifdate_level_tiga','NOW()',FALSE);
+				$this->db->set('verify_date','NOW()',FALSE);
+				
+				// always finish
+				$set['nomi_status']   	  = $data['status'];
+				$set['nomi_alasan']		  = $data['catatan'];
+				$set['nomi_verifby']	  = $this->session->userdata('user_id');
+				$this->db->set('verify_date','NOW()',FALSE);
+			break;
+		}
+		
+		
+		// jika layanan KARIS/KARSU/KARPEG LANGSUNG FINISH ACC HANYA SAMPAI LEVEL 1
+		switch($layanan_id){
+		    case 9:
+			    $set['nomi_status']   	  = $data['status'];
+				$set['nomi_alasan']		  = $data['catatan'];
+				$set['nomi_verifby']	  = $this->session->userdata('user_id');
+				$this->db->set('verify_date','NOW()',FALSE);
+			break;
+			case 10:
+			    $set['nomi_status']   	  = $data['status'];
+				$set['nomi_alasan']		  = $data['catatan'];
+				$set['nomi_verifby']	  = $this->session->userdata('user_id');
+				$this->db->set('verify_date','NOW()',FALSE);
+			break;
+			case 11:
+			    $set['nomi_status']   	  = $data['status'];
+				$set['nomi_alasan']		  = $data['catatan'];
+				$set['nomi_verifby']	  = $this->session->userdata('user_id');
+				$this->db->set('verify_date','NOW()',FALSE);
+			break;
+		}	
+		
+		$this->db->set($set);		
 		$this->db->where('agenda_id', $data['id_agenda']);		
 		$this->db->where('nip', $data['nip']);
 		return $this->db->update($this->tablenom);
@@ -234,7 +538,7 @@ GROUP BY a.nip,b.layanan_id";
 	{
 	    $bidang  = $this->session->userdata('session_bidang');
 		
-		$sql="SELECT * FROM $this->tablelayanan WHERE layanan_bidang='$bidang' ";	
+		$sql="SELECT * FROM $this->tablelayanan WHERE status='1' AND layanan_bidang='$bidang' ORDER BY layanan_nama ASC ";	
 		return $this->db->query($sql);
 		
 	}	
@@ -322,8 +626,16 @@ GROUP BY a.nip,b.layanan_id";
 		}		
 		
 		$sql="select a.agenda_id, a.nip, a.nomi_status, a.nomi_alasan, a.verify_date,
+CASE a.nomi_status
+	WHEN 'ACC' THEN 'badge bg-green'
+	WHEN 'TMS' THEN 'badge bg-red'
+	WHEN 'BTL' THEN 'badge bg-yellow'
+	ELSE 'badge bg-light-blue'
+END AS bg,
 b.agenda_ins, b.agenda_nousul,b.layanan_id,b.agenda_timestamp,
-c.layanan_nama,c.layanan_kode, d.INS_NAMINS instansi, e.PNS_PNSNAM nama
+c.layanan_nama,c.layanan_kode, 
+d.INS_NAMINS instansi, 
+e.PNS_PNSNAM nama
 from $this->tablenom a
 LEFT JOIN $this->tableagenda b ON a.agenda_id = b.agenda_id
 LEFT JOIN $this->tablelayanan c ON b.layanan_id = c.layanan_id

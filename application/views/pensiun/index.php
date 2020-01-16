@@ -69,7 +69,7 @@
 							<div class="form-group">
 							  <label class="col-md-2 col-sm-2 col-xs-2">Pelayanan</label>
 							  <div class="col-sm-10 col-md-10 col-xs-10">
-							    <select name="layanan" class="form-control select2">
+							    <select name="layanan" class="form-control ">
 								    <option value="">--</option>
 									<?php if($layanan->num_rows() > 0):?>
 									<?php foreach($layanan->result() as $value):?>
@@ -95,7 +95,7 @@
 									<input type="radio" required value="2" name="bydate"  />&nbsp;Entry SAPK								
 								</div>
 							</div>
-							 <div class="form-group row">
+							<div class="form-group row">
 								<label class="control-label col-md-2 col-sm-2 col-xs-2">Status</label>
 								<div class="col-md-4 col-sm-10 col-xs-10">
 									<input type="radio" required value="ACC" name="status"   />&nbsp;ACC
@@ -139,6 +139,6 @@
 			   locale: 'id',
 	    });	
 	});
-</script>
+    </script>
 	</body>
 </html>

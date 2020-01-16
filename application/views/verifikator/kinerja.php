@@ -68,7 +68,7 @@
 								<div class="form-group">
 									<label class="col-sm-2 col-md-2 col-xs-2">Pelayanan</label>
 									<div class="col-sm-10 col-md-10 col-xs-10">
-										<select name="layanan" class="form-control select2">
+										<select name="layanan" class="form-control">
 											<option value="">--</option>
 											<?php if($layanan->num_rows() > 0):?>
 											<?php foreach($layanan->result() as $value):?>
@@ -76,8 +76,9 @@
 											<?php endforeach;?>
 											<?php endif;?>
 										</select>
+										<span class="help-block text-red"><?php echo form_error('layanan'); ?></span>
 									</div>
-									<span class="help-block text-red"><?php echo form_error('layanan'); ?></span>
+									
 								</div>
 								<div class="form-group row">
 									<label class="col-sm-2 col-md-2 col-xs-2 control-label">Periode Kinerja:</label>
@@ -101,7 +102,7 @@
 								<div class="form-group row">
 									<label class="col-sm-2 col-md-2 col-xs-2">Verifikator</label>
 									<div class="col-sm-5 col-md-5 col-xs-5">
-										<select name="verifikator" class="form-control select2">										
+										<select name="verifikator" class="form-control">										
 											<?php if($verifikator->num_rows() > 0):?>
 											<?php foreach($verifikator->result() as $value):?>
 											<option value="<?php echo $value->user_id?>" <?php echo ($this->session->userdata('user_id') == $value->user_id ? 'selected="selected"' : '')?>><?php echo $value->last_name?></option>
@@ -147,7 +148,7 @@
 								<td><?php echo $value->agenda_timestamp?></td>	
 								<td><?php echo $value->verify_date?></td>									
 								<td><?php echo $value->layanan_nama?></td>
-								<td><?php echo $value->nomi_status?></td>						
+								<td><span class="<?php echo $value->bg?>"><?php echo $value->nomi_status?></span></td>						
 							</tr>
 							<?php endforeach;?>
 							<?php endif;?>

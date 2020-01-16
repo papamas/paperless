@@ -68,7 +68,7 @@
 							<div class="form-group">
 							  <label class="col-md-2 col-sm-2 col-xs-2">Pelayanan</label>
 							  <div class="col-sm-10 col-md-10 col-xs-10">
-							    <select name="layanan" class="form-control select2">
+							    <select name="layanan" class="form-control ">
 								    <option value="">--</option>
 									<?php if($layanan->num_rows() > 0):?>
 									<?php foreach($layanan->result() as $value):?>

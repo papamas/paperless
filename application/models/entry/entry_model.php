@@ -2,17 +2,20 @@
 class Entry_model extends CI_Model {
 
 	
-	private     $tablelayanan  = 'layanan';
-	private     $tableinstansi = 'mirror.instansi';
-	private     $table    = 'upload_dokumen';
-	private     $tablenom = 'nominatif';
-	private     $tablepupns = 'mirror.pupns';
-	private     $tableagenda = 'agenda';
-	private     $tabledokumen= 'dokumen';
-	private     $tableuser= 'app_user';
-	private     $tablesyarat = 'syarat_layanan';
-	private     $tablephoto = 'upload_photo';
-	
+	private     $tablelayanan  		= 'layanan';
+	private     $tableinstansi 		= 'mirror.instansi';
+	private     $table    			= 'upload_dokumen';
+	private     $tablenom 			= 'nominatif';
+	private     $tablepupns 		= 'mirror.pupns';
+	private     $tableagenda 		= 'agenda';
+	private     $tabledokumen		= 'dokumen';
+	private     $tableuser			= 'app_user';
+	private     $tablesyarat 		= 'syarat_layanan';
+	private     $tablephoto 		= 'upload_photo';
+	private     $tabletahapan 		= 'tahapan';
+	private     $tablegolru			= 'mirror.golru';
+	private     $tablejabatan		= 'jabatan';
+	private     $tableijazah		= 'ijazah';
 		
     function __construct()
     {
@@ -25,7 +28,7 @@ class Entry_model extends CI_Model {
 	{
 	    $bidang  = $this->session->userdata('session_bidang');
 		
-		$sql="SELECT * FROM $this->tablelayanan WHERE layanan_bidang='$bidang' ";	
+		$sql="SELECT * FROM $this->tablelayanan WHERE status='1' AND layanan_bidang='$bidang' ORDER BY layanan_nama ASC ";	
 		return $this->db->query($sql);
 		
 	}	
@@ -48,10 +51,10 @@ class Entry_model extends CI_Model {
 		switch($status)
 		{
 		    case 1:
-			    $sql_status = " AND a.nomi_persetujuan IS NOT NULL";
+			    $sql_status = " AND b.nomi_persetujuan IS NOT NULL";
             break;
             case 2 :
-			    $sql_status = " AND a.nomi_persetujuan IS NULL";
+			    $sql_status = " AND b.nomi_persetujuan IS NULL";
             break;
             case 3:
 			    $sql_status = " ";
@@ -60,7 +63,7 @@ class Entry_model extends CI_Model {
 		
 		if(!empty($nip))
 		{
-			$sql_nip = " AND a.nip = '$nip' ";
+			$sql_nip = " AND b.nip = '$nip' ";
         }
         else
 		{
@@ -79,7 +82,7 @@ class Entry_model extends CI_Model {
 		
 		if(!empty($instansi))
 		{
-			$sql_instansi = " AND f.INS_KODINS = '$instansi' ";
+			$sql_instansi = " AND d.INS_KODINS = '$instansi' ";
         }
         else
 		{
@@ -89,7 +92,7 @@ class Entry_model extends CI_Model {
         if(!empty($layanan))
 		{
 		
-			$sql_layanan = " AND b.layanan_id = '$layanan' ";
+			$sql_layanan = " AND a.layanan_id = '$layanan' ";
         }
 		else
 		{	
@@ -99,7 +102,7 @@ class Entry_model extends CI_Model {
 		if(!empty($startdate) AND !empty($enddate))
 		{
 		
-			$sql_date = " AND DATE( a.verify_date ) BETWEEN STR_TO_DATE('$startdate', '%d/%m/%Y ' )
+			$sql_date = " AND DATE( b.verify_date ) BETWEEN STR_TO_DATE('$startdate', '%d/%m/%Y ' )
 			AND STR_TO_DATE('$enddate', '%d/%m/%Y ' ) ";
 		}
 		else
@@ -107,34 +110,43 @@ class Entry_model extends CI_Model {
 			$sql_date = " ";   
 		}		
       
-		$q="SELECT a.agenda_id,a.nip,a.nomi_locked,a.nomi_status,
-		a.nomi_persetujuan,DATE_FORMAT(a.tanggal_persetujuan, '%d-%m-%Y') tgl,
-		a.verify_date, a.entry_by, a.entry_date,
-b.layanan_id,b.agenda_ins,b.agenda_nousul,b.agenda_timestamp,b.agenda_dokumen,
-c.layanan_nama, 
-f.INS_NAMINS instansi,
-g.PNS_PNSNAM nama,
-group_concat(d.dokumen_id SEPARATOR ',') dokumen_id , 
-group_concat(e.nama_dokumen SEPARATOR ',') nama_dokumen,
-GROUP_CONCAT(IF(e.flag = 1,e.nama_dokumen, NULL) SEPARATOR ',')  main_dokumen,
-GROUP_CONCAT(h.id_dokumen SEPARATOR ',')  upload_dokumen_id,
-GROUP_CONCAT(i.nama_dokumen SEPARATOR ',')  upload_dokumen,
-GROUP_CONCAT(IF(i.flag = 1,h.file_name, NULL) SEPARATOR ',')  main_upload_dokumen,
-j.last_name,
-k.orig_name, k.id_instansi
-FROM nominatif a
-LEFT JOIN $this->tableagenda b ON a.agenda_id = b.agenda_id
-LEFT JOIN $this->tablelayanan c ON b.layanan_id = c.layanan_id
-LEFT JOIN $this->tablesyarat d ON d.layanan_id = c.layanan_id
-LEFT JOIN $this->tabledokumen e ON d.dokumen_id = e.id_dokumen
-LEFT JOIN $this->tableinstansi f ON b.agenda_ins = f.INS_KODINS 
-LEFT JOIN $this->tablepupns g ON g.PNS_NIPBARU = a.nip
-LEFT JOIN $this->table h ON (a.nip = h.nip AND d.dokumen_id = h.id_dokumen)
-LEFT JOIN $this->tabledokumen i ON  i.id_dokumen = h.id_dokumen
-LEFT JOIN $this->tableuser j ON j.user_id = a.locked_by
-LEFT JOIN $this->tablephoto k ON a.nip = k.nip
-where 1=1 AND a.nomi_status='ACC'  $sql_instansi $sql_layanan  $sql_date  $sql_status  $sql_nip
-GROUP BY b.layanan_id
+	    $bidang  = $this->session->userdata('session_bidang');
+		
+		$q="SELECT a.*,
+		b.nip,b.tahapan_id,b.nomi_status,b.nomi_alasan,b.verify_date,b.entry_date,b.nomi_persetujuan,b.tanggal_persetujuan tgl,		
+		c.layanan_nama,
+		d.INS_NAMINS instansi ,
+		e.PNS_PNSNAM nama,
+		f.tahapan_nama,
+		g.first_name work_name,
+		h.first_name lock_name,
+		i.first_name verif_name_satu,
+		j.GOL_GOLNAM golongan,
+		k.first_name verif_name_dua,
+		l.first_name verif_name_tiga,
+		m.first_name verif_name,
+		n.first_name entry_proses_name,
+		o.first_name entry_name,
+		p.id_instansi,p.orig_name
+		FROM $this->tableagenda a 
+LEFT JOIN $this->tablenom b ON a.agenda_id = b.agenda_id 
+LEFT JOIN $this->tablelayanan c  ON a.layanan_id = c.layanan_id
+LEFT JOIN $this->tableinstansi d ON a.agenda_ins = d.INS_KODINS
+LEFT JOIN $this->tablepupns e ON b.nip = e.PNS_NIPBARU
+LEFT JOIN $this->tabletahapan f ON b.tahapan_id = f.tahapan_id
+LEFT JOIN $this->tableuser g ON g.user_id = b.work_by
+LEFT JOIN $this->tableuser h ON h.user_id = b.locked_by
+LEFT JOIN $this->tableuser i ON i.user_id = b.verifby_level_satu
+LEFT JOIN $this->tablegolru j ON e.PNS_GOLRU = j.GOL_KODGOL
+LEFT JOIN $this->tableuser k ON k.user_id = b.verifby_level_dua
+LEFT JOIN $this->tableuser l ON l.user_id = b.verifby_level_tiga
+LEFT JOIN $this->tableuser m ON m.user_id = b.nomi_verifby
+LEFT JOIN $this->tableuser n ON n.user_id = b.entry_proses_by
+LEFT JOIN $this->tableuser o ON o.user_id = b.entry_by
+LEFT JOIN $this->tablephoto p ON b.nip = p.nip
+WHERE b.nomi_status='ACC' 
+AND c.layanan_bidang='$bidang' 
+$sql_status  $sql_nip  $sql_instansi  $sql_layanan  $sql_date
 ";
 	
 		$query 		= $this->db->query($q);
@@ -144,6 +156,7 @@ GROUP BY b.layanan_id
 	
 	public function simpanPersetujuan($data)
 	{
+		// selesai proses cetak
 		$agenda	    		= $data['agenda'];
 		$nip				= $data['nip'];
 		$nomor				= $data['persetujuan'];
@@ -151,9 +164,17 @@ GROUP BY b.layanan_id
 		
 		$set['nomi_persetujuan']    	=   strtoupper($nomor); 
 		$set['tanggal_persetujuan']   	=   $tanggal; 
-		$set['tahapan_id']   			=   7; 
-		$set['work_by']   			    =   $this->session->userdata('user_id'); 
+		$set['tahapan_id']   			=   13; 
 		$set['entry_by']   			    =   $this->session->userdata('user_id'); 
+		
+		
+		$set['kode_ijazah']				= $data['kode_ijazah'];
+		$set['nomor_ijazah']            = $data['nomor_ijazah'];		
+		$set['tgl_ijazah']              = date('Y-m-d',strtotime($data['tgl_ijazah']));
+		$set['kampus']                	= $data['kampus'];
+		$set['prodi']                	= $data['prodi'];
+		$set['lokasi_kampus']           = $data['lokasi_kampus'];
+		$set['nama_gelar']              = $data['nama_gelar'];
 		
 		$this->db->where('agenda_id',$agenda);
 		$this->db->where('nip',$nip);
@@ -164,13 +185,48 @@ GROUP BY b.layanan_id
 	
 	public function simpanTahapan($data)
 	{
-		
-		$set['tahapan_id']    = 6;	
-		$set['work_by']	      = $this->session->userdata('user_id');
+		// tahapan  proses cetak
+		$set['tahapan_id']    		  = 12;	
+		$set['entry_proses_by']	      = $this->session->userdata('user_id');
 		
 		$this->db->set($set);
 		$this->db->where('agenda_id', $data['agenda']);		
 		$this->db->where('nip', $data['nip']);
 		return $this->db->update($this->tablenom);
+	}	
+	
+	public function getEntryOne($data)
+	{
+		$agenda			= $data['agenda'] ;
+		$nip			= $data['nip'];
+		
+		$sql   = "SELECT 
+		a.nip, a.nomi_persetujuan,formatTanggal(a.tanggal_persetujuan) tanggal_acc,date_format(a.tanggal_persetujuan, '%d-%m-%Y') date_format,
+		a.nomor_ijazah,formatTanggal(a.tgl_ijazah) tgl_ijazah,date_format(a.tgl_ijazah,'%d-%m-%Y') format_tgl_ijazah, a.lokasi_kampus,a.kampus,a.nama_gelar,a.prodi,a.kode_ijazah,
+		b.PNS_PNSNAM nama,b.PNS_GLRBLK gelar, formatTanggal(b.PNS_TMTGOL) tmt_golongan,
+		c.agenda_nousul,formatTanggal(c.agenda_timestamp) tanggal_agenda,
+		d.nama_jabatan , d.nama_daerah ,d.lokasi_daerah,
+		e.nama_ijazah,		
+		f.GOl_PKTNAM pangkat, f.GOL_GOLNAM nama_golongan,
+		g.jabatan,
+		h.PNS_PNSNAM nama_spesimen,h.PNS_GLRBLK gelar_spesimen,h.PNS_NIPBARU nip_spesimen
+		FROM $this->tablenom  a 
+		LEFT JOIN $this->tablepupns b ON a.nip = b.PNS_NIPBARU
+		LEFT JOIN $this->tableagenda c ON c.agenda_id = a.agenda_id
+		LEFT JOIN $this->tablejabatan d ON c.agenda_ins = d.id_instansi
+		LEFT JOIN $this->tableijazah e ON e.kode_ijazah = a.kode_ijazah
+		LEFT JOIN $this->tablegolru f ON b.PNS_GOLRU = f.GOL_KODGOL
+		LEFT JOIN $this->tableuser g ON g.user_id = a.nomi_verifby
+		LEFT JOIN $this->tablepupns h ON g.nip = h.PNS_NIPBARU
+		WHERE a.agenda_id='$agenda' AND a.nip='$nip' ";
+		
+		$query 	=   $this->db->query($sql);
+		return      $query;	
+	}	
+	
+	public function getIjazah()
+	{
+		$this->db->select('*');
+		return $this->db->get($this->tableijazah);
 	}	
 }

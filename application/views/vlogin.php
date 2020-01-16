@@ -120,7 +120,7 @@
 							<li data-target="#myCarousel" data-slide-to="9"></li>
 							<li data-target="#myCarousel" data-slide-to="10"></li>
 							<li data-target="#myCarousel" data-slide-to="11"></li>
-							
+							<li data-target="#myCarousel" data-slide-to="12"></li>
 						   </ol>
 							<!-- Wrapper for slides -->
 							<div class="carousel-inner">
@@ -159,6 +159,9 @@
 								</div>
 								<div class="item">
 								  <img src="<?php echo base_url()?>assets/dist/img/Berkas-KP-11-12-1024x613.png" >
+								</div>
+								<div class="item">
+								  <img src="<?php echo base_url()?>assets/dist/img/PI.png" >
 								</div>
 							</div>	
 						</div>  					   

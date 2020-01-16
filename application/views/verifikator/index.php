@@ -64,10 +64,12 @@
 									<th>NO USUL</th>
 									<th>INSTANSI</th>
 									<th>NIP</th>
+									<th>GOL</th>
 									<th>NAMA</th>
 									<th>TANGGAL</th>
-									<th>PELAYANAN</th>
-									<th>BERKAS</th>								
+									<th style="width:100px;">PELAYANAN</th>
+									<th>BERKAS</th>	
+                                    <th style="width:50px;">TAHAP</th>									
 									<th>STATUS</th>
 									<th>PERINTAH</th>								
 								</tr>
@@ -76,18 +78,56 @@
 								<?php if($usul->num_rows() > 0):?>
 								<?php  foreach($usul->result() as $value):?>
 								<tr>
+								    <?php 									
+									switch($value->tahapan_id){
+										case 4:
+										    $n = $value->work_name;
+										break;
+										case 5:
+										    $n = $value->work_name;
+										break;
+										case 6:
+										    $n = $value->lock_name;
+										break;
+										case 7:
+										    $n = $value->verif_name_satu;
+										break;
+										case 8:
+										    $n = $value->lock_name;
+										break;
+										case 9:
+										    $n = $value->verif_name_dua;
+										break;
+										case 10:
+										    $n = $value->lock_name;
+										break;
+										case 11:
+										    $n = $value->verif_name_tiga;
+										break;
+										case 12:
+										    $n = $value->entry_proses_name;
+										break;
+										case 13:
+										    $n = $value->entry_name;
+										break;										
+										default:
+										   $n = "";
+									}									
+									?>
 									<td><?php echo $value->agenda_nousul?></td>
 									<td><?php echo $value->instansi?></td>
 									<td><?php echo $value->nip?></td>
+									<td><?php echo $value->golongan?></td>
 									<td><?php echo $value->nama?></td>
 									<td><?php echo $value->agenda_timestamp?></td>														
 									<td><?php echo $value->layanan_nama?></td>
 									<td><?php echo (!empty($value->main_upload_dokumen) ?  '<i data-tooltip="tooltip" data-toggle="modal" data-target="#berkasAdaModal" data-id="?id='.$this->myencrypt->encode($value->upload_dokumen).'" title="Ada Nota Usul" class="fa fa-check" style="color:green"></i>' : '<i data-tooltip="tooltip" title="Tidak Ada Nota Usul" class="fa fa-remove" style="color:red"></i>')?></td>		
+									<td><?php echo $value->tahapan_nama.' '.$n?></td>
 									<td><?php echo $value->nomi_status?></td>								
 									<td>
-									<?php echo ($value->nomi_locked == "1" ? '<a href="#" class="btn btn-warning btn-xs" data-tooltip="tooltip" data-toggle="modal" data-target="'.( $value->locked_by === $this->session->userdata('user_id') ? '#bukalockModal' : '#').'" title="Terkunci oleh '.$value->last_name.'" data-id="'.$value->agenda_id.'" data-nip="'.$value->nip.'"><i class="fa fa-lock"></i></a>' : '')?>
+									<?php echo ($value->nomi_locked == "1" ? '<a href="#" class="btn btn-warning btn-xs" data-tooltip="tooltip" data-toggle="modal" data-target="'.( $value->locked_by === $this->session->userdata('user_id') ? '#bukalockModal' : '#').'" title="Terkunci oleh '.$value->lock_name.'" data-id="'.$value->agenda_id.'" data-nip="'.$value->nip.'"><i class="fa fa-lock"></i></a>' : '')?>
 									<?php if(!empty($value->main_upload_dokumen)){
-										echo '<a href="#nVerify" class="btn btn-primary btn-xs" data-tooltip="tooltip" title="Verifikasi Berkas" id="?n='.$this->myencrypt->encode($value->nip).'&i='.$this->myencrypt->encode($value->agenda_id).'&p='.$this->myencrypt->encode($value->layanan_id).'"><i class="fa fa-file-o"></i></a>';							
+										echo '<a href="#nVerify" class="btn btn-primary btn-xs" data-tooltip="tooltip" title="Verifikasi Berkas" id="?n='.$this->myencrypt->encode($value->nip).'&i='.$this->myencrypt->encode($value->agenda_id).'&p='.$this->myencrypt->encode($value->layanan_id).'&t='.$this->myencrypt->encode($value->tahapan_id).'"><i class="fa fa-file-o"></i></a>';							
 									}
 									?>
 									</td>

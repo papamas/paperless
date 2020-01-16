@@ -23,7 +23,7 @@ class Laporan_model extends CI_Model {
 	{
 	    $bidang  = $this->session->userdata('session_bidang');
 		
-		$sql="SELECT * FROM $this->tablelayanan WHERE layanan_bidang='$bidang' ";	
+		$sql="SELECT * FROM $this->tablelayanan WHERE status='1' AND layanan_bidang='$bidang' ORDER BY layanan_nama ASC ";	
 		return $this->db->query($sql);
 		
 	}	
@@ -104,8 +104,8 @@ b.agenda_ins, b.agenda_nousul,b.layanan_id,b.agenda_timestamp,
 c.layanan_nama,c.layanan_kode, 
 d.INS_NAMINS instansi, 
 e.PNS_PNSNAM nama,
-f.last_name,
-g.last_name entry_name
+f.first_name verif_name,
+g.first_name entry_name
 from $this->tablenom a
 LEFT JOIN $this->tableagenda b ON a.agenda_id = b.agenda_id
 LEFT JOIN $this->tablelayanan c ON b.layanan_id = c.layanan_id
