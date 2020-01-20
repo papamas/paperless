@@ -465,6 +465,24 @@ class Entry extends MY_Controller {
 		$this->pdf->Text(20, 170, '2.');		
 		$this->pdf->writeHTMLCell(160,125,25,170,'Demikian, agar digunakan sebagaimana mestinya',0,0,false,true,'J',true);
 		
+		// set style for barcode
+		$style = array(
+			'border' => false,
+			'padding' => 0,
+			'fgcolor' => array(0, 0, 0),
+			'bgcolor' => false, //array(255,255,255)
+			'module_width' => 1, // width of a single module in points
+			'module_height' => 1 // height of a single module in points
+		);
+		
+		$code  = 'Pencantuman Gelar PNS dengan NIP '.$row->nip.' atas nama '.$row->nama;
+		$code .= ' telah disetujui dengan nomor surat '.$row->nomi_persetujuan.' pada tanggal '.$row->tanggal_acc;
+		$code .= ' dengan gelar '.$row->nama_gelar.' Program Studi '.$row->prodi.' dan Nomor Ijazah '.$row->nomor_ijazah;
+		
+		
+		$this->pdf->write2DBarcode($code, 'QRCODE,Q', 30, 185, 35, 35, $style, 'N');
+       
+		
 		$text2='an.Kepala Kantor Regional XI Badan Kepegawaian Negara '.$row->jabatan;
 		$this->pdf->writeHTMLCell(60,125,130,180,$text2,0,0,false,true,'L',true);
 		
