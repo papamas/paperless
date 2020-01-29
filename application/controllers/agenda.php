@@ -314,21 +314,26 @@ class Agenda extends MY_Controller {
   public function autocomplete(){
 
 		$instansi    = $this->session->userdata['session_instansi'];
+		$layanan_id  = $this->session->userdata('layanan_id');
 	 		
 		$nip         = $this->input->get('kirim');
 		$result      = $this->magenda->mcari_nominatif($nip, $instansi);
+		
+		
 
-		 if (!empty($result))
-		 {
-			foreach ($result as $row):
-				printf('<div id="item" onClick="kirim(\'%s\',\'%s\',\'%s\',\'%s\',\'%s\');">%s - %s</div> ', $row->pns_nipbaru, $row->pns_pnsnam, $row->gol_golnam, $row->dik_namdik, $row->ins_namins,$row->pns_nipbaru, $row->pns_pnsnam);
-
-			 endforeach;
-		 }
-		 else
-		 {
-			  echo '<div id="item">NIP bukan dari instansi anda</div>';
-		 }
+		if ($result->num_rows() > 0)
+		{
+			$row			= $result->row();
+			$golongan       = $row->pns_golru;
+			
+			printf('<div id="item" onClick="kirim(\'%s\',\'%s\',\'%s\',\'%s\',\'%s\');">%s - %s</div> ', $row->pns_nipbaru, $row->pns_pnsnam, $row->gol_golnam, $row->dik_namdik, $row->ins_namins,$row->pns_nipbaru, $row->pns_pnsnam);
+			
+						
+	    }
+		else
+		{
+			echo '<div id="item">NIP bukan dari instansi anda</div>';
+		}
 
 
 	}

@@ -137,7 +137,9 @@ class Magenda extends CI_Model {
 
     $layanan_id     = $this->session->userdata('layanan_id');
 	
-	if($layanan_id == 13)
+	// jika pindah instansi 
+	// pencarian nominatif berdasar nip dan instansi mati
+	if($layanan_id == 13 || $layanan_id == 2 || $layanan_id == 3)
 	{
         $sql  =" ";
     }
@@ -145,16 +147,14 @@ class Magenda extends CI_Model {
 	{
 		$sql  =" AND pns_insduk = '$instansi' ";
 	}
-    $query = $this->db->query("SELECT pns_nipbaru, pns_pnsnam, dik_namdik, gol_golnam, ins_namins FROM mirror.pupns datapns
+    $query = $this->db->query("SELECT pns_nipbaru, pns_pnsnam,pns_golru, dik_namdik, gol_golnam, ins_namins FROM mirror.pupns datapns
                                 LEFT JOIN mirror.tktpendik dikpns ON datapns.pns_tktdik = dikpns.dik_tktdik
                                 LEFT JOIN mirror.golru golpns ON datapns.pns_golru = golpns.gol_kodgol
                                 LEFT JOIN mirror.instansi inspns ON datapns.pns_insduk = inspns.ins_kodins
 				                        WHERE pns_nipbaru = '$nip' $sql");
-    if(!$query){
-      return $this->db->error();
-    }else{
-      return $query->result();
-    }
+      
+	return $query;
+    
 
   }
 
@@ -163,7 +163,7 @@ class Magenda extends CI_Model {
 
     $layanan_id     = $this->session->userdata('layanan_id');
 	 
-	if($layanan_id == 13)
+	if($layanan_id == 13 || $layanan_id == 2 || $layanan_id == 3)
 	{
         $sql  =" ";
     }
