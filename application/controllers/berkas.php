@@ -300,4 +300,39 @@ class Berkas extends MY_Controller {
 	}	
 	
 	
+	public function kirim()
+	{
+		$data['nip']     = $this->myencrypt->decode($this->input->post('nip'));
+		$data['agenda']  = $this->myencrypt->decode($this->input->post('agenda'));
+		
+		$data['response']	= $this->berkas->KirimUlang($data);
+		
+		$this->output
+			->set_status_header(200)
+			->set_content_type('application/json', 'utf-8')
+			->set_output(json_encode($data));
+		
+	}
+	
+	public function getAlasan(){
+	
+	    $data['nip']         = $this->myencrypt->decode($this->input->get('n'));
+		$data['agenda']      = $this->myencrypt->decode($this->input->get('a'));
+		$alasan              = $this->berkas->getAlasan($data)->row();
+		
+		$html = '';
+		$html .='<table class="table table-bordered table-striped table-condensed">
+						<thead>
+						    <tr><td colspan="4"><b>KETERANGAN ALASAN BERKAS BTL</b></td></tr>
+						</thead>';
+		$html .='<tr>
+					<td>'.$alasan->nomi_alasan.'</td>
+				</tr>';							
+		$html .='</table>';
+		
+		echo $html;
+	}	
+	
+	
+	
 }

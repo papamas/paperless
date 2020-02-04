@@ -38,7 +38,8 @@ class Berkas_model extends CI_Model {
 			   $sql = " AND  UPPER(f.INS_NAMINS) LIKE UPPER('%$search%') ";
             break;
 			case 3:
-			   $sql = " AND  UPPER(trim(b.agenda_nousul))=UPPER(trim('$search')) ";
+			   $search = trim($search);	
+			   $sql = " AND  UPPER(trim(b.agenda_nousul))=UPPER('$search') ";
             break;
 			case 4:
 			   $sql = " AND  UPPER(c.layanan_nama) LIKE UPPER('%$search%') ";
@@ -103,4 +104,54 @@ GROUP BY a.nip,b.layanan_id
 		WHERE a.nip='$nip' ";
 		return $this->db->query($sql);
 	}
+	
+	public function KirimUlang($data)
+	{
+		// kirim ulang berkas BTL ke TU
+		$r					  = FALSE;
+		$agenda_id			  = $data['agenda'];
+		$nip                  = $data['nip'];
+        
+		$set['tahapan_id']    = 4;	
+		$set['kirim_by']      = $this->session->userdata('user_id');
+		$set['nomi_status']   = 'BELUM';	
+		
+        $this->db->trans_start();
+		$db_debug 			= $this->db->db_debug; 
+		$this->db->db_debug = FALSE; 
+		
+		$this->db->set($set);		
+		$this->db->set('kirim_date','NOW()',FALSE);
+		$this->db->where('agenda_id', $agenda_id);		
+		$this->db->where('nip', $nip);	
+		
+		if ($this->db->update($this->tablenom))
+		{
+			$error = $this->db->_error_message(); 
+			if(!empty($error))
+			{
+				$r = FALSE;
+			}
+			else
+			{
+				$r = TRUE;
+			}     
+        }
+        $this->db->db_debug = $db_debug; //restore setting			
+		$this->db->trans_complete();
+		
+		return $r;
+	}
+	
+	function getAlasan($data){
+		
+		$agenda_id			  = $data['agenda'];
+		$nip                  = $data['nip'];
+		
+		$this->db->select('nomi_alasan');
+		$this->db->where('agenda_id', $agenda_id);		
+		$this->db->where('nip', $nip);
+		return $this->db->get($this->tablenom);
+	
+	}	
 }

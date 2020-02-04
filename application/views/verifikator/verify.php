@@ -122,9 +122,22 @@
 	<?php 
 	if($usul->num_rows() > 0){		
 	    $row = $usul->row();
-		echo '<div id="mySidenav" class="sidenav">
-			<a href="#" id="about">'.$row->layanan_nama.'-'.$row->agenda_nousul.'<br/> Tahap : '.$row->tahapan_nama.'</a>  
-		</div>';
+		
+		if(!empty($row->nomi_alasan))
+		{	
+			echo '<div id="mySidenav" class="sidenav">
+				<a href="#" id="about">'.$row->layanan_nama.'-'.$row->agenda_nousul.'<br/> Tahap : '.$row->tahapan_nama.'
+				<br/>Alasan : '.$row->nomi_alasan.'</a>  
+			</div>';
+		}
+		else
+		{
+            echo '<div id="mySidenav" class="sidenav">
+				<a href="#" id="about">'.$row->layanan_nama.'-'.$row->agenda_nousul.'<br/> Tahap : '.$row->tahapan_nama.'</a>  
+			</div>';
+		}			
+		
+		
         if(empty($row->main_upload_dokumen)){
 			echo '<div id="mySidenav" class="sidenav">
 				<a href="#" id="info">Tidak ada Dokumen Usul</a>  

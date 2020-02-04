@@ -150,16 +150,31 @@
 							<tbody>
 								<?php if($usul->num_rows() > 0):?>
 								<?php  foreach($usul->result() as $value):?>
+								<?php
+									$link  ='';
+									$link2 ='';
+									if($value->nomi_status == 'BTL')
+									{
+										$link='<a href="#" class="btn bg-maroon btn-flat btn-xs" data-tooltip="tooltip"  title="Kirim Ulang Berkas BTL ini" data-toggle="modal" data-target="#kirimModal" data-nip="'.$this->myencrypt->encode($value->nip).'" data-agenda="'.$this->myencrypt->encode($value->agenda_id).'" ><i class="fa fa-mail-forward"></i></a>';	
+									    $link2='<a href="#" class="btn bg-orange btn-xs" data-tooltip="tooltip"  title="Cek Keterangan Alasan BTL" data-toggle="modal" data-target="#cekModal" data-id="?n='.$this->myencrypt->encode($value->nip).'&a='.$this->myencrypt->encode($value->agenda_id).'">'.$value->nomi_status.'</a>';
+									}
+									else
+									{
+                                        $link2='<span class="'.$value->bg.'">'.$value->nomi_status.'</span>';
+									}
+  									
+								?>
 								<tr>
-									<td style="width:25px;">
+									<td style="width:75px;">
 									<a href="#" class="btn bg-orange btn-flat btn-xs" data-tooltip="tooltip"  title="Lihat Kelengkapan Berkas" data-toggle="modal" data-target="#lihatModal" data-id="<?php echo '?n='.$this->myencrypt->encode($value->nip).'&l='.$this->myencrypt->encode($value->layanan_nama)?>"><i class="fa fa-search"></i></a>
+									&nbsp;<?php echo $link;?>
 									</td>
 									<td><?php echo $value->agenda_nousul?></td>									
 									<td style="width:16%"><?php echo ($value->nomi_locked == "1" ?  '<i class="fa fa-lock"></i>'.$value->nip : $value->nip)?></td>
 									<td><?php echo $value->nama?></td>
 									<td><?php echo $value->update_date?></td>														
 									<td><?php echo $value->layanan_nama?></td>											
-									<td><span class="<?php echo $value->bg?>"><?php echo $value->nomi_status?></span></td>
+									<td><?php echo $link2?></td>
 									<td><span class="badge bg-light-blue"><?php echo $value->tahapan_nama?> <?php echo (!empty($value->ln_work) ? 'Oleh '.$value->ln_work : '')?></span></td>
 								</tr>
 								<?php endforeach;?>
@@ -176,6 +191,46 @@
         </section><!-- /.content -->		
       </div><!-- /.content-wrapper -->     
     </div><!-- ./wrapper -->
+	
+	<div class="modal fade" id="kirimModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+					<h4 class="modal-title" id="myModalLabel"><span id="msg"></span></h4>
+				</div>
+				<div class="modal-body">
+					<form id="nfrmKirim">
+					    <input type="hidden" name="<?php echo $this->security->get_csrf_token_name()?>" value="<?php echo $this->security->get_csrf_hash()?>" style="display: none">
+					    <div class="form-group row">							   						 
+						    <div class="col-md-12">
+							  Anda Yakin akan mengirimkan kembali berkas yang telah BTL ini?	
+                            </div>							  
+						</div>  
+                        <input type="hidden" name="nip"/>	
+					    <input type="hidden" name="agenda"/>							
+					</form>
+				 </div>
+				<div class="modal-footer">
+					<button type="button" class="btn bg-maroon" id="nBtnKirim">OK Kirim !</button>
+				</div>
+			</div>
+		</div>	
+	</div>
+	
+	
+	<!-- Modal -->
+	<div class="modal fade" id="cekModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog modal-md" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+					<h4 class="modal-title" id="">Infomasi Alasan Berkas</h4>
+				</div>
+							
+			</div>
+		</div>	
+    </div>
 	
 	<!-- Modal -->
 	<div class="modal fade" id="lihatModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -212,6 +267,53 @@
 	$(document).ready(function () {
 	    $('[data-tooltip="tooltip"]').tooltip();
 		
+		$('#kirimModal').on('show.bs.modal',function(e){
+		     $('#kirimModal #msg').text('Konfirmasi Pengiriman Kembali Berkas BTL')
+			.removeClass( "text-green")
+		    .removeClass( "text-blue" ); 
+			
+			var nip		=  $(e.relatedTarget).attr('data-nip');
+			var agenda  =  $(e.relatedTarget).attr('data-agenda');
+			
+			$('#kirimModal input[name=nip]').val(nip);
+			$('#kirimModal input[name=agenda]').val(agenda);
+		});
+		
+		$("#nBtnKirim").on("click",function(e){
+			e.preventDefault();
+			var data = $('#nfrmKirim').serialize();
+			
+			$('#kirimModal #msg').text('Updating Please Wait.....')
+                     .removeClass( "text-green")
+				     .addClass( "text-blue" );  
+			
+			$.ajax({
+				type: "POST",
+				url : "<?php echo site_url()?>/berkas/kirim",
+				data: data,
+				success: function(){					
+					$('#kirimModal #msg').text('Berkas sudah dikirim ke TEKNIS kembali, lakukan pencarian ulang untuk melihat perubahan')
+						.removeClass( "text-blue")
+						.addClass( "text-green" );
+					//refreshTable();			
+			    }, // akhir fungsi sukses
+				error : function(r) {
+					$('#kirimModal #msg').text('Something wrong..')
+						.removeClass( "text-blue")
+						.removeClass( "text-green")
+						.addClass( "text-danger" );
+				}	
+		    });
+			return false;
+		});
+		
+		$('#cekModal').on('show.bs.modal',function(e) {    		
+			var id=  $(e.relatedTarget).attr('data-id');
+			$.get('<?php echo site_url()?>/berkas/getAlasan/'+id, function(data){
+				$('#cekModal').find('.modal-content').html(data);
+			})			
+	    });
+		
 		$('#lihatModal').on('show.bs.modal',function(e) {    		
 			var id=  $(e.relatedTarget).attr('data-id');
 			$.get('<?php echo site_url()?>/berkas/getKelengkapan/'+id, function(data){
@@ -225,6 +327,8 @@
 			iframe.attr('src', '<?php echo site_url()?>'+'/berkas/getInline/'+id);
 					
 	    });
+		
+				
 	});
     </script>	
 	</body>

@@ -174,7 +174,7 @@ WHERE id_instansi IS NOT NULL
             $sql_work =" ";
         }		
 	    
-		$q ="SELECT a.agenda_id,a.tahapan_id, a.nip,a.nomi_locked,a.nomi_status,a.locked_by,
+		$q ="SELECT a.agenda_id,a.tahapan_id, a.nip,a.nomi_locked,a.nomi_status,a.nomi_alasan, a.locked_by,
 b.layanan_id,b.agenda_ins,b.agenda_nousul,b.agenda_timestamp,b.agenda_dokumen,
 c.layanan_nama, f.INS_NAMINS instansi,
 g.PNS_PNSNAM nama,g.PNS_GOLRU,
