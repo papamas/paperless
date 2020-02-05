@@ -32,14 +32,23 @@ class Auth {
 			 $logged_in   = $row->session_id;
 		     $stored_hash = $row->password;
 			 
-			 if($password === $stored_hash)
-			 {
+			if($password === $stored_hash)
+			{
 			   
 				// Set message
 				$this->_auth_message = $this->ci->lang->line('auth_login_correct_username_password');	
                 if(!empty($active))
 				{
-					if(empty($logged_in))
+					
+					if(!empty($logged_in))
+					{
+						// remove other session
+						$this->removeSessionId($logged_in);
+						// Set message
+						$this->_auth_message = $this->ci->lang->line('auth_login_current_logged_in');	
+												
+					}
+					else
 					{
 						$this->_set_session($row);						
 						// set logged_in flag
@@ -47,11 +56,8 @@ class Auth {
 						// set session id app user
 						$this->setSessionId();
 						$result =  TRUE;
-					}
-					else
-					{
-						// Set message
-						$this->_auth_message = $this->ci->lang->line('auth_login_current_logged_in');	
+						
+						
 					}
 				}
                 else
@@ -59,12 +65,12 @@ class Auth {
                     // Set message
 				    $this->_auth_message = $this->ci->lang->line('auth_login_inactive_user');
                 } 				
-			 }
-			 else
-			 {
+			}
+			else
+			{
 			      // Set message
 				  $this->_auth_message = $this->ci->lang->line('auth_login_incorrect_password');
-			 }
+			}
         }
         else
         {
@@ -162,6 +168,14 @@ class Auth {
 		$ip				= $this->ci->session->userdata('ip_address');
 		$this->ci->load->model('Auth_model','users');
 		$this->ci->users->setSessionId($user_id,$session_id,$ip);
+	}	
+	
+	public function removeSessionId($id)
+    {
+		$session_id		= $id;
+		
+		$this->ci->load->model('Auth_model','users');
+		$this->ci->users->removeSessionId($id);
 	}	
 	
 	public function getAvatar()

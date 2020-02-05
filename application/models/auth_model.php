@@ -5,6 +5,7 @@ class Auth_model extends CI_Model {
 	var $password;
 	var $table_user = 'app_user' ;
 	var $tableunit  = 'unit_kerja';
+	var $table_appsession='app_sessions';
     
 	function __construct()
     {
@@ -53,6 +54,12 @@ class Auth_model extends CI_Model {
 		$this->db->set('ip_address',$ip);
 		$this->db->where('user_id',$user_id );
 		return $this->db->update($this->table_user);
+	}
+	
+	public function removeSessionId($id)
+    {
+		$this->db->where('session_id',$id );
+		return $this->db->delete($this->table_appsession);
 	}
 
     public function getBidang($id)
