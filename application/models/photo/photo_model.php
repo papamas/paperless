@@ -5,6 +5,8 @@ class Photo_model extends CI_Model {
 	private     $table  = 'upload_photo';
 	private     $dokumen= 'dokumen';
 	private     $tableinstansi= 'mirror.instansi';
+	private     $pupns        = 'mirror.pupns';
+	private     $layanan      = 'layanan';
 		
     function __construct()
     {
@@ -154,10 +156,12 @@ class Photo_model extends CI_Model {
 		
 		$sql="SELECT a.*, 
 		b.INS_NAMINS instansi, 
-		c.PNS_PNSNAM nama       	
+		c.PNS_PNSNAM nama,
+        d.layanan_nama       	
 		FROM $this->table a  
-		LEFT JOIN mirror.instansi b ON a.id_instansi = b.INS_KODINS
-		LEFT JOIN mirror.pupns c ON a.nip = c.PNS_NIPBARU
+		LEFT JOIN $this->tableinstansi b ON a.id_instansi = b.INS_KODINS
+		LEFT JOIN $this->pupns c ON a.nip = c.PNS_NIPBARU
+		LEFT JOIN $this->layanan d ON a.layanan_id = d.layanan_id
 		WHERE 1=1   $sql_instansi $sql_nip $sql_jenis ";	
 		
 		

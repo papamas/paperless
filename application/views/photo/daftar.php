@@ -99,6 +99,7 @@
 								<th>INSTANSI</th>
 								<th>NIP</th>
 								<th>NAMA</th>
+								<th>LAYANAN</th>
 								<th>UPLOAD DATE</th>													
 							</tr>
 						</thead>   
@@ -110,6 +111,7 @@
 								<td><?php echo $value->instansi?></td>
 								<td><?php echo $value->nip?></td>
 								<td><?php echo $value->nama?></td>
+								<td><?php echo $value->layanan_nama?></td>
 								<td><?php echo $value->created_date?></td>						
 							</tr>
 							<?php endforeach;?>
