@@ -21,13 +21,26 @@ class Photo_model extends CI_Model {
 		foreach($number as $value){
 		    if (strlen($value) == 18){
                 $data['nip']    = $value;
-            }
-            else
-            {
-			    $data['minor_dok']    = $value;
-            }		
-	    }   
+            }            	
+	    }  
+
+
+		$haystack = $data['raw_name'];
 		
+
+        if( stripos( $haystack, "KARIS" ) !== false) {
+			$data['layanan_id']    = 9;
+		}		
+		
+		if( stripos( $haystack, "KARSU" ) !== false) {
+			$data['layanan_id']    = 10;
+		}	
+		
+		if( stripos( $haystack, "KARPEG" ) !== false) {
+			$data['layanan_id']    = 11;
+		}	
+		
+			
 		
 		$db_debug 			= $this->db->db_debug; 
 		$this->db->db_debug = FALSE; 
