@@ -57,8 +57,8 @@ class Photo extends MY_Controller {
 		$config['encrypt_name']			= FALSE;	
 		$config['overwrite']			= TRUE;	
 		$config['detect_mime']			= TRUE;
-		$config['max_width']			= 76;
-		$config['max_height']			= 113;
+		$config['max_width']			= 472;
+		$config['max_height']			= 742;
 		
 		if (!is_dir($target_dir)) {
 			mkdir($target_dir, 0777, TRUE);
