@@ -132,7 +132,16 @@
 									<span class="help-block text-red"><?php echo form_error('golongan'); ?></span>
 								</div>
 															
-							</div>								
+							</div>
+
+							<div class="form-group row">							   						 
+							    <label class=" control-label col-md-2 col-sm-2 col-xs-2">No. Usul</label>									
+								<div class="col-md-10 col-sm-10 col-xs-10">
+                                     <input type="text" name="nousul" class="form-control" placeholder="Masukan No. Usul" value="<?php echo set_value('nousul'); ?>">								
+									<span class="help-block text-red"><?php echo form_error('nousul'); ?></span>
+								</div>
+															
+							</div>
 							
 							<div class="box-footer">
 								<div class="row">

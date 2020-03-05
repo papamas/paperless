@@ -110,8 +110,8 @@
 								</tr>
 							</thead>   
 							<tbody>
-								<?php if($usul->num_rows() > 0):?>
-								<?php $total=0;?>
+							    <?php $total=0;?>
+								<?php if($usul->num_rows() > 0):?>								
 								<?php  foreach($usul->result() as $value):?>
 								<tr>
 									<td><?php echo $value->agenda_nousul?></td>

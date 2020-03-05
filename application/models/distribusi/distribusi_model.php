@@ -27,6 +27,7 @@ class Distribusi_model extends CI_Model {
 	    $instansi     = $this->input->post('instansi');
 		$layanan      = $this->input->post('layanan');
 		$golongan     = $this->input->post('golongan');
+		$nousul       = trim($this->input->post('nousul'));
 		
 		if(!empty($instansi))
 		{
@@ -56,6 +57,17 @@ class Distribusi_model extends CI_Model {
 		}	
 		
 		
+		
+		if(!empty($nousul))
+		{
+			$sql_nousul ="  AND  a.agenda_nousul='$nousul'";			
+		}
+		else
+		{
+			$sql_nousul =" ";
+		}	
+		
+		
 		$bidang  = $this->session->userdata('session_bidang');
 		
 		$q="SELECT a.*,b.nip,c.layanan_nama,
@@ -72,7 +84,7 @@ WHERE c.layanan_bidang='$bidang'
 AND b.nomi_status='BELUM' 
 AND a.agenda_status='dikirim'
 AND b.tahapan_id='2' 
-$sql_instansi  $sql_layanan  $sql_golongan";
+$sql_instansi  $sql_layanan  $sql_golongan   $sql_nousul ";
 		
 		$query 		= $this->db->query($q);
 		
