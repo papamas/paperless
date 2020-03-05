@@ -126,7 +126,7 @@
 									<th>NIP</th>
 									<th>GOL</th>
 									<th>NAMA</th>
-									<th>TAHAP</th>
+									<!-- <th>TAHAP</th>!-->
 									<th>STATUS</th>
 								</tr>
 							</thead> 
@@ -177,9 +177,131 @@
                                     <td><?php echo $value->nip?></td>
 									<td><?php echo $value->golongan?></td>
 									<td><?php echo $value->nama?></td>	
-								    <td><?php echo $value->tahapan_nama.' '.$n?></td>	
+								    <!--  <td><?php echo $value->tahapan_nama.' '.$n?></td>	!-->
 									<td><span class="<?php echo $value->bg?>"><?php echo $value->nomi_status?></span></td>
 							    </tr>
+								<tr>
+								
+								<td colspan="7">
+									<ul class="timeline timeline-inverse">					  
+										<li class="time-label">
+											<span class="bg-yellow">
+											 <?php echo $value->agenda_date ?>
+											</span>
+										</li>
+										<li>
+											<i class="fa fa-envelope bg-aqua"></i>
+											<div class="timeline-item">
+											   <span class="time"><i class="fa fa-clock-o"></i>  <?php echo $value->agenda_time ?></span>
+												<h3 class="timeline-header"><a href="#">Instansi</a></h3>
+												<div class="timeline-body"> Kirim Berkas ke BKN atas nama <?php echo $value->nama?></div>											
+											</div>
+										</li>
+										
+										<?php if(!empty($value->kirim_date)):?>
+									    <li class="time-label">
+											<span class="bg-green">
+											 <?php echo $value->kirim_date ?>
+											</span>
+										</li>
+										<li>
+											<i class="fa fa-newspaper-o bg-aqua"></i>
+											<div class="timeline-item">
+											    <span class="time"><i class="fa fa-clock-o"></i>  <?php echo $value->kirim_time ?></span>
+												<h3 class="timeline-header"><a href="#">BKN</a></h3>
+												<div class="timeline-body"> Berkas dikirim ke Tim Teknis oleh <?php echo $value->kirim_name?></div>
+											</div>
+										</li>
+										<?php endif;?>
+										
+										
+										<?php if(!empty($value->verifdate_level_satu)):?>
+										<li class="time-label">
+											<span class="bg-blue">
+											 <?php echo $value->verifdate_level_satu ?>
+											</span>
+										</li>
+										<li>
+											<i class="fa fa-check bg-yellow"></i>
+											<div class="timeline-item">
+											    <span class="time"><i class="fa fa-clock-o"></i>  <?php echo $value->veriftime_level_satu ?></span>
+												<h3 class="timeline-header"><a href="#">BKN</a></h3>
+												<div class="timeline-body"> Berkas diverifikasi pada level satu oleh <?php echo $value->verif_name_satu?></div>
+											</div>
+										</li>
+										<?php endif;?>
+										
+										<?php if(!empty($value->verifdate_level_dua)):?>										
+										<li class="time-label">
+											<span class="bg-blue">
+											 <?php echo $value->verifdate_level_dua ?>
+											</span>
+										</li>
+										<li>
+											<i class="fa fa-check bg-yellow"></i>
+											<div class="timeline-item">
+											    <span class="time"><i class="fa fa-clock-o"></i>  <?php echo $value->veriftime_level_dua ?></span>
+												<h3 class="timeline-header"><a href="#">BKN</a></h3>
+												<div class="timeline-body"> Berkas diverifikasi pada level dua oleh <?php echo $value->verif_name_dua?></div>
+											</div>
+										</li>
+										<?php endif;?>
+										
+										
+										<?php if(!empty($value->verifdate_level_tiga)):?>
+										<li class="time-label">
+											<span class="bg-blue">
+											 <?php echo $value->verifdate_level_tiga ?>
+											</span>
+										</li>
+										<li>
+											<i class="fa fa-check bg-yellow"></i>
+											<div class="timeline-item">
+											    <span class="time"><i class="fa fa-clock-o"></i>  <?php echo $value->veriftime_level_tiga ?></span>
+												<h3 class="timeline-header"><a href="#">BKN</a></h3>
+												<div class="timeline-body"> Berkas diverifikasi pada level tiga oleh <?php echo $value->verif_name_tiga?></div>
+											</div>
+										</li>
+										<?php endif;?>
+										
+										
+										<?php if(!empty($value->verify_date)):?>
+										<li class="time-label">
+											<span class="bg-red">
+											 <?php echo $value->verify_date ?>
+											</span>
+										</li>
+										<li>
+											<i class="fa fa-trophy bg-blue"></i>
+											<div class="timeline-item">
+											    <span class="time"><i class="fa fa-clock-o"></i>  <?php echo $value->verify_time ?></span>
+												<h3 class="timeline-header"><a href="#">BKN</a></h3>
+												<div class="timeline-body"> Berkas Selesai diverifikasi oleh <?php echo $value->verif_name?></div>
+											</div>
+											</div>
+										</li>
+										<?php endif;?>
+										
+										<?php if(!empty($value->entry_date)):?>
+										<li class="time-label">
+											<span class="bg-aqua">
+											 <?php echo $value->entry_date ?>
+											</span>
+										</li>
+										<li>
+											<i class="fa fa-trophy bg-red"></i>
+											<div class="timeline-item">
+											    <span class="time"><i class="fa fa-clock-o"></i>  <?php echo $value->entry_time ?></span>
+												<h3 class="timeline-header"><a href="#">BKN</a></h3>
+												<div class="timeline-body"> Berkas telah selesai cetak oleh <?php echo $value->entry_name?> dengan nomor persetujuan  <?php echo $value->nomi_persetujuan?> tanggal <?php echo $value->tanggal_persetujuan?></div>
+											</div>
+											</div>
+										</li>
+										<?php endif;?>
+										
+									</ul>
+								</td>
+								</tr>
 								<?php endforeach;?>
 								<?php endif;?>
 														

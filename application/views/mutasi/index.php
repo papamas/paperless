@@ -90,7 +90,8 @@
 								<span class="help-block text-red"><?php echo form_error('reportrange'); ?></span>	
 								<label class="control-label col-md-1 col-sm-2 col-xs-2">By Date</label>
 								<div class="col-md-4 col-xs-10 col-sm-10">
-									<input type="radio" required value="1" name="bydate"   checked />&nbsp;Verifikasi
+								    <input type="radio" required value="3" name="bydate"  checked />&nbsp;Berkas Masuk
+									<input type="radio" required value="1" name="bydate"    />&nbsp;Verifikasi
 									<input type="radio" required value="2" name="bydate"  />&nbsp;Entry SAPK								
 								</div>
 							</div>

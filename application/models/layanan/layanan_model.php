@@ -25,13 +25,31 @@ class Layanan_model extends CI_Model {
 	public function getAll()
 	{
 	    $bidang  = $this->session->userdata('session_bidang');
-		$sql     = "SELECT a.*,c.layanan_nama,
-		d.INS_NAMINS instansi, count(b.agenda_id) jumlah_usul FROM $this->tableagenda a 
-LEFT JOIN $this->tablenominatif b ON a.agenda_id = b.agenda_id 
+		/* $sql     = "SELECT a.*,c.layanan_nama,
+		d.INS_NAMINS instansi, count(b.agenda_id) jumlah_usul 
+		FROM $this->tableagenda a 
+LEFT JOIN $this->tablenominatif b ON  (a.agenda_id = b.agenda_id AND b.tahapan_id IN (2,3))
 LEFT JOIN $this->tablelayanan c  ON a.layanan_id = c.layanan_id
 LEFT JOIN $this->tableinstansi d ON a.agenda_ins = d.INS_KODINS
-WHERE c.layanan_bidang='$bidang' AND b.nomi_status='BELUM' AND a.agenda_status='dikirim'
+WHERE c.layanan_bidang='$bidang' 
+AND b.nomi_status='BELUM' 
+AND a.agenda_status='dikirim'
 GROUP BY a.agenda_id ";     
+ */
+        $sql="SELECT a.jumlah_usul,b.agenda_jumlah,
+b.agenda_nousul,b.agenda_timestamp,b.agenda_ins,b.agenda_dokumen,b.agenda_id,
+c.layanan_nama,d.INS_NAMINS instansi
+FROM  (select a.*, count(a.agenda_id) jumlah_usul 
+FROM  $this->tablenominatif a
+WHERE a.nomi_status='BELUM'
+AND a.tahapan_id IN(2,3)
+GROUP BY a.agenda_id
+) a
+LEFT JOIN $this->tableagenda b ON a.agenda_id = b.agenda_id
+LEFT JOIN $this->tablelayanan c ON b.layanan_id = c.layanan_id
+LEFT JOIN $this->tableinstansi d ON  b.agenda_ins = d.INS_KODINS
+WHERE c.layanan_bidang='$bidang' 
+ORDER BY b.agenda_timestamp DESC ";	
 
         $query = $this->db->query($sql);
         return $query;		
@@ -69,6 +87,7 @@ LEFT JOIN $this->tableuser m ON m.user_id = b.nomi_verifby
 LEFT JOIN $this->tableuser n ON n.user_id = b.entry_proses_by
 LEFT JOIN $this->tableuser o ON o.user_id = b.entry_by
 where  a.agenda_id='$id'
+AND b.tahapan_id IN(2,3)
 ";
 	 
 	 //var_dump($sql);

@@ -87,6 +87,7 @@ class Usul extends MY_Controller {
 					<th>NIP</th>
 					<th>GOL</th>
 					<th>NAMA</th>
+					<th>TU KIRIM</th>
 					<th>TAHAP</th>	
 					<th>STATUS</th>	
                     <th>LEVEL 1</th> 
@@ -138,6 +139,7 @@ class Usul extends MY_Controller {
 				$html .= "<td class=str>{$r->nip}</td>";
                 $html .= "<td>{$r->golongan}</td>";					
                 $html .= "<td>{$r->nama}</td>";	
+				$html .= "<td>{$r->kirim_date}</td>";	
 				$html .= "<td>{$r->tahapan_nama}".' '."{$n}</td>";
 				$html .= "<td>{$r->nomi_status}</td>";	
 				$html .= "<td>{$r->status_level_satu}".'<br/>'."{$r->verifdate_level_satu}</td>";

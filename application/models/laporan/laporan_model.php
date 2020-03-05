@@ -76,12 +76,21 @@ class Laporan_model extends CI_Model {
 			{	
 				$sql_date = " AND DATE( a.verify_date ) BETWEEN STR_TO_DATE( '$startdate', '%d/%m/%Y ' )
 				AND STR_TO_DATE( '$enddate', '%d/%m/%Y ' ) ";
+				
+				$sql_order = " order by a.verify_date DESC ";
 			}
-			else
+			elseif($bydate == 2)
 			{
 				$sql_date = " AND DATE( a.entry_date ) BETWEEN STR_TO_DATE( '$startdate', '%d/%m/%Y ' )
 				AND STR_TO_DATE( '$enddate', '%d/%m/%Y ' ) ";
-            }		
+				$sql_order = " order by a.entry_date DESC ";
+            }
+			else
+			{
+				$sql_date = " AND DATE( b.agenda_timestamp ) BETWEEN STR_TO_DATE( '$startdate', '%d/%m/%Y ' )
+				AND STR_TO_DATE( '$enddate', '%d/%m/%Y ' ) ";
+				$sql_order = " order by b.agenda_timestamp DESC ";
+            }	
 		}
 		else
 		{	
@@ -114,7 +123,8 @@ LEFT JOIN $this->tablepupns e ON e.PNS_NIPBARU = a.nip
 LEFT JOIN $this->tableuser f ON a.nomi_verifby = f.user_id
 LEFT JOIN $this->tableuser g ON a.entry_by = g.user_id
 WHERE 1=1 AND c.layanan_bidang='$bidang' 
-$sql_instansi  $sql_layanan   $sql_date  $sql_status order by a.update_date ASC";
+$sql_instansi  $sql_layanan   $sql_date  $sql_status 
+$sql_order ";
 	
 		$query 		= $this->db->query($q);
 		

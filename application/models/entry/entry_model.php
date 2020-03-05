@@ -143,7 +143,7 @@ LEFT JOIN $this->tableuser l ON l.user_id = b.verifby_level_tiga
 LEFT JOIN $this->tableuser m ON m.user_id = b.nomi_verifby
 LEFT JOIN $this->tableuser n ON n.user_id = b.entry_proses_by
 LEFT JOIN $this->tableuser o ON o.user_id = b.entry_by
-LEFT JOIN $this->tablephoto p ON b.nip = p.nip
+LEFT JOIN $this->tablephoto p ON  (b.nip = p.nip AND p.layanan_id = a.layanan_id)
 WHERE b.nomi_status='ACC' 
 AND c.layanan_bidang='$bidang' 
 $sql_status  $sql_nip  $sql_instansi  $sql_layanan  $sql_date

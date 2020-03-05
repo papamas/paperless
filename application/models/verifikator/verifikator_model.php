@@ -135,6 +135,7 @@ GROUP BY a.nip,b.layanan_id ) a
 LEFT JOIN user_layanan_role b ON (a.layanan_id=b.layanan_id AND a.agenda_ins = b.id_instansi AND b.user_id='$user_id')
 ) a
 WHERE id_instansi IS NOT NULL
+ORDER BY nama ASC
 ";
 		//var_dump($q);
 		$query 		= $this->db->query($q);

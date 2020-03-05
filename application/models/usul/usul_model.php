@@ -106,7 +106,7 @@ where  d.agenda_id='$id'
 GROUP BY a.nip 
 ) a"; */
 	 $sql ="SELECT a.*, 
-	    b.nip,b.nomi_status,
+	    b.nip,b.nomi_status,b.kirim_date,
 		b.status_level_satu,b.alasan_level_satu,b.verifdate_level_satu,
 		b.status_level_dua,b.alasan_level_dua,b.verifdate_level_dua,
 		c.layanan_nama,
@@ -139,6 +139,7 @@ LEFT JOIN $this->tableuser n ON n.user_id = b.entry_proses_by
 LEFT JOIN $this->tableuser o ON o.user_id = b.entry_by
 where  a.agenda_id='$id'
 AND b.nomi_status='BELUM' AND a.agenda_status='dikirim'
+ORDER BY e.PNS_PNSNAM ASC
 ";
 	 //var_dump($sql);
 	 $query = $this->db->query($sql);

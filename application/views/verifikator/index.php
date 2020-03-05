@@ -27,8 +27,8 @@
 	    <!-- Main content -->
         <section class="content ">
 		   	<div class="row">
-			    <div class="col-md-12 p-0 h-md-100 nopadding">
-				   <div class="box box-primary">
+			    <div class="col-md-12 nopadding">
+				   <div class="box box-default">
 						<div class="box-header with-border">
 						  <h3 class="box-title">Verifikasi Usul Instansi</h3>
 						</div><!-- /.box-header -->

@@ -51,7 +51,14 @@ class Lacak_model extends CI_Model {
 		
 		$bidang  = $this->session->userdata('session_bidang');
 		
-		$q="SELECT a.*,b.nip,b.tahapan_id,b.nomi_status,
+		$q="SELECT a.*,b.nip,b.tahapan_id,b.nomi_status,DATE_FORMAT(a.agenda_timestamp, '%d %b. %Y') agenda_date,DATE_FORMAT(a.agenda_timestamp, '%H:%i') agenda_time,
+		DATE_FORMAT(b.kirim_date, '%d %b. %Y') kirim_date,DATE_FORMAT(b.kirim_date, '%H:%i') kirim_time,p.first_name kirim_name,
+		DATE_FORMAT(b.verifdate_level_satu, '%d %b. %Y') verifdate_level_satu,DATE_FORMAT(b.verifdate_level_satu, '%H:%i') veriftime_level_satu,
+		DATE_FORMAT(b.verifdate_level_dua, '%d %b. %Y') verifdate_level_dua,DATE_FORMAT(b.verifdate_level_dua, '%H:%i') veriftime_level_dua,
+		DATE_FORMAT(b.verifdate_level_tiga, '%d %b. %Y') verifdate_level_tiga,DATE_FORMAT(b.verifdate_level_tiga, '%H:%i') veriftime_level_tiga,
+		DATE_FORMAT(b.verify_date, '%d %b. %Y') verify_date,DATE_FORMAT(b.verify_date, '%H:%i') verify_time,
+		DATE_FORMAT(b.entry_date, '%d %b. %Y') entry_date,DATE_FORMAT(b.entry_date, '%H:%i') entry_time,
+		b.nomi_persetujuan,DATE_FORMAT(b.tanggal_persetujuan, '%d - %m - %Y') tanggal_persetujuan,
 		CASE b.nomi_status
 			WHEN 'ACC' THEN 'badge bg-green'
 			WHEN 'TMS' THEN 'badge bg-red'
@@ -86,8 +93,11 @@ LEFT JOIN $this->tableuser l ON l.user_id = b.verifby_level_tiga
 LEFT JOIN $this->tableuser m ON m.user_id = b.nomi_verifby
 LEFT JOIN $this->tableuser n ON n.user_id = b.entry_proses_by
 LEFT JOIN $this->tableuser o ON o.user_id = b.entry_by
+LEFT JOIN $this->tableuser p ON p.user_id = b.kirim_by
 WHERE c.layanan_bidang='$bidang' 
 $sql";
+		
+		//var_dump($q);exit;
 		
 		$query 		= $this->db->query($q);
 		
