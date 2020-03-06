@@ -273,7 +273,7 @@ class Entry extends MY_Controller {
 		{	
 			$db_debug 			= $this->db->db_debug; 
 			$this->db->db_debug = FALSE; 
-			if (!$this->entry->simpanPersetujuan($data))
+			if (!$this->entry->simpanPersetujuanPG($data))
 			{
 				$error 				= $this->db->_error_message(); 
 				$data['pesan']		= $error;
@@ -352,7 +352,7 @@ class Entry extends MY_Controller {
 								<th>NAMA</th>								
 								<th>PELAYANAN</th>                               						
 								<th>ACC DATE</th>
-								<th>FILE</th>
+								<th></th>
 								<th>PERSETUJUAN</th>							
 							</tr>
 						</thead>  ';
@@ -376,9 +376,10 @@ class Entry extends MY_Controller {
 							$html .= '&nbsp;<a class="btn btn-primary btn-xs" data-tooltip="tooltip"  title="Input Persetujuan" data-toggle="modal" data-target="#skModal" data-agenda="'.$this->myencrypt->encode($value->agenda_id).'" data-nip="'.$this->myencrypt->encode($value->nip).'"><i class="fa fa-edit"></i></a>';
 					
 						}	
-                        
-						$html .='&nbsp;<button class="btn btn-danger btn-xs" data-tooltip="tooltip"  title="upload persetujuan" data-toggle="modal" data-target="#uploadModal" data-agenda="'.$value->agenda_id.'" data-instansi="'.$value->agenda_ins.'" data-nip="'.$value->nip.'"><i class="fa fa-upload"></i></button>';
-						
+						if($layanan === "4" || $layanan === "6" || $layanan === "7"  || $layanan === "8")
+                        {
+							$html .='&nbsp;<button class="btn btn-danger btn-xs" data-tooltip="tooltip"  title="upload persetujuan" data-toggle="modal" data-target="#uploadModal" data-agenda="'.$value->agenda_id.'" data-instansi="'.$value->agenda_ins.'" data-nip="'.$value->nip.'"><i class="fa fa-upload"></i></button>';
+						}
 			$html .='</td>
 						<td>'.$value->agenda_nousul.'</td>
 						<td>'.$value->instansi.'</td>

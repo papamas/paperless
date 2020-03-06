@@ -114,7 +114,7 @@ class Entry_model extends CI_Model {
 		
 		$q="SELECT a.*,
 		b.nip,b.tahapan_id,b.nomi_status,b.nomi_alasan,b.verify_date,b.entry_date,
-		b.nomi_persetujuan,b.tanggal_persetujuan tgl,b.upload_persetujuan,		
+		b.nomi_persetujuan,DATE_FORMAT(b.tanggal_persetujuan,'%d-%m-%Y') tgl,b.upload_persetujuan,		
 		c.layanan_nama,
 		d.INS_NAMINS instansi ,
 		e.PNS_PNSNAM nama,
@@ -156,6 +156,26 @@ $sql_status  $sql_nip  $sql_instansi  $sql_layanan  $sql_date
     }	
 	
 	public function simpanPersetujuan($data)
+	{
+		// selesai proses cetak
+		$agenda	    		= $data['agenda'];
+		$nip				= $data['nip'];
+		$nomor				= $data['persetujuan'];
+		$tanggal			= date('Y-m-d',strtotime($data['tanggal']));
+		
+		$set['nomi_persetujuan']    	=   strtoupper($nomor); 
+		$set['tanggal_persetujuan']   	=   $tanggal; 
+		$set['tahapan_id']   			=   13; 
+		$set['entry_by']   			    =   $this->session->userdata('user_id');		
+		
+		$this->db->where('agenda_id',$agenda);
+		$this->db->where('nip',$nip);
+		$this->db->set($set);	
+	    $this->db->set('entry_date','NOW()',FALSE);
+		return $this->db->update($this->tablenom);
+	}	
+	
+	public function simpanPersetujuanPG($data)
 	{
 		// selesai proses cetak
 		$agenda	    		= $data['agenda'];

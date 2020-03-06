@@ -166,7 +166,7 @@
 								<th>NAMA</th>								
 								<th>PELAYANAN</th>                               						
 								<th>ACC DATE</th>
-								<th>FILE</th>
+								<th></th>
 								<th>PERSETUJUAN</th>							
 							</tr>
 						</thead>   
@@ -193,8 +193,10 @@
 								
 									}
 
-                                    echo '&nbsp;<button class="btn btn-danger btn-xs" data-tooltip="tooltip"  title="upload persetujuan" data-toggle="modal" data-target="#uploadModal" data-agenda="'.$value->agenda_id.'" data-instansi="'.$value->agenda_ins.'" data-nip="'.$value->nip.'"><i class="fa fa-upload"></i></button>';
-																			
+									if($layanan === "4" || $layanan === "6" || $layanan === "7"  || $layanan === "8")
+									{	
+                                      echo '&nbsp;<button class="btn btn-danger btn-xs" data-tooltip="tooltip"  title="upload persetujuan" data-toggle="modal" data-target="#uploadModal" data-agenda="'.$value->agenda_id.'" data-instansi="'.$value->agenda_ins.'" data-nip="'.$value->nip.'"><i class="fa fa-upload"></i></button>';
+									}										
 																	
 								?>
 								</td>
@@ -204,21 +206,26 @@
 								<td><?php echo $value->nama?></td>																					
 								<td><?php echo $value->layanan_nama?></td>
 								<td><span class="badge bg-green"><?php echo $value->verify_date?></span></td>
-								<td>
-								<?php if(!empty($value->upload_persetujuan))
-								{
-									$file = "PERTEK_PENSIUN_".$value->nip.'.pdf';
+								<?php
+								if($layanan === "4" || $layanan === "6" || $layanan === "7"  || $layanan === "8")
+								{	
+									echo '<td>';
+									if(!empty($value->upload_persetujuan))
+									{
+										$file = "PERTEK_PENSIUN_".$value->nip.'.pdf';
+										
+										echo '<span data-toggle="tooltip" data-original-title="Ada File">
+										<i class="fa fa-file-pdf-o" data-toggle="modal" data-target="#showFile" data-id="?id='.$this->myencrypt->encode($value->agenda_ins).'&f='.$this->myencrypt->encode($file).'" style="color:red;"></i></span>';
+									}
+									else
+									{
+										echo '<span data-toggle="tooltip" data-original-title="Tidak Ada File">
+										<i class="fa fa-file-o" style="color:red;"></i></span>';
+									}
 									
-									echo '<span data-toggle="tooltip" data-original-title="Ada File">
-									<i class="fa fa-file-pdf-o" data-toggle="modal" data-target="#showFile" data-id="?id='.$this->myencrypt->encode($value->agenda_ins).'&f='.$this->myencrypt->encode($file).'" style="color:red;"></i></span>';
+									echo '</td>';
 								}
-								else
-								{
-									echo '<span data-toggle="tooltip" data-original-title="Tidak Ada File">
-									<i class="fa fa-file-o" style="color:red;"></i></span>';
-								}
-								?>	
-								</td>
+                                ?>								
 								<td><?php echo $value->nomi_persetujuan?><br/><?php echo $value->tgl?></td>								
 							</tr>
 							<?php endforeach;?>
