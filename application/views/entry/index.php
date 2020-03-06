@@ -166,6 +166,7 @@
 								<th>NAMA</th>								
 								<th>PELAYANAN</th>                               						
 								<th>ACC DATE</th>
+								<th>FILE</th>
 								<th>PERSETUJUAN</th>							
 							</tr>
 						</thead>   
@@ -180,6 +181,7 @@
 									{  
 										echo '&nbsp;<a href="#dPhoto" class="btn btn-danger btn-xs" data-tooltip="tooltip"  title="Unduh Photo" id="?id='.$this->myencrypt->encode($value->id_instansi).'&f='.$this->myencrypt->encode($value->orig_name).'&n='.$this->myencrypt->encode($value->nip).'"><i class="fa fa-search"></i></a>';
 									}
+									
                                     if($layanan === "14")
 									{  
 										echo '<button class="btn btn-primary btn-xs" data-tooltip="tooltip"  title="Input Persetujuan" data-toggle="modal" data-target="#skModalPG" data-agenda="'.$this->myencrypt->encode($value->agenda_id).'" data-nip="'.$this->myencrypt->encode($value->nip).'"><i class="fa fa-edit"></i></button>';
@@ -187,9 +189,12 @@
 									}
 									else
 									{
-										echo '&nbsp;<button class="btn btn-primary btn-xs" data-tooltip="tooltip"  title="Input Persetujuan" data-toggle="modal" data-target="#skModal" data-agenda="'.$this->myencrypt->encode($value->agenda_id).'" data-nip="'.$this->myencrypt->encode($value->nip).'"><i class="fa fa-edit"></i></button>';
+										echo '&nbsp;<button class="btn btn-primary btn-xs" data-tooltip="tooltip"  title="Input Persetujuan" data-toggle="modal" data-target="#skModal"   data-agenda="'.$this->myencrypt->encode($value->agenda_id).'" data-nip="'.$this->myencrypt->encode($value->nip).'"><i class="fa fa-edit"></i></button>';
 								
-									}			
+									}
+
+                                    echo '&nbsp;<button class="btn btn-danger btn-xs" data-tooltip="tooltip"  title="upload persetujuan" data-toggle="modal" data-target="#uploadModal" data-agenda="'.$value->agenda_id.'" data-instansi="'.$value->agenda_ins.'" data-nip="'.$value->nip.'"><i class="fa fa-upload"></i></button>';
+																			
 																	
 								?>
 								</td>
@@ -199,6 +204,21 @@
 								<td><?php echo $value->nama?></td>																					
 								<td><?php echo $value->layanan_nama?></td>
 								<td><span class="badge bg-green"><?php echo $value->verify_date?></span></td>
+								<td>
+								<?php if(!empty($value->upload_persetujuan))
+								{
+									$file = "PERTEK_PENSIUN_".$value->nip.'.pdf';
+									
+									echo '<span data-toggle="tooltip" data-original-title="Ada File">
+									<i class="fa fa-file-pdf-o" data-toggle="modal" data-target="#showFile" data-id="?id='.$this->myencrypt->encode($value->agenda_ins).'&f='.$this->myencrypt->encode($file).'" style="color:red;"></i></span>';
+								}
+								else
+								{
+									echo '<span data-toggle="tooltip" data-original-title="Tidak Ada File">
+									<i class="fa fa-file-o" style="color:red;"></i></span>';
+								}
+								?>	
+								</td>
 								<td><?php echo $value->nomi_persetujuan?><br/><?php echo $value->tgl?></td>								
 							</tr>
 							<?php endforeach;?>
@@ -336,7 +356,43 @@
 		</div>
 	</div>	
 	
+	<div id="uploadModal" class="modal fade" role="dialog">
+          <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"><span id="msg"></span></h4>
+                </div>
+                <div class="modal-body">
+                    <!-- Form -->
+                    <form method='post' action='' enctype="multipart/form-data" id="fileUploadForm">
+					    <input class="form-control" type="hidden" value="" name="agenda_ins" />
+						<input class="form-control" type="hidden" value="" name="agenda_id" />
+						<input class="form-control" type="hidden" value="" name="agenda_nip" />
+						<input type="hidden" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash();?>" style="display: none">
+                        Select file : <input type='file' name='file' id='file' class='form-control' ><br>
+                        <input type='button' class='btn btn-info' value='Upload' id='btn_upload'>
+                    </form>
+                </div>                
+            </div>
+        </div>
+    </div>
 	
+	<div class="modal" id="showFile" tabindex="-1" role="dialog" aria-hidden="true">
+	    <div class="modal-dialog  md-dialog modal-lg">
+		  <div class="modal-content md-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title" >File Persetujuan Teknis</h4>
+				</div>	
+				<div class="modal-body md-body">
+					<iframe  id="frame" width="100%" height="100%" frameborder="0" ></iframe>	
+					
+				</div>
+		  </div>
+		</div>
+	</div>	
 	
 	<script src="<?php echo base_url()?>assets/plugins/jQuery/jQuery-2.1.4.min.js"></script>    
     <script src="<?php echo base_url()?>assets/bootstrap/js/bootstrap.min.js"></script> 
@@ -508,6 +564,58 @@
 			var id= this.id;
 		    document.location  = "<?php echo site_url()?>/entry/cetakSurat/"+id;
 		}); 
+		
+		$('#uploadModal').on('show.bs.modal',function(e){
+			
+			$('#uploadModal #msg').text('Upload File Persetujuan')
+                     .removeClass( "text-green")
+					 .removeClass( "text-red")
+				     .removeClass( "text-blue" ); 
+		   
+			var nip   		=  $(e.relatedTarget).attr('data-nip');
+			var instansi    =  $(e.relatedTarget).attr('data-instansi');
+			var agenda   	=  $(e.relatedTarget).attr('data-agenda');
+			
+			$("input[name=agenda_nip]").val(nip);
+			$("input[name=agenda_ins]").val(instansi);
+			$("input[name=agenda_id]").val(agenda);
+			
+		});
+		
+		$('#btn_upload').click(function(){
+			var form = $('#fileUploadForm')[0];
+			// Create an FormData object 
+			var data = new FormData(form);
+			
+			// AJAX request
+			$.ajax({
+				url: '<?php  echo site_url()?>/entry/upload',
+				type: 'post',
+				data: data,
+				contentType: false,
+				processData: false,
+				cache:false,
+				success: function(e){                        
+					$('#uploadModal #msg').text(e.pesan)
+						 .removeClass( "text-blue")
+						 .removeClass( "text-red")
+						 .addClass( "text-green" );
+					refreshTable();	 
+				},
+				error : function(e){
+					$('#uploadModal #msg').text(e.responseJSON.error)
+						 .removeClass( "text-blue")							 
+						 .removeClass( "text-green")
+						 .addClass( "text-red" ); 
+				}	
+            });
+        });
+		
+		$('#showFile').on('show.bs.modal',function(e) {    		
+			var id=  $(e.relatedTarget).attr('data-id');
+			var iframe = $('#frame');
+			iframe.attr('src', '<?php echo site_url()?>'+'/entry/getInline/'+id);			
+	    });
 		
 		function refreshTable(){						
 			$.ajax({   

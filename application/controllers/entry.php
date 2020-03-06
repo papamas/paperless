@@ -351,7 +351,8 @@ class Entry extends MY_Controller {
 								<th>NIP</th>
 								<th>NAMA</th>								
 								<th>PELAYANAN</th>                               						
-								<th>ACC DATE</th>								
+								<th>ACC DATE</th>
+								<th>FILE</th>
 								<th>PERSETUJUAN</th>							
 							</tr>
 						</thead>  ';
@@ -374,16 +375,33 @@ class Entry extends MY_Controller {
 						{
 							$html .= '&nbsp;<a class="btn btn-primary btn-xs" data-tooltip="tooltip"  title="Input Persetujuan" data-toggle="modal" data-target="#skModal" data-agenda="'.$this->myencrypt->encode($value->agenda_id).'" data-nip="'.$this->myencrypt->encode($value->nip).'"><i class="fa fa-edit"></i></a>';
 					
-						}										
+						}	
+                        
+						$html .='&nbsp;<button class="btn btn-danger btn-xs" data-tooltip="tooltip"  title="upload persetujuan" data-toggle="modal" data-target="#uploadModal" data-agenda="'.$value->agenda_id.'" data-instansi="'.$value->agenda_ins.'" data-nip="'.$value->nip.'"><i class="fa fa-upload"></i></button>';
+						
 			$html .='</td>
 						<td>'.$value->agenda_nousul.'</td>
 						<td>'.$value->instansi.'</td>
 						<td>'.$value->nip.'</td>
 						<td>'.$value->nama.'</td>																					
 						<td>'.$value->layanan_nama.'</td>
-						<td><span class="badge bg-green">'.$value->verify_date.'</span></td>
-						<td>'.$value->nomi_persetujuan.'<br/>'.$value->tgl.'</td>								
-					</tr>';	
+						<td><span class="badge bg-green">'.$value->verify_date.'</span></td>';
+			$html .='<td>';
+						if(!empty($value->upload_persetujuan))
+						{
+							$file = "PERTEK_PENSIUN_".$value->nip.'.pdf';
+							
+							$html .= '<span data-toggle="tooltip" data-original-title="Ada File">
+							<i class="fa fa-file-pdf-o" data-toggle="modal" data-target="#showFile" data-id="?id='.$this->myencrypt->encode($value->agenda_ins).'&f='.$this->myencrypt->encode($file).'" style="color:red;"></i></span>';
+						}
+						else
+						{
+							$html .= '<span data-toggle="tooltip" data-original-title="Tidak Ada File">
+							<i class="fa fa-file-o" style="color:red;"></i></span>';
+						}
+							
+			$html .= '</td>';						
+			$html .='<td>'.$value->nomi_persetujuan.'<br/>'.$value->tgl.'</td></tr>';	
 		}
 		$html .='</table>';		
         echo $html;		
@@ -498,4 +516,76 @@ class Entry extends MY_Controller {
 		
 	}	
 	
+	public function upload()
+	{
+		
+		$instansi						= $this->input->post('agenda_ins');
+		$nip							= $this->input->post('agenda_nip');
+		$agenda							= $this->input->post('agenda_id');
+		$name                           = 'PERTEK_PENSIUN_';
+		
+		$target_dir						='./uploads/'.$instansi;		
+		$config['upload_path']          = $target_dir;
+		$config['allowed_types']        = 'pdf';
+		$config['max_size']             = 3024;
+		$config['encrypt_name']			= FALSE;	
+		$config['overwrite']			= TRUE;	
+		$config['detect_mime']			= TRUE;
+		$config['file_name']            = $name.$nip;
+		
+		$this->load->library('upload', $config);
+		
+		if (! $this->upload->do_upload('file'))
+		{
+				$error = array('error' => strip_tags($this->upload->display_errors()));
+
+				$this->output
+						->set_status_header(406)
+						->set_content_type('application/json', 'utf-8')
+						->set_output(json_encode($error));
+				
+		}
+		else
+		{
+				$data 		          = $this->upload->data();
+				$data['id_instansi']  = $instansi;
+				$data['nip']		  = $nip;
+				//$data['agenda']		  = $agenda;
+				$result		          = $this->entry->insertUpload($data);
+				
+			
+				if($result['response'])
+				{
+				    $this->output
+						->set_status_header(200)
+						->set_content_type('application/json', 'utf-8')
+						->set_output(json_encode($result)); 
+                }
+				else
+				{
+					$result['updated']  = $this->entry->updateFile($result);
+					$result['error'] 	= 'File Persetujuan Teknis sudah ada, overwrite file';
+					$this->output
+						->set_status_header(406)
+						->set_content_type('application/json', 'utf-8')
+						->set_output(json_encode($result));
+
+                }			
+				
+		}
+		
+	}	
+	
+	public function getInline()
+	{
+		$instansi  = $this->myencrypt->decode($this->input->get('id'));
+		$file      = $this->myencrypt->decode($this->input->get('f'));
+						
+		header('Pragma:public');
+		header('Cache-Control:no-store, no-cache, must-revalidate');
+		header('Content-type:application/pdf');
+		header('Content-Disposition:inline; filename='.$file);                      
+		header('Expires:0'); 
+		readfile(base_url().'uploads/'.$instansi.'/'.$file);
+	}	
 }

@@ -5,6 +5,8 @@ class Upload_model extends CI_Model {
 	private     $table  = 'upload_dokumen';
 	private     $dokumen= 'dokumen';
 	private     $tableinstansi= 'mirror.instansi';
+	private     $tablepupns   ='mirror.pupns';
+	private     $app_user   ='app_user';
 		
     function __construct()
     {
@@ -160,12 +162,15 @@ class Upload_model extends CI_Model {
 		$sql="SELECT a.*, 
 		b.INS_NAMINS instansi, 
 		c.PNS_PNSNAM nama,
-        d.nama_dokumen		
+        d.nama_dokumen,
+        e.first_name name		
 		FROM $this->table a  
-		LEFT JOIN mirror.instansi b ON a.id_instansi = b.INS_KODINS
-		LEFT JOIN mirror.pupns c ON a.nip = c.PNS_NIPBARU
-		LEFT JOIN dokumen d ON a.id_dokumen = d.id_dokumen
-		WHERE 1=1   $sql_instansi $sql_nip $sql_jenis ORDER BY d.nama_dokumen ASC";	
+		LEFT JOIN $this->tableinstansi b ON a.id_instansi = b.INS_KODINS
+		LEFT JOIN $this->tablepupns c ON a.nip = c.PNS_NIPBARU
+		LEFT JOIN $this->dokumen d ON a.id_dokumen = d.id_dokumen
+		LEFT JOIN $this->app_user e ON a.upload_by  = e.user_id
+		WHERE 1=1   $sql_instansi $sql_nip $sql_jenis 
+		ORDER BY d.nama_dokumen ASC";	
 		
 		
 		return $this->db->query($sql);

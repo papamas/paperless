@@ -152,7 +152,9 @@
 								<th>INSTANSI</th>
 								<th>NIP</th>
 								<th>NAMA</th>
-								<th>UPLOAD DATE</th>													
+								<th>UPLOAD</th>
+								<th>UPDATE</th>	
+                                <th>BY</th>								
 							</tr>
 						</thead>   
 						<tbody>
@@ -276,7 +278,9 @@
 								<td><?php echo $value->instansi?></td>
 								<td><?php echo $value->nip?></td>
 								<td><?php echo $value->nama?></td>
-								<td><?php echo $value->created_date?></td>						
+								<td><?php echo $value->created_date?></td>	
+								<td><?php echo $value->update_date?></td>	
+								<td><?php echo $value->name?></td>
 							</tr>
 							<?php endforeach;?>
 							<?php endif;?>

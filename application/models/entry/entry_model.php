@@ -113,7 +113,8 @@ class Entry_model extends CI_Model {
 	    $bidang  = $this->session->userdata('session_bidang');
 		
 		$q="SELECT a.*,
-		b.nip,b.tahapan_id,b.nomi_status,b.nomi_alasan,b.verify_date,b.entry_date,b.nomi_persetujuan,b.tanggal_persetujuan tgl,		
+		b.nip,b.tahapan_id,b.nomi_status,b.nomi_alasan,b.verify_date,b.entry_date,
+		b.nomi_persetujuan,b.tanggal_persetujuan tgl,b.upload_persetujuan,		
 		c.layanan_nama,
 		d.INS_NAMINS instansi ,
 		e.PNS_PNSNAM nama,
@@ -229,4 +230,98 @@ $sql_status  $sql_nip  $sql_instansi  $sql_layanan  $sql_date
 		$this->db->select('*');
 		return $this->db->get($this->tableijazah);
 	}	
+	
+	public function insertUpload($data)
+	{
+		$data['id_dokumen']		= $this->_getIdDokumen($data);
+		$data['upload_by']      = $this->session->userdata('user_id');
+		$number 				= $this->_extract_numbers($data['raw_name']);
+		
+		foreach($number as $value){
+		    if (strlen($value) == 18){
+                $data['nip']    = $value;
+            }
+            else
+            {
+			    $data['minor_dok']    = $value;
+            }		
+	    }   
+		
+		
+		$db_debug 			= $this->db->db_debug; 
+		$this->db->db_debug = FALSE; 
+			
+		if (!$this->db->insert($this->table, $data))
+		{
+			$error = $this->db->_error_message();
+			if(!empty($error))
+			{
+                $data['pesan']		= $error;   
+				$data['response'] 	= FALSE;
+			}
+            	
+        }
+		else
+		{
+			$data['pesan']		= "File Persetujuan Teknis Berhasil Tersimpan";
+			$data['response']	= TRUE;
+			
+			$this->updateNominatif();
+		}	
+        $this->db->db_debug = $db_debug; //restore setting	
+
+        return $data;		
+		
+	}
+	
+	function _getIdDokumen($data)
+	{
+	    $r = NULL;
+		$find    = $data['raw_name'];
+		
+		$query = $this->db->query("SELECT * FROM (SELECT *,locate(nama_dokumen,'$find') result from dokumen ) a
+ WHERE a.result = 1"); 	
+		if($query->num_rows() > 0){
+		    $row 	= $query->row();
+			$r 		= $row->id_dokumen;
+		}
+		
+		return $r;
+	}
+	
+	function _extract_numbers($string)
+	{
+	    preg_match_all('/([\d]+)/', $string, $match);
+	   
+	    
+
+	   return $match[0];
+	}
+	
+	function  updateFile($data)
+	{
+				
+		$this->db->where('raw_name',$data['raw_name']);
+		$this->db->where('id_instansi',$data['id_instansi']);
+		$this->db->set('flag_update',1);
+		$this->db->set('update_date','NOW()',FALSE);
+		return $this->db->update($this->table);
+		
+	}	
+	
+	function updateNominatif()
+	{
+		
+		$instansi						= $this->input->post('agenda_ins');
+		$nip							= $this->input->post('agenda_nip');
+		$agenda							= $this->input->post('agenda_id');
+		
+		$this->db->where('nip',$nip);
+		$this->db->where('agenda_id',$agenda);
+		$this->db->set('upload_persetujuan',1);
+		$this->db->set('date_upload_persetujuan','NOW()',FALSE);
+		return $this->db->update($this->tablenom);
+
+	}
+	
 }

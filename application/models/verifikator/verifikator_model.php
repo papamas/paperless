@@ -200,6 +200,8 @@ LEFT JOIN $this->tabledokumen i ON  i.id_dokumen = h.id_dokumen
 LEFT JOIN $this->tableuser j ON j.user_id = a.locked_by
 LEFT JOIN $this->tabletahapan k ON a.tahapan_id = k.tahapan_id
 where a.nip='$nip' 
+AND a.nomi_status='BELUM'
+AND a.tahapan_id IN ('4','5','6','7','8','9','10','11','12')
 AND b.layanan_id='$layanan_id'  
 AND a.agenda_id='$id_agenda' 
 $sql_work
