@@ -25,6 +25,8 @@ class Entry extends MY_Controller {
 		$data['layanan']  		= $this->entry->getPelayanan();
 		$data['instansi']  		= $this->entry->getInstansi();
 		$data['ijazah']         = $this->entry->getIjazah();
+		$data['spesimen']    	= $this->entry->getSpesimen();
+		
 		$data['show']  			= FALSE;	
 		if(!$this->allow)
 		{
@@ -60,6 +62,7 @@ class Entry extends MY_Controller {
 		$this->form_validation->set_rules('status', 'Status', 'required');
 		$this->form_validation->set_rules('perintah', 'Perintah', 'required');
 		$this->form_validation->set_rules('nip', 'NIP', 'trim');
+		$this->form_validation->set_rules('spesimen', 'spesimen', 'trim');
 		
 		$search           = $this->input->post();
 		$perintah         = $this->input->post('perintah');		
@@ -76,6 +79,7 @@ class Entry extends MY_Controller {
 			$data['instansi']  		= $this->entry->getInstansi();
 			$data['ijazah']         = $this->entry->getIjazah();
 			$data['show']  			= FALSE;
+			$data['spesimen']    	= $this->entry->getSpesimen();
 			
 			if(!$this->allow)
 			{
@@ -103,6 +107,7 @@ class Entry extends MY_Controller {
 				$data['instansi']   = $this->entry->getInstansi();
 				$data['ijazah']     = $this->entry->getIjazah();
 				$data['show']  		= TRUE;
+				$data['spesimen']   = $this->entry->getSpesimen();
 				$data['usul']	  	=  $q;
 				if(!$this->allow)
 				{
@@ -351,7 +356,7 @@ class Entry extends MY_Controller {
 								<th>NIP</th>
 								<th>NAMA</th>								
 								<th>PELAYANAN</th>                               						
-								<th>ACC DATE</th>
+								<th style="width:150px;">ACC DATE</th>
 								<th style="width:55px;">FILE</th>
 								<th>PERSETUJUAN</th>							
 							</tr>
@@ -385,7 +390,7 @@ class Entry extends MY_Controller {
 						<td>'.$value->nip.'</td>
 						<td>'.$value->nama.'</td>																					
 						<td>'.$value->layanan_nama.'</td>
-						<td><span class="badge bg-green">'.$value->verify_date.'</span></td>';
+						<td><span class="badge bg-green">'.$value->verify_date.' Oleh :<b>'.$value->verif_name.'</b></span></td>';
 			$html .='<td>';
 						if(!empty($value->upload_persetujuan))
 						{

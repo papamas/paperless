@@ -132,6 +132,20 @@
 								    <input type="number" name="nip" class="form-control" placeholder="Masukan NIP" value="<?php echo set_value('nip'); ?>">									
 								</div>									
 							</div>
+							<div class="form-group row">							   						 
+								<label class=" control-label col-md-2 col-sm-2 col-xs-2">Spesimen</label>									
+								<div class="col-md-10 col-sm-10 col-xs-10">
+									<select name="spesimen" class="form-control">
+										<option value="">--silahkan Pilih--</option>
+										<?php if($spesimen->num_rows() > 0):?>
+										<?php foreach($spesimen->result() as $value):?>
+										<option value="<?php echo $value->user_id?>" <?php echo  set_select('spesimen', $value->user_id); ?> ><?php echo $value->first_name.' '.$value->last_name;?></option>
+										<?php endforeach;?>
+										<?php endif;?>
+									</select>
+									<span class="help-block text-red"><?php echo form_error('spesimen'); ?></span>
+								</div>														
+							</div>	
 							<div class="form-group row">
 							    <label class="control-label col-md-2 col-sm-2 col-xs-2">Status:</label>
 								<div class="col-md-4 col-sm-10 col-xs-10">
@@ -165,7 +179,7 @@
 								<th>NIP</th>
 								<th>NAMA</th>								
 								<th>PELAYANAN</th>                               						
-								<th>ACC DATE</th>
+								<th style="width:150px;">ACC DATE</th>
 								<th style="width:55px;">FILE</th>
 								<th>PERSETUJUAN</th>							
 							</tr>
@@ -203,7 +217,7 @@
 								<td><?php echo $value->nip?></td>
 								<td><?php echo $value->nama?></td>																					
 								<td><?php echo $value->layanan_nama?></td>
-								<td><span class="badge bg-green"><?php echo $value->verify_date?></span></td>
+								<td><?php echo $value->verify_date.' Oleh :<b>'.$value->verif_name.'</b>'?></span></td>
 								<td>
 								<?php
 								if(!empty($value->upload_persetujuan))

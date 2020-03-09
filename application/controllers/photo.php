@@ -57,13 +57,12 @@ class Photo extends MY_Controller {
 		$config['encrypt_name']			= FALSE;	
 		$config['overwrite']			= TRUE;	
 		$config['detect_mime']			= TRUE;
-		$config['max_width']			= 164;
-		$config['max_height']			= 244;
-		
+		//$config['max_width']			= 164;
+		//$config['max_height']			= 244;	
+ 
 		if (!is_dir($target_dir)) {
 			mkdir($target_dir, 0777, TRUE);
 		}
-		
 		
 
 		$this->load->library('upload', $config);	
@@ -94,6 +93,7 @@ class Photo extends MY_Controller {
 				$data 		= $this->upload->data();
 				$result		= $this->uploadFile->insertUpload($data);
 				
+				$this->resizeImage($instansi,$data);
 			
 				if($result['response'])
 				{
@@ -114,6 +114,32 @@ class Photo extends MY_Controller {
                 }			
 				
 		}
+    }
+	
+	public function resizeImage($instansi,$data)
+    {	  
+	    $source_path = $data['full_path'];
+        $target_path = $data['full_path'];	  
+	  
+        //Compress Image
+		$config['image_library']		= 'gd2';
+		$config['source_image']			= $source_path;
+		$config['create_thumb']			= FALSE;
+		$config['maintain_ratio']		= FALSE;
+		$config['width']				= 128;
+		$config['height']				= 150;
+		$config['new_image']			=  $target_path;
+		$config['quality']				= '100%';
+		$this->load->library('image_lib', $config);
+		
+        if (!$this->image_lib->resize()) {
+            $error = array('error' => strip_tags($this->image_lib->display_errors()));
+			$this->output
+					->set_status_header(406)
+					->set_content_type('application/json', 'utf-8')
+					->set_output(json_encode($error));
+        }
+        $this->image_lib->clear();
     }
 	
 	public function daftar()

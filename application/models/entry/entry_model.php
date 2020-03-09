@@ -47,6 +47,7 @@ class Entry_model extends CI_Model {
 		$reportrange        	= $data['reportrange'];
 		$status    				= $data['status'];
 		$nip    				= $data['nip'];
+		$spesimen    			= $data['spesimen'];
 			
 		switch($status)
 		{
@@ -110,6 +111,16 @@ class Entry_model extends CI_Model {
 			$sql_date = " ";   
 		}		
       
+	    if(!empty($spesimen))
+		{
+		
+			$sql_spesimen = " AND m.user_id = '$spesimen' ";
+        }
+		else
+		{	
+			$sql_spesimen = " ";   
+		}	
+		
 	    $bidang  = $this->session->userdata('session_bidang');
 		
 		$q="SELECT a.*,
@@ -147,7 +158,7 @@ LEFT JOIN $this->tableuser o ON o.user_id = b.entry_by
 LEFT JOIN $this->tablephoto p ON  (b.nip = p.nip AND p.layanan_id = a.layanan_id)
 WHERE b.nomi_status='ACC' 
 AND c.layanan_bidang='$bidang' 
-$sql_status  $sql_nip  $sql_instansi  $sql_layanan  $sql_date
+$sql_status  $sql_nip  $sql_instansi  $sql_layanan  $sql_date  $sql_spesimen
 ";
 	
 		$query 		= $this->db->query($q);
@@ -343,5 +354,13 @@ $sql_status  $sql_nip  $sql_instansi  $sql_layanan  $sql_date
 		return $this->db->update($this->tablenom);
 
 	}
+	
+	public function getSpesimen()
+	{
+		$bidang  = $this->session->userdata('session_bidang');
+		$sql="SELECT * FROM $this->tableuser WHERE id_bidang='$bidang' AND id_instansi='4011' ";	
+		return $this->db->query($sql);
+		
+	}	
 	
 }
