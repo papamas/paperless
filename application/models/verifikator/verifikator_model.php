@@ -27,7 +27,7 @@ class Verifikator_model extends CI_Model {
 		GROUP_CONCAT(raw_name SEPARATOR ',') upload_raw_name  
 		FROM $this->table a 
 		LEFT JOIN $this->tabledokumen b ON a.id_dokumen = b.id_dokumen 		
-		where a.nip ='$nip' AND b.flag IS NULL 
+		where a.nip ='$nip' AND b.flag IS NULL AND b.aktif='1'
 		group by b.id_dokumen order by created_date desc";
 		
 		//var_dump($sql);exit;

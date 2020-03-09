@@ -86,12 +86,18 @@ class Agenda extends MY_Controller {
 		$layanan_grup 			= $this->magenda->mcek_layanangrup($layanan_id)->layanan_grup;
 		$batas_kp 				= $this->magenda->mcek_bataskp()->periode_batas;
 		$tanggal_sekarang 		= date('Y-m-d');
+		$jumlah 				= $this->input->post('input_jumlah');
 
 		//Tolak No Usul dan Layanan yang sama
 		$cek_usul_layanan = $this->magenda->mcek_usul_layanan($no_usul, $layanan_id);
 		
 		if($cek_usul_layanan > 0){
 		  $this->session->set_flashdata('gagal', "No Usul dan Layanan yang sama sudah pernah dibuat");
+		  redirect('agenda');
+		}
+		
+		if($jumlah > 50){
+		  $this->session->set_flashdata('gagal', "Maximal 50 Jumlah Nominatif dalam satu Agenda");
 		  redirect('agenda');
 		}
 
@@ -110,7 +116,7 @@ class Agenda extends MY_Controller {
 		$data = array(
 				   'agenda_nousul' 		=> $no_usul,
 				   'layanan_id' 		=> $layanan_id,
-                   'agenda_jumlah' 		=> $this->input->post('input_jumlah'),
+                   'agenda_jumlah' 		=> $jumlah,
                    'agenda_ins' 		=> $this->session->userdata['session_instansi'],
                    'agenda_tgl' 		=> $tanggal_sekarang,
                    'agenda_thn' 		=> date('Y'),

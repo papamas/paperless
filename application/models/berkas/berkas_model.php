@@ -22,12 +22,14 @@ class Berkas_model extends CI_Model {
 	
 	
 	
-	public function getUsulDokumen($search)
+	public function getUsulDokumen($data)
 	{		
-	    $searchby  = $search['searchby'];
-		$search    = $search['search'];
+	    		
+		$searchby  = $data['searchby'];
+		$search    = $data['search'];
+		$status    = $data['status'];
 		
-	
+		
 		$instansi  = $this->input->post('instansi');
 		
 		switch($searchby){
@@ -46,15 +48,26 @@ class Berkas_model extends CI_Model {
             break;
             default:
                 $sql = " AND a.nip = '999999999' ";		
-		}		
-      
+		}
+
+		if($status == "ALL")
+		{
+			$sql_status = " ";  
+        }
+        else
+		{
+			$sql_status = " AND a.nomi_status = '$status' ";
+		}			
+		
+		
 		$q="SELECT a.agenda_id,a.nip,a.nomi_locked,a.nomi_status,a.nomi_alasan,
 CASE a.nomi_status
     WHEN 'ACC' THEN 'badge bg-green'
     WHEN 'TMS' THEN 'badge bg-red'
 	WHEN 'BTL' THEN 'badge bg-yellow'
     ELSE 'badge bg-light-blue'
-END AS bg,a.nomi_verifby,a.update_date,
+END AS bg,
+a.nomi_verifby,a.update_date,a.upload_persetujuan,a.upload_sk,
 b.layanan_id,b.agenda_ins,b.agenda_nousul,b.agenda_timestamp,b.agenda_dokumen,b.agenda_status,
 c.layanan_nama, f.INS_NAMINS instansi, g.PNS_PNSNAM nama,
 group_concat(d.dokumen_id SEPARATOR ',') dokumen_id , 
@@ -78,7 +91,7 @@ LEFT JOIN $this->tabledokumen i ON  i.id_dokumen = h.id_dokumen
 LEFT JOIN $this->tableuser j ON j.user_id = a.work_by
 LEFT JOIN $this->tabletahapan k ON k.tahapan_id = a.tahapan_id
 LEFT JOIN $this->tableuser l ON l.user_id = a.locked_by
-where 1=1 AND  f.INS_KODINS='$instansi'  $sql
+where 1=1 AND  f.INS_KODINS='$instansi'  $sql $sql_status 
 GROUP BY a.nip,b.layanan_id
 ";
 		//var_dump($q);exit;
@@ -101,7 +114,7 @@ GROUP BY a.nip,b.layanan_id
 		$sql="SELECT a.*, b.nama_dokumen 
 		FROM $this->tableupload a
 		LEFT JOIN $this->tabledokumen b ON a.id_dokumen = b.id_dokumen
-		WHERE a.nip='$nip' ";
+		WHERE a.nip='$nip' and b.aktif='1' ";
 		return $this->db->query($sql);
 	}
 	
@@ -154,4 +167,97 @@ GROUP BY a.nip,b.layanan_id
 		return $this->db->get($this->tablenom);
 	
 	}	
+	
+	public function insertUpload($data)
+	{
+		$data['id_dokumen']		= $this->_getIdDokumen($data);
+		$data['upload_by']      = $this->session->userdata('user_id');
+		$number 				= $this->_extract_numbers($data['raw_name']);
+		
+		foreach($number as $value){
+		    if (strlen($value) == 18){
+                $data['nip']    = $value;
+            }
+            else
+            {
+			    $data['minor_dok']    = $value;
+            }		
+	    }   
+		
+		
+		$db_debug 			= $this->db->db_debug; 
+		$this->db->db_debug = FALSE; 
+			
+		if (!$this->db->insert($this->table, $data))
+		{
+			$error = $this->db->_error_message();
+			if(!empty($error))
+			{
+                $data['pesan']		= $error;   
+				$data['response'] 	= FALSE;
+			}
+            	
+        }
+		else
+		{
+			$data['pesan']		= "File Surat Keputusan Berhasil Tersimpan";
+			$data['response']	= TRUE;
+			
+			$this->updateNominatif();
+		}	
+        $this->db->db_debug = $db_debug; //restore setting	
+
+        return $data;		
+		
+	}
+	
+	function _getIdDokumen($data)
+	{
+	    $r = NULL;
+		$find    = $data['raw_name'];
+		
+		$query = $this->db->query("SELECT * FROM (SELECT *,locate(nama_dokumen,'$find') result from dokumen ) a
+ WHERE a.result = 1"); 	
+		if($query->num_rows() > 0){
+		    $row 	= $query->row();
+			$r 		= $row->id_dokumen;
+		}
+		
+		return $r;
+	}
+	
+	function _extract_numbers($string)
+	{
+	    preg_match_all('/([\d]+)/', $string, $match);
+	   
+	    
+
+	   return $match[0];
+	}
+	
+	function  updateFile($data)
+	{
+				
+		$this->db->where('raw_name',$data['raw_name']);
+		$this->db->where('id_instansi',$data['id_instansi']);
+		$this->db->set('flag_update',1);
+		$this->db->set('update_date','NOW()',FALSE);
+		return $this->db->update($this->table);
+		
+	}	
+	
+	function updateNominatif()
+	{
+		
+		$instansi						= $this->input->post('agenda_ins');
+		$nip							= $this->input->post('agenda_nip');
+		$agenda							= $this->input->post('agenda_id');
+		
+		$this->db->where('nip',$nip);
+		$this->db->where('agenda_id',$agenda);
+		$this->db->set('upload_sk',1);
+		$this->db->set('date_upload_sk','NOW()',FALSE);
+		return $this->db->update($this->tablenom);
+
+	}
 }

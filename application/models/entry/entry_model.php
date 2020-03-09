@@ -114,7 +114,7 @@ class Entry_model extends CI_Model {
 		
 		$q="SELECT a.*,
 		b.nip,b.tahapan_id,b.nomi_status,b.nomi_alasan,b.verify_date,b.entry_date,
-		b.nomi_persetujuan,DATE_FORMAT(b.tanggal_persetujuan,'%d-%m-%Y') tgl,b.upload_persetujuan,		
+		b.nomi_persetujuan,DATE_FORMAT(b.tanggal_persetujuan,'%d-%m-%Y') tgl,b.upload_persetujuan,b.upload_sk,		
 		c.layanan_nama,
 		d.INS_NAMINS instansi ,
 		e.PNS_PNSNAM nama,

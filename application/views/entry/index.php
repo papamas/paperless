@@ -159,14 +159,14 @@
 						<table id="tb-entry"  class="table table-striped table-condensed">
 						<thead>
 							<tr>
-								<th style="width:65px;"></th>
+								<th style="width:100px;"></th>
 								<th>NOMOR</th>
 								<th>INSTANSI</th>
 								<th>NIP</th>
 								<th>NAMA</th>								
 								<th>PELAYANAN</th>                               						
 								<th>ACC DATE</th>
-								<th></th>
+								<th style="width:55px;">FILE</th>
 								<th>PERSETUJUAN</th>							
 							</tr>
 						</thead>   
@@ -193,10 +193,8 @@
 								
 									}
 
-									if($layanan === "4" || $layanan === "6" || $layanan === "7"  || $layanan === "8")
-									{	
-                                      echo '&nbsp;<button class="btn btn-danger btn-xs" data-tooltip="tooltip"  title="upload persetujuan" data-toggle="modal" data-target="#uploadModal" data-agenda="'.$value->agenda_id.'" data-instansi="'.$value->agenda_ins.'" data-nip="'.$value->nip.'"><i class="fa fa-upload"></i></button>';
-									}										
+									echo '&nbsp;<button class="btn btn-danger btn-xs" data-tooltip="tooltip"  title="Upload Persetujuan" data-toggle="modal" data-target="#uploadModal" data-layanan="'.$value->layanan_id.'" data-agenda="'.$value->agenda_id.'" data-instansi="'.$value->agenda_ins.'" data-nip="'.$value->nip.'"><i class="fa fa-upload"></i></button>';
+																			
 																	
 								?>
 								</td>
@@ -206,26 +204,120 @@
 								<td><?php echo $value->nama?></td>																					
 								<td><?php echo $value->layanan_nama?></td>
 								<td><span class="badge bg-green"><?php echo $value->verify_date?></span></td>
+								<td>
 								<?php
-								if($layanan === "4" || $layanan === "6" || $layanan === "7"  || $layanan === "8")
-								{	
-									echo '<td>';
-									if(!empty($value->upload_persetujuan))
-									{
-										$file = "PERTEK_PENSIUN_".$value->nip.'.pdf';
-										
-										echo '<span data-toggle="tooltip" data-original-title="Ada File">
-										<i class="fa fa-file-pdf-o" data-toggle="modal" data-target="#showFile" data-id="?id='.$this->myencrypt->encode($value->agenda_ins).'&f='.$this->myencrypt->encode($file).'" style="color:red;"></i></span>';
-									}
-									else
-									{
-										echo '<span data-toggle="tooltip" data-original-title="Tidak Ada File">
-										<i class="fa fa-file-o" style="color:red;"></i></span>';
-									}
+								if(!empty($value->upload_persetujuan))
+								{
+									switch($value->layanan_id){
+										case 1:
+											$name  = 'NPKP_';				
+										break;
+										case 2:
+											$name  = 'NPKP_';				
+										break;
+										case 3:
+											$name  = 'NPKP_';			
+										break;			
+										case 4:
+											$name  = 'PERTEK_PENSIUN_';				
+										break;
+										case 6:
+											$name  = 'PERTEK_PENSIUN_';				
+										break;
+										case 7:
+											$name  = 'PERTEK_PENSIUN_';				
+										break;
+										case 8:
+											$name  = 'PERTEK_PENSIUN_';				
+										break;
+										case 9:
+											$name  = 'KARIS_';				
+										break;
+										case 10:
+											$name  = 'KARSU_';				
+										break;
+										case 11:
+											$name  = 'KARPEG_';				
+										break;
+										case 12:
+											$name  = 'NPKP_';			
+										break;
+										case 13:
+											$name  = 'SK_MUTASI';			
+										break;
+										case 14:
+											$name  = 'SK_PG_';			
+										break;
+									}	
 									
-									echo '</td>';
+									$file = $name.$value->nip.'.pdf';
+																										
+									echo '<span data-toggle="tooltip" data-original-title="Ada File Persetujuan">
+									<i class="fa fa-file-pdf-o" data-toggle="modal" data-target="#showFile" data-id="?id='.$this->myencrypt->encode($value->agenda_ins).'&f='.$this->myencrypt->encode($file).'" style="color:red;"></i></span>';
 								}
-                                ?>								
+								else
+								{
+									echo '<span data-toggle="tooltip" data-original-title="Tidak Ada File Persetujuan">
+									<i class="fa fa-file-o" style="color:red;"></i></span>';
+								}
+								
+								
+								if(!empty($value->upload_sk))
+								{
+									switch($value->layanan_id){
+										case 1:
+											$name  = 'SK_KP_';				
+										break;
+										case 2:
+											$name  = 'SK_KP_';				
+										break;
+										case 3:
+											$name  = 'SK_KP_';			
+										break;			
+										case 4:
+											$name  = 'SK_PENSIUN_';				
+										break;
+										case 6:
+											$name  = 'SK_PENSIUN_';				
+										break;
+										case 7:
+											$name  = 'SK_PENSIUN_';				
+										break;
+										case 8:
+											$name  = 'SK_PENSIUN_';				
+										break;
+										case 9:
+											$name  = 'KARIS_';				
+										break;
+										case 10:
+											$name  = 'KARSU_';				
+										break;
+										case 11:
+											$name  = 'KARPEG_';				
+										break;
+										case 12:
+											$name  = 'SK_KP_';			
+										break;
+										case 13:
+											$name  = 'SK_MUTASI';			
+										break;
+										case 14:
+											$name  = 'SK_PG_';			
+										break;
+									}	
+									
+									$file = $name.$value->nip.'.pdf';
+									
+									echo '<span data-toggle="tooltip" data-original-title="Ada File Surat Keputusan">
+									<i class="fa fa-file-pdf-o" data-toggle="modal" data-target="#showFile" data-id="?id='.$this->myencrypt->encode($value->agenda_ins).'&f='.$this->myencrypt->encode($file).'" style="color:red;"></i></span>';
+								}
+								else
+								{
+									echo '<span data-toggle="tooltip" data-original-title="Tidak Ada File Surat Keputusan">
+									<i class="fa fa-file-o" style="color:red;"></i></span>';
+								}
+                                ?>	
+								</td>
 								<td><?php echo $value->nomi_persetujuan?><br/><?php echo $value->tgl?></td>								
 							</tr>
 							<?php endforeach;?>
@@ -377,6 +469,7 @@
 					    <input class="form-control" type="hidden" value="" name="agenda_ins" />
 						<input class="form-control" type="hidden" value="" name="agenda_id" />
 						<input class="form-control" type="hidden" value="" name="agenda_nip" />
+						<input class="form-control" type="hidden" value="" name="agenda_layanan" />
 						<input type="hidden" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash();?>" style="display: none">
                         Select file : <input type='file' name='file' id='file' class='form-control' ><br>
                         <input type='button' class='btn btn-info' value='Upload' id='btn_upload'>
@@ -582,11 +675,12 @@
 			var nip   		=  $(e.relatedTarget).attr('data-nip');
 			var instansi    =  $(e.relatedTarget).attr('data-instansi');
 			var agenda   	=  $(e.relatedTarget).attr('data-agenda');
+			var layanan   	=  $(e.relatedTarget).attr('data-layanan');
 			
 			$("input[name=agenda_nip]").val(nip);
 			$("input[name=agenda_ins]").val(instansi);
 			$("input[name=agenda_id]").val(agenda);
-			
+			$("input[name=agenda_layanan]").val(layanan);
 		});
 		
 		$('#btn_upload').click(function(){

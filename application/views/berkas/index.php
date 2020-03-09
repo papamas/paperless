@@ -84,7 +84,7 @@
 						  <h3 class="box-title">Lacak Berkas Usul</h3>
 						</div><!-- /.box-header -->
 						<!-- form start -->
-						<form class="form-horizontal" role="form" method="post" action="<?php echo site_url()?>/berkas/getBerkas">
+						<form name="frmEntry" class="form-horizontal" role="form" method="post" action="<?php echo site_url()?>/berkas/getBerkas">
 						  <div class="box-body">
 							<input type="hidden" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash();?>" style="display: none">
 							
@@ -118,6 +118,16 @@
 								</div>								
 							</div>
 							<div class="form-group row">
+								<label class="control-label col-sm-2 col-md-2 col-xs-2">Status:</label>
+								<div class="col-sm-6 col-md-6 col-xs-6">
+									<input type="radio" value="ACC" name="status"   />&nbsp;ACC
+									<input type="radio" value="BTL" name="status"  />&nbsp;BTL
+									<input type="radio" value="TMS" name="status"  />&nbsp;TMS
+									<input type="radio" value="ALL" name="status"  checked />&nbsp;SEMUA
+								</div>	
+							</div>
+							
+							<div class="form-group row">
 							  	<label class="control-label col-md-2 col-sm-2 col-xs-2">Perintah:</label>
 								<div class="col-md-10 col-sm-10 col-xs-10">
 									<input type="radio" required value="1" name="perintah"  checked />&nbsp;Tampil
@@ -134,7 +144,7 @@
 						<hr/>
 						<?php if($show):?>
 						<div class="table-responsive">
-							<table class="table table-striped table-condensed">
+							<table id="tb-entry" class="table table-striped table-condensed">
 							<thead>
 								<tr>
 									<th></th>	
@@ -144,6 +154,7 @@
 									<th>UPDATE</th>
 									<th>PELAYANAN</th>
 									<th>STATUS</th>
+									<th>FILE</th>
 									<th>TAHAPAN</th>
 								</tr>
 							</thead>   
@@ -161,13 +172,17 @@
 									else
 									{
                                         $link2='<span class="'.$value->bg.'">'.$value->nomi_status.'</span>';
+										
 									}
   									
 								?>
 								<tr>
 									<td style="width:75px;">
 									<a href="#" class="btn bg-orange btn-flat btn-xs" data-tooltip="tooltip"  title="Lihat Kelengkapan Berkas" data-toggle="modal" data-target="#lihatModal" data-id="<?php echo '?n='.$this->myencrypt->encode($value->nip).'&l='.$this->myencrypt->encode($value->layanan_nama)?>"><i class="fa fa-search"></i></a>
-									&nbsp;<?php echo $link;?>
+									<?php 
+									echo '<button class="btn btn-danger btn-xs" data-tooltip="tooltip"  title="Upload Surat Keputusan" data-toggle="modal" data-target="#uploadModal" data-layanan="'.$value->layanan_id.'" data-agenda="'.$value->agenda_id.'" data-instansi="'.$value->agenda_ins.'" data-nip="'.$value->nip.'"><i class="fa fa-upload"></i></button>';
+									echo $link;
+									?>
 									</td>
 									<td><?php echo $value->agenda_nousul?></td>									
 									<td style="width:16%"><?php echo ($value->nomi_locked == "1" ?  '<i class="fa fa-lock"></i>'.$value->nip : $value->nip)?></td>
@@ -175,7 +190,87 @@
 									<td><?php echo $value->update_date?></td>														
 									<td><?php echo $value->layanan_nama?></td>											
 									<td><?php echo $link2?></td>
-									<td><span class="badge bg-light-blue"><?php echo $value->tahapan_nama?> <?php echo (!empty($value->ln_work) ? 'Oleh '.$value->ln_work : '')?></span></td>
+									<td style="width:50px;">
+									    <?php 
+										
+									    if(!empty($value->upload_persetujuan))
+										{
+											switch($value->layanan_id){
+												case 1:
+													$name  = 'NPKP_';				
+												break;
+												case 2:
+													$name  = 'NPKP_';				
+												break;
+												case 3:
+													$name  = 'NPKP_';			
+												break;			
+												case 4:
+													$name  = 'PERTEK_PENSIUN_';				
+												break;
+												case 6:
+													$name  = 'PERTEK_PENSIUN_';				
+												break;
+												case 7:
+													$name  = 'PERTEK_PENSIUN_';				
+												break;
+												case 8:
+													$name  = 'PERTEK_PENSIUN_';				
+												break;
+											}	
+											
+											$file = $name.$value->nip.'.pdf';
+											
+											echo '<span data-toggle="tooltip" data-original-title="Ada File Persetujuan">
+											<i class="fa fa-file-pdf-o" data-toggle="modal" data-target="#lihatFileModal" data-id="?id='.$this->myencrypt->encode($value->agenda_ins).'&f='.$this->myencrypt->encode($file).'" style="color:red;"></i></span>';
+										}
+										else
+										{
+											echo '<span data-toggle="tooltip" data-original-title="Tidak Ada File Persetujuan">
+											<i class="fa fa-file-o" style="color:red;"></i></span>';
+										}
+										
+										
+										if(!empty($value->upload_sk))
+										{
+											switch($value->layanan_id){
+												case 1:
+													$name  = 'SK_KP_';				
+												break;
+												case 2:
+													$name  = 'SK_KP_';				
+												break;
+												case 3:
+													$name  = 'SK_KP_';			
+												break;			
+												case 4:
+													$name  = 'SK_PENSIUN_';				
+												break;
+												case 6:
+													$name  = 'SK_PENSIUN_';				
+												break;
+												case 7:
+													$name  = 'SK_PENSIUN_';				
+												break;
+												case 8:
+													$name  = 'SK_PENSIUN_';				
+												break;
+											}	
+											
+											$file = $name.$value->nip.'.pdf';
+											
+											echo '<span data-toggle="tooltip" data-original-title="Ada File Surat Keputusan">
+											<i class="fa fa-file-pdf-o" data-toggle="modal" data-target="#lihatFileModal" data-id="?id='.$this->myencrypt->encode($value->agenda_ins).'&f='.$this->myencrypt->encode($file).'" style="color:red;"></i></span>';
+										}
+										else
+										{
+											echo '<span data-toggle="tooltip" data-original-title="Tidak Ada File Surat Keputusan">
+											<i class="fa fa-file-o" style="color:red;"></i></span>';
+										}
+									
+									    ?>									
+									</td>
+									<td><span><?php echo $value->tahapan_nama?> <?php echo (!empty($value->ln_work) ? 'Oleh '.$value->ln_work : '')?></span></td>
 								</tr>
 								<?php endforeach;?>
 								<?php endif;?>
@@ -260,6 +355,45 @@
 		</div>
 	</div>	
 	
+	<div id="uploadModal" class="modal fade" role="dialog">
+          <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"><span id="msg"></span></h4>
+                </div>
+                <div class="modal-body">
+                    <!-- Form -->
+                    <form method='post' action='' enctype="multipart/form-data" id="fileUploadForm">
+					    <input class="form-control" type="hidden" value="" name="agenda_ins" />
+						<input class="form-control" type="hidden" value="" name="agenda_id" />
+						<input class="form-control" type="hidden" value="" name="agenda_nip" />
+						<input class="form-control" type="hidden" value="" name="agenda_layanan" />
+						<input type="hidden" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash();?>" style="display: none">
+                        Select file : <input type='file' name='file' id='file' class='form-control' ><br>
+                        <input type='button' class='btn btn-info' value='Upload' id='btn_upload'>
+                    </form>
+                </div>                
+            </div>
+        </div>
+    </div>
+	
+	<div class="modal" id="showFile" tabindex="-1" role="dialog" aria-hidden="true">
+	    <div class="modal-dialog  md-dialog modal-lg">
+		  <div class="modal-content md-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title" >File Persetujuan Teknis</h4>
+				</div>	
+				<div class="modal-body md-body">
+					<iframe  id="frame" width="100%" height="100%" frameborder="0" ></iframe>	
+					
+				</div>
+		  </div>
+		</div>
+	</div>	
+	
 	<script src="<?php echo base_url()?>assets/plugins/jQuery/jQuery-2.1.4.min.js"></script>    
     <script src="<?php echo base_url()?>assets/bootstrap/js/bootstrap.min.js"></script> 
     <script src="<?php echo base_url()?>assets/dist/js/app.min.js"></script>
@@ -328,6 +462,66 @@
 					
 	    });
 		
+		$('#uploadModal').on('show.bs.modal',function(e){
+			
+			$('#uploadModal #msg').text('Upload File Surat Keputusan')
+                     .removeClass( "text-green")
+					 .removeClass( "text-red")
+				     .removeClass( "text-blue" ); 
+		   
+			var nip   		=  $(e.relatedTarget).attr('data-nip');
+			var instansi    =  $(e.relatedTarget).attr('data-instansi');
+			var agenda   	=  $(e.relatedTarget).attr('data-agenda');
+			var layanan   	=  $(e.relatedTarget).attr('data-layanan');
+			
+			$("input[name=agenda_nip]").val(nip);
+			$("input[name=agenda_ins]").val(instansi);
+			$("input[name=agenda_id]").val(agenda);
+			$("input[name=agenda_layanan]").val(layanan);
+		});
+		
+		
+		$('#btn_upload').click(function(){
+			var form = $('#fileUploadForm')[0];
+			// Create an FormData object 
+			var data = new FormData(form);
+			
+			// AJAX request
+			$.ajax({
+				url: '<?php  echo site_url()?>/berkas/upload',
+				type: 'post',
+				data: data,
+				contentType: false,
+				processData: false,
+				cache:false,
+				success: function(e){                        
+					$('#uploadModal #msg').text(e.pesan)
+						 .removeClass( "text-blue")
+						 .removeClass( "text-red")
+						 .addClass( "text-green" );
+					refreshTable();	 
+				},
+				error : function(e){
+					$('#uploadModal #msg').text(e.responseJSON.error)
+						 .removeClass( "text-blue")							 
+						 .removeClass( "text-green")
+						 .addClass( "text-red" ); 
+					refreshTable();	 
+				}	
+            });
+        });
+		
+		
+		function refreshTable(){						
+			$.ajax({   
+			    type: 'POST',   
+			    url: '<?php echo site_url()?>/berkas/getBerkasAll',   
+			    data: $('form[name=frmEntry]').serialize(),
+			    success: function(res) {
+					$("#tb-entry").html(res);
+				},
+			});
+		}
 				
 	});
     </script>	

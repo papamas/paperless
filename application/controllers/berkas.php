@@ -41,6 +41,7 @@ class Berkas extends MY_Controller {
 		
 		$search['search']              = $this->input->post('search');
 		$search['searchby']            = $this->input->post('searchby');
+		$search['status']              = $this->input->post('status');
 		$perintah           		   = $this->input->post('perintah');
 		
 		if($this->form_validation->run() == FALSE)
@@ -333,6 +334,274 @@ class Berkas extends MY_Controller {
 		echo $html;
 	}	
 	
+	public function upload()
+	{
+		
+		$instansi						= $this->input->post('agenda_ins');
+		$nip							= $this->input->post('agenda_nip');
+		$agenda							= $this->input->post('agenda_id');
+		$layanan						= $this->input->post('agenda_layanan');
+		
+		switch($layanan){
+			case 1:
+			    $name  = 'SK_KP_';				
+			break;
+			case 2:
+			    $name  = 'SK_KP_';				
+			break;
+			case 3:
+			    $name  = 'SK_KP_';			
+			break;			
+		    case 4:
+			    $name  = 'SK_PENSIUN_';				
+			break;
+			case 6:
+			    $name  = 'SK_PENSIUN_';				
+			break;
+			case 7:
+			    $name  = 'SK_PENSIUN_';				
+			break;
+			case 8:
+			    $name  = 'SK_PENSIUN_';				
+			break;
+			case 9:
+				$name  = 'KARIS_';				
+			break;
+			case 10:
+				$name  = 'KARSU_';				
+			break;
+			case 11:
+				$name  = 'KARPEG_';				
+			break;
+			case 12:
+				$name  = 'SK_KP_';			
+			break;
+			case 13:
+				$name  = 'SK_MUTASI';			
+			break;
+			case 14:
+				$name  = 'SK_PG_';			
+			break;
+		}	
+		
+		
+		$target_dir						='./uploads/'.$instansi;		
+		$config['upload_path']          = $target_dir;
+		$config['allowed_types']        = 'pdf';
+		$config['max_size']             = 3024;
+		$config['encrypt_name']			= FALSE;	
+		$config['overwrite']			= TRUE;	
+		$config['detect_mime']			= TRUE;
+		$config['file_name']            = $name.$nip;
+		
+		$this->load->library('upload', $config);
+		
+		if (! $this->upload->do_upload('file'))
+		{
+				$error = array('error' => strip_tags($this->upload->display_errors()));
+
+				$this->output
+						->set_status_header(406)
+						->set_content_type('application/json', 'utf-8')
+						->set_output(json_encode($error));
+				
+		}
+		else
+		{
+				$data 		          = $this->upload->data();
+				$data['id_instansi']  = $instansi;
+				$data['nip']		  = $nip;				
+				$result		          = $this->berkas->insertUpload($data);
+				
+			
+				if($result['response'])
+				{
+				    $this->output
+						->set_status_header(200)
+						->set_content_type('application/json', 'utf-8')
+						->set_output(json_encode($result)); 
+                }
+				else
+				{
+					$result['updated']  = $this->berkas->updateFile($result);
+					$result['error'] 	= 'File Surat Keputusan sudah ada, overwrite file';
+					$this->output
+						->set_status_header(406)
+						->set_content_type('application/json', 'utf-8')
+						->set_output(json_encode($result));
+
+                }			
+				
+		}
+		
+	}	
 	
+	public function getBerkasAll()
+	{
+		$search           = $this->input->post();
+		$entry			  = $this->berkas->getUsulDokumen($search);
+		
+		$html = '';
+		$html .='<table id="tb-entry" class="table table-striped table-condensed">
+						<thead>
+							<tr>
+								<th style="width:75px;"></th>	
+								<th>NOUSUL</th>									
+								<th style="width:16%">NIP</th>
+								<th>NAMA</th>
+								<th>UPDATE</th>
+								<th>PELAYANAN</th>
+								<th>STATUS</th>
+								<th style="width:50px;">FILE</th>
+								<th>TAHAPAN</th>
+							</tr>
+						</thead>  ';
+		foreach($entry->result() as $value)
+		{
+			$layanan = $value->layanan_id;
+			$link  ='';
+			$link2 ='';
+			if($value->nomi_status == 'BTL')
+			{
+				$link='<a href="#" class="btn bg-maroon btn-flat btn-xs" data-tooltip="tooltip"  title="Kirim Ulang Berkas BTL ini" data-toggle="modal" data-target="#kirimModal" data-nip="'.$this->myencrypt->encode($value->nip).'" data-agenda="'.$this->myencrypt->encode($value->agenda_id).'" ><i class="fa fa-mail-forward"></i></a>';	
+				$link2='<a href="#" class="btn bg-orange btn-xs" data-tooltip="tooltip"  title="Cek Keterangan Alasan BTL" data-toggle="modal" data-target="#cekModal" data-id="?n='.$this->myencrypt->encode($value->nip).'&a='.$this->myencrypt->encode($value->agenda_id).'">'.$value->nomi_status.'</a>';
+			}
+			else
+			{
+				$link2='<span class="'.$value->bg.'">'.$value->nomi_status.'</span>';
+				
+			}
+			
+			$html .='<tr><td>';
+			$html .='<a href="#" class="btn bg-orange btn-flat btn-xs" data-tooltip="tooltip"  title="Lihat Kelengkapan Berkas" data-toggle="modal" data-target="#lihatModal" data-id="?n='.$this->myencrypt->encode($value->nip).'&l='.$this->myencrypt->encode($value->layanan_nama).'"><i class="fa fa-search"></i></a>';			
+			$html.= '&nbsp;<button class="btn btn-danger btn-xs" data-tooltip="tooltip"  title="upload Surat Keputusan" data-toggle="modal" data-target="#uploadModal" data-layanan="'.$value->layanan_id.'" data-agenda="'.$value->agenda_id.'" data-instansi="'.$value->agenda_ins.'" data-nip="'.$value->nip.'"><i class="fa fa-upload"></i></button>';
+			$html .= $link;
+			$html .='</td>';						
+			$html .='	<td>'.$value->agenda_nousul.'</td>
+						<td>'.($value->nomi_locked == "1" ?  '<i class="fa fa-lock"></i>'.$value->nip : $value->nip).'</td>
+						<td>'.$value->nama.'</td>
+						<td>'.$value->update_date.'</td>																					
+						<td>'.$value->layanan_nama.'</td>
+						<td>'.$link2.'</td>';
+			$html .='<td>';
+						if(!empty($value->upload_persetujuan))
+						{
+							switch($value->layanan_id){
+								case 1:
+									$name  = 'NPKP_';				
+								break;
+								case 2:
+									$name  = 'NPKP_';				
+								break;
+								case 3:
+									$name  = 'NPKP_';			
+								break;			
+								case 4:
+									$name  = 'PERTEK_PENSIUN_';				
+								break;
+								case 6:
+									$name  = 'PERTEK_PENSIUN_';				
+								break;
+								case 7:
+									$name  = 'PERTEK_PENSIUN_';				
+								break;
+								case 8:
+									$name  = 'PERTEK_PENSIUN_';				
+								break;
+								case 9:
+									$name  = 'KARIS_';				
+								break;
+								case 10:
+									$name  = 'KARSU_';				
+								break;
+								case 11:
+									$name  = 'KARPEG_';				
+								break;
+								case 12:
+									$name  = 'NPKP_';			
+								break;
+								case 13:
+									$name  = 'SK_MUTASI';			
+								break;
+								case 14:
+									$name  = 'SK_PG_';			
+								break;
+							}	
+							
+							$file = $name.$value->nip.'.pdf';
+							
+							$html .= '<span data-toggle="tooltip" data-original-title="Ada File Persetujuan">
+							<i class="fa fa-file-pdf-o" data-toggle="modal" data-target="#lihatFileModal" data-id="?id='.$this->myencrypt->encode($value->agenda_ins).'&f='.$this->myencrypt->encode($file).'" style="color:red;"></i></span>';
+						}
+						else
+						{
+							$html .= '<span data-toggle="tooltip" data-original-title="Tidak Ada File Persetujuan">
+							<i class="fa fa-file-o" style="color:red;"></i></span>';
+						}
+						
+						
+						if(!empty($value->upload_sk))
+						{
+							switch($value->layanan_id){
+								case 1:
+									$name  = 'SK_KP_';				
+								break;
+								case 2:
+									$name  = 'SK_KP_';				
+								break;
+								case 3:
+									$name  = 'SK_KP_';			
+								break;			
+								case 4:
+									$name  = 'SK_PENSIUN_';				
+								break;
+								case 6:
+									$name  = 'SK_PENSIUN_';				
+								break;
+								case 7:
+									$name  = 'SK_PENSIUN_';				
+								break;
+								case 8:
+									$name  = 'SK_PENSIUN_';				
+								break;
+								case 9:
+									$name  = 'KARIS_';				
+								break;
+								case 10:
+									$name  = 'KARSU_';				
+								break;
+								case 11:
+									$name  = 'KARPEG_';				
+								break;
+								case 12:
+									$name  = 'SK_KP_';			
+								break;
+								case 13:
+									$name  = 'SK_MUTASI';			
+								break;
+								case 14:
+									$name  = 'SK_PG_';			
+								break;
+							}	
+							
+							$file = $name.$value->nip.'.pdf';
+							
+							$html .= '<span data-toggle="tooltip" data-original-title="Ada File Surat Keputusan">
+							<i class="fa fa-file-pdf-o" data-toggle="modal" data-target="#lihatFileModal" data-id="?id='.$this->myencrypt->encode($value->agenda_ins).'&f='.$this->myencrypt->encode($file).'" style="color:red;"></i></span>';
+						}
+						else
+						{
+							$html .= '<span data-toggle="tooltip" data-original-title="Tidak Ada File Surat Keputusan">
+							<i class="fa fa-file-o" style="color:red;"></i></span>';
+						}									
+							
+			$html .= '</td>';						
+			$html .='<td>'.$value->tahapan_nama.(!empty($value->ln_work) ? 'Oleh '.$value->ln_work : '').'</td>';
+			$html .='</tr>';	
+		}
+		$html .='</table>';		
+        echo $html;		
+		
+	}
 	
 }
