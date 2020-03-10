@@ -46,8 +46,9 @@ class Entry_model extends CI_Model {
 		$layanan    			= $data['layanan'];
 		$reportrange        	= $data['reportrange'];
 		$status    				= $data['status'];
-		$nip    				= $data['nip'];
 		$spesimen    			= $data['spesimen'];
+		$search 				= $this->input->post('search');
+		$searchby       		= $this->input->post('searchby');
 			
 		switch($status)
 		{
@@ -60,15 +61,6 @@ class Entry_model extends CI_Model {
             case 3:
 			    $sql_status = " ";
             break;            			
-		}	
-		
-		if(!empty($nip))
-		{
-			$sql_nip = " AND b.nip = '$nip' ";
-        }
-        else
-		{
-			$sql_nip = " ";   
 		}	
 		
 		if(!empty($reportrange))
@@ -121,6 +113,19 @@ class Entry_model extends CI_Model {
 			$sql_spesimen = " ";   
 		}	
 		
+		switch($searchby){
+            case 1:
+			   $search = trim($search);	
+			   $sql_filter = " AND  UPPER(trim(b.nip))=UPPER(trim('$search')) ";
+            break;
+			case 2:
+			   $search = trim($search);	
+			   $sql_filter = " AND  UPPER(trim(a.agenda_nousul))=UPPER('$search') ";
+            break;
+			default:
+                $sql_filter = " ";		
+		}
+		
 	    $bidang  = $this->session->userdata('session_bidang');
 		
 		$q="SELECT a.*,
@@ -158,7 +163,8 @@ LEFT JOIN $this->tableuser o ON o.user_id = b.entry_by
 LEFT JOIN $this->tablephoto p ON  (b.nip = p.nip AND p.layanan_id = a.layanan_id)
 WHERE b.nomi_status='ACC' 
 AND c.layanan_bidang='$bidang' 
-$sql_status  $sql_nip  $sql_instansi  $sql_layanan  $sql_date  $sql_spesimen
+$sql_status  $sql_filter  $sql_instansi  $sql_layanan  $sql_date  $sql_spesimen
+ORDER  by e.PNS_PNSNAM ASC
 ";
 	
 		$query 		= $this->db->query($q);

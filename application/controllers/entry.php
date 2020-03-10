@@ -63,6 +63,8 @@ class Entry extends MY_Controller {
 		$this->form_validation->set_rules('perintah', 'Perintah', 'required');
 		$this->form_validation->set_rules('nip', 'NIP', 'trim');
 		$this->form_validation->set_rules('spesimen', 'spesimen', 'trim');
+		$this->form_validation->set_rules('searchby', 'searchby', 'trim');
+		$this->form_validation->set_rules('search', 'search', 'trim');
 		
 		$search           = $this->input->post();
 		$perintah         = $this->input->post('perintah');		

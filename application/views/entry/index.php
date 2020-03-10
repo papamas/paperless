@@ -121,31 +121,43 @@
 							</div>
 							<div class="form-group row">
 								<label class="col-sm-2 col-md-2 col-xs-2 control-label">Periode ACC</label>
-								<div class="col-sm-5 col-md-5 col-xs-5 controls">
+								<div class="col-sm-4 col-md-4 col-xs-4 controls">
 								  <div class="input-group">
 									<span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
 									<input type="text"  style="" name="reportrange" id="reportrange" class="form-control" value="<?php echo date("d/m/Y", strtotime( "-1 month" )).' - '.date( "d/m/Y")?>"/>  
 								  </div>
 								  <span class="help-block text-red"><?php echo form_error('reportrange'); ?></span>
 								</div>
-                                <div class="col-md-5 col-sm-5 col-xs-5">									
-								    <input type="number" name="nip" class="form-control" placeholder="Masukan NIP" value="<?php echo set_value('nip'); ?>">									
+                                <div class="col-md-6 col-sm-6 col-xs-6">
+									<label class=" control-label col-md-2 col-sm-2 col-xs-2">Spesimen</label>									
+									<div class="col-md-10 col-sm-10 col-xs-10">
+										<select name="spesimen" class="form-control">
+											<option value="">--silahkan Pilih--</option>
+											<?php if($spesimen->num_rows() > 0):?>
+											<?php foreach($spesimen->result() as $value):?>
+											<option value="<?php echo $value->user_id?>" <?php echo  set_select('spesimen', $value->user_id); ?> ><?php echo $value->first_name.' '.$value->last_name;?></option>
+											<?php endforeach;?>
+											<?php endif;?>
+										</select>
+										<span class="help-block text-red"><?php echo form_error('spesimen'); ?></span>
+									</div>										
 								</div>									
 							</div>
 							<div class="form-group row">							   						 
-								<label class=" control-label col-md-2 col-sm-2 col-xs-2">Spesimen</label>									
-								<div class="col-md-10 col-sm-10 col-xs-10">
-									<select name="spesimen" class="form-control">
+							    <label class=" control-label col-md-2 col-sm-2 col-xs-2">Filter</label>									
+								<div class="col-md-4 col-sm-4 col-xs-4">
+									<select name="searchby" class="form-control">
 										<option value="">--silahkan Pilih--</option>
-										<?php if($spesimen->num_rows() > 0):?>
-										<?php foreach($spesimen->result() as $value):?>
-										<option value="<?php echo $value->user_id?>" <?php echo  set_select('spesimen', $value->user_id); ?> ><?php echo $value->first_name.' '.$value->last_name;?></option>
-										<?php endforeach;?>
-										<?php endif;?>
+										<option value="1" <?php echo  set_select('searchby', '1'); ?> >NIP</option>
+										<option value="2" <?php echo  set_select('searchby', '2'); ?> >NOMOR USUL</option>											
 									</select>
-									<span class="help-block text-red"><?php echo form_error('spesimen'); ?></span>
-								</div>														
-							</div>	
+									<span class="help-block text-red"><?php echo form_error('searchby'); ?></span>
+								</div>
+								<div class="col-md-6 col-sm-6 col-xs-6">									
+								    <input type="text" name="search" class="form-control" placeholder="Masukan data pencarian" value="<?php echo set_value('search'); ?>">
+									<span class="help-block text-red"><?php echo form_error('search'); ?></span>
+								</div>								
+							</div>			
 							<div class="form-group row">
 							    <label class="control-label col-md-2 col-sm-2 col-xs-2">Status:</label>
 								<div class="col-md-4 col-sm-10 col-xs-10">
