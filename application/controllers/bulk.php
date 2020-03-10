@@ -52,7 +52,7 @@ class Bulk extends MY_Controller {
 	
 	public function getPhoto()
 	{
-		$this->form_validation->set_rules('instansi', 'instansi', 'trim');
+		$this->form_validation->set_rules('instansi', 'instansi', 'trim|required');
 		$this->form_validation->set_rules('layanan', 'layanan', 'trim|required');
 		
 		if($this->form_validation->run() == FALSE)
@@ -105,6 +105,7 @@ class Bulk extends MY_Controller {
 			$counter = 0;
 			
 			$instansi		= $this->input->post('instansi');
+			
 			
 			foreach ($photo->result() as $value)
 			{

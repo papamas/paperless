@@ -2,12 +2,13 @@
 class Bulk_model extends CI_Model {
 
 	private     $rawName;
-	private     $table  = 'upload_photo';
-	private     $dokumen= 'dokumen';
-	private     $tableinstansi= 'mirror.instansi';
-	private     $pupns        = 'mirror.pupns';
-	private     $layanan      = 'layanan';
+	private     $table  		= 'upload_photo';
+	private     $dokumen		= 'dokumen';
+	private     $tableinstansi	= 'mirror.instansi';
+	private     $pupns        	= 'mirror.pupns';
+	private     $layanan      	= 'layanan';
 	private     $tableagenda 	= 'agenda';
+	private     $tablenom 		= 'nominatif';
 		
     function __construct()
     {
@@ -24,7 +25,7 @@ class Bulk_model extends CI_Model {
 		
 		if(!empty($instansi))
 		{
-			$sql_instansi ="  AND b.agenda_ins='$instansi' ";			
+			$sql_instansi ="  AND a.agenda_ins='$instansi' ";			
 		}
 		else
 		{
@@ -33,7 +34,7 @@ class Bulk_model extends CI_Model {
 
 		if(!empty($layanan))
 		{
-			$sql_layanan ="  AND  a.layanan_id='$layanan' AND b.layanan_id='$layanan' ";			
+			$sql_layanan ="  AND  a.layanan_id='$layanan' ";			
 		}
 		else
 		{
@@ -42,19 +43,22 @@ class Bulk_model extends CI_Model {
 		
 		if(!empty($search))
 		{
-			$sql_usul ="  AND  b.agenda_nousul=trim('$search') ";			
+			$sql_usul ="  AND  trim(a.agenda_nousul)=trim('$search')";			
 		}
 		else
 		{
 			$sql_usul =" ";
 		}	
 		
-		$sql="SELECT a.* FROM upload_photo  a 
-		LEFT JOIN $this->tableagenda b ON a.layanan_id = b.layanan_id
-		LEFT JOIN $this->pupns c ON a.nip = c.PNS_NIPBARU
-		WHERE 1=1  $sql_instansi $sql_layanan $sql_usul
-		ORDER BY c.PNS_PNSNAM ASC";	
 		
+		$sql="SELECT a.* FROM $this->tableagenda a
+		LEFT JOIN $this->tablenom b ON a.agenda_id = b.agenda_id  
+		LEFT JOIN $this->layanan c  ON a.layanan_id = c.layanan_id
+		LEFT JOIN $this->tableinstansi d ON a.agenda_ins = d.INS_KODINS
+        LEFT JOIN $this->pupns e ON b.nip = e.PNS_NIPBARU
+		LEFT JOIN $this->table f ON  (b.nip = f.nip AND f.layanan_id = a.layanan_id)
+		WHERE b.nomi_status='ACC'  $sql_instansi $sql_layanan  $sql_usul
+    	ORDER BY e.PNS_PNSNAM ASC";
 		//var_dump($sql);exit;
 		
 		return $this->db->query($sql);

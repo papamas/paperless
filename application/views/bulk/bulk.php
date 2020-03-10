@@ -56,7 +56,7 @@
                                     <option value="">--Silahkan Pilih--</option>									
 									<?php if($instansi->num_rows() > 0):?>
 									<?php foreach($instansi->result() as $value):?>
-									<option value="<?php echo $value->INS_KODINS?>" <?php echo ($this->session->userdata('session_instansi') == $value->INS_KODINS ? 'selected="selected"' : '')?>><?php echo $value->INS_NAMINS?></option>
+									<option value="<?php echo $value->INS_KODINS?>" <?php echo  set_select('instansi', $value->INS_KODINS); ?>> <?php echo $value->INS_NAMINS?></option>
 									<?php endforeach;?>
 									<?php endif;?>
 								</select>								
