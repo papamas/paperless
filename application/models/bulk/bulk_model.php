@@ -21,7 +21,8 @@ class Bulk_model extends CI_Model {
 	   
 		$instansi		= $this->input->post('instansi');
 		$layanan		= $this->input->post('layanan');
-		$search 		= $this->input->post('search');
+		$search 		= trim($this->input->post('search'));
+		$searchby       = $this->input->post('searchby');
 		
 		if(!empty($instansi))
 		{
@@ -41,15 +42,14 @@ class Bulk_model extends CI_Model {
 			$sql_layanan =" ";
 		}	
 		
-		if(!empty($search))
-		{
-			$sql_usul ="  AND  trim(a.agenda_nousul)=trim('$search')";			
+		switch($searchby){
+            case 1:
+			   $search = trim($search);	
+			   $sql = " AND  UPPER(trim(a.agenda_nousul))=UPPER('$search') ";
+            break;
+			default:
+                $sql = " AND a.nip = '999999999' ";		
 		}
-		else
-		{
-			$sql_usul =" ";
-		}	
-		
 		
 		$sql="SELECT a.*, f.orig_name FROM $this->tableagenda a
 		LEFT JOIN $this->tablenom b ON a.agenda_id = b.agenda_id  
@@ -57,7 +57,7 @@ class Bulk_model extends CI_Model {
 		LEFT JOIN $this->tableinstansi d ON a.agenda_ins = d.INS_KODINS
         LEFT JOIN $this->pupns e ON b.nip = e.PNS_NIPBARU
 		LEFT JOIN $this->table f ON  (b.nip = f.nip AND f.layanan_id = a.layanan_id)
-		WHERE b.nomi_status='ACC'  $sql_instansi $sql_layanan  $sql_usul
+		WHERE b.nomi_status='ACC'  $sql_instansi $sql_layanan  $sql
     	ORDER BY e.PNS_PNSNAM ASC";
 		//var_dump($sql);exit;
 		
