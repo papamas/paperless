@@ -51,7 +51,7 @@ class Bulk_model extends CI_Model {
 		}	
 		
 		
-		$sql="SELECT a.* FROM $this->tableagenda a
+		$sql="SELECT a.*, f.orig_name FROM $this->tableagenda a
 		LEFT JOIN $this->tablenom b ON a.agenda_id = b.agenda_id  
 		LEFT JOIN $this->layanan c  ON a.layanan_id = c.layanan_id
 		LEFT JOIN $this->tableinstansi d ON a.agenda_ins = d.INS_KODINS

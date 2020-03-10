@@ -653,7 +653,7 @@ LEFT JOIN $this->tableagenda b ON a.agenda_id = b.agenda_id
 LEFT JOIN $this->tablelayanan c ON b.layanan_id = c.layanan_id
 LEFT JOIN $this->tableinstansi d ON d.INS_KODINS = b.agenda_ins
 LEFT JOIN $this->tablepupns e ON e.PNS_NIPBARU = a.nip
-WHERE 1=1 $sql_instansi  $sql_layanan   $sql_date  $sql_status  $sql_verify  order by a.update_date ASC";
+WHERE 1=1 $sql_instansi  $sql_layanan   $sql_date  $sql_status  $sql_verify  order by e.PNS_PNSNAM ASC";
        
 	   //var_dump($sql);
 
