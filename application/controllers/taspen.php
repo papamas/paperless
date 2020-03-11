@@ -1,7 +1,7 @@
 
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class taspen extends MY_Controller {
+class Taspen extends MY_Controller {
 
 	/**
 	 * Index Page for this controller.
@@ -19,7 +19,7 @@ class taspen extends MY_Controller {
 	 * @see http://codeigniter.com/user_guide/general/urls.html
 	 */
 	 
-	var $menu_id    = 27;
+	var $menu_id    = 29;
 	var $allow 		= FALSE;
  
 	 
@@ -29,6 +29,7 @@ class taspen extends MY_Controller {
 		$this->load->library(array('Auth','Menu','Myencrypt','form_validation'));
 		$this->load->model('taspen/upload/upload_model', 'uploadFile');
 		$this->load->model('taspen/berkas/berkas_model', 'berkas');
+		$this->load->model('taspen/validasi/validasi_model', 'validasi');
 		$this->load->model('menu_model');
 		$this->allow = $this->auth->isAuthMenu($this->menu_id);
 	}
@@ -40,14 +41,90 @@ class taspen extends MY_Controller {
         $data['jabatan']  =  $this->auth->getJabatan();
 		$data['member']	  =  $this->auth->getCreated();
 		$data['avatar']	  =  $this->auth->getAvatar();
+		$data['instansi'] =  $this->validasi->getInstansi();
+		$data['show']	  =  FALSE;
 		if(!$this->allow)
 		{
 			$this->load->view('403/index',$data);
 			return;
 		}
-		$this->load->view('taspen/upload/index',$data);
+		$this->load->view('taspen/validasi/index',$data);
 		
 	}
+	
+	public function getValidasiSK()
+	{
+		$this->form_validation->set_rules('instansi', 'instansi', 'required');
+		$this->form_validation->set_rules('searchby', 'Filter', 'trim');
+		$this->form_validation->set_rules('search', 'Data Pencarian', 'trim');		
+		
+        $perintah		  = $this->input->post('perintah');	
+		
+		
+		if($this->form_validation->run() == FALSE)
+		{				
+			$data['menu']     		=  $this->menu->build_menu();		
+			$data['name']     		=  $this->auth->getName();
+			$data['jabatan']  		=  $this->auth->getJabatan();
+			$data['member']	  		=  $this->auth->getCreated();
+			$data['avatar']	  		=  $this->auth->getAvatar();
+			$data['instansi']  		= $this->validasi->getInstansi();
+			
+			$data['show']  			= FALSE;
+			$this->allow 			= $this->auth->isAuthMenu(29);
+			
+			if(!$this->allow)
+			{
+				$this->load->view('403/index',$data);
+				return;
+			}
+			$this->load->view('taspen/validasi/index',$data);
+		}
+        else
+        {			
+			
+			$q				  = $this->validasi->getValidasiSK();
+			
+			if($perintah == 1) {
+				
+				$data['menu']    		=  $this->menu->build_menu();
+				$data['name']     		=  $this->auth->getName();
+				$data['jabatan']  		=  $this->auth->getJabatan();
+				$data['member']	  		=  $this->auth->getCreated();
+				$data['avatar']	  		=  $this->auth->getAvatar();
+				$data['daftar']    		=  $q;
+				$data['instansi']		=  $this->validasi->getInstansi();
+				
+				$data['show']  			=  TRUE;
+				$this->allow 			=  $this->auth->isAuthMenu(29);
+				
+				if(!$this->allow)
+				{
+					$this->load->view('403/index',$data);
+					return;
+				}
+				$this->load->view('taspen/validasi/index',$data);
+			}
+			else
+			{
+				$this->_getExcel($q);
+				
+			}
+	    }	
+	}	
+	
+	public function getValidSK()
+	{
+		$instansi  = $this->myencrypt->decode($this->input->get('id'));
+		$file      = $this->myencrypt->decode($this->input->get('f'));
+				
+		header('Pragma:public');
+		header('Cache-Control:no-store, no-cache, must-revalidate');
+		header('Content-type:application/pdf');
+		header('Content-Disposition:inline; filename='.$file);                      
+		header('Expires:0'); 
+		readfile(base_url().'uploads/'.$instansi.'/'.$file);
+	}	
 	
 	public function doUpload()
     {
@@ -204,7 +281,7 @@ class taspen extends MY_Controller {
 			$row = $q->row();
 		$html .= '<table>';	
 		$html .= '<tr><td  colspan=2>TANGGAL</td><td>'.date('d-M-Y H:i:s').'</td></tr>';
-		$html .= '<tr><td  colspan=2>INSTANSI</td><td>TASPEN</td></tr>';		
+		$html .= '<tr><td  colspan=2>INSTANSI</td><td>'.$row->instansi.'</td></tr>';		
 		$html .= '</table><p></p>';
 		}
 		$html .= '<style> .str{mso-number-format:\@;}</style>';
@@ -234,6 +311,8 @@ class taspen extends MY_Controller {
 			echo $html;
 		} 	
 	}
+	
+	
 
 	public function getInline()
 	{
