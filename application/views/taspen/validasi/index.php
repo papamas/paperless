@@ -159,7 +159,7 @@
 							<?php  foreach($daftar->result() as $value):?>							
 							<tr>
 								<td><button class="btn btn-primary btn-xs" data-tooltip="tooltip"  title="Lihat Dokumen" data-toggle="modal" data-target="#skModal" data-id="?id=<?php echo $this->myencrypt->encode($value->id_instansi) ?>&f=<?php echo $this->myencrypt->encode($value->orig_name)?>"><i class="fa fa-search"></i></button> <?php echo $value->nama_dokumen?></td>								
-								<td><?php echo (!empty($value->nip_lama) ? $value->nip_lama : $value->nip_baru)?></td>
+								<td><?php echo $value->nip_lama.' / '.$value->nip_baru?></td>
 								<td><?php echo $value->nama?></td>
 								<td><?php echo $value->created_date?></td>						
 							</tr>
