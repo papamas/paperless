@@ -67,9 +67,9 @@ CASE a.nomi_status
 	WHEN 'BTL' THEN 'badge bg-yellow'
     ELSE 'badge bg-light-blue'
 END AS bg,
-a.nomi_verifby,a.update_date,a.upload_persetujuan,a.upload_sk,
+a.nomi_verifby,a.update_date,a.upload_persetujuan,a.upload_sk,a.file_persetujuan_raw_name,a.file_sk_raw_name,
 b.layanan_id,b.agenda_ins,b.agenda_nousul,b.agenda_timestamp,b.agenda_dokumen,b.agenda_status,
-c.layanan_nama, f.INS_NAMINS instansi, g.PNS_PNSNAM nama,
+c.layanan_nama, f.INS_NAMINS instansi, g.PNS_PNSNAM nama,g.PNS_GOLRU golongan,
 group_concat(d.dokumen_id SEPARATOR ',') dokumen_id , 
 group_concat(e.nama_dokumen SEPARATOR ',') nama_dokumen,
 GROUP_CONCAT(IF(e.flag = 1,e.nama_dokumen, NULL) SEPARATOR ',')  main_dokumen,
@@ -203,7 +203,7 @@ GROUP BY a.nip,b.layanan_id
 			$data['pesan']		= "File Surat Keputusan Berhasil Tersimpan";
 			$data['response']	= TRUE;
 			
-			$this->updateNominatif();
+			$this->updateNominatif($data);
 		}	
         $this->db->db_debug = $db_debug; //restore setting	
 
@@ -246,7 +246,7 @@ GROUP BY a.nip,b.layanan_id
 		
 	}	
 	
-	function updateNominatif()
+	function updateNominatif($data)
 	{
 		
 		$instansi						= $this->input->post('agenda_ins');
@@ -256,6 +256,7 @@ GROUP BY a.nip,b.layanan_id
 		$this->db->where('nip',$nip);
 		$this->db->where('agenda_id',$agenda);
 		$this->db->set('upload_sk',1);
+		$this->db->set('file_sk_raw_name',$data['raw_name']);
 		$this->db->set('date_upload_sk','NOW()',FALSE);
 		return $this->db->update($this->tablenom);
 

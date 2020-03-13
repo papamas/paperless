@@ -341,46 +341,47 @@ class Berkas extends MY_Controller {
 		$nip							= $this->input->post('agenda_nip');
 		$agenda							= $this->input->post('agenda_id');
 		$layanan						= $this->input->post('agenda_layanan');
-		
+		$golongan						= $this->input->post('agenda_golongan');
+		$gol                            = intval($golongan) + 1;
 		switch($layanan){
 			case 1:
-			    $name  = 'SK_KP_';				
+			    $name  = 'SK_KP_'.$nip.'_'.$gol;				
 			break;
 			case 2:
-			    $name  = 'SK_KP_';				
+			    $name  = 'SK_KP_'.$nip.'_'.$gol;				
 			break;
 			case 3:
-			    $name  = 'SK_KP_';			
+			    $name  = 'SK_KP_'.$nip.'_'.$gol;			
 			break;			
 		    case 4:
-			    $name  = 'SK_PENSIUN_';				
+			    $name  = 'SK_PENSIUN_'.$nip;				
 			break;
 			case 6:
-			    $name  = 'SK_PENSIUN_';				
+			    $name  = 'SK_PENSIUN_'.$nip;				
 			break;
 			case 7:
-			    $name  = 'SK_PENSIUN_';				
+			    $name  = 'SK_PENSIUN_'.$nip;					
 			break;
 			case 8:
-			    $name  = 'SK_PENSIUN_';				
+			    $name  = 'SK_PENSIUN_'.$nip;				
 			break;
 			case 9:
-				$name  = 'KARIS_';				
+				$name  = 'KARIS_'.$nip;				
 			break;
 			case 10:
-				$name  = 'KARSU_';				
+				$name  = 'KARSU_'.$nip;				
 			break;
 			case 11:
-				$name  = 'KARPEG_';				
+				$name  = 'KARPEG_'.$nip;				
 			break;
 			case 12:
-				$name  = 'SK_KP_';			
+				$name  = 'SK_KP_'.$nip.'_'.$gol;			
 			break;
 			case 13:
-				$name  = 'SK_MUTASI';			
+				$name  = 'SK_MUTASI_'.$nip;			
 			break;
 			case 14:
-				$name  = 'SK_PG_';			
+				$name  = 'SK_PG_'.$nip;			
 			break;
 		}	
 		
@@ -392,7 +393,7 @@ class Berkas extends MY_Controller {
 		$config['encrypt_name']			= FALSE;	
 		$config['overwrite']			= TRUE;	
 		$config['detect_mime']			= TRUE;
-		$config['file_name']            = $name.$nip;
+		$config['file_name']            = $name;
 		
 		$this->load->library('upload', $config);
 		
@@ -423,6 +424,9 @@ class Berkas extends MY_Controller {
                 }
 				else
 				{
+					// update nominatif
+					$this->berkas->updateNominatif($data);
+					
 					$result['updated']  = $this->berkas->updateFile($result);
 					$result['error'] 	= 'File Surat Keputusan sudah ada, overwrite file';
 					$this->output
@@ -486,49 +490,7 @@ class Berkas extends MY_Controller {
 			$html .='<td>';
 						if(!empty($value->upload_persetujuan))
 						{
-							switch($value->layanan_id){
-								case 1:
-									$name  = 'NPKP_';				
-								break;
-								case 2:
-									$name  = 'NPKP_';				
-								break;
-								case 3:
-									$name  = 'NPKP_';			
-								break;			
-								case 4:
-									$name  = 'PERTEK_PENSIUN_';				
-								break;
-								case 6:
-									$name  = 'PERTEK_PENSIUN_';				
-								break;
-								case 7:
-									$name  = 'PERTEK_PENSIUN_';				
-								break;
-								case 8:
-									$name  = 'PERTEK_PENSIUN_';				
-								break;
-								case 9:
-									$name  = 'KARIS_';				
-								break;
-								case 10:
-									$name  = 'KARSU_';				
-								break;
-								case 11:
-									$name  = 'KARPEG_';				
-								break;
-								case 12:
-									$name  = 'NPKP_';			
-								break;
-								case 13:
-									$name  = 'SK_MUTASI';			
-								break;
-								case 14:
-									$name  = 'SK_PG_';			
-								break;
-							}	
-							
-							$file = $name.$value->nip.'.pdf';
+							$file = $value->file_persetujuan_raw_name.'.pdf';
 							
 							$html .= '<span data-toggle="tooltip" data-original-title="Ada File Persetujuan">
 							<i class="fa fa-file-pdf-o" data-toggle="modal" data-target="#lihatFileModal" data-id="?id='.$this->myencrypt->encode($value->agenda_ins).'&f='.$this->myencrypt->encode($file).'" style="color:red;"></i></span>';
@@ -542,49 +504,7 @@ class Berkas extends MY_Controller {
 						
 						if(!empty($value->upload_sk))
 						{
-							switch($value->layanan_id){
-								case 1:
-									$name  = 'SK_KP_';				
-								break;
-								case 2:
-									$name  = 'SK_KP_';				
-								break;
-								case 3:
-									$name  = 'SK_KP_';			
-								break;			
-								case 4:
-									$name  = 'SK_PENSIUN_';				
-								break;
-								case 6:
-									$name  = 'SK_PENSIUN_';				
-								break;
-								case 7:
-									$name  = 'SK_PENSIUN_';				
-								break;
-								case 8:
-									$name  = 'SK_PENSIUN_';				
-								break;
-								case 9:
-									$name  = 'KARIS_';				
-								break;
-								case 10:
-									$name  = 'KARSU_';				
-								break;
-								case 11:
-									$name  = 'KARPEG_';				
-								break;
-								case 12:
-									$name  = 'SK_KP_';			
-								break;
-								case 13:
-									$name  = 'SK_MUTASI';			
-								break;
-								case 14:
-									$name  = 'SK_PG_';			
-								break;
-							}	
-							
-							$file = $name.$value->nip.'.pdf';
+							$file = $value->file_sk_raw_name.'.pdf';
 							
 							$html .= '<span data-toggle="tooltip" data-original-title="Ada File Surat Keputusan">
 							<i class="fa fa-file-pdf-o" data-toggle="modal" data-target="#lihatFileModal" data-id="?id='.$this->myencrypt->encode($value->agenda_ins).'&f='.$this->myencrypt->encode($file).'" style="color:red;"></i></span>';
@@ -596,7 +516,7 @@ class Berkas extends MY_Controller {
 						}									
 							
 			$html .= '</td>';						
-			$html .='<td>'.$value->tahapan_nama.(!empty($value->ln_work) ? 'Oleh '.$value->ln_work : '').'</td>';
+			$html .='<td>'.$value->tahapan_nama.(!empty($value->ln_work) ? ' Oleh '.$value->ln_work : '').'</td>';
 			$html .='</tr>';	
 		}
 		$html .='</table>';		

@@ -130,10 +130,11 @@ class Entry_model extends CI_Model {
 		
 		$q="SELECT a.*,
 		b.nip,b.tahapan_id,b.nomi_status,b.nomi_alasan,b.verify_date,b.entry_date,
-		b.nomi_persetujuan,DATE_FORMAT(b.tanggal_persetujuan,'%d-%m-%Y') tgl,b.upload_persetujuan,b.upload_sk,		
+		b.nomi_persetujuan,DATE_FORMAT(b.tanggal_persetujuan,'%d-%m-%Y') tgl,
+		b.upload_persetujuan,b.upload_sk,b.file_persetujuan_raw_name,b.file_sk_raw_name,	
 		c.layanan_nama,
 		d.INS_NAMINS instansi ,
-		e.PNS_PNSNAM nama,
+		e.PNS_PNSNAM nama,e.PNS_GOLRU golongan,
 		f.tahapan_nama,
 		g.first_name work_name,
 		h.first_name lock_name,
@@ -303,7 +304,7 @@ ORDER  by e.PNS_PNSNAM ASC
 			$data['pesan']		= "File Persetujuan Teknis Berhasil Tersimpan";
 			$data['response']	= TRUE;
 			
-			$this->updateNominatif();
+			$this->updateNominatif($data);
 		}	
         $this->db->db_debug = $db_debug; //restore setting	
 
@@ -346,7 +347,7 @@ ORDER  by e.PNS_PNSNAM ASC
 		
 	}	
 	
-	function updateNominatif()
+	function updateNominatif($data)
 	{
 		
 		$instansi						= $this->input->post('agenda_ins');
@@ -357,6 +358,7 @@ ORDER  by e.PNS_PNSNAM ASC
 		$this->db->where('agenda_id',$agenda);
 		$this->db->set('upload_persetujuan',1);
 		$this->db->set('date_upload_persetujuan','NOW()',FALSE);
+		$this->db->set('file_persetujuan_raw_name',$data['raw_name']);
 		return $this->db->update($this->tablenom);
 
 	}

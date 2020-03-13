@@ -180,7 +180,7 @@
 									<td style="width:75px;">
 									<a href="#" class="btn bg-orange btn-flat btn-xs" data-tooltip="tooltip"  title="Lihat Kelengkapan Berkas" data-toggle="modal" data-target="#lihatModal" data-id="<?php echo '?n='.$this->myencrypt->encode($value->nip).'&l='.$this->myencrypt->encode($value->layanan_nama)?>"><i class="fa fa-search"></i></a>
 									<?php 
-									echo '<button class="btn btn-danger btn-xs" data-tooltip="tooltip"  title="Upload Surat Keputusan" data-toggle="modal" data-target="#uploadModal" data-layanan="'.$value->layanan_id.'" data-agenda="'.$value->agenda_id.'" data-instansi="'.$value->agenda_ins.'" data-nip="'.$value->nip.'"><i class="fa fa-upload"></i></button>';
+									echo '<button class="btn btn-danger btn-xs" data-tooltip="tooltip"  title="Upload Surat Keputusan" data-toggle="modal" data-target="#uploadModal" data-layanan="'.$value->layanan_id.'" data-agenda="'.$value->agenda_id.'" data-instansi="'.$value->agenda_ins.'" data-nip="'.$value->nip.'" data-gol="'.$value->golongan.'"><i class="fa fa-upload"></i></button>';
 									echo $link;
 									?>
 									</td>
@@ -195,31 +195,7 @@
 										
 									    if(!empty($value->upload_persetujuan))
 										{
-											switch($value->layanan_id){
-												case 1:
-													$name  = 'NPKP_';				
-												break;
-												case 2:
-													$name  = 'NPKP_';				
-												break;
-												case 3:
-													$name  = 'NPKP_';			
-												break;			
-												case 4:
-													$name  = 'PERTEK_PENSIUN_';				
-												break;
-												case 6:
-													$name  = 'PERTEK_PENSIUN_';				
-												break;
-												case 7:
-													$name  = 'PERTEK_PENSIUN_';				
-												break;
-												case 8:
-													$name  = 'PERTEK_PENSIUN_';				
-												break;
-											}	
-											
-											$file = $name.$value->nip.'.pdf';
+											$file = $value->file_persetujuan_raw_name.'.pdf';
 											
 											echo '<span data-toggle="tooltip" data-original-title="Ada File Persetujuan">
 											<i class="fa fa-file-pdf-o" data-toggle="modal" data-target="#lihatFileModal" data-id="?id='.$this->myencrypt->encode($value->agenda_ins).'&f='.$this->myencrypt->encode($file).'" style="color:red;"></i></span>';
@@ -233,31 +209,7 @@
 										
 										if(!empty($value->upload_sk))
 										{
-											switch($value->layanan_id){
-												case 1:
-													$name  = 'SK_KP_';				
-												break;
-												case 2:
-													$name  = 'SK_KP_';				
-												break;
-												case 3:
-													$name  = 'SK_KP_';			
-												break;			
-												case 4:
-													$name  = 'SK_PENSIUN_';				
-												break;
-												case 6:
-													$name  = 'SK_PENSIUN_';				
-												break;
-												case 7:
-													$name  = 'SK_PENSIUN_';				
-												break;
-												case 8:
-													$name  = 'SK_PENSIUN_';				
-												break;
-											}	
-											
-											$file = $name.$value->nip.'.pdf';
+											$file = $value->file_sk_raw_name.'.pdf';
 											
 											echo '<span data-toggle="tooltip" data-original-title="Ada File Surat Keputusan">
 											<i class="fa fa-file-pdf-o" data-toggle="modal" data-target="#lihatFileModal" data-id="?id='.$this->myencrypt->encode($value->agenda_ins).'&f='.$this->myencrypt->encode($file).'" style="color:red;"></i></span>';
@@ -370,6 +322,7 @@
 						<input class="form-control" type="hidden" value="" name="agenda_id" />
 						<input class="form-control" type="hidden" value="" name="agenda_nip" />
 						<input class="form-control" type="hidden" value="" name="agenda_layanan" />
+						<input class="form-control" type="hidden" value="" name="agenda_golongan" />
 						<input type="hidden" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash();?>" style="display: none">
                         Select file : <input type='file' name='file' id='file' class='form-control' ><br>
                         <input type='button' class='btn btn-info' value='Upload' id='btn_upload'>
@@ -473,11 +426,13 @@
 			var instansi    =  $(e.relatedTarget).attr('data-instansi');
 			var agenda   	=  $(e.relatedTarget).attr('data-agenda');
 			var layanan   	=  $(e.relatedTarget).attr('data-layanan');
+			var golongan   	=  $(e.relatedTarget).attr('data-gol');
 			
 			$("input[name=agenda_nip]").val(nip);
 			$("input[name=agenda_ins]").val(instansi);
 			$("input[name=agenda_id]").val(agenda);
 			$("input[name=agenda_layanan]").val(layanan);
+			$("input[name=agenda_golongan]").val(golongan);
 		});
 		
 		
