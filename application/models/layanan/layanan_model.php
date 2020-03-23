@@ -25,18 +25,7 @@ class Layanan_model extends CI_Model {
 	public function getAll()
 	{
 	    $bidang  = $this->session->userdata('session_bidang');
-		/* $sql     = "SELECT a.*,c.layanan_nama,
-		d.INS_NAMINS instansi, count(b.agenda_id) jumlah_usul 
-		FROM $this->tableagenda a 
-LEFT JOIN $this->tablenominatif b ON  (a.agenda_id = b.agenda_id AND b.tahapan_id IN (2,3))
-LEFT JOIN $this->tablelayanan c  ON a.layanan_id = c.layanan_id
-LEFT JOIN $this->tableinstansi d ON a.agenda_ins = d.INS_KODINS
-WHERE c.layanan_bidang='$bidang' 
-AND b.nomi_status='BELUM' 
-AND a.agenda_status='dikirim'
-GROUP BY a.agenda_id ";     
- */
-        $sql="SELECT a.jumlah_usul,b.agenda_jumlah,
+		$sql="SELECT a.jumlah_usul,b.agenda_jumlah,
 b.agenda_nousul,b.agenda_timestamp,b.agenda_ins,b.agenda_dokumen,b.agenda_id,
 c.layanan_nama,d.INS_NAMINS instansi
 FROM  (select a.*, count(a.agenda_id) jumlah_usul 
@@ -53,6 +42,40 @@ ORDER BY b.agenda_timestamp DESC ";
 
         $query = $this->db->query($sql);
         return $query;		
+	}	
+	
+	
+	public function getAllTaspen()
+	{
+		$sql="SELECT a.*,COUNT(a.usul_id) jumlah_usul,
+		b.layanan_nama,		
+        c.tahapan_nama,
+        d.PNS_NIPBARU nip_baru, d.PNS_PNSNIP nip_lama		
+		FROM usul_taspen a 
+		LEFT JOIN layanan b ON a.layanan_id = b.layanan_id
+		LEFT JOIN tahapan c ON a.usul_tahapan_id = c.tahapan_id
+		LEFT JOIN mirror.pupns d ON (a.nip = d.PNS_NIPBARU OR a.nip = d.PNS_PNSNIP)		
+		where 1=1 AND a.usul_tahapan_id IN(2,3)
+		GROUP BY a.usul_id
+		ORDER BY a.kirim_bkn_date DESC";
+		$query = $this->db->query($sql);
+        return $query;	
+	}	
+	
+	public function getExcelTaspen($id)
+	{
+		$sql="SELECT a.*,COUNT(a.usul_id) jumlah_usul,
+		b.layanan_nama,
+		c.tahapan_nama,
+        d.PNS_NIPBARU nip_baru, d.PNS_PNSNIP nip_lama		
+		FROM usul_taspen a 
+		LEFT JOIN layanan b ON a.layanan_id = b.layanan_id
+		LEFT JOIN tahapan c ON a.usul_tahapan_id = c.tahapan_id
+		LEFT JOIN mirror.pupns d ON (a.nip = d.PNS_NIPBARU OR a.nip = d.PNS_PNSNIP)
+		WHERE usul_id='$id'
+		GROUP BY a.usul_id";
+		$query = $this->db->query($sql);
+        return $query;	
 	}	
 	
 	public function getExcel($id)

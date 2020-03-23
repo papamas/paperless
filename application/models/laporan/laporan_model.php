@@ -10,8 +10,9 @@ class Laporan_model extends CI_Model {
 	private     $tabledokumen		= 'dokumen';
 	private     $tableuser			= 'app_user';
 	private     $tablesyarat 		= 'syarat_layanan';
+	private     $usul			    = 'usul_taspen';
+	private     $tabletahapan 	    = 'tahapan';
 	
-		
     function __construct()
     {
         parent::__construct();
@@ -130,4 +131,98 @@ $sql_order ";
 		
         return      $query;		
     }	
+	
+	
+	public function getLaporanTaspen($data)
+	{		
+	    $instansi  				= $data['instansi'];
+		$layanan    			= $data['layanan'];
+		$reportrange        	= $data['reportrange'];
+		$status    				= $data['status'];
+		$bydate    				= $data['bydate'];
+		
+		if(!empty($reportrange))
+		{	
+			$xreportrange       	= explode("-",$reportrange);
+			$startdate				= $xreportrange[0];
+			$enddate				= $xreportrange[1];
+		}	
+		
+        if(!empty($layanan))
+		{
+		
+			$sql_layanan = " AND a.layanan_id = '$layanan' ";
+        }
+		else
+		{	
+			$sql_layanan = " ";   
+		}	
+
+		if(!empty($startdate) AND !empty($enddate))
+		{
+		
+		    if($bydate == 1)
+			{	
+				$sql_date = " AND DATE( a.usul_verif_date ) BETWEEN STR_TO_DATE( '$startdate', '%d/%m/%Y ' )
+				AND STR_TO_DATE( '$enddate', '%d/%m/%Y ' ) ";
+				
+				$sql_order = " order by a.usul_verif_date DESC ";
+			}
+			elseif($bydate == 2)
+			{
+				$sql_date = " AND DATE( a.usul_entry_date ) BETWEEN STR_TO_DATE( '$startdate', '%d/%m/%Y ' )
+				AND STR_TO_DATE( '$enddate', '%d/%m/%Y ' ) ";
+				$sql_order = " order by a.usul_entry_date DESC ";
+            }
+			else
+			{
+				$sql_date = " AND DATE( a.kirim_bkn_date ) BETWEEN STR_TO_DATE( '$startdate', '%d/%m/%Y ' )
+				AND STR_TO_DATE( '$enddate', '%d/%m/%Y ' ) ";
+				$sql_order = " order by a.kirim_bkn_date DESC ";
+            }	
+		}
+		else
+		{	
+			$sql_date = " ";   
+		}	
+
+		if($status == "ALL")
+		{
+			$sql_status = " ";  
+        }
+        else
+		{
+			$sql_status = " AND a.usul_status = '$status' ";
+		}	
+	
+	    $q ="SELECT a.*,DATE_FORMAT(a.tgl_usul,'%d-%m-%Y') tgl,
+		CASE a.usul_status
+			WHEN 'ACC' THEN 'badge bg-green'
+			WHEN 'TMS' THEN 'badge bg-red'
+			WHEN 'BTL' THEN 'badge bg-yellow'
+			ELSE 'badge bg-light-blue'
+		END AS bg,
+		b.layanan_nama,
+		c.tahapan_nama,
+		d.PNS_NIPBARU nip_baru, d.PNS_PNSNIP nip_lama,
+		e.first_name kirim_by,
+		f.first_name usul_kirim_name,
+		g.first_name usul_lock_name,
+		h.first_name usul_verif_name,
+		i.first_name usul_entry_name
+		FROM $this->usul a
+		LEFT JOIN $this->tablelayanan b ON a.layanan_id = b.layanan_id	
+		LEFT JOIN $this->tabletahapan c ON c.tahapan_id = a.usul_tahapan_id
+		LEFT JOIN $this->tablepupns d ON (a.nip = d.PNS_NIPBARU OR a.nip = d.PNS_PNSNIP)
+		LEFT JOIN $this->tableuser e ON e.user_id = a.kirim_bkn_by
+		LEFT JOIN $this->tableuser f ON f.user_id = a.usul_kirim_by
+		LEFT JOIN $this->tableuser g ON g.user_id = a.usul_lock_by
+		LEFT JOIN $this->tableuser h ON h.user_id = a.usul_verif_by
+		LEFT JOIN $this->tableuser i ON i.user_id = a.usul_entry_by
+        WHERE 1=1 $sql_layanan   $sql_date  $sql_status $sql_order";
+		
+		
+	    $query 		= $this->db->query($q);		
+        return      $query;
+	}	
 }

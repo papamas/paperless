@@ -36,6 +36,12 @@ class Verifikasi extends MY_Controller {
 	
 	public function getBerkas()
 	{	
+		if(!$this->allow)
+		{
+			$this->load->view('403/index',$data);
+			return;
+		}
+		
 		$this->form_validation->set_rules('instansi', 'instansi', 'trim');
 		$this->form_validation->set_rules('layanan', 'layanan', 'trim|required');
 		
@@ -51,33 +57,35 @@ class Verifikasi extends MY_Controller {
 			$data['instansi']  		= $this->verifikasi->getInstansi();
 			$data['layanan']  		= $this->verifikasi->getLayanan();
 			$data['show']  			= FALSE;
-			if(!$this->allow)
-			{
-				$this->load->view('403/index',$data);
-				return;
-			}
+			
 			$this->load->view('verifikasi/index',$data);
-			}
+		}
         else
 		{			
-			$q	  			        = $this->verifikasi->getUsulDokumen();	
-				
+			$instansi               = $this->input->post('instansi');
 			$data['menu']     		=  $this->menu->build_menu();
 			$data['lname']    		=  $this->auth->getLastName();        
 			$data['name']     		=  $this->auth->getName();
 			$data['jabatan']  		=  $this->auth->getJabatan();
 			$data['member']	  		=  $this->auth->getCreated();
 			$data['avatar']	  		=  $this->auth->getAvatar();
-			$data['usul']	  		=  $q;
 			$data['instansi']  		=  $this->verifikasi->getInstansi();
-			$data['layanan']  		= $this->verifikasi->getLayanan();
+			$data['layanan']  		=  $this->verifikasi->getLayanan();
+			$data['penerima']  		=  $this->verifikasi->getPenerima();
 			$data['show']  			=  TRUE;
-			if(!$this->allow)
-			{
-				$this->load->view('403/index',$data);
-				return;
+									
+			if($instansi != 9)
+			{	
+				$q	  			        = $this->verifikasi->getUsulDokumen();			
+				$data['usul']	  		=  $q;				
+				$this->load->view('verifikasi/index',$data);
 			}
-			$this->load->view('verifikasi/index',$data);
+            else
+            {
+				$q	  			        = $this->verifikasi->getUsulDokumenTaspen();			
+				$data['usul']	  		=  $q;
+				$this->load->view('verifikasi/indexTaspen',$data);
+            }		
 		}	
 	
 	}
@@ -354,6 +362,127 @@ class Verifikasi extends MY_Controller {
                         <td>
 						   <input type="checkbox" value="'.$value->nip.'" class="checkbox" name="nip[]" /> 
 						   <input type="checkbox" value="'.$value->agenda_id.'" class="checkbox" name="agenda[]"  style="opacity: 0.0; position: absolute; left: -9999px">
+						</td>						
+					</tr>';	
+		}
+		$html .='<tr><td colspan="7" class="full-right">
+						<label class="form-label">Jumlah Berkas :'.$usul->num_rows().'</label>
+						</td>
+					</tr>';
+		$html .='</table>';		
+        echo $html;		
+		
+	}
+	
+	/*TASPEN*/
+	public function getKelengkapanTaspen()	{
+		
+		$nip         = $this->myencrypt->decode($this->input->get('n'));
+		$berkas      = $this->verifikasi->getUploadDokumenTaspen($nip);
+		$layanan     = $this->myencrypt->decode($this->input->get('l'));
+		
+		$html = '';
+		$html .='<table class="table table-bordered table-striped table-condensed">
+						<thead>
+						    <tr>
+							<td colspan="4">LAYANAN USUL '.$layanan.'</td>
+							</tr>
+							<tr>
+								<th>ADA</th>
+								<th>NAMA BERKAS</th><th></th></tr></thead>';
+		foreach($berkas->result() as $value)
+		{
+			$html .='<tr>
+						<td><i class="fa fa-check" style="color:green;"></i></td>	
+						<td>'.$value->keterangan.'</td>
+						<td><button class="btn bg-navy btn-flat btn-xs" data-tooltip="tooltip"  title="Lihat File" data-toggle="modal" data-target="#showFile" data-id="?f='.$this->myencrypt->encode($value->file_name).'&t='.$this->myencrypt->encode($value->file_type).'"><i class="fa fa-search"></i></button></td>
+						</tr>';	
+		}
+		$html .='</table>';
+		
+		echo $html;
+	}
+	
+	public function getInlineTaspen()
+	{
+		$file      = $this->myencrypt->decode($this->input->get('f'));
+		$type      = $this->myencrypt->decode($this->input->get('t'));
+				
+		ob_clean();			
+		header('Pragma:public');
+		header('Cache-Control:no-store, no-cache, must-revalidate');
+		header('Content-type:'.$type.'');
+		header('Content-Disposition:inline; filename='.$file);                      
+		header('Expires:0'); 
+		readfile(base_url().'uploads/taspen/'.$file);
+	}	
+	
+	public function kirimTaspen()
+	{
+		$data['response']	= $this->verifikasi->setKirimTaspen();
+		
+		$this->output
+			->set_status_header(200)
+			->set_content_type('application/json', 'utf-8')
+			->set_output(json_encode($data));
+		
+	}
+	
+	public function kirimAllTaspen()
+	{
+		$nip                = $this->input->post('nip');
+		$usul_id            = $this->input->post('usul_id');
+		$penerima			  = $this->input->post('penerima');
+		
+		for($i=0;$i < count($nip);$i++)
+        {
+			$data['usul_id']    = $usul_id[$i];
+			$data['nip']        = $nip[$i];
+			$data['penerima']	= $penerima;
+			$data['response']	= $this->verifikasi->setKirimAllTaspen($data);
+			$this->output
+				->set_status_header(200)
+				->set_content_type('application/json', 'utf-8')
+				->set_output(json_encode($data));
+			
+		}   
+        	
+	}
+
+	
+	public function getVerifikasiTaspen()
+	{
+		$usul 		= $this->verifikasi->getUsulDokumenTaspen();		
+		$html = '';
+		$html .='<table id="tb-layanan" class="table table-striped table-condensed">
+						<thead>
+						    <tr>
+								<th></th>
+								<th>NOUSUL</th>									
+								<th>PELAYANAN</th>
+								<th>INSTANSI</th>
+								<th>NIP</th>
+								<th>NAMA</th>
+								<th></th>
+								
+						    </tr>
+					</thead>';
+		foreach($usul->result() as $value)
+		{
+			$html .='<tr>
+						<td style="width:65px;">
+						<a href="#"class="btn bg-orange btn-flat btn-xs" data-tooltip="tooltip"  title="Lihat Berkas" data-toggle="modal" data-target="#lihatModal" data-id="'.'?n='.$this->myencrypt->encode($value->nip).'&l='.$this->myencrypt->encode($value->layanan_nama).'"><i class="fa fa-search"></i></a>
+						<a href="#" class="btn btn-danger btn-flat btn-xs" data-tooltip="tooltip"  title="Kirim Teknis" data-toggle="modal" data-target="#kirimModal" data-nip="'.$value->nip.'" data-usul="'.$value->usul_id.'" ><i class="fa fa-mail-forward"></i></a>
+
+						</td>
+						<td>'.$value->nomor_usul.'</td>													
+						<td>'.$value->layanan_nama.'</td>
+						<td>TASPEN</td>		
+						<td>'.$value->nip.'</td>
+						<td>'.$value->nama.'</td>
+                        <td>
+						   <input type="checkbox" value="'.$value->nip.'" class="checkbox" name="nip[]" /> 
+						   <input type="checkbox" value="'.$value->usul_id.'" class="checkbox" name="usul_id[]"  style="opacity: 0.0; position: absolute; left: -9999px">
 						</td>						
 					</tr>';	
 		}

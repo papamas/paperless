@@ -13,6 +13,7 @@ class Lacak_model extends CI_Model {
 	private     $tablesyarat 	= 'syarat_layanan';
 	private     $tabletahapan 	= 'tahapan';
 	private     $tablegolru		= 'mirror.golru';
+	private     $usul			= 'usul_taspen';
 		
     function __construct()
     {
@@ -103,6 +104,8 @@ $sql";
 		
         return      $query;		
     }	
+	
+	
 	
 	public function getUploadDokumen($nip)
 	{
@@ -201,4 +204,59 @@ $sql";
 		
 		return $r;
 	}
+	
+	
+	/*TASPEN*/
+	public function getUsulDokumenTaspen()
+	{		
+	    $searchby    = $this->input->post('searchby');
+	    $search      = $this->input->post('search');
+		
+		switch($searchby){
+            case 1:
+			    $sql = " AND a.nip = '$search' ";
+            break;
+           	case 3:
+			   $search = trim($search);			   
+			   $sql = " AND  UPPER(a.nomor_usul)=UPPER('$search')";
+            break;
+			case 4:
+			   $sql = " AND  UPPER(b.layanan_nama) LIKE UPPER('%$search%') ";
+            break;
+			case 5:
+			   $sql = " AND  ( UPPER(a.nama_pns) LIKE UPPER('%$search%') OR UPPER(a.nama_janda_duda) LIKE UPPER('%$search%')) ";
+            break;
+            default:
+                $sql = " AND a.nip = '999999999' ";		
+		}
+		
+		$q  ="SELECT a.*,DATE_FORMAT(a.tgl_usul,'%d-%m-%Y') tgl,
+		CASE a.usul_status
+			WHEN 'ACC' THEN 'badge bg-green'
+			WHEN 'TMS' THEN 'badge bg-red'
+			WHEN 'BTL' THEN 'badge bg-yellow'
+			ELSE 'badge bg-light-blue'
+		END AS bg,
+		b.layanan_nama,
+		c.tahapan_nama,
+		d.PNS_NIPBARU nip_baru, d.PNS_PNSNIP nip_lama,
+		e.first_name kirim_by,
+		f.first_name usul_kirim_name,
+		g.first_name usul_lock_name,
+		h.first_name usul_verif_name,
+		i.first_name usul_entry_name
+		FROM $this->usul a
+		LEFT JOIN $this->tablelayanan b ON a.layanan_id = b.layanan_id	
+		LEFT JOIN $this->tabletahapan c ON c.tahapan_id = a.usul_tahapan_id
+		LEFT JOIN $this->tablepupns d ON (a.nip = d.PNS_NIPBARU OR a.nip = d.PNS_PNSNIP)
+		LEFT JOIN $this->tableuser e ON e.user_id = a.kirim_bkn_by
+		LEFT JOIN $this->tableuser f ON f.user_id = a.usul_kirim_by
+		LEFT JOIN $this->tableuser g ON g.user_id = a.usul_lock_by
+		LEFT JOIN $this->tableuser h ON h.user_id = a.usul_verif_by
+		LEFT JOIN $this->tableuser i ON i.user_id = a.usul_entry_by
+        WHERE 1=1 $sql ";
+		$query 		= $this->db->query($q);
+		return      $query;	
+	
+	}	
 }

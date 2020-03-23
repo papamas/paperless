@@ -134,20 +134,24 @@
 						<table class="table table-striped">
 						<thead>
 							<tr>
+								<th></th>
 								<th>DOKUMEN</th>								
 								<th>NIP</th>
-								<th>NAMA</th>
-								<th>UPLOAD DATE</th>													
+								<th>KETERANGAN</th>
+								<th>BY</th>
+                                <th>UPLOAD DATE</th>								
 							</tr>
 						</thead>   
 						<tbody>
 							<?php if($daftar->num_rows() > 0):?>
 							<?php  foreach($daftar->result() as $value):?>							
 							<tr>
-								<td><button class="btn btn-primary btn-xs" data-tooltip="tooltip"  title="Lihat Dokumen" data-toggle="modal" data-target="#skModal" data-id="?f=<?php echo $this->myencrypt->encode($value->orig_name)?>"><i class="fa fa-search"></i></button> <?php echo $value->nama_dokumen?></td>								
-								<td><?php echo (!empty($value->nip_lama) ? $value->nip_lama : $value->nip_baru)?></td>
-								<td><?php echo $value->nama?></td>
-								<td><?php echo $value->created_date?></td>						
+							    <td><button class="btn btn-primary btn-xs" data-tooltip="tooltip"  title="Lihat Dokumen" data-toggle="modal" data-target="#skModal" data-id="?f=<?php echo $this->myencrypt->encode($value->orig_name)?>&t=<?php echo $this->myencrypt->encode($value->file_type)?>"><i class="fa fa-search"></i></button></td>
+								<td><?php echo $value->nama_dokumen?></td>								
+								<td><?php echo (!empty($value->nip_lama) ? $value->nip_lama.'/'.$value->nip_baru : $value->nip)?></td>
+								<td><?php echo $value->keterangan?></td>
+								<td><?php echo $value->upload_name?></td>		
+                                <td><?php echo $value->created_date?></td>									
 							</tr>
 							<?php endforeach;?>
 							<?php endif;?>
@@ -168,7 +172,7 @@
 			  <div class="modal-content">
 				    <div class="modal-header">
 					    <button type="button" class="close" data-dismiss="modal">&times;</button>
-					    <h4 class="modal-title" >File Dokumen Instansi</h4>
+					    <h4 class="modal-title" >File Dokumen Taspen</h4>
 				    </div>	
 				    <div class="modal-body">
 				        <div class="embed-responsive z-depth-1-half" style="height:100%">
@@ -195,7 +199,7 @@
 		$('#skModal').on('show.bs.modal',function(e) {    		
 			var id=  $(e.relatedTarget).attr('data-id');
 			var iframe = $('#frame');
-			iframe.attr('src', '<?php echo site_url()?>'+'/taspen/getInline/'+id);			
+			iframe.attr('src', '<?php echo site_url()?>'+'/taspen/getInlineTaspen/'+id);			
 	    });
 	});	
    </script>

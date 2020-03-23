@@ -23,14 +23,6 @@ class Usul_model extends CI_Model {
 	
 	public function getAll()
 	{
-	   /*$sql     = "SELECT a.*,c.layanan_nama,
-		d.INS_NAMINS instansi, count(b.agenda_id) jumlah_usul FROM $this->tableagenda a 
-LEFT JOIN $this->tablenominatif b ON a.agenda_id = b.agenda_id 
-LEFT JOIN $this->tablelayanan c  ON a.layanan_id = c.layanan_id
-LEFT JOIN $this->tableinstansi d ON a.agenda_ins = d.INS_KODINS
-WHERE c.layanan_bidang='$bidang' AND b.nomi_status='BELUM' AND a.agenda_status='dikirim'
-GROUP BY a.agenda_id ";*/
-       
 	    $bidang  			 = $this->session->userdata('session_bidang');
 		$tipe    			 = $this->session->userdata('session_user_tipe');
 		$user_id             = $this->session->userdata('user_id');
@@ -87,24 +79,7 @@ WHERE id_instansi IS NOT NULL";
 	
 	public function getExcel($id)
 	{
-	    /* $sql ="SELECT a.* FROM (SELECT a.*,c.PNS_PNSNAM nama,
-d.nomi_status, d.nomi_locked,d.locked_by,d.nomi_verifby,
-e.*, f.INS_NAMINS instansi, g.first_name,h.layanan_nama,
-group_concat(j.nama_dokumen SEPARATOR ',') syarat_terpenuhi,
-group_concat(i.dokumen_id SEPARATOR ',') syarat,
-group_concat(b.nama_dokumen SEPARATOR ',') berkas FROM upload_dokumen a 
-LEFT JOIN $this->tabledokumen b ON a.id_dokumen = b.id_dokumen 
-LEFT JOIN $this->tablepupns c ON c.PNS_NIPBARU = a.nip 
-LEFT JOIN $this->tablenominatif d ON d.nip = a.nip 
-LEFT JOIN $this->tableagenda e ON d.agenda_id = e.agenda_id 
-LEFT JOIN $this->tableinstansi  f ON f.INS_KODINS = e.agenda_ins 
-LEFT JOIN $this->tableuser g ON d.locked_by = g.user_id
-LEFT JOIN $this->tablelayanan h ON e.layanan_id = h.layanan_id
-LEFT JOIN $this->tablesyarat i ON (i.layanan_id = e.layanan_id and a.id_dokumen = i.dokumen_id) 
-LEFT JOIN $this->tabledokumen j ON j.id_dokumen = i.dokumen_id
-where  d.agenda_id='$id'
-GROUP BY a.nip 
-) a"; */
+	    
 	 $sql ="SELECT a.*, 
 	    b.nip,b.nomi_status,b.kirim_date,
 		b.status_level_satu,b.alasan_level_satu,b.verifdate_level_satu,
@@ -143,6 +118,61 @@ ORDER BY e.PNS_PNSNAM ASC
 ";
 	 //var_dump($sql);
 	 $query = $this->db->query($sql);
+        return $query;		
+	}	
+	
+	/*TASPEN*/
+	public function getAllTaspen()
+	{
+	    $bidang  			 = $this->session->userdata('session_bidang');
+		$tipe    			 = $this->session->userdata('session_user_tipe');
+		$user_id             = $this->session->userdata('user_id');
+        
+		// id 1 = bidang mutasi
+		
+		if($bidang == 1)
+		{
+		   	// tipe 2 = kabid , tipe 3 kanreg
+			if($tipe  == 2 || $tipe == 3)
+			{	
+				$sql_work =" ";
+			}
+			else
+			{
+				$sql_work =" AND b.work_by = '$user_id'  "; 
+			}
+		}
+        else
+        {
+            $sql_work =" ";
+        }	
+		
+        $sql="SELECT a.*,COUNT(a.usul_id) jumlah_usul,
+		b.layanan_nama,
+		c.tahapan_nama,
+        d.PNS_NIPBARU nip_baru, d.PNS_PNSNIP nip_lama		
+		FROM usul_taspen a 
+		LEFT JOIN layanan b ON a.layanan_id = b.layanan_id
+		LEFT JOIN tahapan c ON a.usul_tahapan_id = c.tahapan_id
+		LEFT JOIN mirror.pupns d ON (a.nip = d.PNS_NIPBARU OR a.nip = d.PNS_PNSNIP)
+		WHERE 1=1  AND a.usul_tahapan_id IN ('4','5','6','7','8','9','10','11','12')
+		GROUP BY a.usul_id";
+        $query = $this->db->query($sql);
+        return $query;		
+	}	
+	
+	public function getExcelTaspen($id)
+	{
+	   $sql="SELECT a.*,COUNT(a.usul_id) jumlah_usul,
+		b.layanan_nama,
+		c.tahapan_nama,
+        d.PNS_NIPBARU nip_baru, d.PNS_PNSNIP nip_lama		
+		FROM usul_taspen a 
+		LEFT JOIN layanan b ON a.layanan_id = b.layanan_id
+		LEFT JOIN tahapan c ON a.usul_tahapan_id = c.tahapan_id
+		LEFT JOIN mirror.pupns d ON (a.nip = d.PNS_NIPBARU OR a.nip = d.PNS_PNSNIP)
+		WHERE a.usul_id='$id' ";
+        $query = $this->db->query($sql);
         return $query;		
 	}	
 }

@@ -88,6 +88,14 @@
 						<form name="frmVerifikasi" class="form-horizontal" role="form" method="post" action="<?php echo site_url()?>/lacak/getBerkas">
 						  <div class="box-body">
 							<input type="hidden" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash();?>" style="display: none">
+							<div class="form-group row">
+							  	<label class="control-label col-md-2 col-sm-2 col-xs-2">Usul</label>
+								<div class="col-md-10 col-sm-10 col-xs-10">
+									<input type="radio" value="1" name="usul"  <?php echo  set_radio('usul', '1', TRUE); ?> />&nbsp;INSTANSI DAERAH/PUSAT
+									<input type="radio" value="2" name="usul"  <?php echo  set_radio('usul', '2'); ?>/>&nbsp;TASPEN									
+								</div>	
+								<span class="help-block text-red"><?php echo form_error('usul'); ?></span>
+							</div> 
 							<div class="form-group row">							   						 
 							    <label class=" control-label col-md-2 col-sm-2 col-xs-2">Filter</label>									
 								<div class="col-md-4 col-sm-4 col-xs-4">

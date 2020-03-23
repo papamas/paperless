@@ -93,7 +93,8 @@
 							  <label class="control-label col-md-2 col-sm-2 col-xs-2">Instansi</label>
 							  <div class="col-md-10 col-sm-10 col-xs-10">
 							    <select name="instansi" class="form-control select2">
-                                    <option value="">--Silahkan Pilih--</option>								
+                                    <option value="">--Silahkan Pilih--</option>
+                                    <option value="9" <?php echo  set_select('instansi',9); ?>>TASPEN</option>									
 									<?php if($instansi->num_rows() > 0):?>
 									<?php foreach($instansi->result() as $value):?>
 									<option value="<?php echo $value->INS_KODINS?>" <?php echo  set_select('instansi', $value->INS_KODINS); ?>><?php echo $value->INS_NAMINS?></option>
@@ -107,11 +108,11 @@
 							    <label class=" control-label col-md-2 col-sm-2 col-xs-2">Layanan</label>									
 								<div class="col-md-10 col-sm-10 col-xs-10">
 									<select name="layanan" class="form-control">
-										<option value="">--silahkan Pilih--</option>
+										<option value="">--silahkan Pilih--</option>										
 										<?php if($layanan->num_rows() > 0):?>
 									    <?php foreach($layanan->result() as $value):?>
 										<option value="<?php echo $value->layanan_id?>" <?php echo  set_select('layanan', $value->layanan_id); ?>><?php echo $value->layanan_nama?></option>
-										<?php endforeach;?>
+										<?php endforeach;?>										
 										<?php endif;?>
 									</select>
 									<span class="help-block text-red"><?php echo form_error('layanan'); ?></span>

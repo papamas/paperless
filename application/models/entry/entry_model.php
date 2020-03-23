@@ -16,6 +16,9 @@ class Entry_model extends CI_Model {
 	private     $tablegolru			= 'mirror.golru';
 	private     $tablejabatan		= 'jabatan';
 	private     $tableijazah		= 'ijazah';
+	private     $usul			    = 'usul_taspen';
+	private     $uploadtaspen		= 'upload_dokumen_taspen';
+	private     $kantorTaspen		= 'kantor_taspen';
 		
     function __construct()
     {
@@ -371,4 +374,281 @@ ORDER  by e.PNS_PNSNAM ASC
 		
 	}	
 	
+	/*TASPEN*/
+	public function getUsulDokumenTaspen($data)
+	{		
+	    $instansi  				= $data['instansi'];
+		$layanan    			= $data['layanan'];
+		$reportrange        	= $data['reportrange'];
+		$status    				= $data['status'];
+		$spesimen    			= $data['spesimen'];
+		$search 				= $this->input->post('search');
+		$searchby       		= $this->input->post('searchby');
+			
+		switch($status)
+		{
+		    case 1:
+			    $sql_status = " AND a.usul_no_persetujuan IS NOT NULL";
+            break;
+            case 2 :
+			    $sql_status = " AND a.usul_no_persetujuan IS NULL";
+            break;
+            case 3:
+			    $sql_status = " ";
+            break;            			
+		}	
+		
+		if(!empty($reportrange))
+		{	
+			
+			$xreportrange       	= explode("-",$reportrange);
+			$startdate				= $xreportrange[0];
+			$enddate				= $xreportrange[1];
+			
+			
+		}
+		
+        if(!empty($layanan))
+		{
+		
+			$sql_layanan = " AND a.layanan_id = '$layanan' ";
+        }
+		else
+		{	
+			$sql_layanan = " ";   
+		}	
+
+		if(!empty($startdate) AND !empty($enddate))
+		{
+		
+			$sql_date = " AND DATE( a.usul_verif_date ) BETWEEN STR_TO_DATE('$startdate', '%d/%m/%Y ' )
+			AND STR_TO_DATE('$enddate', '%d/%m/%Y ' ) ";
+		}
+		else
+		{	
+			$sql_date = " ";   
+		}		
+      
+	    if(!empty($spesimen))
+		{
+		
+			$sql_spesimen = " AND a.usul_verif_by = '$spesimen' ";
+        }
+		else
+		{	
+			$sql_spesimen = " ";   
+		}	
+		
+		switch($searchby){
+            case 1:
+			   $search = trim($search);	
+			   $sql_filter = " AND  UPPER(trim(a.nip))=UPPER(trim('$search')) ";
+            break;
+			case 2:
+			   $search = trim($search);	
+			   $sql_filter = " AND  UPPER(trim(a.nomor_usul))=UPPER('$search') ";
+            break;
+			default:
+                $sql_filter = " ";		
+		}
+		
+	    $bidang  = $this->session->userdata('session_bidang');
+		
+		$q ="SELECT a.*,DATE_FORMAT(a.tgl_usul,'%d-%m-%Y') tgl,
+		CASE a.usul_status
+			WHEN 'ACC' THEN 'badge bg-green'
+			WHEN 'TMS' THEN 'badge bg-red'
+			WHEN 'BTL' THEN 'badge bg-yellow'
+			ELSE 'badge bg-light-blue'
+		END AS bg,
+		b.layanan_nama,
+		c.tahapan_nama,
+		d.PNS_NIPBARU nip_baru, d.PNS_PNSNIP nip_lama,
+		e.first_name kirim_by,
+		f.first_name usul_kirim_name,
+		g.first_name usul_lock_name,
+		h.first_name usul_verif_name,
+		i.first_name usul_entry_name
+		FROM $this->usul a
+		LEFT JOIN $this->tablelayanan b ON a.layanan_id = b.layanan_id	
+		LEFT JOIN $this->tabletahapan c ON c.tahapan_id = a.usul_tahapan_id
+		LEFT JOIN $this->tablepupns d ON (a.nip = d.PNS_NIPBARU OR a.nip = d.PNS_PNSNIP)
+		LEFT JOIN $this->tableuser e ON e.user_id = a.kirim_bkn_by
+		LEFT JOIN $this->tableuser f ON f.user_id = a.usul_kirim_by
+		LEFT JOIN $this->tableuser g ON g.user_id = a.usul_lock_by
+		LEFT JOIN $this->tableuser h ON h.user_id = a.usul_verif_by
+		LEFT JOIN $this->tableuser i ON i.user_id = a.usul_entry_by
+        WHERE 1=1 AND a.usul_status='ACC' $sql_layanan  $sql_filter  $sql_date  $sql_spesimen $sql_status ";
+		
+		
+		$query 		= $this->db->query($q);
+        return      $query;		
+    }
+
+	public function simpanTahapanTaspen($data)
+	{
+		// tahapan  proses cetak
+		$set['usul_tahapan_id']       = 12;	
+		$set['usul_proses_entry_by']  = $this->session->userdata('user_id');
+		
+		$this->db->set($set);
+		$this->db->set('usul_proses_entry_date','NOW()',FALSE);
+		$this->db->where('usul_id', $data['usul_id']);		
+		$this->db->where('nip', $data['nip']);
+		return $this->db->update($this->usul);
+	}
+
+	public function getEntryOneTaspen($data)
+	{
+		$usul			= $data['usul_id'] ;
+		$nip			= $data['nip'];
+		
+		$sql   = "SELECT a.*,DATE_FORMAT(a.tgl_usul,'%d-%m-%Y') tgl,
+		DATE_FORMAT(a.usul_tgl_persetujuan,'%d-%m-%Y') tgl_persetujuan,
+		DATE_FORMAT(a.pensiun_tmt,'%d-%m-%Y') tmt_pensiun,
+		formatTanggal(a.meninggal_dunia) meninggal,
+		formatTanggal(a.tgl_perkawinan) perkawinan,
+		formatTanggal(a.pensiun_tmt) pensiun,
+		formatTanggal(a.usul_tgl_persetujuan) persetujuan_tgl,
+		replace(format(a.gaji_pokok_terakhir,0),',','.') gapok,
+		replace(format(a.pensiun_pokok,0),',','.') penpok,
+		b.layanan_nama,
+		c.tahapan_nama,
+		d.PNS_NIPBARU nip_baru, d.PNS_PNSNIP nip_lama,
+		e.first_name kirim_by,
+		f.first_name usul_kirim_name,
+		g.first_name usul_lock_name,
+		h.first_name usul_verif_name,
+		i.first_name usul_entry_name,
+		j.GOl_PKTNAM,j.GOL_GOLNAM
+		FROM $this->usul a
+		LEFT JOIN $this->tablelayanan b ON a.layanan_id = b.layanan_id	
+		LEFT JOIN $this->tabletahapan c ON c.tahapan_id = a.usul_tahapan_id
+		LEFT JOIN $this->tablepupns d ON (a.nip = d.PNS_NIPBARU OR a.nip = d.PNS_PNSNIP)
+		LEFT JOIN $this->tableuser e ON e.user_id = a.kirim_bkn_by
+		LEFT JOIN $this->tableuser f ON f.user_id = a.usul_kirim_by
+		LEFT JOIN $this->tableuser g ON g.user_id = a.usul_lock_by
+		LEFT JOIN $this->tableuser h ON h.user_id = a.usul_verif_by
+		LEFT JOIN $this->tableuser i ON i.user_id = a.usul_entry_by
+		LEFT JOIN $this->tablegolru j ON j.GOL_KODGOL = a.golongan
+		WHERE a.nip='$nip' AND a.usul_id='$usul'  ";
+		
+		$query 	=   $this->db->query($sql);
+		return      $query;	
+	}	
+	
+	public function simpanPersetujuanTaspen($data)
+	{
+		// selesai proses cetak
+		$usul_id	    	= $data['usul_id'];
+		$nip				= $data['nip'];
+		$nomor				= $data['persetujuan'];
+		$tanggal			= date('Y-m-d',strtotime($data['tanggal']));
+		$pensiun_pokok		= $data['pensiun_pokok'];
+		$pensiun_tmt		= date('Y-m-d',strtotime($data['pensiun_tmt']));
+		$kantor_taspen      = $data['kantor_taspen'];
+		
+		$set['usul_no_persetujuan']    	=   strtoupper($nomor); 
+		$set['usul_tgl_persetujuan']   	=   $tanggal; 
+		$set['usul_tahapan_id']			=   13; 
+		$set['usul_entry_by']   	    =   $this->session->userdata('user_id');		
+		$set['pensiun_pokok']			=   $pensiun_pokok;
+		$set['pensiun_tmt']				=   $pensiun_tmt;
+		$set['kantor_taspen']			=   $kantor_taspen;
+		
+		$this->db->where('usul_id',$usul_id);
+		$this->db->where('nip',$nip);
+		$this->db->set($set);	
+	    $this->db->set('usul_entry_date','NOW()',FALSE);
+		return $this->db->update($this->usul);
+	}	
+	
+	public function insertUploadTaspen($data)
+	{
+		$data['id_dokumen']		= $this->_getIdDokumenTaspen($data);
+		$data['upload_by']      = $this->session->userdata('user_id');
+		$number 				= $this->_extract_numbers($data['raw_name']);
+		
+		foreach($number as $value){
+		    if (strlen($value) == 18){
+                $data['nip']    = $value;
+            }
+            else
+            {
+			    $data['minor_dok']    = $value;
+            }		
+	    }   	
+		
+		$db_debug 			= $this->db->db_debug; 
+		$this->db->db_debug = FALSE; 
+			
+		if (!$this->db->insert($this->uploadtaspen, $data))
+		{
+			$error = $this->db->_error_message();
+			if(!empty($error))
+			{
+                $data['pesan']		= $error;   
+				$data['response'] 	= FALSE;
+			}
+            	
+        }
+		else
+		{
+			$data['pesan']		= "File Persetujuan Teknis Taspen Berhasil Tersimpan";
+			$data['response']	= TRUE;
+			
+			$this->updateNominatifTaspen($data);
+		}	
+        $this->db->db_debug = $db_debug; //restore setting	
+
+        return $data;		
+		
+	}
+	
+	function _getIdDokumenTaspen($data)
+	{
+	    $r = NULL;
+		$find    = $data['raw_name'];
+		
+		$query = $this->db->query("SELECT * FROM (SELECT *,locate(nama_dokumen,'$find') result from dokumen_taspen ) a
+ WHERE a.result = 1"); 	
+		if($query->num_rows() > 0){
+		    $row 	= $query->row();
+			$r 		= $row->id_dokumen;
+		}
+		
+		return $r;
+	}
+	
+	function updateNominatifTaspen($data)
+	{
+		$nip							= $this->input->post('usul_nip');
+		$usul							= $this->input->post('usul_id');
+		
+		$this->db->where('nip',$nip);
+		$this->db->where('usul_id',$usul);
+		$this->db->set('upload_persetujuan',1);
+		$this->db->set('date_upload_persetujuan','NOW()',FALSE);
+		$this->db->set('file_persetujuan',$data['file_name']);
+		return $this->db->update($this->usul);
+
+	}
+	
+	function  updateFileTaspen($data)
+	{
+
+		$this->db->where('raw_name',$data['raw_name']);
+		$this->db->set('flag_update',1);
+		$this->db->set('update_date','NOW()',FALSE);
+		return $this->db->update($this->table);
+		
+	}	
+	
+	public function getKantorTaspen()
+	{
+	    $sql="SELECT * FROM $this->kantorTaspen";	
+		return $this->db->query($sql);
+		
+	}	
 }
+

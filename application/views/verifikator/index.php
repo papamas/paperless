@@ -32,31 +32,43 @@
 						<div class="box-header with-border">
 						  <h3 class="box-title">Verifikasi Usul Instansi</h3>
 						</div><!-- /.box-header -->
-						<form class="form-horizontal" role="form" method="post" action="<?php echo site_url()?>/verifikator/find">
-						 <input type="hidden" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash();?>" style="display: none">
-						  <div class="box-body">							
-							<div class="input-group">							   						 
-							    <div class="col-md-2 col-xs-4 col-sm-3">
-									<select name="searchby" class="form-control" required>
-										<option value="">--silahkan Pilih--</option>
-										<option value="1" >NIP</option>
-										<option value="2">INSTANSI</option>
-										<option value="3">NOMOR USUL</option>
-										<option value="4">PELAYANAN</option>
-									</select>
-								</div>	
-								<div class="col-md-10 col-xs-8 col-sm-9">									
-								    <input type="text" name="search" class="form-control" placeholder="Masukan data pencarian" required>
+						<form class="form-horizontal" method="post" action="<?php echo site_url()?>/verifikator/find">
+							<input type="hidden" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash();?>" style="display: none">
+							<div class="box-body">
+								<div class="form-group">
+									<label class="control-label col-md-2 col-sm-2 col-xs-2">Usul</label>
+									<div class="col-md-10 col-sm-10 col-xs-10">
+										<input type="radio" value="1" name="usul"  <?php echo  set_radio('usul', 1, TRUE); ?> />&nbsp;INSTANSI DAERAH/PUSAT
+										<?php if($this->session->userdata('session_bidang') == 2):?>
+										<input type="radio" value="2" name="usul"  <?php echo  set_radio('usul', 2); ?>/>&nbsp;TASPEN									
+										<?php endif;?>
+									</div>	
+									<span class="help-block text-red"><?php echo form_error('usul'); ?></span>
+								</div> 	
+								
+								<div class="form-group">									   						 
+									<div class="col-md-2 col-xs-4 col-sm-3">
+										<select name="searchby" class="form-control">
+											<option value="">--silahkan Pilih--</option>
+											<option value="1" <?php echo  set_select('searchby',1); ?>>NIP</option>
+											<option value="2" <?php echo  set_select('searchby',2); ?>>INSTANSI</option>
+											<option value="3" <?php echo  set_select('searchby',3); ?>>NOMOR USUL</option>
+											<option value="4" <?php echo  set_select('searchby',4); ?>>PELAYANAN</option>
+										</select>
+										<span class="help-block text-red"><?php echo form_error('searchby'); ?></span>
+									</div>	
+									<div class="col-md-9 col-xs-8 col-sm-9">									
+										<input type="text" name="search" class="form-control" placeholder="Masukan data pencarian" value="<?php echo set_value('search'); ?>" />
+										 <span class="help-block text-red"><?php echo form_error('search'); ?></span>
+									</div>
+									<div class="col-md-1">
+										<button type="submit" class="btn btn-default" type="button"><i class="fa fa-search"> Cari!</i></button>
+									</div>								                            
 								</div>
-								<span class="input-group-btn">
-									<button type="submit" class="btn btn-default" type="button"><i class="fa fa-search"> Cari!</i></button>
-							    </span>
-							</div>                              
-							
-						  </div><!-- /.box-body -->
-
+							</div><!-- /.box-body -->
 						</form>
 					    <hr/>
+						<?php if($show  == TRUE) :?>
 						<div class="table-responsive">
 							<table class="table table-striped">
 							<thead>
@@ -75,7 +87,7 @@
 								</tr>
 							</thead>   
 							<tbody>
-								<?php if($usul->num_rows() > 0):?>
+								<?php if($usul->num_rows() > 0 ):?>
 								<?php  foreach($usul->result() as $value):?>
 								<tr>
 								    <?php 									
@@ -138,6 +150,7 @@
 							</tbody>
 							</table>
 						</div>	
+						<?php endif;?>
 					</div>
 				</div>					
 			</div><!-- /.row -->

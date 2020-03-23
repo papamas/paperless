@@ -163,4 +163,132 @@ $sql_instansi  $sql_layanan";
 		
 		return $r;
 	}
+	
+	
+	/*TASPEN*/
+	public function getUsulDokumenTaspen()
+	{		
+		$layanan     = $this->input->post('layanan');		
+		
+		if(!empty($layanan))
+		{
+			$sql_layanan ="  AND  a.layanan_id='$layanan' ";			
+		}
+		else
+		{
+			$sql_layanan =" ";
+		}	
+		
+		
+				
+		$q="SELECT a.*,
+		b.layanan_nama,		
+        c.tahapan_nama,
+        d.PNS_NIPBARU nip_baru, d.PNS_PNSNIP nip_lama		
+		FROM usul_taspen a 
+		LEFT JOIN layanan b ON a.layanan_id = b.layanan_id
+		LEFT JOIN tahapan c ON a.usul_tahapan_id = c.tahapan_id
+		LEFT JOIN mirror.pupns d ON (a.nip = d.PNS_NIPBARU OR a.nip = d.PNS_PNSNIP)		
+		WHERE 1=1 AND a.usul_tahapan_id IN (2,3) $sql_layanan";
+		
+		$query 		= $this->db->query($q);
+		
+        return      $query;		
+    }	
+	
+	public function getUploadDokumenTaspen($nip)
+	{
+		$sql=" SELECT a.*, b.nama_dokumen,b.keterangan FROM upload_dokumen_taspen a
+		LEFT JOIN  dokumen_taspen b ON a.id_dokumen = b.id_dokumen
+		WHERE  a.nip='$nip'	ORDER BY b.keterangan ASC";			
+				
+		return $this->db->query($sql);
+	}	
+	
+	public function setKirimTaspen()
+	{
+		// kirim dari TU ke Teknis		
+		$r					  = FALSE;
+		$usul_id			  = $this->input->post('usul_id');
+		$nip                  = $this->input->post('nip');
+		$penerima			  = $this->input->post('penerima');
+		
+		$set['usul_tahapan_id']    = 4;	
+		$set['usul_kirim_by']      = $this->session->userdata('user_id');
+		$set['usul_work_by']       = $penerima;
+		
+        $this->db->trans_start();
+		$db_debug 			= $this->db->db_debug; 
+		$this->db->db_debug = FALSE; 
+		
+		$this->db->set($set);		
+		$this->db->set('usul_kirim_date','NOW()',FALSE);
+		$this->db->where('usul_id', $usul_id);		
+		$this->db->where('nip', $nip);	
+		
+		if ($this->db->update('usul_taspen'))
+		{
+			$error = $this->db->_error_message(); 
+			if(!empty($error))
+			{
+				$r = FALSE;
+			}
+			else
+			{
+				$r = TRUE;
+			}     
+        }
+        $this->db->db_debug = $db_debug; //restore setting			
+		$this->db->trans_complete();
+		
+		return $r;
+	}
+	
+	public function setKirimAllTaspen($data)
+	{
+		// kirim dari TU ke Teknis		
+		$r					  = FALSE;
+		$usul_id			  = $data['usul_id'];
+		$nip                  = $data['nip'];
+        $penerima			  = $data['penerima'];
+ 		
+		
+		$set['usul_tahapan_id']    = 4;	
+		$set['usul_kirim_by']      = $this->session->userdata('user_id');
+		$set['usul_work_by']       = $penerima;
+		
+        $this->db->trans_start();
+		$db_debug 			= $this->db->db_debug; 
+		$this->db->db_debug = FALSE; 
+		
+		$this->db->set($set);		
+		$this->db->set('usul_kirim_date','NOW()',FALSE);
+		$this->db->where('usul_id', $usul_id);		
+		$this->db->where('nip', $nip);	
+		
+		if ($this->db->update('usul_taspen'))
+		{
+			$error = $this->db->_error_message(); 
+			if(!empty($error))
+			{
+				$r = FALSE;
+			}
+			else
+			{
+				$r = TRUE;
+			}     
+        }
+        $this->db->db_debug = $db_debug; //restore setting			
+		$this->db->trans_complete();
+		
+		return $r;
+	}
+	
+	public function getPenerima()
+	{
+		$bidang  = $this->session->userdata('session_bidang');
+		$sql="SELECT * FROM $this->tableuser WHERE id_bidang='$bidang' AND id_instansi='4011' ";	
+		return $this->db->query($sql);
+		
+	}	
 }

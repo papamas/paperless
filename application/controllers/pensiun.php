@@ -72,61 +72,122 @@ class Pensiun extends MY_Controller {
 		}
 		else
 		{	
-		
-			$q                = $this->laporan->getLaporan($this->input->post());
-		
-			// creating xls file
-			$now              = date('dmYHis');
-			$filename         = "LAPORAN BIDANG PENSIUN ".$now.".xls";
-			
-			header('Pragma:public');
-			header('Cache-Control:no-store, no-cache, must-revalidate');
-			header('Content-type:application/vnd.ms-excel');
-			header('Content-Disposition:attachment; filename='.$filename);                      
-			header('Expires:0'); 
-			
-			$html  = 'LAPORAN BIDANG PENSIUN<br/>';		
-			$html .= 'Periode LAPORAN : '.$data['startdate'].' sampai dengan '.$data['enddate'].'<br/>';	
-			$html .= '<style> .str{mso-number-format:\@;}</style>';
-			$html .= '<table border="1">';					
-			$html .='<tr>
-						<th>NO</th>
-						<th>NIP</th>
-						<th>NAMA</th>
-						<th>INSTANSI</th>
-						<th>LAYANAN</th>
-						<th>USUL</th>
-						<th>TANGGAL USUL</th>
-						<th>TANGGAL VERIFIKATOR</th>
-                        <th>STATUS</th>
-						<th>ALASAN</th>						
-						<th>ENTRY</th>						
-						
-						'; 
-			$html 	.= '</tr>';
-			if($q->num_rows() > 0){
-				$i = 1;		        
-				foreach ($q->result() as $r) {
-					$html .= "<tr><td>$i</td>";				
-					$html .= "<td class=str>{$r->nip}</td>";	
-					$html .= "<td>{$r->nama}</td>";					
-					$html .= "<td>{$r->instansi}</td>";	
-					$html .= "<td>{$r->layanan_nama}</td>";	
-					$html .= "<td>{$r->agenda_nousul}</td>";	
-					$html .= "<td>{$r->agenda_timestamp}</td>";	
-					$html .= "<td>{$r->verify_date}</td>";
-					$html .= "<td>{$r->nomi_status}".'<br/>'."{$r->verif_name}</td>";
-					$html .= "<td>{$r->nomi_alasan}</td>";				
-					$html .= "<td>{$r->entry_name}".'<br/>'."{$r->entry_date}</td>";									
-					$html .= "</tr>";
-					$i++;
+		    if($instansi != 9)
+			{	
+				$q                = $this->laporan->getLaporan($this->input->post());
+				// creating xls file
+				$now              = date('dmYHis');
+				$filename         = "LAPORAN BIDANG PENSIUN ".$now.".xls";
+				
+				header('Pragma:public');
+				header('Cache-Control:no-store, no-cache, must-revalidate');
+				header('Content-type:application/vnd.ms-excel');
+				header('Content-Disposition:attachment; filename='.$filename);                      
+				header('Expires:0'); 
+				
+				$html  = 'LAPORAN BIDANG PENSIUN<br/>';		
+				$html .= 'Periode LAPORAN : '.$data['startdate'].' sampai dengan '.$data['enddate'].'<br/>';	
+				$html .= '<style> .str{mso-number-format:\@;}</style>';
+				$html .= '<table border="1">';					
+				$html .='<tr>
+							<th>NO</th>
+							<th>NIP</th>
+							<th>NAMA</th>
+							<th>INSTANSI</th>
+							<th>LAYANAN</th>
+							<th>USUL</th>
+							<th>TANGGAL USUL</th>
+							<th>TANGGAL VERIFIKATOR</th>
+							<th>STATUS</th>
+							<th>ALASAN</th>						
+							<th>ENTRY</th>						
+							
+							'; 
+				$html 	.= '</tr>';
+				if($q->num_rows() > 0){
+					$i = 1;		        
+					foreach ($q->result() as $r) {
+						$html .= "<tr><td>$i</td>";				
+						$html .= "<td class=str>{$r->nip}</td>";	
+						$html .= "<td>{$r->nama}</td>";					
+						$html .= "<td>{$r->instansi}</td>";	
+						$html .= "<td>{$r->layanan_nama}</td>";	
+						$html .= "<td>{$r->agenda_nousul}</td>";	
+						$html .= "<td>{$r->agenda_timestamp}</td>";	
+						$html .= "<td>{$r->verify_date}</td>";
+						$html .= "<td>{$r->nomi_status}".'<br/>'."{$r->verif_name}</td>";
+						$html .= "<td>{$r->nomi_alasan}</td>";				
+						$html .= "<td>{$r->entry_name}".'<br/>'."{$r->entry_date}</td>";									
+						$html .= "</tr>";
+						$i++;
+					}
+					$html .="</table>";
+					echo $html;
+				}else{
+					$html .="<tr><td  colspan=6 >There is no data found</td></tr></table>";
+					echo $html;
 				}
-				$html .="</table>";
-				echo $html;
-			}else{
-				$html .="<tr><td  colspan=6 >There is no data found</td></tr></table>";
-				echo $html;
-			}
+		    }
+			else
+			{
+				$q                = $this->laporan->getLaporanTaspen($this->input->post());            		
+				// creating xls file
+				$now              = date('dmYHis');
+				$filename         = "LAPORAN BIDANG PENSIUN ".$now.".xls";
+				
+				header('Pragma:public');
+				header('Cache-Control:no-store, no-cache, must-revalidate');
+				header('Content-type:application/vnd.ms-excel');
+				header('Content-Disposition:attachment; filename='.$filename);                      
+				header('Expires:0'); 
+				
+				$html  = 'LAPORAN BIDANG PENSIUN<br/>';		
+				$html .= 'Periode LAPORAN : '.$data['startdate'].' sampai dengan '.$data['enddate'].'<br/>';	
+				$html .= '<style> .str{mso-number-format:\@;}</style>';
+				$html .= '<table border="1">';					
+				$html .='<tr>
+							<th>NO</th>
+							<th>NIP</th>
+							<th>NAMA PNS</th>
+							<th>NAMA</th>
+							<th>INSTANSI</th>
+							<th>LAYANAN</th>
+							<th>USUL</th>
+							<th>TANGGAL USUL</th>
+							<th>TANGGAL VERIFIKATOR</th>
+							<th>SPESIMEN</th>
+							<th>STATUS</th>
+							<th>ALASAN</th>						
+							<th>ENTRY</th>						
+							
+							'; 
+				$html 	.= '</tr>';
+				if($q->num_rows() > 0){				
+					$i = 1;		        
+					foreach ($q->result() as $r) {
+						$html .= "<tr><td>$i</td>";				
+						$html .= "<td class=str>{$r->nip}</td>";	
+						$html .= "<td>{$r->nama_pns}</td>";
+						$html .= "<td>{$r->nama_janda_duda}</td>";
+						$html .= "<td>TASPEN</td>";	
+						$html .= "<td>{$r->layanan_nama}</td>";	
+						$html .= "<td>{$r->nomor_usul}</td>";	
+						$html .= "<td>{$r->tgl_usul}</td>";	
+						$html .= "<td>{$r->usul_verif_date}</td>";
+						$html .= "<td>{$r->usul_verif_name}</td>";
+						$html .= "<td>{$r->usul_status}</td>";					
+						$html .= "<td>{$r->usul_alasan}</td>";				
+						$html .= "<td>{$r->usul_entry_name}".'<br/>'."{$r->usul_entry_date}</td>";									
+						$html .= "</tr>";
+						$i++;
+					}
+					$html .="</table>";
+					echo $html;
+				}else{
+					$html .="<tr><td  colspan=6 >There is no data found</td></tr></table>";
+					echo $html;
+				}
+			}	
 		}
 	}	
 	

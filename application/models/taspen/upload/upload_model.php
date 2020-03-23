@@ -2,10 +2,10 @@
 class Upload_model extends CI_Model {
 
 	private     $rawName;
-	private     $table  			= 'upload_taspen';
-	private     $tabledokumen       = 'dokumen';
-	private     $tableinstansi      = 'mirror.instansi';
-	private     $tablepupns         = 'mirror.pupns';
+	private     $table  			= 'upload_dokumen_taspen';
+	private     $dokumen  			= 'dokumen_taspen';
+	private     $appuser  			= 'app_user';
+	
 		
     function __construct()
     {
@@ -15,22 +15,11 @@ class Upload_model extends CI_Model {
 	
 	public function insertUpload($data)
 	{
-		$data['id_dokumen']		= $this->_getIdDokumen($data);
-		$data['id_instansi']    = $this->session->userdata('session_instansi');
+		$data['id_dokumen']		= $this->input->post('jenis');
+		$data['nip']            = $this->input->post('nip');
 		$data['upload_by']      = $this->session->userdata('user_id');
 		$number 				= $this->_extract_numbers($data['raw_name']);
-		
-		foreach($number as $value){
-		    if (strlen($value) == 18){
-                $data['nip_baru']    = $value;
-            }
-            else
-            {
-			    $data['nip_lama']    = $value;
-            }		
-	    }   
-		
-		
+			
 		$db_debug 			= $this->db->db_debug; 
 		$this->db->db_debug = FALSE; 
 			
@@ -59,90 +48,27 @@ class Upload_model extends CI_Model {
 	{
 				
 		$this->db->where('raw_name',$data['raw_name']);
-		$this->db->where('id_instansi',$data['id_instansi']);
 		$this->db->set('flag_update',1);
 		$this->db->set('update_date','NOW()',FALSE);
 		return $this->db->update($this->table);
 		
 	}	
-	
-	function _is_exist($data)
-	{  
-	    $r  = FALSE;		
-		$query 	= $this->db->where('raw_name', $data['raw_name'])->get($this->table);
-		
-		if($query->num_rows() > 0){
-		    $r 	= TRUE;
-		}
-
-        return $r; 		
-	}
-	
-	function _getIdDokumen($data)
-	{
-	    $r = NULL;
-		$find    = $data['raw_name'];
-		
-		$query = $this->db->query("SELECT * FROM (SELECT *,locate(nama_dokumen,'$find') result from $this->tabledokumen ) a
- WHERE a.result = 1"); 	
-		if($query->num_rows() > 0){
-		    $row 	= $query->row();
-			$r 		= $row->id_dokumen;
-		}
-		
-		return $r;
-	}
-	
-	function _is_arsip($data)
-	{
-	    $r = FALSE;
-		$find    = $data;
-		
-	    $query = $this->db->query("SELECT * FROM (SELECT *,locate(nama_dokumen,'$find') result from $this->tabledokumen ) a
- WHERE a.result = 1"); 
-		if($query->num_rows() > 0){
-		    $r 		= TRUE;
-		}
-		
-		return $r;
-	}
-	
+			
 	function _extract_numbers($string)
 	{
 	    preg_match_all('/([\d]+)/', $string, $match);
-	   
-	    
-
-	   return $match[0];
+	    return $match[0];
 	}
-	
-	public function getInstansi()
-	{
-	    $instansi  = $this->session->userdata('session_instansi');
-		
-		$sql="SELECT * FROM $this->tableinstansi where INS_KODINS='$instansi' ";	
-		return $this->db->query($sql);
-		
-	}	
+			
 	
 	public function getDaftar($data)
 	{
-	    $instansi 		= 99;
-		$searchby		= $data['searchby'];
+	   	$searchby		= $data['searchby'];
 		$search			= $data['search'];
-		
-		if(!empty($instansi))
-		{
-			$sql_instansi  = " AND a.id_instansi='$instansi' ";
-		}
-		else
-		{
-			$sql_instansi  = " ";
-		}
-		
+			
 		if($searchby   == 1)
 		{
-			$sql_nip  = " AND (a.PNS_PNSNIP='$search' OR a.PNS_NIPBARU='$search') ";
+			$sql_nip  = " AND a.nip='$search'";
 		}
 		else
 		{
@@ -151,15 +77,26 @@ class Upload_model extends CI_Model {
 		
 		
 		
-		$sql="SELECT a.PNS_PNSNAM nama,b.*,c.nama_dokumen from (SELECT a.* FROM mirror.pupns a
-		where 1=1 $sql_nip  ) a
-		LEFT JOIN upload_taspen b ON (b.nip_baru = a.PNS_NIPBARU OR b.nip_lama = a.PNS_PNSNIP)
-		LEFT JOIN dokumen c ON b.id_dokumen = c.id_dokumen
-		 ORDER BY c.nama_dokumen ASC";	
+		$sql=" SELECT a.*, 
+		b.nama_dokumen,b.keterangan,
+		c.first_name upload_name
+		FROM $this->table a
+		LEFT JOIN $this->dokumen b ON a.id_dokumen = b.id_dokumen
+		LEFT JOIN $this->appuser c ON a.upload_by = c.user_id
+		WHERE 1=1 $sql_nip  
+		ORDER BY b.keterangan ASC";	
 		
 				
 		return $this->db->query($sql);
 		
 	}	
+	
+	public function getDokumen()
+	{
+	    	
+		$sql="SELECT * FROM $this->dokumen WHERE aktif IS NOT NULL ORDER BY keterangan ASC";	
+		return $this->db->query($sql);
+		
+	}
 	
 }

@@ -34,8 +34,15 @@ class Lacak extends MY_Controller {
 	
 	public function getBerkas()
 	{	
-	    $this->form_validation->set_rules('searchby', 'searchby', 'trim|required');
+	    if(!$this->allow)
+		{
+			$this->load->view('403/index',$data);
+			return;
+		}
+				
+		$this->form_validation->set_rules('searchby', 'searchby', 'trim|required');
 		$this->form_validation->set_rules('search', 'search', 'trim|required');
+		$this->form_validation->set_rules('usul', 'Usul', 'trim|required');
 		
 		if($this->form_validation->run() == FALSE)
 		{
@@ -55,22 +62,27 @@ class Lacak extends MY_Controller {
 			}
         else
 		{			
-			$q	  			        = $this->lacak->getUsulDokumen();	
-				
+			$usul					= $this->input->post('usul');
 			$data['menu']     		=  $this->menu->build_menu();
 			$data['lname']    		=  $this->auth->getLastName();        
 			$data['name']     		=  $this->auth->getName();
 			$data['jabatan']  		=  $this->auth->getJabatan();
 			$data['member']	  		=  $this->auth->getCreated();
 			$data['avatar']	  		=  $this->auth->getAvatar();
-			$data['usul']	  		=  $q;			
 			$data['show']  			=  TRUE;
-			if(!$this->allow)
-			{
-				$this->load->view('403/index',$data);
-				return;
+			
+			if($usul != 2)
+			{	
+				$q	  			        = $this->lacak->getUsulDokumen();					
+				$data['usul']	  		=  $q;			
+				$this->load->view('lacak/index',$data);
 			}
-			$this->load->view('lacak/index',$data);
+			else
+			{
+				$q	  			        = $this->lacak->getUsulDokumenTaspen();					
+				$data['usul']	  		=  $q;			
+				$this->load->view('lacak/indexTaspen',$data);
+            }		
 		}	
 	
 	}

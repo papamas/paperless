@@ -56,6 +56,7 @@
 							    <div class="col-sm-10 col-md-10 col-xs-10">
 									<select name="instansi" class="form-control select2">
 										<option value="">--</option>
+										<option value="9" <?php echo  set_select('instansi',9); ?>>TASPEN</option>
 										<?php if($instansi->num_rows() > 0):?>
 										<?php foreach($instansi->result() as $value):?>
 										<option value="<?php echo $value->INS_KODINS?>" <?php echo  set_select('instansi', $value->INS_KODINS); ?>><?php echo $value->INS_NAMINS?></option>

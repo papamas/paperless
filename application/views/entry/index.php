@@ -96,11 +96,10 @@
 							  <div class="col-sm-10 col-md-10 col-xs-10">
 							    <select name="instansi" class="form-control select2">
 									<option value="">--</option>
-									<?php if($instansi->num_rows() > 0):?>
+									<option value="9" <?php echo  set_select('instansi',9); ?>>TASPEN</option>
 									<?php foreach($instansi->result() as $value):?>
 									<option value="<?php echo $value->INS_KODINS?>"  <?php echo  set_select('instansi', $value->INS_KODINS); ?>><?php echo $value->INS_NAMINS?></option>
-									<?php endforeach;?>
-									<?php endif;?>
+									<?php endforeach;?>									
 								</select>
 								<span class="help-block text-red"><?php echo form_error('instansi'); ?></span>
 							  </div>	

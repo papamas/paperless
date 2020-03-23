@@ -6,7 +6,7 @@ class Validasi_model extends CI_Model {
 	private     $tablenom 		= 'nominatif';
 	private     $tablepupns 	= 'mirror.pupns';
 	private     $tableagenda 	= 'agenda';
-	private     $dokumen	= 'dokumen';
+	private     $dokumen	    = 'dokumen';
 	private     $tablelayanan	= 'layanan';
 	private     $tableinstansi	= 'mirror.instansi';
 	private     $app_user		    = 'app_user';

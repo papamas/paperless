@@ -21,6 +21,8 @@ class Layanan extends MY_Controller {
 		$data['member']	  =  $this->auth->getCreated();
 		$data['avatar']	  =  $this->auth->getAvatar();
 		$data['usul']     =  $this->layanan->getAll();
+		$data['usulTaspen'] = $this->layanan->getAllTaspen();
+		
 		
 		if(!$this->allow)
 		{
@@ -147,5 +149,89 @@ class Layanan extends MY_Controller {
 	}	
 	
 	
+	/*TASPEN*/
+	public function getInlineTaspen()
+	{
+		$instansi  = $this->myencrypt->decode($this->input->get('id'));
+		$file      = $this->myencrypt->decode($this->input->get('f'));
+					
+		header('Pragma:public');
+		header('Cache-Control:no-store, no-cache, must-revalidate');
+		header('Content-type:application/pdf');
+		header('Content-Disposition:inline; filename=pengantar.pdf');                      
+		header('Expires:0'); 
+		readfile(base_url().'uploads/taspen/'.$file);
+	}	
+	
+	public function getPdfTaspen()
+	{
+		$instansi  = $this->myencrypt->decode($this->input->get('id'));
+		$file      = $this->myencrypt->decode($this->input->get('f'));
+		
+		header('Pragma:public');
+		header('Cache-Control:no-store, no-cache, must-revalidate');
+		header('Content-type:application/pdf');
+		header('Content-Disposition:attachment; filename=pengantar.pdf');                      
+		header('Expires:0'); 
+		@readfile(base_url().'uploads/taspen/'.$file);
+	}	
+	
+	
+	public function getExcelTaspen()
+	{
+		$id   = $this->input->get('id');						
+		$q    = $this->layanan->getExcelTaspen($id);
+		
+		// creating xls file
+		$now              = date('dmYHis');
+		$filename         = "DAFTAR LAYANAN TASPEN".$now.".xls";
+		
+		header('Pragma:public');
+		header('Cache-Control:no-store, no-cache, must-revalidate');
+		header('Content-type:application/vnd.ms-excel');
+		header('Content-Disposition:attachment; filename='.$filename);                      
+		header('Expires:0'); 
+		
+		$html  = 'DAFTAR ANTRIAN LAYANAN '.strtoupper($this->auth->getBidang());
+		if($q->num_rows() > 0){
+			$row = $q->row();
+		$html .= '<table><tr><td  colspan=2>TANGGAL</td><td>'.$row->kirim_bkn_date.'</td></tr>';
+		$html .= '<tr><td  colspan=2>NOMOR USUL</td><td>'.$row->nomor_usul.'</td></tr>';
+		$html .= '<tr><td  colspan=2>INSTANSI</td><td>TASPEN</td></tr>';
+		$html .= '<tr><td  colspan=2>PELAYANAN</td><td>'.$row->layanan_nama.'</td></tr>';
+		$html .= '</table><p></p>';
+		}
+		$html .= '<style> .str{mso-number-format:\@;}.dt{width:450;}</style>';
+		$html .= '<table border="1">';					
+		$html .='<tr>
+					<th>NO</th>
+					<th>NIP</th>
+					<th>NAMA PNS</th>
+					<th>NAMA</th>
+					<th>TAHAP</th>
+					<th>STATUS</th>
+					'; 
+		$html 	.= '</tr>';
+		if($q->num_rows() > 0){
+			$i = 1;		        
+			foreach ($q->result() as $r) {
+				
+				$html .= "<tr><td>$i</td>";				
+				$html .= "<td class=str>".(!empty($r->nip_lama) ? $r->nip_lama.'/'.$r->nip_baru : $r->nip)."</td>";	
+                $html .= "<td>{$r->nama_pns}</td>";
+				$html .= "<td>{$r->nama_janda_duda}</td>";
+                $html .= "<td>{$r->tahapan_nama}</td>";	
+                $html .= "<td>{$r->usul_status}</td>";				
+				$html .= "</tr>";
+				$i++;
+			}
+			$html .="</table>";
+			echo $html;
+		}else{
+			$html .="<tr><td  colspan=6 >There is no data found</td></tr></table>";
+			echo $html;
+		} 	  
+	
+	}	
 	
 }
