@@ -1154,7 +1154,7 @@ EOD;
 		$this->pdf->Text(275, 175, 'NIP. 197512311995031001 ');
 		
 	    $this->pdf->Text(175, 185, 'Tembusan, Keputusan ini disampaikan kepada :');
-		$this->pdf->Text(175, 190, '1. Kepala Kantor Cabang PT.TASPEN (PERSERO)/PT.ASABRI (PERSERO) di Gorontalo');
+		$this->pdf->Text(175, 190, '1. Kepala Kantor Cabang PT.TASPEN (PERSERO)/PT.ASABRI (PERSERO) di '.$row->nama_taspen);
 		$this->pdf->Text(175, 195, '2. Direktur Pensiun BKN di Jakarta;');
 		$this->pdf->Text(175, 200, '3. Pertinggal ');
 		

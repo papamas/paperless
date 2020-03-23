@@ -520,7 +520,8 @@ ORDER  by e.PNS_PNSNAM ASC
 		g.first_name usul_lock_name,
 		h.first_name usul_verif_name,
 		i.first_name usul_entry_name,
-		j.GOl_PKTNAM,j.GOL_GOLNAM
+		j.GOl_PKTNAM,j.GOL_GOLNAM,
+		k.nama_taspen
 		FROM $this->usul a
 		LEFT JOIN $this->tablelayanan b ON a.layanan_id = b.layanan_id	
 		LEFT JOIN $this->tabletahapan c ON c.tahapan_id = a.usul_tahapan_id
@@ -531,6 +532,7 @@ ORDER  by e.PNS_PNSNAM ASC
 		LEFT JOIN $this->tableuser h ON h.user_id = a.usul_verif_by
 		LEFT JOIN $this->tableuser i ON i.user_id = a.usul_entry_by
 		LEFT JOIN $this->tablegolru j ON j.GOL_KODGOL = a.golongan
+		LEFT JOIN $this->kantorTaspen k ON k.id_taspen = a.kantor_taspen
 		WHERE a.nip='$nip' AND a.usul_id='$usul'  ";
 		
 		$query 	=   $this->db->query($sql);
