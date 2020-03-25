@@ -38,8 +38,9 @@
 
 			  <?php if($detail_agenda->agenda_status == 'dibuat'){?>
 			  <!--IMPORT EXCEL HIDDEN!-->
-			  <div class="row">
-				<div class="col-xs-12">
+			  <div class="form-group row">
+				<label class="control-label col-md-2 col-sm-2 col-xs-2"><a href="<?php echo site_url().'/agenda/getXls/'?>" target="_blank" data-tooltip="tooltip" title="Download Format File Import Nominatif">Format File KLIK DISINI</a></label>
+				<div class="col-xs-10">
 				  <?php echo form_open_multipart('importexcel');?>
 				  <div class="input-group">
 					<input type="hidden" class="form-control" value="<?php echo $detail_agenda->agenda_id ?>" name="input_agendaid" required>
@@ -49,7 +50,7 @@
 					</span>
 				  </div>
 				  </form>
-				</div><br>
+				</div>
 			  </div>
 			  <!--IMPORT EXCEL HIDDEN-->
 
@@ -110,6 +111,7 @@
 						<th>Nama</th>
 						<th>Gol/Ruang</th>
 						<th>Pendidikan</th>
+						<th>Instansi</th>
 						<th>Aksi</th>
 					  </tr>
 					  </tr>
@@ -122,9 +124,10 @@
 						  <td><?php if($nominatif->pns_pnsnam != NULL){ echo $nominatif->pns_pnsnam; }else{echo "<b>PERIKSA KEMBALI NIP INI  DAN IMPORT KEMBALI</b>";} ?></td>
 						  <td><?php echo $nominatif->gol_golnam; ?>-<?php echo $nominatif->gol_pktnam; ?></td>
 						  <td><?php echo $nominatif->dik_namdik; ?></td>
+						  <td><?php echo $nominatif->ins_namins; ?></td>
 						  <?php if($detail_agenda->agenda_status == 'dibuat'){?>
 						  <td>
-							<a onclick="confirmation(event)" href="<?php echo site_url("agenda/hapus_nominatif/$nominatif->nip/$nominatif->agenda_id")?>" type="button" class="btn btn-danger btn-flat"><i class="fa fa-trash"></i>&nbsp;Hapus</a>
+							<a onclick="confirmation(event)" href="<?php echo site_url("agenda/hapus_nominatif/$nominatif->nip/$nominatif->agenda_id")?>" type="button" data-tooltip="tooltip" title="Hapus Nominatif" class="btn btn-danger btn-flat btn-xs"><i class="fa fa-trash"></i></a>
 						  </td>
 						<?php }else{echo "<td></td>"; } ?>
 						</tr>
@@ -188,7 +191,9 @@
 		});
 	}
 	
-    $(document).ready(function () {		
+    $(document).ready(function () {
+        $('[data-tooltip="tooltip"]').tooltip();
+		 
 		$("#searchbox1").on('keyup',function () {
 			this.value = $.trim(this.value);
 			var key = $(this).val();

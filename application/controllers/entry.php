@@ -794,7 +794,7 @@ class Entry extends MY_Controller {
 						$html .='<a href="#dPhoto" class="btn btn-info btn-xs" data-tooltip="tooltip"  title="Unduh Photo" id="?id='.$this->myencrypt->encode($value->usul_id).'&n='.$this->myencrypt->encode($value->nip).'"><i class="fa fa-download"></i></a>';
 						$html .= '&nbsp;<a href="#cetakSurat" class="btn btn-danger btn-xs cetak" data-tooltip="tooltip"  title="Cetak Surat Persetujuan" id="?a='.$this->myencrypt->encode($value->usul_id).'&n='.$this->myencrypt->encode($value->nip).'&l='.$this->myencrypt->encode($value->layanan_id).'"><i class="fa fa-print"></i></a>';
 						$html .= '&nbsp;<a class="btn btn-primary btn-xs" data-tooltip="tooltip"  title="Input Persetujuan" data-toggle="modal" data-target="#skModal" data-usul="'.$this->myencrypt->encode($value->usul_id).'" data-nip="'.$this->myencrypt->encode($value->nip).'"><i class="fa fa-edit"></i></a>';
-						$html .='&nbsp;<button class="btn btn-danger btn-xs" data-tooltip="tooltip"  title="upload persetujuan" data-toggle="modal" data-target="#uploadModal" data-layanan="'.$value->layanan_id.'" data-agenda="'.$value->usul_id.'" data-nip="'.$value->nip.'"><i class="fa fa-upload"></i></button>';
+						$html .='&nbsp;<button class="btn btn-danger btn-xs" data-tooltip="tooltip"  title="upload persetujuan" data-toggle="modal" data-target="#uploadModal" data-layanan="'.$value->layanan_id.'" data-usul="'.$value->usul_id.'" data-nip="'.$value->nip.'"><i class="fa fa-upload"></i></button>';
 						
 			$html .='</td>
 						<td>'.$value->nomor_usul.'</td>
@@ -804,7 +804,7 @@ class Entry extends MY_Controller {
 						<td>'.$value->layanan_nama.'</td>
 						<td>'.$value->usul_verif_date.' Oleh :<b>'.$value->usul_verif_name.'</b></span></td>';
 			$html .='<td>';
-						if(!empty($value->upload_persetujuan))
+						if(!empty($value->file_persetujuan))
 						{	
 							$file = $value->file_persetujuan;							
 							$html .= '<span data-toggle="tooltip" data-original-title="Ada File Persetujuan">

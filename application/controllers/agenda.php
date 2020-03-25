@@ -124,40 +124,49 @@ class Agenda extends MY_Controller {
 		);
 
 
-    $target_dir  = './agenda/'.$instansi;
-	//Data Dokumen
-    if($_FILES['input_dokumen']['name'] != NULL){
-	    
-		if (!is_dir($target_dir)) {
-			mkdir($target_dir, 0777, TRUE);
+		$target_dir  = './agenda/'.$instansi;
+		//Data Dokumen
+		if($_FILES['input_dokumen']['name'] != NULL){
+			
+			if (!is_dir($target_dir)) {
+				mkdir($target_dir, 0777, TRUE);
+			}
+			 
+			$config['upload_path'] 	    = $target_dir;
+			$config['allowed_types']    = 'pdf';
+			$config['max_size'] 		= '3024';
+			$config['encrypt_name']		= TRUE;	
+			
+			$this->load->library('upload', $config);
+			
+			
+			if($this->upload->do_upload('input_dokumen')){			
+				$upload       					= $this->upload->data();	      	
+				//Nama File
+				$data['agenda_dokumen'] 		= $upload['file_name'];          
+			} else {
+
+			  $this->session->set_flashdata('gagal', "Gagal Menyimpan, File Max. 3 MB | File Di Ijinkan Hanya pdf");
+			  redirect('agenda');
+
+			}
+
 		}
-         
-		$config['upload_path'] 	    = $target_dir;
-		$config['allowed_types']    = 'pdf';
-		$config['max_size'] 		= '3024';
-		$config['encrypt_name']		= TRUE;	
+
+		$result		=  $this->magenda->mtambah_agenda($data);
 		
-        $this->load->library('upload', $config);
+		if($result['response']  === TRUE)
+		{	
+			$this->session->set_flashdata('berhasil', $result['pesan']);
+		}
+		else
+		{
+			$this->session->set_flashdata('gagal', $result['pesan']);
+		}
 		
-		
-		if($this->upload->do_upload('input_dokumen')){			
-		    $upload       					= $this->upload->data();	      	
-			//Nama File
-			$data['agenda_dokumen'] 		= $upload['file_name'];          
-        } else {
+		redirect('agenda');
 
-          $this->session->set_flashdata('gagal', "Gagal Menyimpan, File Max. 3 MB | File Di Ijinkan Hanya pdf");
-          redirect('agenda');
-
-        }
-
-    }
-
-	$this->magenda->mtambah_agenda($data);
-	$this->session->set_flashdata('berhasil', "Agenda berhasil dibuat");
-	redirect('agenda');
-
-  }
+	}
 
 	//FORM UBAH AGENDA
 	public function ubah($id){
@@ -280,44 +289,44 @@ class Agenda extends MY_Controller {
 
 	}
 
-  //LIST NOMINATIF
-  public function nominatif($agenda_id){
+	//LIST NOMINATIF
+	public function nominatif($agenda_id){
 
-    $data['menu']    		=  $this->menu->build_menu();
-	$data['lname']    		=  $this->auth->getLastName();        
-	$data['name']     		=  $this->auth->getName();
-	$data['jabatan']  		=  $this->auth->getJabatan();
-	$data['member']	  		=  $this->auth->getCreated();
-	$data['avatar']	  		=  $this->auth->getAvatar();
-	
-	$data['detail_agenda']  = $this->magenda->mdetail_agenda($agenda_id);
-    $data['list_nominatif'] = $this->magenda->mlist_nominatif($agenda_id);
-	
-	$this->session->set_userdata('layanan_id',$data['detail_agenda']->layanan_id);
-	
-	$data['pesan']          = !empty($this->session->flashdata('berhasil')) ? $this->session->flashdata('berhasil') : $this->session->flashdata('gagal') ;
-	$data['tipe']           = !empty($this->session->flashdata('berhasil')) ? 'success' : 'error' ;
-	$data['title']          = !empty($this->session->flashdata('berhasil')) ? 'Berhasil !' : 'Gagal !' ;
-	if($this->session->flashdata('berhasil') || $this->session->flashdata('gagal'))
-	{
-		$data['show'] = TRUE;
-	}		
-	else
-    {		
-		$data['show'] = FALSE;
+		$data['menu']    		=  $this->menu->build_menu();
+		$data['lname']    		=  $this->auth->getLastName();        
+		$data['name']     		=  $this->auth->getName();
+		$data['jabatan']  		=  $this->auth->getJabatan();
+		$data['member']	  		=  $this->auth->getCreated();
+		$data['avatar']	  		=  $this->auth->getAvatar();
+		
+		$data['detail_agenda']  = $this->magenda->mdetail_agenda($agenda_id);
+		$data['list_nominatif'] = $this->magenda->mlist_nominatif($agenda_id);
+		
+		$this->session->set_userdata('layanan_id',$data['detail_agenda']->layanan_id);
+		
+		$data['pesan']          = !empty($this->session->flashdata('berhasil')) ? $this->session->flashdata('berhasil') : $this->session->flashdata('gagal') ;
+		$data['tipe']           = !empty($this->session->flashdata('berhasil')) ? 'success' : 'error' ;
+		$data['title']          = !empty($this->session->flashdata('berhasil')) ? 'Berhasil !' : 'Gagal !' ;
+		if($this->session->flashdata('berhasil') || $this->session->flashdata('gagal'))
+		{
+			$data['show'] = TRUE;
+		}		
+		else
+		{		
+			$data['show'] = FALSE;
+		}
+		
+		if(!$this->allow)
+		{
+			$this->load->view('403/index',$data);
+			return;
+		}
+		$this->load->view('agenda/nominatif', $data);		
+
 	}
-	
-	if(!$this->allow)
-	{
-		$this->load->view('403/index',$data);
-		return;
-	}
-	$this->load->view('agenda/nominatif', $data);		
 
-  }
-
-  //CARI NOMINATIF
-  public function autocomplete(){
+	//CARI NOMINATIF
+	public function autocomplete(){
 
 		$instansi    = $this->session->userdata['session_instansi'];
 		$layanan_id  = $this->session->userdata('layanan_id');
@@ -344,127 +353,128 @@ class Agenda extends MY_Controller {
 
 	}
 
-  //FUNGSI TAMBAH NOMINATIF
-  public function ftambah_nominatif(){
+	//FUNGSI TAMBAH NOMINATIF
+	public function ftambah_nominatif(){
 
     
-	$this->form_validation->set_rules('input_nip', 'NIP', 'trim|required|max_length[18]');
+		$this->form_validation->set_rules('input_nip', 'NIP', 'trim|required|max_length[18]');
 
-    $agenda_id 				= $this->input->post('input_agendaid');
-    $layanan_id 			= $this->input->post('input_layananid');
-    $layanan_nama 			= $this->input->post('input_layanannama');
-    $layanan_grup 			= $this->input->post('input_layanangrup');
-    $kp_periode 			= $this->input->post('input_periodekp');
-    $input_nip 				= $this->input->post('input_nip');
-    $nip 					= preg_replace("/[^0-9]/", "", $input_nip);
-    $instansi 				= $this->session->userdata['session_instansi'];
+		$agenda_id 				= $this->input->post('input_agendaid');
+		$layanan_id 			= $this->input->post('input_layananid');
+		$layanan_nama 			= $this->input->post('input_layanannama');
+		$layanan_grup 			= $this->input->post('input_layanangrup');
+		$kp_periode 			= $this->input->post('input_periodekp');
+		$input_nip 				= $this->input->post('input_nip');
+		$nip 					= preg_replace("/[^0-9]/", "", $input_nip);
+		$instansi 				= $this->session->userdata['session_instansi'];
 
-    $cek_nip = $this->magenda->mcek_nip($nip, $instansi);
-    if($cek_nip == 0){
-      $this->session->set_flashdata('gagal', "NIP tidak terdaftar / bukan dari instansi anda");
-      redirect('agenda/nominatif/'.$agenda_id);
-    }
+		$cek_nip = $this->magenda->mcek_nip($nip, $instansi);
+		if($cek_nip == 0){
+		  $this->session->set_flashdata('gagal', "NIP tidak terdaftar / bukan dari instansi anda");
+		  redirect('agenda/nominatif/'.$agenda_id);
+		}
 
-    $cek_nominatif = $this->magenda->mcek_nominatif($agenda_id, $nip);
-    if($cek_nominatif > 0){
-      $this->session->set_flashdata('gagal', "NIP telah terdaftar di agenda ini");
-      redirect('agenda/nominatif/'.$agenda_id);
-    }else if($cek_nominatif == 0){
-        $cek_nominatif2 = $this->magenda->mcek_nominatif2($layanan_id, $nip);
-        if($cek_nominatif2 > 0){
-          $this->session->set_flashdata('gagal', "NIP telah terdaftar dilayanan yang sama yaitu $layanan_nama");
-          redirect('agenda/nominatif/'.$agenda_id);
-        }else if($cek_nominatif2 == 0){
-          $cek_nominatif3 = $this->magenda->mcek_nominatif3($layanan_grup, $nip);
-          if($cek_nominatif3 > 0 && $kp_periode == NULL){
-            $this->session->set_flashdata('gagal', "NIP telah terdaftar di grup layanan yang sama yaitu $layanan_grup");
-            redirect('agenda/nominatif/'.$agenda_id);
-          }else if($cek_nominatif3 > 0 && $kp_periode != NULL){
-             $periodekp_terahir = $this->magenda->mperiodekp_terakhir($layanan_grup, $nip)->kp_periode;
-             if($kp_periode == $periodekp_terahir){
-               $this->session->set_flashdata('gagal', "NIP telah terdaftar di periode KP yang sama");
-               redirect('agenda/nominatif/'.$agenda_id);
-             }
-          }
-       }
-    }
+		$cek_nominatif = $this->magenda->mcek_nominatif($agenda_id, $nip);
+		if($cek_nominatif > 0){
+		  $this->session->set_flashdata('gagal', "NIP telah terdaftar di agenda ini");
+		  redirect('agenda/nominatif/'.$agenda_id);
+		}else if($cek_nominatif == 0){
+			$cek_nominatif2 = $this->magenda->mcek_nominatif2($layanan_id, $nip);
+			if($cek_nominatif2 > 0){
+			  $this->session->set_flashdata('gagal', "NIP telah terdaftar dilayanan yang sama yaitu $layanan_nama");
+			  redirect('agenda/nominatif/'.$agenda_id);
+			}else if($cek_nominatif2 == 0){
+			  $cek_nominatif3 = $this->magenda->mcek_nominatif3($layanan_grup, $nip);
+			  if($cek_nominatif3 > 0 && $kp_periode == NULL){
+				$this->session->set_flashdata('gagal', "NIP telah terdaftar di grup layanan yang sama yaitu $layanan_grup");
+				redirect('agenda/nominatif/'.$agenda_id);
+			  }else if($cek_nominatif3 > 0 && $kp_periode != NULL){
+				 $periodekp_terahir = $this->magenda->mperiodekp_terakhir($layanan_grup, $nip)->kp_periode;
+				 if($kp_periode == $periodekp_terahir){
+				   $this->session->set_flashdata('gagal', "NIP telah terdaftar di periode KP yang sama");
+				   redirect('agenda/nominatif/'.$agenda_id);
+				 }
+			  }
+		   }
+		}
 
-    $data = array(
-                   'agenda_id' => $agenda_id,
-                   'nip' => $nip
-                 );
+		$data = array(
+					   'agenda_id' => $agenda_id,
+					   'nip' => $nip
+					 );
 
-    $this->magenda->mtambah_nominatif($data);
-    $this->session->set_flashdata('berhasil', "Nominatif berhasil ditambah");
-    redirect('agenda/nominatif/'.$agenda_id);
+		$this->magenda->mtambah_nominatif($data);
+		$this->session->set_flashdata('berhasil', "Nominatif berhasil ditambah");
+		redirect('agenda/nominatif/'.$agenda_id);
 
-  }
+	}
 
-  //HAPUS NOMINATIF
-  public function hapus_nominatif($nip, $agenda_id){
+ 
+	//HAPUS NOMINATIF
+	public function hapus_nominatif($nip, $agenda_id){
+		
+		$this->magenda->mhapus_nominatif($nip, $agenda_id);
+		$this->session->set_flashdata('berhasil', "Nominatif dihapus");
+		redirect('agenda/nominatif/'.$agenda_id);
+	}
 
-    $this->magenda->mhapus_nominatif($nip, $agenda_id);
-    $this->session->set_flashdata('berhasil', "Nominatif dihapus");
-    redirect('agenda/nominatif/'.$agenda_id);
+	//KIRIM USUL
+	public function kirim_usul(){
 
-  }
-
-  //KIRIM USUL
-  public function kirim_usul(){
-
-    $agenda_id 				= $this->input->post('input_agendaid');
-    $agenda_jumlah 			= $this->input->post('input_agendajumlah');
-    $kp_periode 			= $this->input->post('input_periodekp');
-    $tanggal_sekarang 		= date("Y-m-d");
+		$agenda_id 				= $this->input->post('input_agendaid');
+		$agenda_jumlah 			= $this->input->post('input_agendajumlah');
+		$kp_periode 			= $this->input->post('input_periodekp');
+		$tanggal_sekarang 		= date("Y-m-d");
 
 
-    $batas_kp = $this->magenda->mtanggal_bataskp($kp_periode)->periode_batas;
-    if($kp_periode != NULL){
-        if($tanggal_sekarang > $batas_kp){
-          $this->session->set_flashdata('gagal', "Gagal Kirim, Batas KP berakhir pada $batas_kp");
-          redirect('agenda/nominatif/'.$agenda_id);
-        }
-    }
+		$batas_kp = $this->magenda->mtanggal_bataskp($kp_periode)->periode_batas;
+		if($kp_periode != NULL){
+			if($tanggal_sekarang > $batas_kp){
+			  $this->session->set_flashdata('gagal', "Gagal Kirim, Batas KP berakhir pada $batas_kp");
+			  redirect('agenda/nominatif/'.$agenda_id);
+			}
+		}
 
-    $jumlahnom = $this->magenda->mhitung_nominatif($agenda_id);
-    if($agenda_jumlah != $jumlahnom){
-      $this->session->set_flashdata('gagal', "Gagal Kirim, Jumlah Nominatif belum sesuai");
-      redirect('agenda/nominatif/'.$agenda_id);
-    }
+		$jumlahnom = $this->magenda->mhitung_nominatif($agenda_id);
+		if($agenda_jumlah != $jumlahnom){
+		  $this->session->set_flashdata('gagal', "Gagal Kirim, Jumlah Nominatif belum sesuai");
+		  redirect('agenda/nominatif/'.$agenda_id);
+		}
 
-    //Update Status Agenda
-    $dataAgenda = array(
-                   'agenda_id' => $agenda_id,
-                   'agenda_status' => 'dikirim'
-                 );
+		//Update Status Agenda
+		$dataAgenda = array(
+					   'agenda_id' => $agenda_id,
+					   'agenda_status' => 'dikirim'
+					 );
 
-    $updateDataAgenda = array();
-    foreach($dataAgenda as $key) {
-        $updateDataAgenda[] = array(
-                       'agenda_id' => $agenda_id,
-                       'agenda_status' => 'dikirim'
-                     );
-    }
+		$updateDataAgenda = array();
+		foreach($dataAgenda as $key) {
+			$updateDataAgenda[] = array(
+						   'agenda_id' => $agenda_id,
+						   'agenda_status' => 'dikirim'
+						 );
+		}
 
-    //Update Status Nominatif
-    $dataNomi = array(
-                   'agenda_id' => $agenda_id,
-                   'tahapan_id' => '2'
-                 );
+		//Update Status Nominatif
+		$dataNomi = array(
+					   'agenda_id' => $agenda_id,
+					   'tahapan_id' => '2'
+					 );
 
-    $updateDataNomi = array();
-    foreach($dataNomi as $key) {
-        $updateDataNomi[] = array(
-                       'agenda_id' => $agenda_id,
-                       'tahapan_id' => '2'
-                     );
-    }
+		$updateDataNomi = array();
+		foreach($dataNomi as $key) {
+			$updateDataNomi[] = array(
+						   'agenda_id' => $agenda_id,
+						   'tahapan_id' => '2'
+						 );
+		}
 
-    $this->magenda->mkirim_usul1($updateDataAgenda, 'agenda_id');
-    $this->magenda->mkirim_usul2($updateDataNomi, 'agenda_id');
-    $this->session->set_flashdata('berhasil', "Usul Berhasil dikirim");
-    redirect('agenda');
-  }
+		$this->magenda->mkirim_usul1($updateDataAgenda, 'agenda_id');
+		$this->magenda->mkirim_usul2($updateDataNomi, 'agenda_id');
+		$this->session->set_flashdata('berhasil', "Usul Berhasil dikirim");
+		redirect('agenda');
+	  
+	}
 
     public function getPdf($instansi, $file)	{
 				
@@ -477,6 +487,16 @@ class Agenda extends MY_Controller {
 		header('Content-Disposition:attachment; filename=pengantar.pdf');                      
 		header('Expires:0'); 
 		readfile(base_url().'agenda/'.$instansi.'/'.$file);
+	}
+
+	public function getXls()	{
+				
+		header('Pragma:public');
+		header('Cache-Control:no-store, no-cache, must-revalidate');
+		header('Content-type:application/vnd.ms-excel');
+		header('Content-Disposition:attachment; filename=FileContohImport.xls');                      
+		header('Expires:0'); 
+		readfile(base_url().'format/FormatNominatif.xls');
 	}	
 
 }
