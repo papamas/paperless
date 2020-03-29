@@ -5,50 +5,38 @@
 	<link rel="stylesheet" href="<?php echo base_url()?>assets/dist/css/tree.css">   
 	<link rel="stylesheet" href="<?php echo base_url()?>assets/dist/css/custom.css">   
   </head> 	
-	<style>
-    /*Bootstrap modal size iframe*/
+	<style> 
+	 /*Bootstrap modal size iframe*/
 	@media (max-width: 1280px){
-		.modal-dialog  {
+		.md-dialog  {
 			height:630px;
 			width:800px;
 		}
-		.modal-body {
+		.md-body {
 			height: 500px;	
 		}
 	}
 	@media screen and (min-width:1281px) and (max-width:1600px){
-		.modal-dialog  {
+		.md-dialog  {
 			height:700px;
 			width:1000px;
 		}
-		.modal-body {
+		.md-body {
 			height: 550px;	
 		}
 	}
 	@media screen and (min-width:1601px) and (max-width:1920px){
-		.modal-dialog  {
+		.md-dialog  {
 			height:830px;
 			width:1200px;
 		}
-		.modal-body {
+		.md-body {
 			height: 700px;	
 		}
 	}
 
-	/*Vertically centering Bootstrap modal window*/
-	.vertical-alignment-helper {
-		display:table;
-		height: 100%;
-		width: 100%;
-		pointer-events:none; /* This makes sure that we can still click outside of the modal to close it */
-	}
-	.vertical-align-center {
-		/* To center vertically */
-		display: table-cell;
-		vertical-align: middle;
-		pointer-events:none;
-	}
-	.modal-content {
+	
+	.md-content {
 		/* Bootstrap sets the size of the modal in the modal-dialog class, we need to inherit it */
 		width:inherit;
 		height:inherit;
@@ -56,6 +44,7 @@
 		margin: 0 auto;
 		pointer-events: all;
 	}
+	
 	
     </style>
   </head>
@@ -133,9 +122,10 @@
 						<hr/>
 						<?php if($show):?>
 						<div class="table-responsive">
-							<table class="table table-striped table-condensed">
+							<table id="tb-lacak" class="table table-striped table-condensed">
 							<thead>
 								<tr>
+									<th></th>
 									<th>NOMOR</th>									
 									<th>NIP</th>
 									<th>NAMA PNS</th>
@@ -151,6 +141,22 @@
 								<?php if($usul->num_rows() > 0):?>
 								<?php  foreach($usul->result() as $value):?>
 								<tr>
+									<?php 
+									$link  ='';
+									$link2 ='';
+									if($value->usul_status == 'BTL')
+									{	
+										$link= '<a href="#" class="btn bg-maroon btn-flat btn-xs" data-tooltip="tooltip"  title="Kirim Ulang Berkas BTL ini" data-toggle="modal" data-target="#kirimModal" data-nip="'.$this->myencrypt->encode($value->nip).'" data-usul="'.$this->myencrypt->encode($value->usul_id).'" ><i class="fa fa-mail-forward"></i></a>';	
+										$link2= '&nbsp;<a href="#" class="btn bg-orange btn-xs" data-tooltip="tooltip"  title="Cek Keterangan Alasan BTL" data-toggle="modal" data-target="#cekModal" data-id="?n='.$this->myencrypt->encode($value->nip).'&a='.$this->myencrypt->encode($value->usul_id).'">'.$value->usul_status.'</a>';
+									}
+									else
+									{
+										$link2='<span class="'.$value->bg.'">'.$value->usul_status.'</span>';
+									}
+									?>
+									<td>									
+									<?php echo $link;?>
+									</td>
 									<td><?php echo $value->	nomor_usul?></td>									
 									<td><?php echo (!empty($value->nip_lama) ? $value->nip_lama.' / '.$value->nip_baru : $value->nip)?></td>
 									<td><?php echo $value->nama_pns?></td>
@@ -173,7 +179,7 @@
 										}
 										?>
 									</td>
-									<td><span class="<?php echo $value->bg?>"><?php echo $value->usul_status?></span></td>
+									<td><?php echo $link2?></td>
 									<td><span class="badge bg-maroon"><?php echo $value->tahapan_nama?></span></td>
 								</tr>
 								<?php endforeach;?>
@@ -206,6 +212,45 @@
 		</div>
 	</div>	
 	
+	<div class="modal fade" id="cekModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+					<h4 class="modal-title" id="">Infomasi Alasan Berkas</h4>
+				</div>
+							
+			</div>
+		</div>	
+    </div>
+	
+	
+	<div class="modal fade" id="kirimModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+					<h4 class="modal-title" id="myModalLabel"><span id="msg"></span></h4>
+				</div>
+				<div class="modal-body">
+					<form id="nfrmKirim">
+					    <input type="hidden" name="<?php echo $this->security->get_csrf_token_name()?>" value="<?php echo $this->security->get_csrf_hash()?>" style="display: none">
+					    <div class="form-group row">							   						 
+						    <div class="col-md-12">
+							  Anda Yakin akan mengirimkan kembali berkas yang telah BTL ini?	
+                            </div>							  
+						</div>  
+                        <input type="hidden" name="usul_nip"/>	
+					    <input type="hidden" name="usul_id"/>							
+					</form>
+				 </div>
+				<div class="modal-footer">
+					<button type="button" class="btn bg-maroon" id="nBtnKirim">OK Kirim !</button>
+				</div>
+			</div>
+		</div>	
+	</div>
+	
 	<script src="<?php echo base_url()?>assets/plugins/jQuery/jQuery-2.1.4.min.js"></script>    
     <script src="<?php echo base_url()?>assets/bootstrap/js/bootstrap.min.js"></script> 
     <script src="<?php echo base_url()?>assets/dist/js/app.min.js"></script>
@@ -216,11 +261,65 @@
 		$('#lihatFileModal').on('show.bs.modal',function(e) {    		 
 			var id=  $(e.relatedTarget).attr('data-id');			
 			var iframe = $('#frame');
-			iframe.attr('src', '<?php echo site_url()?>'+'/taspen/getInlineTaspen/'+id);
-					
+			iframe.attr('src', '<?php echo site_url()?>'+'/taspen/getInlineTaspen/'+id);					
 	    });
 		
-	
+		$('#cekModal').on('show.bs.modal',function(e) {    		
+			var id=  $(e.relatedTarget).attr('data-id');
+			$.get('<?php echo site_url()?>/taspen/getAlasan/'+id, function(data){
+				$('#cekModal').find('.modal-content').html(data);
+			})			
+	    });
+		
+		$('#kirimModal').on('show.bs.modal',function(e){
+		     $('#kirimModal #msg').text('Konfirmasi Pengiriman Kembali Berkas BTL')
+			.removeClass( "text-green")
+		    .removeClass( "text-blue" ); 
+			
+			var nip		=  $(e.relatedTarget).attr('data-nip');
+			var usul    =  $(e.relatedTarget).attr('data-usul');
+			
+			$('#kirimModal input[name=usul_nip]').val(nip);
+			$('#kirimModal input[name=usul_id]').val(usul);
+		});
+		
+		$("#nBtnKirim").on("click",function(e){
+			e.preventDefault();
+			var data = $('#nfrmKirim').serialize();
+			
+			$('#kirimModal #msg').text('Updating Please Wait.....')
+                     .removeClass( "text-green")
+				     .addClass( "text-blue" );  
+			
+			$.ajax({
+				type: "POST",
+				url : "<?php echo site_url()?>/taspen/kirimBTL",
+				data: data,
+				success: function(){					
+					$('#kirimModal #msg').text('Berkas sudah dikirim kembali ke Tim Teknis BKN, silahkan lakukan pencarian ulang untuk melihat perubahan')
+						.removeClass( "text-blue")
+						.addClass( "text-green" );
+					//refreshTable();			
+			    }, // akhir fungsi sukses
+				error : function(r) {
+					$('#kirimModal #msg').text('Something wrong..')
+						.removeClass( "text-blue")
+						.removeClass( "text-green")
+						.addClass( "text-danger" );
+				}	
+		    });
+			return false;
+		});
+		
+		// hide empty column
+		var columns = $("#tb-lacak > tbody > tr:first > td").length;
+		for (var i = 0; i < columns; i++) {
+			if ($("#tb-lacak > tbody > tr > td:nth-child(" + i + ")").filter(function() {
+			  return $(this).text() != '';
+			}).length == 0) {
+			  $("#tb-lacak > tbody > tr > td:nth-child(" + i + "), #tb-lacak > thead > tr > th:nth-child(" + i + ")").hide();
+			}
+		}
 	});	
 	</script> 
 	</body>

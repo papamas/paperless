@@ -54,5 +54,54 @@ class Berkas_model extends CI_Model {
         return      $query;		
     }	
 	
+	function getAlasan($data){
+		
+		$usul_id			  = $data['usul_id'];
+		$nip                  = $data['nip'];
+		
+		$this->db->select('usul_alasan');
+		$this->db->where('usul_id', $usul_id);		
+		$this->db->where('nip', $nip);
+		return $this->db->get($this->usul);
+	
+	}	
+	
+	public function KirimBTL($data)
+	{
+		// kirim ulang berkas BTL
+		$r					  = FALSE;
+		$usul_id			  = $data['usul_id'];
+		$nip                  = $data['usul_nip'];
+        
+		$set['usul_tahapan_id']    = 4;	
+		$set['kirim_bkn_by']       = $this->session->userdata('user_id');
+		$set['usul_status']        = 'BELUM';	
+		
+        $this->db->trans_start();
+		$db_debug 			= $this->db->db_debug; 
+		$this->db->db_debug = FALSE; 
+		
+		$this->db->set($set);		
+		$this->db->set('kirim_bkn_date','NOW()',FALSE);
+		$this->db->where('usul_id', $usul_id);		
+		$this->db->where('nip', $nip);	
+		
+		if ($this->db->update($this->usul))
+		{
+			$error = $this->db->_error_message(); 
+			if(!empty($error))
+			{
+				$r = FALSE;
+			}
+			else
+			{
+				$r = TRUE;
+			}     
+        }
+        $this->db->db_debug = $db_debug; //restore setting			
+		$this->db->trans_complete();
+		
+		return $r;
+	}
 	
 }

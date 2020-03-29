@@ -506,10 +506,13 @@ ORDER  by e.PNS_PNSNAM ASC
 		$sql   = "SELECT a.*,DATE_FORMAT(a.tgl_usul,'%d-%m-%Y') tgl,
 		DATE_FORMAT(a.usul_tgl_persetujuan,'%d-%m-%Y') tgl_persetujuan,
 		DATE_FORMAT(a.pensiun_tmt,'%d-%m-%Y') tmt_pensiun,
+		formatTanggal(a.tgl_lahir) atgl_lahir,
+		formatTanggal(a.tgl_skep) atgl_skep,
 		formatTanggal(a.meninggal_dunia) meninggal,
 		formatTanggal(a.tgl_perkawinan) perkawinan,
 		formatTanggal(a.pensiun_tmt) pensiun,
 		formatTanggal(a.usul_tgl_persetujuan) persetujuan_tgl,
+		formatTanggal(a.tgl_usul) atgl_usul,
 		replace(format(a.gaji_pokok_terakhir,0),',','.') gapok,
 		replace(format(a.pensiun_pokok,0),',','.') penpok,
 		b.layanan_nama,
@@ -651,6 +654,32 @@ ORDER  by e.PNS_PNSNAM ASC
 	    $sql="SELECT * FROM $this->kantorTaspen";	
 		return $this->db->query($sql);
 		
+	}	
+	
+	public function getMutasiIstri($usul_id)
+	{
+		$sql   = "SELECT a.*,
+		DATE_FORMAT(a.tgl_lahir,'%d-%m-%Y') atgl_lahir,
+		DATE_FORMAT(a.tgl_nikah,'%d-%m-%Y') atgl_nikah,
+		DATE_FORMAT(a.tgl_pendaftaran,'%d-%m-%Y') atgl_pendaftaran,
+		DATE_FORMAT(a.tgl_cerai,'%d-%m-%Y') atgl_cerai,
+		DATE_FORMAT(a.tgl_wafat,'%d-%m-%Y') atgl_wafat
+		FROM mutasi_istri_suami a
+		WHERE a.usul_id='$usul_id'";
+		$query 	=   $this->db->query($sql);
+		return      $query;	
+	}	
+	
+	public function getMutasiAnak($usul_id)
+	{
+		$sql   = "SELECT a.*,
+		DATE_FORMAT(a.tgl_lahir,'%d-%m-%Y') atgl_lahir,
+		DATE_FORMAT(a.cerai_tgl,'%d-%m-%Y') acerai_tgl,
+		DATE_FORMAT(a.meninggal_tgl,'%d-%m-%Y') ameninggal_tgl
+		FROM mutasi_anak a 
+		WHERE a.usul_id='$usul_id'";
+		$query 	=   $this->db->query($sql);
+		return      $query;	
 	}	
 }
 

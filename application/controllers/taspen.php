@@ -488,7 +488,7 @@ class Taspen extends MY_Controller {
 		} 	
 	}
 	
-	/* Usul*/
+	/* Usul Janda/Duda*/
 	public function usul()
 	{
 		$data['menu']      =  $this->menu->build_menu();
@@ -497,12 +497,11 @@ class Taspen extends MY_Controller {
 		$data['jabatan']   =  $this->auth->getJabatan();
 		$data['member']	   =  $this->auth->getCreated();
 		$data['avatar']	   =  $this->auth->getAvatar();	
-		$data['layanan']   =  $this->usul->getLayanan();
-		$data['dokumen']   =  $this->usul->getDokumen();
+		$data['layanan']   =  $this->usul->getLayananSK();
 		$data['upload']	   =  $this->usul->getUpload();
-		$data['usul']	   =  $this->usul->getUsul();
+		$data['usul']	   =  $this->usul->getUsul(1);
 		$data['golongan']  =  $this->usul->getGolongan();
-		
+		$data['show'] 	   =  FALSE;
 		$this->load->view('taspen/usul/index',$data);
 	}	
 	
@@ -528,7 +527,9 @@ class Taspen extends MY_Controller {
 		
 		if($this->form_validation->run() == FALSE)
 		{
-			$data['form_error']      =   validation_errors();
+			$data['pesan']	= 'Silahkan lengkapi Form terlebih dahulu';	
+			$data['tipe']	= 'warning';	
+			$data['title']	= 'WARNING!';
 		}
 		else
 		{
@@ -561,77 +562,99 @@ class Taspen extends MY_Controller {
 			$data['alamat'] 				= $this->input->post('alamat');
 			$usul_id                 	 	= $this->input->post('usul_id');
 			
-					
-			if($_FILES['file']['name'] != NULL){
-				
-				if ( ! $this->upload->do_upload('file'))
+			if(!empty($usul_id))					
+			{
+				// jika update
+				$data['usul_id'] = $usul_id;
+				if($_FILES['file']['name'] != NULL)
 				{
-					$data['error']	= $this->upload->display_errors();				
-				}
-				else
-				{
-					$upload 			     = $this->upload->data();	
-					$data['file_pengantar']  = $upload['file_name'];
-					
-					if(!empty($usul_id))					
+					// jika file di update harus validasi dulu
+					if ( ! $this->upload->do_upload('file'))
 					{
-						$data['usul_id'] = $usul_id;
-						$result          = $this->usul->updateUsul($data);
+						$data['error']	= $this->upload->display_errors();	
+						$data['pesan']	= 'Ada yang salah pada surat pengantar';	
+						$data['tipe']	= 'warning';	
+						$data['title']	= 'WARNING!';
 					}
 					else
-					{					
-						$result          = $this->usul->saveUsul($data);
-					}
+					{
+						$upload 			     = $this->upload->data();	
+						$data['file_pengantar']  = $upload['file_name'];
+	                      
+	                    // update usul
+						$result         		 = $this->usul->updateUsul($data);	
+						$response        		 = $result['response'];
 					
-					$response        = $result['response'];
+						if($response === TRUE)
+						{
+							$data['pesan']	= $result['pesan'];	
+							$data['tipe']	= 'success';	
+							$data['title']	= 'SUCCESS!';
+							
+						}
+						else
+						{
+							$data['pesan']	= $result['pesan'];	
+							$data['tipe']	= 'error';	
+							$data['title']	= 'ERROR!';
+						}	
+					}	
+                }				
+				else
+				{
+					// update usul tanpa update nama file
+					$result          		 = $this->usul->updateUsul($data);
+					$response        		 = $result['response'];
 					
 					if($response === TRUE)
 					{
-						$h ='<div class="alert alert-success alert-dismissible">
-                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                <h4><i class="icon fa fa-check"></i> Alert!</h4>'.$result['pesan'].'</div>';
-						$data['pesan']	= $h;	
+						$data['pesan']	= $result['pesan'];	
+						$data['tipe']	= 'success';	
+						$data['title']	= 'SUCCESS!';
 						
 					}
 					else
 					{
-						$h ='<div class="alert alert-danger alert-dismissible">
-                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                <h4><i class="icon fa fa-ban"></i> Alert!</h4>'.$result['pesan'].'</div>';
-						$data['pesan']	= $h;		
+						$data['pesan']	= $result['pesan'];	
+						$data['tipe']	= 'error';	
+						$data['title']	= 'ERROR!';
+					}		
+				    
+				}
+				
+			}
+			else
+			{					
+				if ( ! $this->upload->do_upload('file'))
+				{
+					$data['error']	= $this->upload->display_errors();	
+					$data['pesan']	= 'Ada yang salah pada surat pengantar';	
+					$data['tipe']	= 'warning';	
+					$data['title']	= 'WARNING!';
+				}
+				else
+				{	
+					$upload 			     = $this->upload->data();	
+					$data['file_pengantar']  = $upload['file_name'];
+					$result          		 = $this->usul->saveUsul($data);
+					
+					$response        		 = $result['response'];
+					
+					if($response === TRUE)
+					{
+						$data['pesan']	= $result['pesan'];	
+						$data['tipe']	= 'success';	
+						$data['title']	= 'SUCCESS!';
+						
+					}
+					else
+					{
+						$data['pesan']	= $result['pesan'];	
+						$data['tipe']	= 'error';	
+						$data['title']	= 'ERROR!';
 					}	
 				}
-            }
-            else
-			{
-				if(!empty($usul_id))					
-				{
-					$data['usul_id'] = $usul_id;
-					$result          = $this->usul->updateUsul($data);
-				}
-				else
-				{					
-					$result          = $this->usul->saveUsul($data);
-				}
-				
-				$response        = $result['response'];
-				
-				if($response === TRUE)
-				{
-					$h ='<div class="alert alert-success alert-dismissible">
-                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                <h4><i class="icon fa fa-check"></i> Alert!</h4>'.$result['pesan'].'</div>';
-					$data['pesan']	= $h; 		
-					
-				}
-				else
-				{
-					$h ='<div class="alert alert-danger alert-dismissible">
-                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                <h4><i class="icon fa fa-ban"></i> Alert!</h4>'.$result['pesan'].'</div>';
-					$data['pesan']	= $h; 		
-				}	
-			}
+			}	
 		}
 		
 		$data['menu']      =  $this->menu->build_menu();
@@ -640,17 +663,254 @@ class Taspen extends MY_Controller {
 		$data['jabatan']   =  $this->auth->getJabatan();
 		$data['member']	   =  $this->auth->getCreated();
 		$data['avatar']	   =  $this->auth->getAvatar();	
-		$data['layanan']   =  $this->usul->getLayanan();
-		$data['dokumen']   =  $this->usul->getDokumen();
+		$data['layanan']   =  $this->usul->getLayananSK();
 		$data['upload']	   =  $this->usul->getUpload();
-		$data['usul']	   =  $this->usul->getUsul();
+		$data['usul']	   =  $this->usul->getUsul(1);
 		$data['golongan']  =  $this->usul->getGolongan();
-				
+		$data['show'] 	   =  TRUE;		
 		$this->load->view('taspen/usul/index',$data);
 		
 	}	
 	
 	
+	public function usulmk()
+	{
+		$data['menu']      =  $this->menu->build_menu();
+		$data['lname']     =  $this->auth->getLastName();        
+		$data['name']      =  $this->auth->getName();
+		$data['jabatan']   =  $this->auth->getJabatan();
+		$data['member']	   =  $this->auth->getCreated();
+		$data['avatar']	   =  $this->auth->getAvatar();	
+		$data['layanan']   =  $this->usul->getLayananMutasi();
+		$data['upload']	   =  $this->usul->getUpload();
+		$data['usul']	   =  $this->usul->getUsul(2);
+		$data['temp_istri']=  $this->usul->getTempIstri(NULL);
+		$data['temp_anak'] =  $this->usul->getTempAnak(NULL);
+		$data['show'] 	   =  FALSE;
+		$this->load->view('taspen/usul/mutasi_keluarga',$data);
+	}	
+	
+	public function saveUsulmk()
+	{
+		$this->form_validation->set_rules('usul_id', 'Usul Id', 'trim');
+		$this->form_validation->set_rules('nomor_usul', 'Nomor Usul', 'trim|required');	
+		$this->form_validation->set_rules('tgl_usul', 'Tanggal Usul', 'trim|required');
+		$this->form_validation->set_rules('layanan_id', 'Pelayanan', 'trim|required');
+		$this->form_validation->set_rules('nama_pns', 'Nama PNS', 'required');
+		$this->form_validation->set_rules('nama_kecil', 'Nama Kecil', 'required');		
+		$this->form_validation->set_rules('nopen', 'NOPEN / No. Dosir', 'required');
+		$this->form_validation->set_rules('nip', 'NIP / NRP / NVP', 'required');
+		$this->form_validation->set_rules('tempat_lahir', 'Tempat Lahir', 'required');
+		$this->form_validation->set_rules('tgl_lahir', 'Tanggal Lahir', 'required');
+		$this->form_validation->set_rules('nomor_skep', 'Nomor Surat Keputusan Pensiun', 'required');
+		$this->form_validation->set_rules('tgl_skep', 'Tanggal Surat Keputusan Pensiun', 'required');
+		$this->form_validation->set_rules('pensiun_pokok', 'Pensiun Pokok', 'required');
+		$this->form_validation->set_rules('pensiun_tmt', 'Pensiun TMT', 'required');
+        $this->form_validation->set_rules('alamat', 'Alamat Ybs', 'required'); 
+				
+		if($this->form_validation->run() == FALSE)
+		{
+			$data['pesan']	= 'Silahkan lengkapi Form terlebih dahulu';	
+			$data['tipe']	= 'warning';	
+			$data['title']	= 'WARNING!';
+		}
+		else
+		{
+			$target_dir						= './uploads/taspen';			
+			$config['upload_path']          = $target_dir;			
+			$config['max_size']             = 3024;
+			$config['encrypt_name']			= FALSE;	
+			$config['overwrite']			= TRUE;	
+			$config['detect_mime']			= TRUE;
+			$config['file_name']            = 'PENGANTAR_'.$this->input->post('nip');
+			$config['allowed_types']        = 'pdf';
+			
+			$this->load->library('upload', $config);	
+			$this->upload->display_errors('', '');
+			
+			
+			$data['nomor_usul']      = $this->input->post('nomor_usul');
+			$data['tgl_usul']        = date('Y-m-d',strtotime($this->input->post('tgl_usul')));
+			$data['layanan_id']      = $this->input->post('layanan_id');
+			$data['nama_kecil'] 	 = $this->input->post('nama_kecil');
+			$data['nama_pns']        = $this->input->post('nama_pns');			
+			$data['tempat_lahir']    = $this->input->post('tempat_lahir');
+			$data['tgl_lahir']       = date('Y-m-d',strtotime($this->input->post('tgl_lahir')));
+			$data['nomor_skep']      = $this->input->post('nomor_skep');
+			$data['tgl_skep']    	 = date('Y-m-d',strtotime($this->input->post('tgl_skep')));			
+			$data['nopen']			 = $this->input->post('nopen');
+			$data['nip']             = $this->input->post('nip');
+			$data['pensiun_pokok'] 	 = $this->input->post('pensiun_pokok');
+			$data['pensiun_tmt']     = date('Y-m-d',strtotime($this->input->post('pensiun_tmt')));			
+			$data['alamat'] 		 = $this->input->post('alamat');
+			$usul_id                 = $this->input->post('usul_id');
+			
+			if(!empty($usul_id))					
+			{
+				// jika update
+				$data['usul_id'] = $usul_id;
+				if($_FILES['file']['name'] != NULL)
+				{
+					// jika file di update harus validasi dulu
+					if ( ! $this->upload->do_upload('file'))
+					{
+						$data['error']	= $this->upload->display_errors();
+						$data['pesan']	= 'Ada yang salah pada surat pengantar';	
+						$data['tipe']	= 'warning';	
+						$data['title']	= 'WARNING!';
+					}
+					else
+					{
+						$upload 			     = $this->upload->data();	
+						$data['file_pengantar']  = $upload['file_name'];
+	                      
+	                    // update usul
+						$result         		 = $this->usul->updateUsul($data);	
+						$response        		 = $result['response'];
+					
+						if($response === TRUE)
+						{
+							$data['pesan']	= $result['pesan'];	
+							$data['tipe']	= 'success';	
+							$data['title']	= 'SUCCESS!';
+							
+						}
+						else
+						{
+							$data['pesan']	= $result['pesan'];	
+							$data['tipe']	= 'error';	
+							$data['title']	= 'ERROR!';
+						}	
+					}	
+                }				
+				else
+				{
+					// update usul tanpa update nama file
+					$result          		 = $this->usul->updateUsul($data);
+					$response        		 = $result['response'];
+					
+					if($response === TRUE)
+					{
+						$data['pesan']	= $result['pesan'];	
+						$data['tipe']	= 'success';	
+						$data['title']	= 'SUCCESS!';
+						
+					}
+					else
+					{
+						$data['pesan']	= $result['pesan'];	
+						$data['tipe']	= 'error';	
+						$data['title']	= 'ERROR!';
+					}	
+				    
+				}
+				
+			}
+			else
+			{					
+				if ( ! $this->upload->do_upload('file'))
+				{
+					$data['error']	= $this->upload->display_errors();	
+					$data['pesan']	= 'Ada yang salah pada surat pengantar';	
+					$data['tipe']	= 'warning';	
+					$data['title']	= 'WARNING!';
+				}
+				else
+				{	
+					$upload 			     = $this->upload->data();	
+					$data['file_pengantar']  = $upload['file_name'];
+					$result          		 = $this->usul->saveUsul($data);
+					
+					$response        		 = $result['response'];
+					
+					if($response === TRUE)
+					{
+						$data['pesan']	= $result['pesan'];	
+						$data['tipe']	= 'success';	
+						$data['title']	= 'SUCCESS!';
+						
+					}
+					else
+					{
+						$data['pesan']	= $result['pesan'];	
+						$data['tipe']	= 'error';	
+						$data['title']	= 'ERROR!';
+					}	
+				}
+			}	
+		    
+		}	
+
+		$data['menu']      =  $this->menu->build_menu();
+		$data['lname']     =  $this->auth->getLastName();        
+		$data['name']      =  $this->auth->getName();
+		$data['jabatan']   =  $this->auth->getJabatan();
+		$data['member']	   =  $this->auth->getCreated();
+		$data['avatar']	   =  $this->auth->getAvatar();	
+		$data['layanan']   =  $this->usul->getLayananMutasi();
+		$data['upload']	   =  $this->usul->getUpload();
+		$data['usul']	   =  $this->usul->getUsul(2);
+		$data['temp_istri']=  $this->usul->getTempIstri(NULL);
+		$data['temp_anak'] =  $this->usul->getTempAnak(NULL);
+		$data['show'] 	   = TRUE;
+		$this->load->view('taspen/usul/mutasi_keluarga',$data);
+	}	
+	
+	public function simpanTempIstri()
+	{
+		$this->form_validation->set_rules('nama', 'Nama', 'required');
+		$this->form_validation->set_rules('nama_kecil', 'Nama Kecil', 'required');
+		$this->form_validation->set_rules('tempat_lahir', 'Tempat Lahir', 'required');
+		$this->form_validation->set_rules('tgl_lahir', 'Tanggal Lahir', 'required');
+		$this->form_validation->set_rules('tgl_nikah', 'Tanggal Menikah', 'required');
+		$this->form_validation->set_rules('tgl_cerai', 'Tanggal Cerai', 'trim');
+		$this->form_validation->set_rules('tgl_wafat', 'Tanggal Wafat', 'trim');
+		$this->form_validation->set_rules('alamat', 'Alamat', 'required');
+		
+		if($this->form_validation->run() == FALSE)
+		{
+			$data['pesan']	= "Silahkan Lengkapi Form";
+			$this->output
+				->set_status_header(406)
+				->set_content_type('application/json', 'utf-8')
+				->set_output(json_encode($data));
+			return FALSE;	
+		}
+		else
+		{	
+			$temp_id			 = $this->input->post('temp_mutasi_id');
+			
+			if(!empty($temp_id))
+			{	
+				$result				 = $this->usul->updateTempIstri();
+			}
+			else
+			{
+				$result				 = $this->usul->simpanTempIstri();
+			}
+			
+			$response   		 =  $result['response'];
+			$data['pesan']       =  $result['pesan'];
+			
+			if($response != TRUE)
+			{
+				$this->output
+				->set_status_header(406)
+				->set_content_type('application/json', 'utf-8')
+				->set_output(json_encode($data));
+				return FALSE;	
+			}
+			else
+			{
+				$data['pesan']	= $result['pesan'];
+				$this->output
+						->set_status_header(200)
+						->set_content_type('application/json', 'utf-8')
+						->set_output(json_encode($data));
+			}
+		
+		}
+	}	
 	
 	public function getUsul()
 	{
@@ -675,7 +935,7 @@ class Taspen extends MY_Controller {
 		$data['layanan']   =  $this->usul->getLayanan();
 		$data['dokumen']   =  $this->usul->getDokumen();
 		$data['upload']	   =  $this->usul->getUpload();
-		$data['usul']	   =  $this->usul->getUsul();
+		$data['usul']	   =  $this->usul->getUsul(1);
 		$data['golongan']  =  $this->usul->getGolongan();
 
 		$this->load->view('taspen/usul/index',$data);
@@ -694,7 +954,7 @@ class Taspen extends MY_Controller {
 	
 	public function getUsulAll()
 	{
-		$usul 		= $this->usul->getUsul();		
+		$usul 		= $this->usul->getUsul(1);		
 		$html = '';
 		$html .='<table id="tb-usul" class="table table-striped table-condensed">
 						<thead>
@@ -723,6 +983,57 @@ class Taspen extends MY_Controller {
 			$html .='<td>'.$value->nip.'</td>';
 			$html .='<td>'.$value->nama_pns.'</td>';
 			$html .='<td>'.$value->nama_janda_duda.'</td>';
+			$html .='<td>'.$value->layanan_nama.'</td>';
+			$html .='<td>';
+			if(!empty($value->file_pengantar))
+			{
+				$file = $value->file_pengantar;				
+				$html .= '<span data-toggle="tooltip" data-original-title="Ada File Pengantar">
+				<i class="fa fa-file-pdf-o" data-toggle="modal" data-target="#showFile" data-id="?t='.$this->myencrypt->encode("application/pdf").'&f='.$this->myencrypt->encode($file).'" style="color:red;"></i></span>';
+			}
+			else
+			{
+				$html .= '<span data-toggle="tooltip" data-original-title="Tidak Ada File Pengantar">
+				<i class="fa fa-file-o" style="color:red;"></i></span>';
+			}
+			$html .='</td>';
+			$html .='<td>'.$value->created_date.'</td>';
+            $html .='</tr>';
+		}
+		$html .='</tbody></table>';
+		echo $html;	
+	}	
+	
+	
+	public function getUsulAllmk()
+	{
+		$usul 		= $this->usul->getUsul(2);		
+		$html = '';
+		$html .='<table id="tb-usul" class="table table-striped table-condensed">
+						<thead>
+						    <tr>
+								<th></th>
+								<th>NOMOR</th>									
+								<th>TGL USUL</th>
+								<th>NIP</th>
+								<th>NAMA PNS</th>
+								<th>PELAYANAN</th>
+								<th>FILE</th>
+								<th>SYSDATE</th>
+						    </tr>
+					</thead>';
+		$html .='<tbody>';	
+		foreach($usul->result() as $value)
+		{
+			$html .='<tr>';
+			$html .='<td>';
+            $html .='<button class="edit btn btn-primary btn-xs" data-tooltip="tooltip"  title="Edit Usul" data-nomor="'.$value->nomor_usul.'" data-tgl="'.$value->tgl.'" data-layanan="'.$value->layanan_id.'" data-nama="'.$value->nama_pns.'" data-jd="'.$value->nama_janda_duda.'" data-nopen="'.$value->nopen.'" data-usul="'.$value->usul_id.'" data-nip="'.$value->nip.'"><i class="fa fa-edit"></i></button>';
+            $html .='&nbsp;<a href="#" class="btn btn-danger btn-flat btn-xs" data-tooltip="tooltip"  title="Kirim Usul BKN" data-toggle="modal" data-target="#kirimModal" data-nip="'.$value->nip.'" data-usul="'.$value->usul_id.'" ><i class="fa fa-mail-forward"></i></a>';
+			$html .='</td>';
+			$html .='<td>'.$value->nomor_usul.'</td>';
+			$html .='<td>'.$value->tgl.'</td>';
+			$html .='<td>'.$value->nip.'</td>';
+			$html .='<td>'.$value->nama_pns.'</td>';
 			$html .='<td>'.$value->layanan_nama.'</td>';
 			$html .='<td>';
 			if(!empty($value->file_pengantar))
@@ -900,6 +1211,7 @@ class Taspen extends MY_Controller {
 					<th>UPDATE</th>
 					<th>PELAYANAN</th>
 					<th>STATUS</th>
+					<th>ALASAN</th>
 					<th>TAHAPAN</th>'; 
 		$html 	.= '</tr>';
 		if($q->num_rows() > 0){
@@ -912,6 +1224,7 @@ class Taspen extends MY_Controller {
 				$html .= "<td>{$r->updated_date}</td>";
 				$html .= "<td>{$r->layanan_nama}</td>";
 				$html .= "<td>{$r->usul_status}</td>";
+				$html .= "<td>{$r->usul_alasan}</td>";
 				$html .= "<td>{$r->tahapan_nama}</td>";
 				$html .= "</tr>";
 				$i++;
@@ -924,6 +1237,196 @@ class Taspen extends MY_Controller {
 		} 	
 	}
 	
+	public function getTempIstriAll()
+	{
+		$id			= $this->input->post('usul_id');
+		$usul 		= $this->usul->getTempIstri($id);		
+		$html = '';
+		$html .='<table id="tb-istri" class="table table-striped table-condensed">
+						<thead>
+						    <tr>
+								<th>Aksi</th>
+								<th>Nama</th>
+								<th>Nama Kecil</th>
+								<th>Tempat/Tgl Lahir</th>
+								<th>Tanggl Nikah</th>
+								<th>Tanggal Pendaftaran</th>
+								<th>Tanggal Cerai</th>
+								<th>Tanggal Wafat</th>	
+								<th>Alamat</th>
+							</tr>
+					</thead>';
+		$html .='<tbody>';	
+		foreach($usul->result() as $value)
+		{
+			$html .='<tr>';
+			$html .='<td>';
+			$html .='<a class="btn btn-primary btn-xs" data-tooltip="tooltip"  title="Edit Istri" data-toggle="modal" data-target="#istriModal" data-id="'.$value->mutasi_id.'" data-nama="'.$value->nama.'" data-nama_kecil="'.$value->nama_kecil.'" data-tempat_lahir="'.$value->tempat_lahir.'" data-tgl_lahir="'.$value->tgl_lahir.'" data-tgl_nikah="'.$value->tgl_nikah.'" data-tgl_pendaftaran="'.$value->tgl_pendaftaran.'" data-tgl_cerai="'.$value->tgl_cerai.'" data-tgl_wafat="'.$value->tgl_wafat.'" data-alamat="'.$value->alamat.'" data-usul="'.$value->usul_id.'"><i class="fa fa-edit"></i></a>';
+			$html .='&nbsp;<a class="btn btn-danger btn-xs" data-tooltip="tooltip"  title="Hapus Istri" data-toggle="modal" data-target="#hapusModal" data-id="'.$value->mutasi_id.'"><i class="fa fa-remove"></i></a>';
+			$html .='</td>';
+			$html .='<td>'.$value->nama.'</td>';
+			$html .='<td>'.$value->nama_kecil.'</td>';
+		    $html .='<td>'.$value->tempat_lahir.'/'.$value->tgl_lahir.'</td>';
+			$html .='<td>'.$value->tgl_nikah.'</td>';
+			$html .='<td>'.$value->tgl_pendaftaran.'</td>';
+			$html .='<td>'.$value->tgl_cerai.'</td>';
+			$html .='<td>'.$value->tgl_wafat.'</td>';
+			$html .='<td>'.$value->alamat.'</td>';
+            $html .='</tr>';
+		}
+		$html .='</tbody></table>';
+		echo $html;	
+	}	
+	
+	public function hapusTempIstri()
+	{
+		$data['result']		= $this->usul->hapusTempIstri();
+				
+		$this->output
+			->set_status_header(200)
+			->set_content_type('application/json', 'utf-8')
+			->set_output(json_encode($data));
+		
+	}
+	
+	
+	public function simpanTempAnak()
+	{
+		$this->form_validation->set_rules('nama', 'Nama', 'required');
+		$this->form_validation->set_rules('sex', 'Sex', 'required');
+		$this->form_validation->set_rules('tgl_lahir', 'Tanggal Lahir', 'required');
+		$this->form_validation->set_rules('tgl_cerai', 'Tanggal Cerai', 'trim');
+		$this->form_validation->set_rules('tgl_wafat', 'Tanggal Wafat', 'trim');
+		$this->form_validation->set_rules('nama_ibu_ayah', 'nama_ibu_ayah', 'required');
+		
+		if($this->form_validation->run() == FALSE)
+		{
+			$data['pesan']	= "Silahkan Lengkapi Form";
+			$this->output
+				->set_status_header(406)
+				->set_content_type('application/json', 'utf-8')
+				->set_output(json_encode($data));
+			return FALSE;	
+		}
+		else
+		{	
+			$temp_id			 = $this->input->post('temp_mutasi_id');
+			
+			if(!empty($temp_id))
+			{	
+				$result				 = $this->usul->updateTempAnak();
+			}
+			else
+			{
+				$result				 = $this->usul->simpanTempAnak();
+			}
+			
+			$response   		 =  $result['response'];
+			$data['pesan']       =  $result['pesan'];
+			
+			if($response != TRUE)
+			{
+				$this->output
+				->set_status_header(406)
+				->set_content_type('application/json', 'utf-8')
+				->set_output(json_encode($data));
+				return FALSE;	
+			}
+			else
+			{
+				$data['pesan']	= $result['pesan'];
+				$this->output
+						->set_status_header(200)
+						->set_content_type('application/json', 'utf-8')
+						->set_output(json_encode($data));
+			}
+		
+		}
+	}	
+	
+	public function getTempAnakAll()
+	{
+		$id			= $this->input->post('usul_id');		
+		$usul 		= $this->usul->getTempAnak($id);		
+		$html = '';
+		$html .='<table id="tb-anak" class="table table-striped table-condensed">
+						<thead>
+						    <tr>
+								<th rowspan="2">Aksi</th>
+								<th rowspan="2">Nama</th>
+								<th rowspan="2">LK/PR</th>
+								<th rowspan="2">Tgl Lahir</th>
+								<th colspan="3">Keterangan Tentang Ibu/Ayah </th>								
+							</tr>
+							<tr>									
+								<th>Nama</th>
+								<th>Cerai Tgl</th>
+								<th>Meninggal Tgl</th>
+							</tr>
+					</thead>';
+		$html .='<tbody>';	
+		foreach($usul->result() as $value)
+		{
+			$html .='<tr>';
+			$html .='<td>';
+			$html .='<a class="btn btn-primary btn-xs" data-tooltip="tooltip"  title="Edit Anak" data-toggle="modal" data-target="#anakModal" data-id="'.$value->mutasi_id.'" data-nama="'.$value->nama.'" data-sex="'.$value->sex.'" data-tgl_lahir="'.$value->tgl_lahir.'" data-tgl_cerai="'.$value->cerai_tgl.'" data-tgl_wafat="'.$value->meninggal_tgl.'" data-nama_ibu_ayah="'.$value->nama_ibu_ayah.'" data-usul="'.$value->usul_id.'"><i class="fa fa-edit"></i></a>';
+			$html .='&nbsp;<a class="btn btn-danger btn-xs" data-tooltip="tooltip"  title="Hapus Anak" data-toggle="modal" data-target="#hapusAnakModal" data-id="'.$value->mutasi_id.'"><i class="fa fa-remove"></i></a>';
+			$html .='</td>';
+			$html .='<td>'.$value->nama.'</td>';
+			$html .='<td>'.$value->sex.'</td>';
+			$html .='<td>'.$value->tgl_lahir.'</td>';
+			$html .='<td>'.$value->nama_ibu_ayah.'</td>';
+			$html .='<td>'.$value->cerai_tgl.'</td>';
+			$html .='<td>'.$value->meninggal_tgl.'</td>';			
+            $html .='</tr>';
+		}
+		$html .='</tbody></table>';
+		echo $html;	
+	}	
+	
+	public function hapusTempAnak()
+	{
+		$data['result']		= $this->usul->hapusTempAnak();
+				
+		$this->output
+			->set_status_header(200)
+			->set_content_type('application/json', 'utf-8')
+			->set_output(json_encode($data));
+		
+	}
+	
+	public function getAlasan(){
+	
+	    $data['nip']          = $this->myencrypt->decode($this->input->get('n'));
+		$data['usul_id']      = $this->myencrypt->decode($this->input->get('a'));
+		$alasan               = $this->berkas->getAlasan($data)->row();
+		
+		$html = '';
+		$html .='<table class="table table-bordered table-striped table-condensed">
+						<thead>
+						    <tr><td colspan="4"><b>KETERANGAN ALASAN BERKAS BTL</b></td></tr>
+						</thead>';
+		$html .='<tr>
+					<td>'.$alasan->usul_alasan.'</td>
+				</tr>';							
+		$html .='</table>';
+		
+		echo $html;
+	}	
+	
+	public function kirimBTL()
+	{
+		$data['usul_nip']     = $this->myencrypt->decode($this->input->post('usul_nip'));
+		$data['usul_id']      = $this->myencrypt->decode($this->input->post('usul_id'));
+		
+		$data['response']	= $this->berkas->KirimBTL($data);
+		
+		$this->output
+			->set_status_header(200)
+			->set_content_type('application/json', 'utf-8')
+			->set_output(json_encode($data));
+		
+	}
 }
 
 /* End of file welcome.php */

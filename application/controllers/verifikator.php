@@ -639,6 +639,18 @@ class Verifikator extends MY_Controller {
 			echo $html;
 		} 	
 	}
+	
+	public function unlockTaspen()
+	{
+		
+		$data['response']	= $this->verifikator->setUnlockTaspen($this->input->post());
+		$data['data']		= $this->input->post();
+		$this->output
+			->set_status_header(200)
+			->set_content_type('application/json', 'utf-8')
+			->set_output(json_encode($data));
+		
+	}	
 }
 
 /* End of file welcome.php */

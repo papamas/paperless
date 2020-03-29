@@ -7,7 +7,8 @@ class Usul_model extends CI_Model {
 	private     $upload             = 'upload_dokumen_taspen';
 	private     $tablepupns 	    = 'mirror.pupns';
 	private     $golongan			= 'mirror.golru';
-
+	private     $tempistri			= 'mutasi_istri_suami';
+	private     $tempanak			= 'mutasi_anak';
 		
     function __construct()
     {
@@ -15,10 +16,18 @@ class Usul_model extends CI_Model {
 		$this->load->database();
 	}
 	
-	public function getLayanan()
+	public function getLayananSK()
 	{
 	    	
-		$sql="SELECT * FROM $this->layanan where layanan_bidang='2' and layanan_id IN (15,16,17) ";	
+		$sql="SELECT * FROM $this->layanan where layanan_bidang='2' and layanan_id IN (16,17) ";	
+		return $this->db->query($sql);
+		
+	}	
+	
+	public function getLayananMutasi()
+	{
+	    	
+		$sql="SELECT * FROM $this->layanan where layanan_bidang='2' and layanan_id=15";	
 		return $this->db->query($sql);
 		
 	}	
@@ -100,7 +109,7 @@ class Usul_model extends CI_Model {
         return $data;		
 	}	
 	
-	public function getUsul()
+	public function getUsul($layanan)
 	{
 		$find			= trim($this->input->post('find'));
 		
@@ -113,7 +122,22 @@ class Usul_model extends CI_Model {
            $sql_find  =" ";
 		}
 		
-		$sql="SELECT a.*,DATE_FORMAT(a.tgl_usul,'%d-%m-%Y') tgl, 
+		switch($layanan){
+			case 1:
+			$sql_layanan  =" AND a.layanan_id  IN  (16,17)";
+			break;
+			case 2:
+			$sql_layanan  =" AND a.layanan_id =15";
+			break;
+		}
+		
+		$sql="SELECT a.*,
+		(select COUNT(*) from $this->tempistri WHERE usul_id=a.usul_id) jumlah_istri,
+        (select COUNT(*) from $this->tempanak  WHERE usul_id=a.usul_id) jumlah_anak,
+		DATE_FORMAT(a.tgl_usul,'%d-%m-%Y') tgl, 
+		DATE_FORMAT(a.tgl_lahir,'%d-%m-%Y') atgl_lahir,
+		DATE_FORMAT(a.tgl_skep,'%d-%m-%Y') atgl_skep,
+		DATE_FORMAT(a.pensiun_tmt,'%d-%m-%Y') apensiun_tmt,
 		DATE_FORMAT(a.tgl_perkawinan,'%d-%m-%Y') perkawinan,
 		DATE_FORMAT(a.meninggal_dunia,'%d-%m-%Y') meninggal,
 		DATE_FORMAT(a.pensiun_tmt,'%d-%m-%Y') pensiun,
@@ -122,9 +146,11 @@ class Usul_model extends CI_Model {
 		FROM $this->usul a
 		LEFT JOIN $this->layanan b ON a.layanan_id = b.layanan_id	
 		LEFT JOIN $this->tablepupns c ON (a.nip = c.PNS_NIPBARU OR a.nip = c.PNS_PNSNIP)
-        WHERE 1=1 AND a.kirim_bkn IS NULL $sql_find		
+        WHERE 1=1 AND a.kirim_bkn IS NULL $sql_find	 $sql_layanan	
 		ORDER by created_date DESC
-		LIMIT 50";	
+		LIMIT 50 
+		";	
+		
 		return $this->db->query($sql);
 	}	
 	
@@ -168,10 +194,194 @@ class Usul_model extends CI_Model {
 	
 	public function getUploadDokumen($nip)
 	{
-		$sql=" SELECT a.*, b.nama_dokumen,b.keterangan FROM $this->upload a
+		$sql=" SELECT a.*, 
+		b.nama_dokumen,b.keterangan 
+		FROM $this->upload a
 		LEFT JOIN $this->dokumen b ON a.id_dokumen = b.id_dokumen
-		WHERE  a.nip='$nip'	ORDER BY b.keterangan ASC";			
+		WHERE  a.nip='$nip' AND aktif IS NOT NULL	ORDER BY b.keterangan ASC";			
 				
 		return $this->db->query($sql);
+	}	
+	
+	
+	public function simpanTempIstri()
+	{
+		$data['nama']				= $this->input->post('nama');
+		$data['nama_kecil']			= $this->input->post('nama_kecil');
+		$data['tempat_lahir']		= $this->input->post('tempat_lahir');
+		$data['tgl_lahir']			= date('Y-m-d',strtotime($this->input->post('tgl_lahir')));
+		$data['tgl_nikah']			= date('Y-m-d',strtotime($this->input->post('tgl_nikah')));
+		$data['tgl_pendaftaran']	= date('Y-m-d',strtotime($this->input->post('tgl_pendaftaran')));
+		$data['tgl_cerai']			= (!empty($this->input->post('tgl_cerai')) ? date('Y-m-d',strtotime($this->input->post('tgl_cerai'))) : NULL);
+		$data['tgl_wafat']			= (!empty($this->input->post('tgl_wafat')) ? date('Y-m-d',strtotime($this->input->post('tgl_wafat'))) : NULL);
+		$data['tempat_lahir']		= $this->input->post('tempat_lahir');
+		$data['alamat']				= $this->input->post('alamat');
+		$data['usul_id']			= $this->input->post('usul_id');
+		
+		$db_debug 			= $this->db->db_debug; 
+		$this->db->db_debug = FALSE; 	
+		if (!$this->db->insert($this->tempistri, $data))
+		{
+			$error = $this->db->_error_message();
+			if(!empty($error))
+			{
+                $data['pesan']		= $error;   
+				$data['response'] 	= FALSE;
+			}
+            	
+        }
+		else
+		{
+			$data['pesan']		= "Data Istri Berhasil Tersimpan";
+			$data['response']	= TRUE;
+		}	
+        $this->db->db_debug = $db_debug; //restore setting	
+
+        return $data;		
+	}	
+	
+	public function updateTempIstri()
+	{
+		$data['nama']				= $this->input->post('nama');
+		$data['nama_kecil']			= $this->input->post('nama_kecil');
+		$data['tempat_lahir']		= $this->input->post('tempat_lahir');
+		$data['tgl_lahir']			= date('Y-m-d',strtotime($this->input->post('tgl_lahir')));
+		$data['tgl_nikah']			= date('Y-m-d',strtotime($this->input->post('tgl_nikah')));
+		$data['tgl_pendaftaran']	= date('Y-m-d',strtotime($this->input->post('tgl_pendaftaran')));
+		$data['tgl_cerai']			= (!empty($this->input->post('tgl_cerai')) ? date('Y-m-d',strtotime($this->input->post('tgl_cerai'))) : NULL);
+		$data['tgl_wafat']			= (!empty($this->input->post('tgl_wafat')) ? date('Y-m-d',strtotime($this->input->post('tgl_wafat'))) : NULL);
+		$data['tempat_lahir']		= $this->input->post('tempat_lahir');
+		$data['alamat']				= $this->input->post('alamat');
+		$temp_id			 		= $this->input->post('temp_mutasi_id');
+		$data['usul_id']			= $this->input->post('usul_id');
+		
+		$db_debug 			= $this->db->db_debug; 
+		$this->db->db_debug = FALSE; 	
+		
+		$this->db->where('mutasi_id',$temp_id);
+		if (!$this->db->update($this->tempistri, $data))
+		{
+			$error = $this->db->_error_message();
+			if(!empty($error))
+			{
+                $data['pesan']		= $error;   
+				$data['response'] 	= FALSE;
+			}
+            	
+        }
+		else
+		{
+			$data['pesan']		= "Data Istri Berhasil Terupdate";
+			$data['response']	= TRUE;
+		}	
+        $this->db->db_debug = $db_debug; //restore setting	
+
+        return $data;		
+	}	
+	
+	
+	public function getTempIstri($id)
+	{
+		$sql=" SELECT mutasi_id, nama,nama_kecil,tempat_lahir,alamat,usul_id,
+		DATE_FORMAT(tgl_lahir,'%d-%m-%Y') tgl_lahir,
+		DATE_FORMAT(tgl_nikah,'%d-%m-%Y') tgl_nikah,
+		DATE_FORMAT(tgl_pendaftaran,'%d-%m-%Y') tgl_pendaftaran,
+		DATE_FORMAT(tgl_cerai,'%d-%m-%Y') tgl_cerai,
+		DATE_FORMAT(tgl_wafat,'%d-%m-%Y') tgl_wafat
+		from $this->tempistri WHERE usul_id='$id' ";			
+		return $this->db->query($sql);
+	}	
+	
+	public function hapusTempIStri()
+	{
+		$id			  = $this->input->post('temp_mutasi_id');
+	   	$this->db->where('mutasi_id', $id);		
+		return $this->db->delete($this->tempistri);
+	
+	}
+	
+	public function getTempAnak($id)
+	{
+		$sql=" SELECT mutasi_id, nama,sex,nama_ibu_ayah,usul_id,
+		DATE_FORMAT(tgl_lahir,'%d-%m-%Y') tgl_lahir,		
+		DATE_FORMAT(cerai_tgl,'%d-%m-%Y') cerai_tgl,
+		DATE_FORMAT(meninggal_tgl,'%d-%m-%Y') meninggal_tgl
+		from $this->tempanak  WHERE usul_id='$id' " ;			
+		return $this->db->query($sql);
+	}	
+	
+	public function simpanTempAnak()
+	{
+		$data['nama']				= $this->input->post('nama');
+		$data['sex']				= $this->input->post('sex');		
+		$data['tgl_lahir']			= date('Y-m-d',strtotime($this->input->post('tgl_lahir')));
+		$data['cerai_tgl']			= (!empty($this->input->post('tgl_cerai')) ? date('Y-m-d',strtotime($this->input->post('tgl_cerai'))) : NULL);
+		$data['meninggal_tgl']		= (!empty($this->input->post('tgl_wafat')) ? date('Y-m-d',strtotime($this->input->post('tgl_wafat'))) : NULL);
+		$data['nama_ibu_ayah']		= $this->input->post('nama_ibu_ayah');
+		$data['usul_id']			= $this->input->post('usul_id');
+		
+		$db_debug 			= $this->db->db_debug; 
+		$this->db->db_debug = FALSE; 	
+		if (!$this->db->insert($this->tempanak, $data))
+		{
+			$error = $this->db->_error_message();
+			if(!empty($error))
+			{
+                $data['pesan']		= $error;   
+				$data['response'] 	= FALSE;
+			}
+            	
+        }
+		else
+		{
+			$data['pesan']		= "Data Anak Berhasil Tersimpan";
+			$data['response']	= TRUE;
+		}	
+        $this->db->db_debug = $db_debug; //restore setting	
+
+        return $data;		
+	}	
+	
+	public function updateTempAnak()
+	{
+		$data['nama']				= $this->input->post('nama');
+		$data['sex']				= $this->input->post('sex');		
+		$data['tgl_lahir']			= date('Y-m-d',strtotime($this->input->post('tgl_lahir')));
+		$data['cerai_tgl']			= (!empty($this->input->post('tgl_cerai')) ? date('Y-m-d',strtotime($this->input->post('tgl_cerai'))) : NULL);
+		$data['meninggal_tgl']		= (!empty($this->input->post('tgl_wafat')) ? date('Y-m-d',strtotime($this->input->post('tgl_wafat'))) : NULL);
+		$data['nama_ibu_ayah']		= $this->input->post('nama_ibu_ayah');
+		$temp_id			 		= $this->input->post('temp_mutasi_id');
+		$data['usul_id']			= $this->input->post('usul_id');
+		
+		$db_debug 			= $this->db->db_debug; 
+		$this->db->db_debug = FALSE; 	
+		
+		$this->db->where('mutasi_id',$temp_id);
+		if (!$this->db->update($this->tempanak, $data))
+		{
+			$error = $this->db->_error_message();
+			if(!empty($error))
+			{
+                $data['pesan']		= $error;   
+				$data['response'] 	= FALSE;
+			}
+            	
+        }
+		else
+		{
+			$data['pesan']		= "Data Anak Berhasil Terupdate";
+			$data['response']	= TRUE;
+		}	
+        $this->db->db_debug = $db_debug; //restore setting	
+
+        return $data;		
+	}
+
+	public function hapusTempAnak()
+	{
+		$id			  = $this->input->post('temp_mutasi_id');
+	   	$this->db->where('mutasi_id', $id);		
+		return $this->db->delete($this->tempanak);
+	
 	}	
 }

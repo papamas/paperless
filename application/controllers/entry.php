@@ -906,17 +906,409 @@ class Entry extends MY_Controller {
 		readfile(base_url().'uploads/taspen/'.$file);
 	}	
 	
+	
 	public function cetakSuratTaspen()
 	{
 		$data['usul_id'] 			= $this->myencrypt->decode($this->input->get('a'));
 		$data['nip']       			= $this->myencrypt->decode($this->input->get('n'));
-		$layanan             		= $this->myencrypt->decode($this->input->get('l'));
+		$data['layanan']       		= $this->myencrypt->decode($this->input->get('l'));   
+		
+		$layanan		       		= $this->myencrypt->decode($this->input->get('l'));   
 		
 		switch($layanan){
 			case 15:
-				$name  = '';
-				$lname  = '';				
+				$this->_cetakMutasi($data);			
 			break;
+			case 16:
+				$this->_cetakSK($data);
+			break;
+			case 17:
+				$this->_cetakSK($data);
+			break;
+		}		
+		
+	}
+	
+	function _cetakMutasi($data)
+	{
+		$row						= $this->entry->getEntryOneTaspen($data)->row();
+		$mutasiIstri				= $this->entry->getMutasiIstri($row->usul_id);
+		$mutasiAnak				    = $this->entry->getMutasiAnak($row->usul_id);
+		
+		$this->load->library('PDF', array());	
+		$this->pdf->setPrintHeader(false);
+		$this->pdf->setPrintFooter(false);		
+		
+		$this->pdf->SetAutoPageBreak(false, 0);
+		
+		$this->pdf->SetFont('freeSerif', '', 8);
+		$this->pdf->AddPage('L', 'FOLIO', false, false);
+		
+		$this->pdf->Text(225, 10, 'LAMPIRAN XVII SURAT EDARAN BERSAMA KEPALA BADAN ADMINISTRASI');
+		$this->pdf->Text(225, 15, 'KEPEGAWAIAN NEGARA DAN DIREKTUR JENDERAL ANGGARAN');
+		$this->pdf->Text(225, 20, 'NOMOR : 19/SE/1989');
+		$this->pdf->Text(225, 25, 'NOMOR : SE-51/A/1989');
+		$this->pdf->Text(225, 30, 'TANGGAL : 14 APRIL 1989');
+		
+		
+		$this->pdf->SetFont('freeSerif', '', 12);
+		$this->pdf->Text(100, 45, 'FORMULIR PENDAFTARAN ISTRI(2)/SUAMI/ANAK(2)');
+		$this->pdf->Text(115, 50, '( untuk penerima pensiun pegawai )');
+		
+		$this->pdf->SetFont('freeSerif', '', 9);
+		$tbl ='
+<table  cellspacing="0" cellpadding="1" border="1">
+    <tr style="background-color:#EAEDED;">
+        <td align="center" rowspan="2" width="25px;"> NO</td>
+        <td  rowspan="2"> NAMA ANAK(2)<br/>&nbsp;KANDUNG</td>
+        <td  rowspan="2" width="25px;"> LK/<br/>&nbsp;PR</td>
+		<td  rowspan="2"> TANGGAL<br/>&nbsp;LAHIR</td>	
+		<td  colspan="3" width="345px;"> KETERANGAN TENTANG IBU/AYAH</td>
+		<td  colspan="3" width="330px;"> KETERANGAN TENTANG PENERIMA PENSIUN PEGAWAI</td>
+       	
+    </tr>
+	<tr style="background-color:#EAEDED;">
+        <td width="115px;"> NAMA</td>
+        <td width="115px;"> CERAI<br/>&nbsp;TANGGAL</td>
+		<td width="115px;"> MENINGGAL<br/>&nbsp;TANGGAL</td>	    		
+    </tr>';
+	$j=1;
+	if($mutasiAnak->num_rows() > 0){	
+	foreach($mutasiAnak->result() as $value){	
+        ($j == 1 ? $n='Ke/p' : $n=$j);	
+		$tbl .='<tr>
+			<td align="center"> '.$n.'</td>
+			<td> '.$value->nama.'</td>
+			<td> '.$value->sex.'</td>
+			<td> '.$value->atgl_lahir.'</td>
+			<td> '.$value->nama_ibu_ayah.'</td>
+			<td> '.$value->acerai_tgl.'</td>
+			<td> '.$value->ameninggal_tgl.'</td>		
+		</tr>';
+		$j++;
+		}		
+	}
+
+    $anak = $mutasiAnak->num_rows();	
+	$i = $anak + 1;
+	for($i;$i <= 7;$i++){	
+	$tbl .='<tr>
+        <td align="center"> '.$i.'.</td>
+        <td> </td>
+        <td> </td>
+		<td> </td>
+		<td> </td>
+		<td> </td>
+		<td> </td>
+    </tr>';
+	 
+	}
+    $tbl.='<tr style="background-color:#EAEDED;">
+        <td align="center"  width="25px;"> NO</td>
+        <td> ISTRI(2) SUAMI</td>
+        <td  colspan="2"> ISTRI PERTAMA/<br>&nbsp;SUAMI</td>
+		<td> ISTRI KEDUA/<br>&nbsp;SUAMI</td>	
+		<td> ISTRI KETIGA/<br>&nbsp;SUAMI</td>
+		<td> ISTRI KEEMPAT</td>       	
+    </tr>';
+	$tbl.='<tr>
+        <td align="center"> 1.</td>
+        <td> Nama</td>';
+	$k =1;	
+	foreach($mutasiIstri->result() as $value){	
+	    ($k == 1 ?  $n='<td colspan="2">' : $n='<td>');
+        $tbl.=$n.' '.$value->nama.'</td>';
+		$k++;		
+	}
+	for($i=$mutasiIstri->num_rows()+1; $i<= 4;$i++)
+	{	($i == 1 ?  $n='<td colspan="2"></td>' : $n='<td></td>');
+		$tbl.= $n;
+	}
+	$tbl.='</tr>';
+	
+	$tbl.='<tr>
+        <td align="center"> 2.</td>
+        <td> Nama Kecil</td>';		
+	$k =1;	
+	foreach($mutasiIstri->result() as $value){	
+	    ($k == 1 ?  $n='<td colspan="2">' : $n='<td>');
+        $tbl.=$n.' '.$value->nama_kecil.'</td>';
+		$k++;		
+	}
+	for($i=$mutasiIstri->num_rows()+1; $i<= 4;$i++)
+	{	($i == 1 ?  $n='<td colspan="2"></td>' : $n='<td></td>');
+		$tbl.= $n;
+	}
+	$tbl.='</tr>';
+	
+	
+	$tbl .='<tr>
+        <td align="center"> 3.</td>
+        <td> Tempat/Tgl Lahir</td>';		
+    $k =1;	
+	foreach($mutasiIstri->result() as $value){	
+	    ($k == 1 ?  $n='<td colspan="2">' : $n='<td>');
+        $tbl.=$n.' '.$value->tempat_lahir.'/'.$value->atgl_lahir.'</td>';
+		$k++;		
+	}
+	for($i=$mutasiIstri->num_rows()+1; $i<= 4;$i++)
+	{	($i == 1 ?  $n='<td colspan="2"></td>' : $n='<td></td>');
+		$tbl.= $n;
+	}
+	$tbl.='</tr>';
+	
+	$tbl.='<tr>
+        <td align="center"> 4.</td>
+        <td> Tanggal Nikah</td>';
+	$k =1;	
+	foreach($mutasiIstri->result() as $value){	
+	    ($k == 1 ?  $n='<td colspan="2">' : $n='<td>');
+        $tbl.=$n.' '.$value->atgl_nikah.'</td>';
+		$k++;		
+	}
+	for($i=$mutasiIstri->num_rows()+1; $i<= 4;$i++)
+	{	($i == 1 ?  $n='<td colspan="2"></td>' : $n='<td></td>');
+		$tbl.= $n;
+	}
+	$tbl.='</tr>';
+	
+	$tbl.='<tr>
+        <td align="center"> 5.</td>
+        <td> Tanggal Pendaftaran</td>';
+	$k =1;	
+	foreach($mutasiIstri->result() as $value){	
+	    ($k == 1 ?  $n='<td colspan="2">' : $n='<td>');
+        $tbl.=$n.' '.$value->atgl_pendaftaran.'</td>';
+		$k++;		
+	}
+	for($i=$mutasiIstri->num_rows()+1; $i<= 4;$i++)
+	{	($i == 1 ?  $n='<td colspan="2"></td>' : $n='<td></td>');
+		$tbl.= $n;
+	}
+	$tbl.='</tr>';
+	
+	$tbl.='<tr>
+        <td align="center"> 6.</td>
+        <td> Tanggal Cerai</td>';
+	$k =1;	
+	foreach($mutasiIstri->result() as $value){	
+	    ($k == 1 ?  $n='<td colspan="2">' : $n='<td>');
+        $tbl.=$n.' '.$value->atgl_cerai.'</td>';
+		$k++;		
+	}
+	for($i=$mutasiIstri->num_rows()+1; $i<= 4;$i++)
+	{	($i == 1 ?  $n='<td colspan="2"></td>' : $n='<td></td>');
+		$tbl.= $n;
+	}
+	$tbl.='</tr>';
+	
+	$tbl.='<tr>
+        <td align="center">7.</td>
+        <td> Tanggal Wafat</td>';
+	$k =1;	
+	foreach($mutasiIstri->result() as $value){	
+	    ($k == 1 ?  $n='<td colspan="2">' : $n='<td>');
+        $tbl.=$n.' '.$value->atgl_wafat.'</td>';
+		$k++;		
+	}
+	for($i=$mutasiIstri->num_rows()+1; $i<= 4;$i++)
+	{	($i == 1 ?  $n='<td colspan="2"></td>' : $n='<td></td>');
+		$tbl.= $n;
+	}
+	$tbl.='</tr>';
+	
+	$tbl.='<tr>
+        <td align="center">8.</td>
+        <td > Alamat</td>';
+	$k =1;	
+	foreach($mutasiIstri->result() as $value){	
+	    ($k == 1 ?  $n='<td colspan="2">' : $n='<td>');
+        $tbl.=$n.' '.$value->alamat.'</td>';
+		$k++;		
+	}
+	for($i=$mutasiIstri->num_rows()+1; $i<= 4;$i++)
+	{	($i == 1 ?  $n='<td colspan="2"></td>' : $n='<td></td>');
+		$tbl.= $n;
+	}
+	$tbl.='</tr>';
+	
+	$tbl.='<tr>
+        <td align="center"> 9.</td>
+        <td rowspan="11"> Tanda Tangan<br/>&nbsp;Atau Cap Jempol<br/>&nbsp;Tangan Kiri</td>
+        <td rowspan="11" colspan="2"> </td>
+		<td rowspan="11"> </td>
+		<td rowspan="11"> </td>
+		<td rowspan="11"> </td>
+    </tr>
+	<tr>
+        <td align="center"> 10.</td> 
+	</tr>
+	<tr>
+        <td align="center"> 11.</td> 
+	</tr>
+	<tr>
+        <td align="center"> 12.</td> 
+	</tr>
+	<tr>
+        <td align="center"> 13.</td> 
+	</tr>
+	<tr>
+        <td align="center"> 14.</td> 
+	</tr>
+	<tr>
+        <td align="center"> 15.</td> 
+	</tr>';
+	if($mutasiAnak->num_rows() < 3)
+	{	
+	$tbl.='<tr>
+        <td align="center"> 16.</td> 
+	</tr>
+	<tr>
+        <td align="center"> 17.</td> 
+	</tr>';
+	}
+	
+	$tbl .='</table>';
+
+        $this->pdf->SetXY(10, 60);
+		$this->pdf->writeHTML($tbl, true, false, false, false, '');	
+		
+		$this->pdf->Text(212, 65, 'Yang Bertanda Tangan dibawah ini :');
+		$this->pdf->Text(212, 70, '1. Nama :');
+		$this->pdf->Text(260, 70, ': '.$row->nama_pns);
+		
+		$this->pdf->Text(212, 75, '2. Nama Kecil ');
+		$this->pdf->Text(260, 75, ': '.$row->nama_kecil);
+		
+		$this->pdf->Text(212, 80, '3. Tempat/Tanggal Lahir ');
+		$this->pdf->Text(260, 80, ': '.$row->tempat_lahir.', '.$row->atgl_lahir);
+		
+		$this->pdf->Text(212, 85, '4. Tgl.No.Surat Keputusan Pensiun ');
+		$this->pdf->Text(260, 85, ': '.$row->atgl_skep);
+		$this->pdf->Text(260, 90, ': '.$row->nomor_skep);
+		
+		$this->pdf->Text(212, 95, '5. Pensiun Pokok ');
+		$this->pdf->Text(260, 95, ': Rp. '.$row->penpok);
+		
+		$this->pdf->Text(212, 100, '6. Pensiun Terhitung Mulai ');
+		$this->pdf->Text(260, 100, ': '.$row->pensiun);
+		
+		$this->pdf->Text(212, 105, '7. Alamat ');
+		$this->pdf->Text(260, 105, ': ');
+		$text1= $row->alamat;
+		$this->pdf->writeHTMLCell(65,'',261,105,$text1,0,0,false,false,'J',true);
+		
+		$this->pdf->Text(212, 125, '8. Tanda Tangan ');
+		$this->pdf->Text(260, 125, ': TTD');
+		
+		$this->pdf->Text(212, 140, 'Disahkan Tanggal ');
+		$this->pdf->Text(260, 140, ': '.$row->persetujuan_tgl);
+		
+		$this->pdf->Text(212, 145, 'Nomor ');
+		$this->pdf->Text(260, 145, ': '.$row->usul_no_persetujuan);
+		
+		$this->pdf->Text(250, 155, 'AN. KEPALA KANTOR');
+		$this->pdf->Text(235, 160, 'REGIONAL XI BADAN KEPEGAWAIAN NEGARA');
+		$this->pdf->Text(234, 165, 'KEPALA SEKSI PENSIUN PEGAWAI NEGERI SIPIL');
+		$this->pdf->Text(245, 170, 'INSTANSI VERTIKAL DAN PROPINSI');
+		$this->pdf->Text(250, 185, 'WAISUL QORNI,S.Sos, M.Si');
+		$this->pdf->Text(250, 190, 'NIP. 19751231 199503 1 001');
+		
+		
+		
+		// set style for barcode
+		$style = array(
+			'border' => false,
+			'padding' => 0,
+			'fgcolor' => array(0, 0, 0),
+			'bgcolor' => false, //array(255,255,255)
+			'module_width' => 1, // width of a single module in points
+			'module_height' => 1 // height of a single module in points
+		);
+		
+		$code  = ' SK Mutasi Keluarga  PNS '.$row->nama_pns ;				
+		$this->pdf->write2DBarcode($code, 'QRCODE,Q', 10, 10, 25, 25, $style, 'N');
+		
+		// break
+		$this->pdf->AddPage('P', 'A4', false, false);
+		$garuda = base_url() . 'assets/dist/img/garuda.png';
+		$this->pdf->Image($garuda, 5, 8, 23, '', 'PNG', '', 'T', false, 145, 'C', false, false, 0, false, false, false);
+		
+		$this->pdf->SetFont('helvetica', 'B', 12);
+		$this->pdf->Text(5, 35,'BADAN KEPEGAWAIAN NEGARA', false, false, true, 0, 4, 'C', false, '', 0, false, 'T', 'M', false);
+		$this->pdf->Text(5, 40, 'KANTOR REGIONAL XI', false, false, true, 0, 4, 'C', false, '', 0, false, 'T', 'M', false);
+		$style = array(
+			'width' => 0.29999999999999999,
+			'cap'   => 'butt',
+			'join'  => 'miter',
+			'dash'  => 0,
+			'color' => array(0, 0, 0)
+			);
+		$this->pdf->Line(5, 46, $this->pdf->getPageWidth() - 5, 46, $style);
+		$style1 = array(
+			'width' => 1,
+			'cap'   => 'butt',
+			'join'  => 'miter',
+			'dash'  => 0,
+			'color' => array(0, 0, 0)
+			);
+		$this->pdf->Line(5, 47, $this->pdf->getPageWidth() - 5, 47, $style1);
+		
+		$this->pdf->SetFont('freeSerif', '', 12);
+		$this->pdf->Text(150, 50, 'Manado, '.$row->persetujuan_tgl);
+		
+		$this->pdf->Text(5, 55, 'Nomor ');
+		$this->pdf->Text(25, 55, ': '.$row->usul_no_persetujuan);
+		
+		$this->pdf->Text(5, 60, 'Lampiran ');
+		$this->pdf->Text(25, 60, ':  ');
+		
+		$this->pdf->Text(5, 65, 'Perihal ');
+		$this->pdf->Text(25, 65, ': Pengambilan formulir ');
+		$this->pdf->Text(27, 70, 'Model A/II/1969 Pens ');
+		
+		$this->pdf->Text(140, 60, 'KEPADA ');
+		$this->pdf->Text(130, 65, 'Yth. '.$row->nama_pns);
+		$this->pdf->Text(130, 70, 'NIP : '.$row->nip);
+		$this->pdf->Text(130, 75, 'D/a.  ');
+		$text1=$row->alamat;
+		$this->pdf->writeHTMLCell(70,'',138,75,$text1,0,0,false,false,'J',true);
+		
+		$this->pdf->Text(25, 100, '1.');
+		$text1='Menunjuk Surat dari Ka. PT. Taspen (persero) Cabang '.$row->nama_taspen.'  Nomor '.$row->nomor_usul.' Perihal permohonan Saudara Tanggal '.$row->atgl_usul.' untuk mengesahkan/mencatat mutasi keluarga, bersama ini kami kirimkan kembali Formulir Model A/II/Pens, tentang pendataran Isteri/Suami/Anak sebagai yang berhak menerima pensiun Janda/Duda yang telah disahkan/dicatat.';
+		$this->pdf->writeHTMLCell(175,'',30,100,$text1,0,0,false,false,'J',true);
+		
+		$this->pdf->Text(25, 125, '2.');
+		$text1='Mengingat bahwa bukti pendaftaran tersebut sangat penting sebagai kelengkapan permohonan pensiun Janda/Duda sebagai Isteri/Suami/Anak/Saudara, kami harapkan agar formulir tersebut disimpan dengan baik.';
+		$this->pdf->writeHTMLCell(175,'',30,125,$text1,0,0,false,false,'J',true);
+		
+		$this->pdf->Text(25, 145, '3.');
+		$text1='Perlu kami jelaskan bahwa pendaftaran yang saudara lakukan telah melebihi batas waktu 1 (satu) tahun setelah terjadinya perkawinan tersebut sebagaimana ditetapkan dalam pasal 19 ayat 6 Undang-Undang Nomor 11 Tahun 1969, maka pendaftaran tersebut hanya kami catat, tetapi tidak disahkan.';
+		$this->pdf->writeHTMLCell(175,'',30,145,$text1,0,0,false,false,'J',true);
+		
+		$this->pdf->Text(25, 165, '4.');
+		$text1='Demikian untuk dipergunakan sebagaimana mestinya.';
+		$this->pdf->writeHTMLCell(175,'',30,165,$text1,0,0,false,false,'J',true);
+		
+		$text2='an.Kepala Kantor Regional XI Badan Kepegawaian Negara Kepala Seksi Pensiun Pegawai Negeri Sipil Instansi Vertikal dan Propinisi';
+		$this->pdf->writeHTMLCell(60,125,130,175,$text2,0,0,false,true,'L',true);
+		
+		$this->pdf->Text(130, 215, 'Waisul Qorni, S.Sos, M.Si');
+		$this->pdf->Text(130, 220, 'NIP. 19751231 199503 1 001');
+		
+		$this->pdf->Text(20, 225, 'Tembusan, Yth :');
+		$this->pdf->Text(20, 230, '1. Kepala Kantor Cabang PT. Taspen (Persero) di '.$row->nama_taspen);
+		$this->pdf->Text(20, 235, '2. Direktur Pensiun PNS dan Pejabat Negara BKN di Jakarta');
+		
+		
+		$this->pdf->Output('cetakSuratMutasiKeluarga.pdf', 'D');
+	}	
+	
+	function _cetakSK($data)
+	{
+		$layanan             		= $data['layanan'];
+		
+		switch($layanan){			
 			case 16:
 				$name   = 'Janda/Duda';
 				$lname  = 'JD.ALM';
@@ -927,8 +1319,7 @@ class Entry extends MY_Controller {
 			break;
 		}		
 		
-		$row						= $this->entry->getEntryOneTaspen($data)->row();
-				
+		$row						= $this->entry->getEntryOneTaspen($data)->row();				
 				
 		$this->load->library('PDF', array());	
 		$this->pdf->setPrintHeader(false);
@@ -1170,9 +1561,10 @@ EOD;
 		
 		$code  = ' SK '.$name.' PNS '.$row->nama_pns.'  atas nama '.$row->nama_janda_duda ;
 				
-		$this->pdf->write2DBarcode($code, 'QRCODE,Q', 177, 155, 25, 25, $style, 'N');
+		$this->pdf->write2DBarcode($code, 'QRCODE,Q', 177, 155, 25, 25, $style, 'N');		
 		
-		$this->pdf->Output('cetakSuratTaspen.pdf', 'D');
+		
+		$this->pdf->Output('cetakSuratKeputusanJandaDudaYatim.pdf', 'D');
     }
 
 	public function getPhotoTaspen()

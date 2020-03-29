@@ -68,7 +68,7 @@
 					    <hr/>
 						<?php if($show  == TRUE) :?>
 						<div class="table-responsive">
-							<table class="table table-striped">
+							<table id="tb-verifikasi" class="table table-striped">
 							<thead>
 								<tr>
 									<th>NO USUL</th>
@@ -93,7 +93,7 @@
 									<td><?php echo $value->nama_janda_duda?></td>
 									<td><?php echo $value->kirim_bkn_date?></td>														
 									<td><?php echo $value->layanan_nama?></td>
-									<td><?php echo (!empty($value->main_upload_dokumen) ?  '<i data-tooltip="tooltip" data-toggle="modal" data-target="#berkasAdaModal" data-id="?id='.$this->myencrypt->encode($value->upload_nama_dokumen).'" title="Ada Nota Usul" class="fa fa-check" style="color:green"></i>' : '<i data-tooltip="tooltip" title="Tidak Ada Nota Usul" class="fa fa-remove" style="color:red"></i>')?></td>		
+									<td><span style="color:white">x</span><?php echo (!empty($value->main_upload_dokumen) ?  '<i data-tooltip="tooltip" data-toggle="modal" data-target="#berkasAdaModal" data-id="?id='.$this->myencrypt->encode($value->upload_nama_dokumen).'" title="Ada Nota Usul" class="fa fa-check" style="color:green"></i>' : '<i data-tooltip="tooltip" title="Tidak Ada Nota Usul" class="fa fa-remove" style="color:red"></i>')?></td>		
 									<td><?php echo $value->tahapan_nama?></td>
 									<td><?php echo $value->usul_status?></td>								
 									<td>
@@ -146,8 +146,8 @@
 						<input type="hidden" name="<?php echo $this->security->get_csrf_token_name()?>" value="<?php echo $this->security->get_csrf_hash()?>" style="display: none">
 						<div class="form-group">
 							<p>Anda Yakin akan membuka berkas ini? </p>
-							<input class="form-control" type="hidden" value="" name="agenda" />	
-							<input class="form-control" type="hidden" value="" name="nip" />					
+							<input class="form-control" type="hidden" value="" name="usul_id" />	
+							<input class="form-control" type="hidden" value="" name="usul_nip" />					
 						</div>
 				    </form>	
 				</div>	
@@ -164,6 +164,16 @@
 	<script src="<?php echo base_url()?>assets/plugins/pdfo/pdfobject.js"></script>
 	<script>	
 	$(document).ready(function () {
+		
+		// hide empty column
+		var columns = $("#tb-verifikasi > tbody > tr:first > td").length;
+		for (var i = 0; i < columns; i++) {
+			if ($("#tb-verifikasi > tbody > tr > td:nth-child(" + i + ")").filter(function() {
+			  return $(this).text() != '';
+			}).length == 0) {
+			  $("#tb-verifikasi > tbody > tr > td:nth-child(" + i + "), #tb-verifikasi > thead > tr > th:nth-child(" + i + ")").hide();
+			}
+		} 
         
 		$('#berkasAdaModal').on('show.bs.modal',function(e) {    		
 			var id=  $(e.relatedTarget).attr('data-id');
@@ -184,8 +194,8 @@
 		    $('#bukalockModal #msg').text('Konfirmasi Buka Kunci Berkas')
 			var nip   =  $(e.relatedTarget).attr('data-nip');
 			var id    =  $(e.relatedTarget).attr('data-id');
-			$('[name=agenda]').val(id);
-			$('[name=nip]').val(nip);
+			$('[name=usul_id]').val(id);
+			$('[name=usul_nip]').val(nip);
 		});
 		
 		$("#nBtnbuka").on("click",function(e){
@@ -197,7 +207,7 @@
 			var data = $('#nfrmbukaLock').serialize();
 			$.ajax({
 				type: "POST",
-				url : "<?php echo site_url()?>/verifikator/unlock",
+				url : "<?php echo site_url()?>/verifikator/unlockTaspen",
 				data: data,
 				success: function(){
 					$('#bukalockModal #msg').text('Updated Succesfully.....')

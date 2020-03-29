@@ -126,7 +126,7 @@
 						<hr/>
 						<?php if($show):?>
 						<div class="table-responsive">
-						<table class="table table-striped">
+						<table id="tb-kinerja" class="table table-striped">
 						<thead>
 							<tr>
 								<th>NO</th>								
@@ -188,6 +188,16 @@
 			   startDate : moment().subtract(3, 'months'),
 			   locale: 'id',
 	    });	
+		
+		// hide empty column
+		var columns = $("#tb-kinerja > tbody > tr:first > td").length;
+		for (var i = 0; i < columns; i++) {
+			if ($("#tb-kinerja > tbody > tr > td:nth-child(" + i + ")").filter(function() {
+			  return $(this).text() != '';
+			}).length == 0) {
+			  $("#tb-kinerja > tbody > tr > td:nth-child(" + i + "), #tb-kinerja > thead > tr > th:nth-child(" + i + ")").hide();
+			}
+		} 
 	});
 </script>
 	</body>

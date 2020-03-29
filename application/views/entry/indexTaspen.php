@@ -361,6 +361,16 @@
 	<script>	
 	$(document).ready(function () {
 		
+		// hide empty column
+		var columns = $("#tb-entry > tbody > tr:first > td").length;
+		for (var i = 0; i < columns; i++) {
+			if ($("#tb-entry > tbody > tr > td:nth-child(" + i + ")").filter(function() {
+			  return $(this).text() != '';
+			}).length == 0) {
+			  $("#tb-entry > tbody > tr > td:nth-child(" + i + "), #tb-entry > thead > tr > th:nth-child(" + i + ")").hide();
+			}
+		} 
+		
 		$('[data-tooltip="tooltip"]').tooltip();
 		
 	    $(".select2").select2({

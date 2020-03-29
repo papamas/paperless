@@ -124,7 +124,7 @@
 						
 						<?php if($show):?>	                       	
 						<div class="table-responsive">
-							<table  class="table table-striped table-condensed">
+							<table id="tb-lacak" class="table table-striped table-condensed">
 							<thead>
 								<tr>
 									
@@ -331,7 +331,15 @@
 			width: '100%'
 		});			
 		
-		
+		// hide empty column
+		var columns = $("#tb-lacak > tbody > tr:first > td").length;
+		for (var i = 0; i < columns; i++) {
+			if ($("#tb-lacak > tbody > tr > td:nth-child(" + i + ")").filter(function() {
+			  return $(this).text() != '';
+			}).length == 0) {
+			  $("#tb-lacak > tbody > tr > td:nth-child(" + i + "), #tb-lacak > thead > tr > th:nth-child(" + i + ")").hide();
+			}
+		}
 		
 	});
     </script>

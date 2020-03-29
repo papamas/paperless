@@ -42,7 +42,7 @@ class Verifikasi extends MY_Controller {
 			return;
 		}
 		
-		$this->form_validation->set_rules('instansi', 'instansi', 'trim');
+		$this->form_validation->set_rules('instansi', 'instansi', 'trim|required');
 		$this->form_validation->set_rules('layanan', 'layanan', 'trim|required');
 		
 		if($this->form_validation->run() == FALSE)
@@ -432,7 +432,7 @@ class Verifikasi extends MY_Controller {
 	{
 		$nip                = $this->input->post('nip');
 		$usul_id            = $this->input->post('usul_id');
-		$penerima			  = $this->input->post('penerima');
+		$penerima			= $this->input->post('penerima');
 		
 		for($i=0;$i < count($nip);$i++)
         {
@@ -479,10 +479,11 @@ class Verifikasi extends MY_Controller {
 						<td>'.$value->layanan_nama.'</td>
 						<td>TASPEN</td>		
 						<td>'.$value->nip.'</td>
-						<td>'.$value->nama.'</td>
+						<td>'.$value->nama_pns.'</td>
                         <td>
 						   <input type="checkbox" value="'.$value->nip.'" class="checkbox" name="nip[]" /> 
 						   <input type="checkbox" value="'.$value->usul_id.'" class="checkbox" name="usul_id[]"  style="opacity: 0.0; position: absolute; left: -9999px">
+						   <input type="hidden" value="" name="penerima" />
 						</td>						
 					</tr>';	
 		}

@@ -666,6 +666,31 @@ WHERE 1=1 $sql_instansi  $sql_layanan   $sql_date  $sql_status  $sql_verify  ord
 	/*TASPEN*/
 	public function getUsulDokumenTaspen()
 	{
+		$searchby  = $this->input->post('searchby');
+		$search    =  $this->input->post('search');		
+		
+		$bidang  = $this->session->userdata('session_bidang');
+		$user_id = $this->session->userdata('user_id');
+		$tipe    = $this->session->userdata('session_user_tipe');
+		
+		switch($searchby){
+            case 1:
+			    $sql = " AND f.nip = '$search' ";
+            break;
+            case 2:
+			   $sql = " AND  f.nip = '999999999'  ";
+            break;
+			case 3:
+			   $search = trim($search);			   
+			   $sql = " AND  UPPER(f.nomor_usul)=UPPER('$search')";
+            break;
+			case 4:
+			   $sql = " AND  UPPER(g.layanan_nama) LIKE UPPER('%$search%') ";
+            break;
+            default:
+                $sql = " AND f.nip = '999999999' ";		
+		}	
+		
 		$q  ="SELECT f.*,
 		g.layanan_nama, 
 		h.tahapan_nama,
@@ -682,12 +707,12 @@ LEFT JOIN syarat_layanan_taspen b ON a.layanan_id = b.layanan_id
 LEFT JOIN dokumen_taspen c ON b.dokumen_id = c.id_dokumen
 LEFT JOIN upload_dokumen_taspen d ON (a.nip = d.nip AND d.id_dokumen = b.dokumen_id)
 LEFT JOIN dokumen_taspen e ON e.id_dokumen = d.id_dokumen
-GROUP BY a.layanan_id,a.nip
+GROUP BY a.layanan_id,a.usul_id
 ) f
 LEFT JOIN layanan g ON f.layanan_id = g.layanan_id
 LEFT JOIN tahapan h ON f.usul_tahapan_id = h.tahapan_id
 LEFT JOIN app_user i ON i.user_id = f.usul_lock_by    
-WHERE f.usul_status='BELUM' ";	
+WHERE f.usul_status='BELUM' $sql ";	
 		$query 		= $this->db->query($q);
 		return      $query;			
 	}
@@ -705,7 +730,7 @@ LEFT JOIN dokumen_taspen b ON a.id_dokumen = b.id_dokumen
 where a.nip ='$nip' 
 AND b.flag IS NULL AND b.aktif='1'
 group by b.id_dokumen order by created_date desc";
-       	
+             	
 		$query 		= $this->db->query($sql);
 		
 		
@@ -752,12 +777,12 @@ LEFT JOIN syarat_layanan_taspen b ON a.layanan_id = b.layanan_id
 LEFT JOIN dokumen_taspen c ON b.dokumen_id = c.id_dokumen
 LEFT JOIN upload_dokumen_taspen d ON (a.nip = d.nip AND d.id_dokumen = b.dokumen_id)
 LEFT JOIN dokumen_taspen e ON e.id_dokumen = d.id_dokumen
-GROUP BY a.layanan_id,a.nip
+GROUP BY a.layanan_id,a.usul_id
 ) f
 LEFT JOIN layanan g ON f.layanan_id = g.layanan_id
 LEFT JOIN tahapan h ON f.usul_tahapan_id = h.tahapan_id
 LEFT JOIN app_user i ON i.user_id = f.usul_lock_by
-where f.usul_status='BELUM' AND  f.nip='$nip' AND f.usul_id='$usul_id' ";  
+where f.usul_status='BELUM' AND  f.usul_id='$usul_id' ";  
         //var_dump($q);exit;
 		$query 		= $this->db->query($q);
         return      $query;		
@@ -899,4 +924,15 @@ where f.usul_status='BELUM' AND  f.nip='$nip' AND f.usul_id='$usul_id' ";
 		return $this->db->query($sql);
 
 	}	
+	
+	public function setUnlockTaspen($data)
+	{
+		$set['usul_locked']   = NULL;
+		$set['usul_lock_by']	  = NULL;
+		
+		$this->db->set($set);
+		$this->db->where('usul_id', $data['usul_id']);		
+		$this->db->where('nip', $data['usul_nip']);
+		return $this->db->update($this->usul);
+	}
 }

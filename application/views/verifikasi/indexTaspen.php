@@ -307,6 +307,17 @@
 	<script src="<?php echo base_url()?>assets/plugins/select2/select2.full.min.js"></script>
 	<script>	
 	$(document).ready(function () {
+		
+		// hide empty column
+		var columns = $("#tb-layanan > tbody > tr:first > td").length;
+		for (var i = 0; i < columns; i++) {
+			if ($("#tb-layanan > tbody > tr > td:nth-child(" + i + ")").filter(function() {
+			  return $(this).text() != '';
+			}).length == 0) {
+			  $("#tb-layanan > tbody > tr > td:nth-child(" + i + "), #tb-layanan > thead > tr > th:nth-child(" + i + ")").hide();
+			}
+		}
+		
 	    $('[data-tooltip="tooltip"]').tooltip();
 		
 		$(".select2").select2({
@@ -379,6 +390,8 @@
 			.removeClass( "text-danger")
 		    .removeClass( "text-blue" ); 
 			
+			
+			
 		});
 		
 		$("#nBtnKirimAll").on("click",function(e){
@@ -405,7 +418,7 @@
 		
 		$("#penerima").on("change",function(e){
 		    var penerima  = $(this).val();
-            $('form[name=frmtableVerifikasi] [name=penerima]').val(penerima);
+            $('form[name=frmtableVerifikasi] input[name=penerima]').val(penerima);
 		});	
 		
 		function refreshTable(){
@@ -419,6 +432,7 @@
 				},
 			});
 		}
+		
 		
 		
 	});

@@ -5,7 +5,8 @@
 	<link rel="stylesheet" href="<?php echo base_url()?>assets/plugins/select2/select2.css">
 	<link rel="stylesheet" type="text/css" href="<?php echo base_url()?>assets/plugins/datepicker/bootstrap-datetimepicker.min.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>assets/plugins/daterange/daterangepicker-bs3.css" />
-   
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/plugins/sweetalert2/sweetalert2.min.css">
+
   </head> 	
 	<style>
 	 /*Bootstrap modal size iframe*/
@@ -84,14 +85,13 @@
 		        <div class="col-md-12">
 					<div class="box box-primary">
 						<div class="box-header with-border">
-						  <h3 class="box-title">Usul Taspen</h3>
+						  <h3 class="box-title">Usul Taspen Janda/Duda/Yatim</h3>
 						</div><!-- /.box-header -->
 						<!-- form start -->
 						<form class="form-horizontal" role="form" method="post" action="<?php echo site_url()?>/taspen/saveUsul" accept-charset="utf-8" enctype="multipart/form-data">
 						  <div class="box-body">
 							<input type="hidden" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash();?>" style="display: none">
 							<input type="hidden" name="usul_id" value="<?php echo set_value('usul_id'); ?>"/>
-							<?php echo (!empty($pesan) ? $pesan : '') ?>							
 							<div class="form-group row">	
 								<label class="control-label col-md-2 col-sm-2 col-xs-2">Nomor Usul</label>
 							    <div class="col-md-4 col-sm-4 col-xs-4">
@@ -102,9 +102,9 @@
 								<div class="col-md-4 col-sm-4 col-xs-4">									
 									<div class='input-group date' >
 										<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-										<input id=''  pattern="^\d{1,2}\-\d{1,2}\-\d{4}$" type='text' name="tgl_usul" value="<?php echo (set_value('tgl_usul') ? set_value('tgl_usul') : date('d-m-Y'))?>" class="form-control datetimepicker" />
-										<span class="help-block text-red"><?php echo form_error('tgl_usul');?></span>								
-									</div>								
+										<input id=''  pattern="^\d{1,2}\-\d{1,2}\-\d{4}$" type='text' name="tgl_usul" value="<?php echo (set_value('tgl_usul') ? set_value('tgl_usul') : date('d-m-Y'))?>" class="form-control datetimepicker" />									
+									</div>			
+                                    <span class="help-block text-red"><?php echo form_error('tgl_usul');?></span>									
 								</div>	
 							</div>
 							
@@ -233,7 +233,7 @@
 							</div>
 							
 							<div class="box-footer">
-								<button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;Simpan Usul</button>
+								<button type="submit" class="btn btn-primary btn-block"><i class="fa fa-save"></i>&nbsp;Simpan Usul</button>
 							</div>
 							
 						   </div>						   
@@ -374,7 +374,8 @@
 	<script src="<?php echo base_url()?>assets/plugins/select2/select2.full.min.js"></script>
 	<script src="<?php echo base_url()?>assets/plugins/daterange/moment-with-locales.js"></script>	
 	<script src="<?php echo base_url()?>assets/plugins/datepicker/bootstrap-datetimepicker.min.js"></script>
-	
+    <script src="<?php echo base_url(); ?>assets/plugins/sweetalert2/sweetalert2.min.js"></script>
+
 	<script>	
 	$(document).ready(function () {
 	    $('[data-tooltip="tooltip"]').tooltip();
@@ -492,12 +493,17 @@
 					$("#tb-usul").html(res);
 				},
 			});
-		}
-		
-		
-		
-		
+		}		
 	});
+	</script>
+	<script type="text/javascript">
+		<?php if($show):?>
+		Swal.fire(
+			"<?php echo $title?>",
+			"<?php echo $pesan; ?>",
+			"<?php echo $tipe?>"
+		) 
+		<?php endif;?> 
 	</script>
 	</body>
 </html>
