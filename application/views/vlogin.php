@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Aplikasi Paper Less Kantor Regional XI BKN | Login page</title>
+    <title>Aplikasi Male_o 1.9 | Login page</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="stylesheet" href="<?php echo base_url()?>assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?php echo base_url()?>assets/font-awesome/css/font-awesome.min.css">
@@ -97,7 +97,7 @@
 																					 
 								</div>					
 								<div class="box-footer">
-								    <span><small>&copy 2019 Kantor  Regional XI BKN</small></span>
+								    <span><small>Male_o 1.9 &copy 2019 Kantor  Regional XI BKN</small></span>
 									<button type="submit" class="btn bg-yellow-active btn-flat pull-right">Sign in</button>
 								</div>
 							</form>	
