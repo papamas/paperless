@@ -34,10 +34,29 @@
         </section>
 		
 	    <!-- Main content -->
-        <section class="content ">
-		    
-			
-        </section><!-- /.content -->		
+        <section class="content ">    
+			<div class="box box-info">
+			    <br/>
+				<div class="box-body">
+				  <img class="profile-user-img img-responsive img-circle" src="<?php echo base_url()?>assets/dist/img/maleo.png" alt="Logo Male_o 1.9">
+
+				  <h1 class="text-yellow text-center">Male_o 1.9</h1>
+
+				  <p class="text-muted text-center page-header"><b>Aplikasi Manajemen Layanan Kepegawaian Elektronik Online</b></p>
+				  
+				   <p class="text-muted ">Jenis layanan kepegawaian yang dapat dilakukan melalui Aplikasi Male_o 1.9 :</p>
+					<ul class="text-muted">
+					<li>Pertimbangan teknis pensiun (pensiun karena BUP, pensiun Janda/Duda, pensiun atas permintaan sendiri, dan pensiun karena tidak cakap jasmani dan/atau rohani);</li>
+					<li>Pertimbangan teknis kenaikan pangkat (Kenaikan Pangkat Pilihan Jabatan Struktural, Kenaikan Pangkat Pilihan </li>                                                                                                                                                                    Jabatan Fungsional dan Kenaikan Pangkat Penyesuaian Ijazah);
+					<li>Pertimbangan Teknis Mutasi/Pindah Instansi;</li>
+					<li>Ijin penggunaan/pencatuman Gelar/peningkatan pendidikan;</li>
+					<li>Kartu Pegawai (KARPEG); dan</li>
+					<li>Kartu isteri/suami.</li>
+					<li>Taspen (SK Janda/Duda/Yatim dan Mutasi Keluarga)</li>
+					</ul>
+				</div>				
+			</div>
+		</section><!-- /.content -->		
       </div><!-- /.content-wrapper -->     
     </div><!-- ./wrapper -->
 	
