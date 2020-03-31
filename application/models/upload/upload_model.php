@@ -120,8 +120,16 @@ class Upload_model extends CI_Model {
 	public function getInstansi()
 	{
 	    $instansi  = $this->session->userdata('session_instansi');
+		if($instansi  != 4011)
+		{
+           $sql_instansi= " AND INS_KODINS='$instansi' ";
+        }
+		else
+		{
+             $sql_instansi=" ";
+		}
 		
-		$sql="SELECT * FROM $this->tableinstansi where INS_KODINS='$instansi' ";	
+		$sql="SELECT * FROM $this->tableinstansi where 1=1 $sql_instansi ";	
 		return $this->db->query($sql);
 		
 	}	

@@ -290,8 +290,30 @@
 							</div>												
 						</div>
 						<div class="form-group row">
-						  <label class="col-sm-2 col-md-2 col-xs-2">Kantor Taspen</label>
-						  <div class="col-sm-10 col-md-10 col-xs-10">
+							<label class="control-label col-md-2 col-sm-2 col-xs-2">Tanggal Menikah</label>
+							<div class="col-md-4 col-sm-4 col-xs-4">	
+								<div class='input-group date'>
+									<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+									<input   pattern="^\d{1,2}\-\d{1,2}\-\d{4}$" type='text'  name="tgl_menikah" value="<?php echo date('d-m-Y')?>" class="form-control datetimepicker" />
+																	
+								</div>
+							</div>	 
+							<label class="control-label col-md-2 col-sm-2 col-xs-2">Meninggal</label>	
+							<div class="col-md-4 col-sm-4 col-xs-4">	
+								<div class='input-group date'>
+									<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+									<input   pattern="^\d{1,2}\-\d{1,2}\-\d{4}$" type='text'  name="tgl_meninggal" value="<?php echo date('d-m-Y')?>" class="form-control datetimepicker" />
+																	
+								</div>
+							</div>												
+						</div>
+						<div class="form-group row">
+						   <label class="control-label col-md-2 col-sm-2 col-xs-2">Gaji Pokok</label>
+							<div class="col-md-4 col-sm-4 col-xs-4">	
+								<input class="form-control" type="text" value="" name="gaji_pokok_terakhir" />	
+                            </div> 
+						    <label class="col-sm-2 col-md-2 col-xs-2">Kantor Taspen</label>
+						    <div class="col-sm-4 col-md-4 col-xs-4">
 							<select name="kantor" class="form-control">
 								<option value="">--</option>
 								<?php foreach($kantor->result() as $value):?>
@@ -403,6 +425,9 @@
 			$("input[name=tanggal]").val('');
 			$("input[name=pensiun_pokok]").val('');
 			$("input[name=pensiun_tmt]").val('');
+			$("input[name=tgl_meninggal]").val('');
+			$("input[name=tgl_menikah]").val('');
+			$("input[name=gaji_pokok_terakhir]").val('');
 			$("input[name=usul]").val(usul);
 			$("input[name=nip]").val(nip);
 			
@@ -417,6 +442,9 @@
 					$('#skModal input[name=pensiun_pokok]').val(r.entry[0].pensiun_pokok);	
 					$('#skModal input[name=pensiun_tmt]').val(r.entry[0].tmt_pensiun);
 					$('#skModal [name=kantor]').val(r.entry[0].kantor_taspen);
+					$('#skModal input[name=tgl_menikah]').val(r.entry[0].atgl_perkawinan);
+					$('#skModal input[name=tgl_meninggal]').val(r.entry[0].tgl_meninggal);
+					$('#skModal input[name=gaji_pokok_terakhir]').val(r.entry[0].gaji_pokok_terakhir);
 				},
 			});	
 		});

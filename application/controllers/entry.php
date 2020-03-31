@@ -719,12 +719,19 @@ class Entry extends MY_Controller {
 		$data['pensiun_pokok']			= $this->input->post('pensiun_pokok');
 		$data['pensiun_tmt']			= $this->input->post('pensiun_tmt');
 		$data['kantor_taspen']			= $this->input->post('kantor');
+		$data['tgl_meninggal']			= $this->input->post('tgl_meninggal');
+		$data['tgl_menikah']			= $this->input->post('tgl_menikah');
+		$data['gaji_pokok_terakhir']	= $this->input->post('gaji_pokok_terakhir');
 		
 		$this->form_validation->set_rules('persetujuan', 'Persetujuan', 'required');
 		$this->form_validation->set_rules('tanggal', 'Tanggal', 'required');
 		$this->form_validation->set_rules('pensiun_pokok', 'Pensiun Pokok', 'required');
 		$this->form_validation->set_rules('pensiun_tmt', 'Pensiun TMT', 'required');
 		$this->form_validation->set_rules('kantor', 'Kantor Taspen', 'required');
+		$this->form_validation->set_rules('tgl_meninggal', 'Tgl Meninggal', 'required');
+		$this->form_validation->set_rules('tgl_menikah', 'Tgl Menikah', 'required');
+		$this->form_validation->set_rules('gaji_pokok_terakhir', 'Gaji Pokok terakhir', 'required');	
+		
 		
 		if($this->form_validation->run() == FALSE)
 		{

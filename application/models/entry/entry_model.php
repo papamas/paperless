@@ -506,6 +506,8 @@ ORDER  by e.PNS_PNSNAM ASC
 		$sql   = "SELECT a.*,DATE_FORMAT(a.tgl_usul,'%d-%m-%Y') tgl,
 		DATE_FORMAT(a.usul_tgl_persetujuan,'%d-%m-%Y') tgl_persetujuan,
 		DATE_FORMAT(a.pensiun_tmt,'%d-%m-%Y') tmt_pensiun,
+		DATE_FORMAT(a.meninggal_dunia,'%d-%m-%Y') tgl_meninggal,
+		DATE_FORMAT(a.tgl_perkawinan,'%d-%m-%Y') atgl_perkawinan,
 		formatTanggal(a.tgl_lahir) atgl_lahir,
 		formatTanggal(a.tgl_skep) atgl_skep,
 		formatTanggal(a.meninggal_dunia) meninggal,
@@ -552,6 +554,9 @@ ORDER  by e.PNS_PNSNAM ASC
 		$pensiun_pokok		= $data['pensiun_pokok'];
 		$pensiun_tmt		= date('Y-m-d',strtotime($data['pensiun_tmt']));
 		$kantor_taspen      = $data['kantor_taspen'];
+		$meninggal_dunia	= date('Y-m-d',strtotime($data['tgl_meninggal']));
+		$tgl_menikah		= date('Y-m-d',strtotime($data['tgl_menikah']));
+		$gaji_pokok			= $data['gaji_pokok_terakhir'];
 		
 		$set['usul_no_persetujuan']    	=   strtoupper($nomor); 
 		$set['usul_tgl_persetujuan']   	=   $tanggal; 
@@ -560,6 +565,9 @@ ORDER  by e.PNS_PNSNAM ASC
 		$set['pensiun_pokok']			=   $pensiun_pokok;
 		$set['pensiun_tmt']				=   $pensiun_tmt;
 		$set['kantor_taspen']			=   $kantor_taspen;
+		$set['meninggal_dunia']			=   $meninggal_dunia;
+		$set['tgl_perkawinan']			=   $tgl_menikah;
+		$set['gaji_pokok_terakhir']		=   $gaji_pokok;
 		
 		$this->db->where('usul_id',$usul_id);
 		$this->db->where('nip',$nip);

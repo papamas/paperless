@@ -157,7 +157,7 @@
 								<div class="col-md-4 col-sm-4 col-xs-4">									
 									<div class='input-group date' >
 										<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-										<input id=''  pattern="^\d{1,2}\-\d{1,2}\-\d{4}$" type='text' name="tgl_lahir" value="<?php echo (set_value('tgl_lahir') ? set_value('tgl_lahir') : date('d-m-Y'))?>" class="form-control datetimepicker" />							
+										<input id=''  pattern="^\d{1,2}\-\d{1,2}\-\d{4}$" type='text' name="tgl_lahir" value="<?php echo set_value('tgl_lahir');?>" class="form-control datetimepicker" />							
 									</div>	
 									<span class="help-block text-red"><?php echo form_error('tgl_lahir');?></span>	
 								</div>	
@@ -173,7 +173,7 @@
 								<div class="col-md-4 col-sm-4 col-xs-4">									
 									<div class='input-group date' >
 										<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-										<input id=''  pattern="^\d{1,2}\-\d{1,2}\-\d{4}$" type='text' name="tgl_skep" value="<?php echo (set_value('tgl_skep') ? set_value('tgl_skep') : date('d-m-Y'))?>" class="form-control datetimepicker" />
+										<input id=''  pattern="^\d{1,2}\-\d{1,2}\-\d{4}$" type='text' name="tgl_skep" value="<?php echo set_value('tgl_skep');?>" class="form-control datetimepicker" />
 									</div>			
 									<span class="help-block text-red"><?php echo form_error('tgl_skep');?></span>
 								</div>	
@@ -209,7 +209,7 @@
 								<div class="col-md-4 col-sm-4 col-xs-4">									
 									<div class='input-group date' >
 										<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-										<input id=''  pattern="^\d{1,2}\-\d{1,2}\-\d{4}$" type='text' name="pensiun_tmt" value="<?php echo (set_value('pensiun_tmt') ? set_value('pensiun_tmt') : date('d-m-Y'))?>" class="form-control datetimepicker" />
+										<input id=''  pattern="^\d{1,2}\-\d{1,2}\-\d{4}$" type='text' name="pensiun_tmt" value="<?php echo set_value('pensiun_tmt');?>" class="form-control datetimepicker" />
 									</div>
 									<span class="help-block text-red"><?php echo form_error('pensiun_tmt');?></span>
 								</div>	

@@ -194,7 +194,7 @@
 								<div class="col-md-4 col-sm-4 col-xs-4">									
 									<div class='input-group date' >
 										<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-										<input id=''  pattern="^\d{1,2}\-\d{1,2}\-\d{4}$" type='text' name="tgl_perkawinan" value="<?php echo (set_value('tgl_perkawinan') ? set_value('tgl_perkawinan') : date('d-m-Y'))?>" class="form-control datetimepicker" />
+										<input id=''  pattern="^\d{1,2}\-\d{1,2}\-\d{4}$" type='text' name="tgl_perkawinan" value="<?php echo set_value('tgl_perkawinan');?>" class="form-control datetimepicker" />
 									</div>	
                                     <span class="help-block text-red"><?php echo form_error('tgl_perkawinan');?></span>								
 									
@@ -203,7 +203,7 @@
 								<div class="col-md-4 col-sm-4 col-xs-4">									
 									<div class='input-group date' >
 										<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-										<input id=''  pattern="^\d{1,2}\-\d{1,2}\-\d{4}$" type='text' name="meninggal_dunia" value="<?php echo (set_value('meninggal_dunia') ? set_value('meninggal_dunia') : date('d-m-Y'))?>" class="form-control datetimepicker" />
+										<input id=''  pattern="^\d{1,2}\-\d{1,2}\-\d{4}$" type='text' name="meninggal_dunia" value="<?php echo set_value('meninggal_dunia');?>" class="form-control datetimepicker" />
 									</div>
 									<span class="help-block text-red"><?php echo form_error('meninggal_dunia');?></span>								
 
