@@ -1338,51 +1338,50 @@ class Entry extends MY_Controller {
 		$this->pdf->AddPage('L', 'FOLIO', false, false);
 		
 		
-		$this->pdf->Text(65, 25, 'KEPUTUSAN KEPALA BADAN KEPEGAWAIAN NEGARA');
-		$this->pdf->Text(80, 28, 'NOMOR: '.$row->usul_no_persetujuan);
-		$this->pdf->Text(70, 33, 'KEPALA BADAN KEPEGAWAIAN NEGARA');
+		$this->pdf->Text(41, 37, 'KEPUTUSAN KEPALA BADAN KEPEGAWAIAN NEGARA');
+		$this->pdf->Text(50, 40, 'NOMOR: '.$row->usul_no_persetujuan);
+		$this->pdf->Text(48, 45, 'KEPALA BADAN KEPEGAWAIAN NEGARA');
 		
 		
-		$this->pdf->Text(10, 40, 'Menimbang');
-		$this->pdf->Text(35, 40, ':');
-		$this->pdf->Text(38, 40, '1. ');
+		$this->pdf->Text(5, 50, 'Menimbang');
+		$this->pdf->Text(30, 50, ':');
+		$this->pdf->Text(33, 50, '1. ');
 		$text1='bahwa Pegawai Negeri Sipil/pensiunan Pegawai Negeri Sipil *) atas nama Saudara  '.$row->nama_pns.' NIP/NP '.$row->nip.'  telah meninggal dunia pada tanggal '.$row->meninggal;
-		$this->pdf->writeHTMLCell(125,'',41,40,$text1,0,0,false,false,'J',true);
+		$this->pdf->writeHTMLCell(125,'',36,50,$text1,0,0,false,false,'J',true);
 		
-		$this->pdf->Text(38, 48, '2. ');
+		$this->pdf->Text(33, 58, '2. ');
 		$text1='bahwa yang namanya tercantum dalam keputusan ini, memenuhi syarat untuk diberikan pensiun '.$name;
-		$this->pdf->writeHTMLCell(125,'',41,48,$text1,0,0,false,false,'J',true);
+		$this->pdf->writeHTMLCell(125,'',36,58,$text1,0,0,false,false,'J',true);
 		
 		
-		$this->pdf->Text(10, 55, 'Mengingat');
-		$this->pdf->Text(35, 55, ':');
-		$this->pdf->Text(38, 55, '1. Undang- Undang Nomor 11 Tahun 1969;');
-		$this->pdf->Text(38, 59, '2. Undang-Undang Nomor 8 Tahun 1974 jo, Undang-Undang Nomor 43 Tahun 1999;');
-		$this->pdf->Text(38, 63, '3. Peraturan Pemerintah Nomor 7 tahun 1977 jo. Peraturan Pemerintah Nomor 30 Tahun 2015;');
-		$this->pdf->Text(38, 67, '4. Peraturan Pemerintah Nomor 32 Tahun 1979 jo. Peraturan Pemerintah Nomor 19 Tahun 2013;');
-		$this->pdf->Text(38, 71, '5. Peraturan Pemerintah Nomor 99 Tahun 2000 jo. Peraturan Pemerintah Nomor 12 Tahun 2002;');
-		$this->pdf->Text(38, 75, '6. Peraturan Pemerintah Nomor 9 Tahun 2003 jo Peraturan Pemerintah Nomor 63 Tahun 2009;');
-		$this->pdf->Text(38, 79, '7. Peraturan Pemerintah Nomor 18 Tahun 2019;');
-		$this->pdf->Text(38, 83, '8. Keputusan Kepala BKN Nomor 14 Tahun 2003; jo. Peraturan Kepala BKN Nomor 32 Tahun 2015;');
-		$this->pdf->Text(38, 87, '9. Surat Kepala BKN Nomor WK-26-30/V33-5/99 Tanggal 30 Januari 2012;');
+		$this->pdf->Text(5, 65, 'Mengingat');
+		$this->pdf->Text(30, 65, ':');
+		$this->pdf->Text(33, 65, '1. Undang- Undang Nomor 11 Tahun 1969;');
+		$this->pdf->Text(33, 69, '2. Undang-Undang Nomor 8 Tahun 1974 jo, Undang-Undang Nomor 5 Tahun 2014;');
+		$this->pdf->Text(33, 73, '3. Peraturan Pemerintah Nomor 7 tahun 1977 jo. Peraturan Pemerintah Nomor 18 Tahun 2019;');
+		$this->pdf->Text(33, 77, '4. Peraturan Pemerintah Nomor 32 Tahun 1979 jo. Peraturan Pemerintah Nomor 19 Tahun 2013;');
+		$this->pdf->Text(33, 81, '5. Peraturan Pemerintah Nomor 99 Tahun 2000 jo. Peraturan Pemerintah Nomor 12 Tahun 2002;');
+		$this->pdf->Text(33, 85, '6. Peraturan Pemerintah Nomor 9 Tahun 2003 jo Peraturan Pemerintah Nomor 63 Tahun 2009;');
+		$this->pdf->Text(33, 89, '7. Surat Kepala BKN Nomor WK-26-30/V33-5/99 Tanggal 30 Januari 2012;');
 		
 		
-		$this->pdf->Text(90, 95, 'MEMUTUSKAN');
-		$this->pdf->Text(10, 100, 'Menetapkan');
-		$this->pdf->Text(35, 100, ':');
-		$this->pdf->Text(10, 103, 'PERTAMA');
-		$this->pdf->Text(35, 103, ':');
+		
+		$this->pdf->Text(70, 99, 'MEMUTUSKAN');
+		$this->pdf->Text(5, 103, 'Menetapkan');
+		$this->pdf->Text(30, 103, ':');
+		$this->pdf->Text(5, 106, 'PERTAMA');
+		$this->pdf->Text(30, 106, ':');
 		
 		$text1='Kepada yang namanya tercantum dalam lajur 1 terhitung mulai tanggal tersebut dalam lajur 9, diberikan pensiun pokok sebulan sebesar tersebut dalam lajur 11 keputusan ini.';
-		$this->pdf->writeHTMLCell(125,'',41,103,$text1,0,0,false,false,'J',true);
+		$this->pdf->writeHTMLCell(125,'',33,106,$text1,0,0,false,false,'J',true);
 		
 		$tbl = <<<EOD
 <table width="50%" cellspacing="0" cellpadding="1" border="1">
     <tr>
         <td width="25px;" align="center">1</td>
-        <td width="200px;"> NAMA</td>
-        <td> $row->nama_janda_duda</td>
-		<td> $lname</td>
+        <td width="125px;"> NAMA</td>
+        <td width="250px;"> $row->nama_janda_duda</td>
+		<td width="50px;"> $lname</td>
     </tr>
     <tr>
         <td width="25px;" align="center">2</td>
@@ -1446,13 +1445,13 @@ class Entry extends MY_Controller {
 </table>
 EOD;
 
-        $this->pdf->SetXY(10, 112);
+        $this->pdf->SetXY(5, 116);
 		$this->pdf->writeHTML($tbl, true, false, false, false, '');
 		
-		$this->pdf->Text(10, 165, 'KEDUA');
-		$this->pdf->Text(35, 165, ':');
+		$this->pdf->Text(5, 170, 'KEDUA');
+		$this->pdf->Text(33, 170, ':');
 		$text1='Mencatat bahwa anak penerima pensiun tersebut di atas pada akhir bulan terdiri dari:';
-		$this->pdf->writeHTMLCell(165,'',41,165,$text1,0,0,false,false,'J',true);
+		$this->pdf->writeHTMLCell(165,'',41,170,$text1,0,0,false,false,'J',true);
 		
 		$tbl = <<<EOD
 <table width="42%" cellspacing="0" cellpadding="1" border="1">
@@ -1463,98 +1462,69 @@ EOD;
 		<th align="center"> NAMA<br/> AYAH/IBU</th>
 		<th align="center"> KETERANGAN</th>
     </tr> 
-	<tr>
-        <td></td>
-        <td></td>
-        <td></td>
-		<td></td>
-		<td></td>
-    </tr>	
-	<tr>
-        <td></td>
-        <td></td>
-        <td></td>
-		<td></td>
-		<td></td>
-    </tr>
-	<tr>
-        <td></td>
-        <td></td>
-        <td></td>
-		<td></td>
-		<td></td>
-    </tr>
-	<tr>
-        <td></td>
-        <td></td>
-        <td></td>
-		<td></td>
-		<td></td>
-    </tr>
-
-	<tr>
-        <td></td>
-        <td></td>
-        <td></td>
-		<td></td>
-		<td></td>
+	<tr >
+        <td height="65px;"></td>
+        <td height="65px;"></td>
+        <td height="65px;"></td>
+		<td height="65px;"></td>
+		<td height="65px;"></td>
     </tr>
 </table>
 EOD;
-		$this->pdf->SetXY(10, 170);
+		$this->pdf->SetXY(5, 175);
 		$this->pdf->writeHTML($tbl, true, false, false, false, '');
 		
-		$this->pdf->Text(175, 32, 'KETIGA');
-		$this->pdf->Text(195, 32, ':');
-		$this->pdf->Text(198, 32, 'Pembayaran pensiun janda/duda tersebut dilakukan dengan ketentuan:');
-		$this->pdf->Text(203, 36, 'a.');
+		$this->pdf->Text(170, 32, 'KETIGA');
+		$this->pdf->Text(190, 32, ':');
+		$this->pdf->Text(193, 32, 'Pembayaran pensiun janda/duda tersebut dilakukan dengan ketentuan:');
+		$this->pdf->Text(193, 36, 'a.');
 		$text1='Pemberian dan pembayaran pensiun janda/duda dihentikan akhir bulan janda/duda yang bersangkutan menikah lagi atau berakhir apabila meninggal dunia dan tidak terdapat lagi anak yang memenuhi syarat untuk menerima pensiun.';
-		$this->pdf->writeHTMLCell(125,'',206,36,$text1,0,0,false,false,'J',true);
+		$this->pdf->writeHTMLCell(125,'',196,36,$text1,0,0,false,false,'J',true);
 		
-		$this->pdf->Text(203, 48, 'b.');
+		$this->pdf->Text(193, 48, 'b.');
 		$text2='Jika janda/duda menikah lagi atau meninggal dunia, selama masih terdapat anak/anak-anak
 		yang berusia di bawah 25 tahun tidak berpenghasilan sendiri belum pernah menikah, pensiun janda/duda 
 		itu dibayarkan kepada dan atas nama anak pertama tersebut di atas untuk kepentingan anak-anak lainnya 
 		terhitung mulai bulan berikutnya terjadinya pernikahan/kematian';
-		$this->pdf->writeHTMLCell(125,'',206,48,$text2,0,0,false,true,'J',true);
+		$this->pdf->writeHTMLCell(125,'',196,48,$text2,0,0,false,true,'J',true);
 		
 		$text2='Khusus untuk janda apabila janda yang bersangkutan kemudian bercerai lagi, maka pensiun janda yang pembayarannya telah dihentikan, dibayarkan kembali mulai bulan berikutnya perceraian itu berlaku sah.';
-		$this->pdf->writeHTMLCell(125,'',206,64,$text2,0,0,false,true,'J',true);
+		$this->pdf->writeHTMLCell(125,'',196,64,$text2,0,0,false,true,'J',true);
 		 
-		$this->pdf->Text(175, 80, 'KEEMPAT');
-		$this->pdf->Text(195, 80, ':');
+		$this->pdf->Text(170, 80, 'KEEMPAT');
+		$this->pdf->Text(190, 80, ':');
 		$text2='Di atas pensiun pokok tersebut diberikan tunjangan keluarga dan tunjangan pangan yang berlaku bagi Pegawai Negeri Sipil dan tunjangan-tunjangan lain yang berlaku bagi penerima pensiun.';
-		$this->pdf->writeHTMLCell(125,'',198,80,$text2,0,0,false,true,'J',true);
+		$this->pdf->writeHTMLCell(125,'',193,80,$text2,0,0,false,true,'J',true);
 		
-		$this->pdf->Text(175, 90, 'KELIMA');
-		$this->pdf->Text(195, 90, ':');
+		$this->pdf->Text(170, 90, 'KELIMA');
+		$this->pdf->Text(190, 90, ':');
 		$text2='Apabila dikemudian hari ternyata terdapat kekeliruan dalam keputusan ini, akan diadakan perbaikan dan perhitungan kembali sebagaimana mestinya.';
-		$this->pdf->writeHTMLCell(125,'',198,90,$text2,0,0,false,true,'J',true);
+		$this->pdf->writeHTMLCell(125,'',193,90,$text2,0,0,false,true,'J',true);
 		
 		$text2='Asli Keputusan ini diberikan kepada yang bersangkutan dengan alamat : '.$row->alamat;
-		$this->pdf->writeHTMLCell(125,'',198,100,$text2,0,0,false,true,'J',true);
+		$this->pdf->writeHTMLCell(125,'',193,100,$text2,0,0,false,true,'J',true);
 		
-		$this->pdf->Text(175, 115, 'Sebagai bukti sah untuk dipergunakan sebagaimana mestinya.');
+		$this->pdf->Text(170, 115, 'Sebagai bukti sah untuk dipergunakan sebagaimana mestinya.');
 		
-		$this->pdf->Text(265, 125, 'Ditetapkan di');
-		$this->pdf->Text(285, 125, ':');
-		$this->pdf->Text(290, 125, 'MANADO');
+		$this->pdf->Text(260, 125, 'Ditetapkan di');
+		$this->pdf->Text(280, 125, ':');
+		$this->pdf->Text(285, 125, 'MANADO');
 		
-		$this->pdf->Text(265, 130, 'Pada Tanggal');
-		$this->pdf->Text(285, 130, ':');
-		$this->pdf->Text(290, 130, $row->persetujuan_tgl);
+		$this->pdf->Text(260, 130, 'Pada Tanggal');
+		$this->pdf->Text(280, 130, ':');
+		$this->pdf->Text(285, 130, $row->persetujuan_tgl);
 		
-		$this->pdf->Text(265, 135, 'a.n. KEPALA BADAN KEPEGAWAIAN NEGARA');
-		$this->pdf->Text(275, 140, 'KEPALA SEKSI PENSIUN PEGAWAI');
-		$this->pdf->Text(275, 145, 'NEGERI SIPIL INSTANSI VERTIKAL');
-		$this->pdf->Text(275, 150, 'DAN PROPINSI ');
-		$this->pdf->Text(275, 170, 'WAISUL QORNI, S.Sos, M.Si ');
-		$this->pdf->Text(275, 175, 'NIP. 197512311995031001 ');
+		$this->pdf->Text(260, 135, 'a.n. KEPALA BADAN KEPEGAWAIAN NEGARA');
+		$this->pdf->Text(270, 140, 'KEPALA SEKSI PENSIUN PEGAWAI');
+		$this->pdf->Text(270, 145, 'NEGERI SIPIL INSTANSI VERTIKAL');
+		$this->pdf->Text(270, 150, 'DAN PROPINSI ');
+		$this->pdf->Text(270, 170, 'WAISUL QORNI, S.Sos, M.Si ');
+		$this->pdf->Text(270, 175, 'NIP. 197512311995031001 ');
 		
-	    $this->pdf->Text(175, 185, 'Tembusan, Keputusan ini disampaikan kepada :');
-		$this->pdf->Text(175, 190, '1. Kepala Kantor Cabang PT.TASPEN (PERSERO)/PT.ASABRI (PERSERO) di '.$row->nama_taspen);
-		$this->pdf->Text(175, 195, '2. Direktur Pensiun BKN di Jakarta;');
-		$this->pdf->Text(175, 200, '3. Pertinggal ');
+	    $this->pdf->Text(170, 185, 'Tembusan, Keputusan ini disampaikan kepada :');
+		$this->pdf->Text(170, 190, '1. Kepala Kantor Cabang PT.TASPEN (PERSERO)/PT.ASABRI (PERSERO) di '.$row->nama_taspen);
+		$this->pdf->Text(170, 195, '2. Direktur Pensiun BKN di Jakarta;');
+		$this->pdf->Text(170, 200, '3. Pertinggal ');
 		
 		// set style for barcode
 		$style = array(
@@ -1568,7 +1538,7 @@ EOD;
 		
 		$code  = ' SK '.$name.' PNS '.$row->nama_pns.'  atas nama '.$row->nama_janda_duda ;
 				
-		$this->pdf->write2DBarcode($code, 'QRCODE,Q', 177, 155, 25, 25, $style, 'N');		
+		$this->pdf->write2DBarcode($code, 'QRCODE,Q', 172, 155, 25, 25, $style, 'N');		
 		
 		
 		$this->pdf->Output('cetakSuratKeputusanJandaDudaYatim.pdf', 'D');
