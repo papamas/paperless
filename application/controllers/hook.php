@@ -554,7 +554,11 @@ class Hook extends CI_Controller {
 				
 			case preg_match("/REG(.*)/", $pesan, $hasil):
 			    $this->_setTelegramAkun($message,$hasil);			    
-				break;	
+				break;
+
+			case preg_match("/APPROVE(.*)/", $pesan, $hasil):
+			    $this->_ApproveMember($message,$hasil);			    
+				break;
 				
 			case $pesan == '/keyboard':
 				$this->telegram->sendApiAction($chatid);
@@ -604,6 +608,31 @@ class Hook extends CI_Controller {
 		}
 	}	
 	
+	
+	function _ApproveMember($data,$hasil)
+	{
+		$result 		= $this->bot->ApproveMember($data,$hasil);
+		$pesan 			= $data['text'];
+		$chatid 		= $data['chat']['id'];
+		$fromid 		= $data['from']['id'];
+		$first_name 	= $data['from']['first_name'];
+		$last_name  	= $data['from']['last_name'];
+		
+		$response 		= $result['response'];
+		
+		if($response)
+		{	
+			$this->telegram->sendApiAction($chatid);
+			$text = "Terimkasih <strong>".$first_name ." ".$last_name. " </strong>, ".$result['pesan'];
+			$this->telegram->sendApiMsg($chatid, $text , false, 'HTML');
+		}
+		else
+		{
+			$this->telegram->sendApiAction($chatid);
+			$text = "Maaf  <strong>".$first_name ." ".$last_name. " </strong>,".$result['pesan'];
+			$this->telegram->sendApiMsg($chatid, $text , false, 'HTML');
+		}
+	}
 	
 	function _setTelegramAkun($data,$hasil)
 	{
