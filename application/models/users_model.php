@@ -6,13 +6,12 @@ class Users_model extends CI_Model
 	var $instansi	    ='mirror.instansi';
 	var $bidang		    ='unit_kerja';
 	var $user_temp	    ='user_temp';
-	
+	var $menu_role      ='menu_role';
 	
 	
 	function __construct()
 	{
 		parent::__construct();		
-			
 	}
 	
 	function check_usertemp($username)
@@ -94,8 +93,7 @@ class Users_model extends CI_Model
 			if($check_user_temp->num_rows() == 1)
 			{
 				$data['pesan']			 	='User menunggu proses Approve, Hubungi Administrator';
-				$data['response']			= FALSE;
-				
+				$data['response']			= FALSE;				
 			}
 		}
 		else
@@ -107,14 +105,12 @@ class Users_model extends CI_Model
 				{
 					$data['pesan']		= $error;   
 					$data['response'] 	= FALSE;
-				}
-					
+				}					
 			}
 			else
 			{
 				$data['pesan']		= "User Berhasil Tersimpan";
-				$data['response']	= TRUE;
-				
+				$data['response']	= TRUE;				
 			}	
         }
 		
@@ -149,8 +145,7 @@ class Users_model extends CI_Model
 			{
 				$data['pesan']		= $error;   
 				$data['response'] 	= FALSE;
-			}
-				
+			}				
 		}
 		else
 		{
@@ -177,7 +172,7 @@ class Users_model extends CI_Model
 	
 	function approveUser()
 	{
-		$user_id		= $this->input->post('approve_user_id');
+		$user_id		    = $this->input->post('approve_user_id');
 		
 		$db_debug 			= $this->db->db_debug; 
 		$this->db->db_debug = FALSE; 			
@@ -185,6 +180,8 @@ class Users_model extends CI_Model
 
 		$user_temp  		= $this->get_usertemp_by_id($user_id)->result_array();	
 		$this->db->insert_batch($this->app_user, $user_temp);
+		$last_id 			= $this->db->insert_id();
+		$this->insert_menuInstansi($last_id);
 		$this->delete_usertemp_by_id($user_id);
 
 		if ($this->db->trans_status() === FALSE)
@@ -196,12 +193,48 @@ class Users_model extends CI_Model
 		else
 		{
 			$data['response']	= TRUE;
-			$data['pesan']		= "Approve User Berhasil";
+			$data['pesan']		= "Approve User Berhasil";		
 			$this->db->trans_commit();
 		}
 		$this->db->db_debug = $db_debug; //restore setting	
 		return $data;
 	}
+	
+	function insert_menuInstansi($id)
+	{
+		$data = array(
+			array(
+					'menu_id' => 3,
+					'user_id' => $id,             
+			),
+			array(
+					'menu_id' => 8,
+					'user_id' => $id,				   
+			),
+			array(
+					'menu_id' => 9,
+					'user_id' => $id,				   
+			),
+			array(
+					'menu_id' => 10,
+					'user_id' => $id, 				   
+			),
+			array(
+					'menu_id' => 11,
+					'user_id' => $id,				   
+			),
+			array(
+					'menu_id' => 12,
+					'user_id' => $id,				   
+			),
+			array(
+					'menu_id' => 13,
+					'user_id' => $id,				   
+			),			
+		);
+
+        return $this->db->insert_batch($this->menu_role, $data);
+	}	
 	
 	function drop()
 	{
