@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html>
  <head>
-    <?php echo $this->load->view('vheader');?>
-	
+    <?php echo $this->load->view('vheader');?>	
   </head> 
 	
 	<style>

@@ -98,9 +98,9 @@ class Auth {
    }
    
     public function getRegMessage()
-   {
+    {
       return $this->_register_message;
-   }
+    }
    
     public function isLoggedin()
     {
@@ -231,52 +231,63 @@ class Auth {
 		return $this->ci->session->userdata('created_date');
     }
 	
-	public function register($username, $password,$firstname,$lastname,$gender,$unit_kerja,$jabatan)
+	public function getRegReponse()
+    {
+      return $this->_register_Response;
+    }
+	
+
+	
+	public function register($data)
 	{		
 		// Load Models
 		$this->ci->load->model('users_model', 'users');
 		$this->ci->load->model('user_temp_model', 'user_temp');
 
-		$this->ci->load->helper('url');
-		
 		// Default return value
-		$result = FALSE;
-
-		// New user array
-		$new_user = array(			
-			'username'				    => $username,			
-			'password'				    => SHA1($password),
-			'first_name'				=> $firstname,
-			'last_name'					=> $lastname,			
-			'gender'					=> $gender,	
-            'unit_kerja'				=> $unit_kerja,		
-            'jabatan'					=> $jabatan,			
-			'last_ip'					=> $this->ci->input->ip_address()
-		);
-
+		$result = FALSE;		
 		
-			// Add activation key to user array
-			//$new_user['activation_key'] = md5(rand().microtime());
-			
-			$check_user      = $this->ci->user_temp->check_username($username);
-			$check_user_temp = $this->ci->users->check_username($username);
-			
-			if($check_user->num_rows() ==  1 || $check_user_temp->num_rows() == 1)
+		// Add activation key to user array
+		//$new_user['activation_key'] = md5(rand().microtime());
+		
+		$check_user_temp      = $this->ci->user_temp->check_username($data['username']);
+		$check_user 		  = $this->ci->users->check_username($data['username']);
+		
+		if($check_user->num_rows() ==  1 || $check_user_temp->num_rows() == 1 )
+		{
+					
+			if($check_user->num_rows() == 1)
 			{
-			    $this->_register_message =' Username already exist ';
+				$this->_register_message 	= 'User telah terdaftar';
+				$this->_register_Response	= FALSE;				
+			}
+			
+			if($check_user_temp->num_rows() == 1)
+			{
+				$this->_register_message 	='User menunggu proses Approve, Hubungi Administrator';
+				$this->_register_Response	= FALSE;
+				
+			}
+		}
+		else
+		{
+		
+			// Create temporary user in database which means the user still unactivated.
+			$res    	 = $this->ci->user_temp->create_temp($data);
+			$response    = $res['response'];			
+			
+			if ($response)
+			{
+				$result 					= TRUE;
+				$this->_register_message 	=' User berhasil ditambahkan, Hubungi Administrator untuk Approve';	
+				$this->_register_Response	= TRUE;	
 			}
 			else
 			{
-			
-				// Create temporary user in database which means the user still unactivated.
-				$insert = $this->ci->users->create_user($new_user);
-				
-				if ($insert)
-				{
-					$result = $new_user;			
-					
-				}
-		    }
+				$this->_register_message 	= $res['pesan'];	
+                $this->_register_Response	= FALSE;				
+			}
+		}
 		
 		
 		

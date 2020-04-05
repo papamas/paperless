@@ -1,9 +1,13 @@
-<?php
-
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 class Users_model extends CI_Model 
   
 {
-	var $_table='app_user';
+	var $app_user		='app_user';
+	var $instansi	    ='mirror.instansi';
+	var $bidang		    ='unit_kerja';
+	var $user_temp	    ='user_temp';
+	
+	
 	
 	function __construct()
 	{
@@ -11,6 +15,251 @@ class Users_model extends CI_Model
 			
 	}
 	
+	function check_usertemp($username)
+	{
+		$this->db->select('1', FALSE);
+		$this->db->where('LOWER(username)=', strtolower($username));
+		return $this->db->get($this->user_temp);
+	}
+	
+	function check_username($username)
+	{
+		$this->db->select('1', FALSE);
+		$this->db->where('LOWER(username)=', strtolower($username));
+		return $this->db->get($this->app_user);
+	}
+	
+	function getInstansi()
+	{
+		$this->db->select('*');
+		return $this->db->get($this->instansi);
+	}	
+	
+	function getBidang()
+	{
+		$this->db->select('*');
+		return $this->db->get($this->bidang);
+	}
+	
+	function getAlluser()
+	{
+		$nip 		= trim($this->input->post('find'));
+		
+		if(!empty($nip))
+		{
+			$sql_find = " AND a.nip='$nip' ";
+		}
+		else
+		{
+			$sql_find = " AND a.nip='99999999999' ";
+		}		
+		
+		$sql ="SELECT a.*,b.*,c.*
+		FROM $this->app_user a
+		LEFT JOIN $this->instansi b ON a.id_instansi = b.INS_KODINS
+		LEFT JOIN $this->bidang c ON a.id_bidang = c.id_bidang
+		WHERE 1=1 $sql_find";
+		return $this->db->query($sql);
+	}
+	
+	function insert_user()
+	{
+		$data['username']	 	 = $this->input->post('username');
+		$data['password']	 	 = SHA1($this->input->post('username'));
+		$data['id_instansi']	 = $this->input->post('instansi');
+		$data['first_name']		 = $this->input->post('fname');
+		$data['last_name']		 = $this->input->post('lname');
+		$data['jabatan']		 = $this->input->post('jabatan');
+		$data['id_bidang']	 	 = $this->input->post('bidang');
+		$data['nip']		     = $this->input->post('nip');
+		$data['email']	 		 = $this->input->post('email');
+		$data['user_tipe']		 = $this->input->post('usertipe');
+		$data['gender']	 		 = $this->input->post('sex');
+		$data['active']	 		 = ($this->input->post('active') == 1 ? 1 : NULL);
+		
+		$db_debug 			= $this->db->db_debug; 
+		$this->db->db_debug = FALSE; 
+		
+		$check_user_temp      = $this->check_usertemp($data['username']);
+		$check_user           = $this->check_username($data['username']);
+		
+		if($check_user->num_rows() ==  1 || $check_user_temp->num_rows() == 1)
+		{
+			if($check_user->num_rows() == 1)
+			{
+				$data['pesan'] 		= " Username telah terdaftar ";
+				$data['response'] 	= FALSE;			
+			}
+			
+			if($check_user_temp->num_rows() == 1)
+			{
+				$data['pesan']			 	='User menunggu proses Approve, Hubungi Administrator';
+				$data['response']			= FALSE;
+				
+			}
+		}
+		else
+        {			
+			if (!$this->db->insert($this->app_user, $data))
+			{
+				$error = $this->db->_error_message();
+				if(!empty($error))
+				{
+					$data['pesan']		= $error;   
+					$data['response'] 	= FALSE;
+				}
+					
+			}
+			else
+			{
+				$data['pesan']		= "User Berhasil Tersimpan";
+				$data['response']	= TRUE;
+				
+			}	
+        }
+		
+		$this->db->db_debug = $db_debug; //restore setting	
+        return $data;
+	}
+	
+	function update_user()
+	{
+		$user_id     			 = $this->input->post('user_id');
+		
+		$data['username']	 	 = $this->input->post('username');		
+		$data['id_instansi']	 = $this->input->post('instansi');
+		$data['first_name']		 = $this->input->post('fname');
+		$data['last_name']		 = $this->input->post('lname');
+		$data['jabatan']		 = $this->input->post('jabatan');
+		$data['id_bidang']	 	 = $this->input->post('bidang');
+		$data['nip']		     = $this->input->post('nip');
+		$data['email']	 		 = $this->input->post('email');
+		$data['user_tipe']		 = $this->input->post('usertipe');
+		$data['gender']	 		 = $this->input->post('sex');
+		$data['active']	 		 = ($this->input->post('active') == 1 ? 1 : NULL);
+		
+		$db_debug 			= $this->db->db_debug; 
+		$this->db->db_debug = FALSE; 
+		
+		$this->db->where('user_id', $user_id);
+		if (!$this->db->update($this->app_user, $data))
+		{
+			$error = $this->db->_error_message();
+			if(!empty($error))
+			{
+				$data['pesan']		= $error;   
+				$data['response'] 	= FALSE;
+			}
+				
+		}
+		else
+		{
+			$data['pesan']		= "User Berhasil Terupdate";
+			$data['response']	= TRUE;
+			
+		}	
+		$this->db->db_debug = $db_debug; //restore setting	
+		return $data;
+	}
+	
+	function get_usertemp_by_id($id)
+	{
+		$this->db->select('username,password,email,first_name,last_name,nip,id_bidang,jabatan,id_instansi,gender,user_tipe');
+		$this->db->where('user_temp_id', $id);
+		return $this->db->get($this->user_temp);
+	}
+	
+	function delete_usertemp_by_id($id)
+	{
+		$this->db->where('user_temp_id', $id);
+		return $this->db->delete($this->user_temp);
+	}
+	
+	function approveUser()
+	{
+		$user_id		= $this->input->post('approve_user_id');
+		
+		$db_debug 			= $this->db->db_debug; 
+		$this->db->db_debug = FALSE; 			
+		$this->db->trans_begin();
+
+		$user_temp  		= $this->get_usertemp_by_id($user_id)->result_array();	
+		$this->db->insert_batch($this->app_user, $user_temp);
+		$this->delete_usertemp_by_id($user_id);
+
+		if ($this->db->trans_status() === FALSE)
+		{
+			$data['pesan']		= "Failed Approve User";
+			$data['response'] 	= FALSE;					
+			$this->db->trans_rollback();			
+		}
+		else
+		{
+			$data['response']	= TRUE;
+			$data['pesan']		= "Approve User Berhasil";
+			$this->db->trans_commit();
+		}
+		$this->db->db_debug = $db_debug; //restore setting	
+		return $data;
+	}
+	
+	function drop()
+	{
+		$user_id		= $this->input->post('drop_user_id');
+		
+		$db_debug 			= $this->db->db_debug; 
+		$this->db->db_debug = FALSE; 
+		
+		$this->db->where('user_id', $user_id);
+		if (!$this->db->delete($this->app_user))
+		{
+			$error = $this->db->_error_message();
+			if(!empty($error))
+			{
+				$data['pesan']		= $error;   
+				$data['response'] 	= FALSE;
+			}
+				
+		}
+		else
+		{
+			$data['pesan']		= "User Berhasil di DROP";
+			$data['response']	= TRUE;
+			
+		}	
+		$this->db->db_debug = $db_debug; //restore setting	
+		return $data;
+	}
+	
+	function resetUser()
+	{
+		$user_id		= $this->input->post('reset_user_id');
+		$nip		    = $this->input->post('reset_nip');
+		
+		$db_debug 			= $this->db->db_debug; 
+		$this->db->db_debug = FALSE; 
+		
+		$this->db->set('password',"SHA1($nip)",FALSE);
+		$this->db->where('user_id', $user_id);
+		if (!$this->db->update($this->app_user))
+		{
+			$error = $this->db->_error_message();
+			if(!empty($error))
+			{
+				$data['pesan']		= $error;   
+				$data['response'] 	= FALSE;
+			}
+				
+		}
+		else
+		{
+			$data['pesan']		= "Berhasil RESET Password";
+			$data['response']	= TRUE;
+			
+		}	
+		$this->db->db_debug = $db_debug; //restore setting	
+		return $data;
+	}
 	// General function
 	public function setLastAccess($user_id)
     {
@@ -82,12 +331,7 @@ class Users_model extends CI_Model
 		return $this->db->get($this->_table);
 	}
 	
-	function check_username($username)
-	{
-		$this->db->select('1', FALSE);
-		$this->db->where('LOWER(username)=', strtolower($username));
-		return $this->db->get($this->_table);
-	}
+	
 
 	function check_email($email)
 	{
@@ -136,18 +380,9 @@ class Users_model extends CI_Model
 		return $this->db->get($this->_table);
 	}
 
-	function set_user($user_id, $data)
-	{
-		$this->db->where('id', $user_id);
-		return $this->db->update($this->_table, $data);
-	}
 	
-	function delete_user($user_id)
-	{
-		$this->db->where('id', $user_id);
-		$this->db->delete($this->_table);
-		return $this->db->affected_rows() > 0;
-	}
+	
+	
 	
 	// Forgot password function
 

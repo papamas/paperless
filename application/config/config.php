@@ -293,7 +293,19 @@ $config['global_xss_filtering'] = FALSE;
 | 'csrf_cookie_name' = The cookie name
 | 'csrf_expire' = The number in seconds the token should expire.
 */
-$config['csrf_protection'] = TRUE;
+//$config['csrf_protection'] = TRUE;
+if (isset($_SERVER["REQUEST_URI"]) &&
+   (isset($_SERVER['REQUEST_METHOD']) && ($_SERVER['REQUEST_METHOD'] == 'POST') ))
+{
+    if (stripos($_SERVER["REQUEST_URI"],'/hook') === false )  { // Verify if POST Request is not for API
+        $config['csrf_protection'] = TRUE;
+    }
+    else {
+        $config['csrf_protection'] = FALSE;
+    }
+} else {
+    $config['csrf_protection'] = TRUE;
+}
 $config['csrf_token_name'] = '_csrf_application';
 $config['csrf_cookie_name'] = 'csrf_cookie_name';
 $config['csrf_expire'] = 7200;
