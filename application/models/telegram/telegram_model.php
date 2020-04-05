@@ -31,6 +31,53 @@ class Telegram_model extends CI_Model {
 		return $this->db->delete($this->user_temp);
 	}
 	
+	public function AktifMember($data,$pesan)
+	{
+		$telegram_id		= $data['from']['id'];
+		$id				    = trim($pesan[1]);		
+		
+		$db_debug 			= $this->db->db_debug; 
+		$this->db->db_debug = FALSE; 			
+			
+		if($telegram_id  == '882025162')
+		{
+			$this->db->set('active',1);
+			$this->db->where('user_id',$id);
+			$this->db->or_where('nip', $id);
+			$this->db->update($this->table_user);
+			
+			if ($this->db->affected_rows() == 0)
+			{
+				$error = $this->db->_error_message();
+				if(!empty($error))
+				{
+					$data['pesan']		= $error;   
+					$data['response'] 	= FALSE;
+				}
+				else
+				{
+					$data['pesan']		= "Tidak ada data yang terupdate untuk User dengan <strong>UID/NIP : ".$id."</strong>.";
+					$data['response']	= FALSE;	
+				}
+					
+			}
+			else
+			{
+				$data['pesan']		= "User dengan <strong>UID/NIP : ".$id."</strong> sudah diaktifkan.";
+				$data['response']	= TRUE;				
+			}	
+        }	
+		else
+		{
+			$data['pesan']		= 'Hanya Administrator yang diizinkan Aktifasi Member';   
+			$data['response'] 	= FALSE;
+		}
+		
+		
+		$this->db->db_debug = $db_debug; //restore setting				
+		return $data;
+	}	
+	
 	public function ApproveMember($data,$pesan)
 	{
 		$telegram_id		= $data['from']['id'];
@@ -44,10 +91,10 @@ class Telegram_model extends CI_Model {
 		if($telegram_id  == '882025162')
 		{
 			$user_temp  = $this->_get_user_temp_by_nip($nip);
-			
+						
 			if($user_temp->num_rows() > 0)
 			{
-				$this->db->insert_batch($this->app_user, $user_temp);
+				$this->db->insert_batch($this->table_user, $user_temp->result_array());
 				$last_id 			= $this->db->insert_id();	
 				$this->insert_menuInstansi($last_id);
 				$this->delete_usertemp_by_nip($nip);
@@ -61,7 +108,7 @@ class Telegram_model extends CI_Model {
 				else
 				{
 					$data['response']	= TRUE;
-					$data['pesan']		= "Approve User dengan NIP ".$nip." telah Berhasil";		
+					$data['pesan']		= "Approve User dengan NIP ".$nip." telah Berhasil dengan <strong>UID : ".$last_id."</strong>, Silahkan lakukan aktifasi</strong>";		
 					$this->db->trans_commit();
 				}
 			}

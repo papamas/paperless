@@ -62,6 +62,7 @@ class Bot extends CI_Controller {
 		return $updateid;
 	}
 	
+	
 	function _prosesPesanTeks($message)
 	{
 		$pesan 		= $message['text'];
@@ -85,21 +86,51 @@ class Bot extends CI_Controller {
 				$text .= "\n";
 				$text .= "\n<strong>Male_o 1.9 Bot</strong> adalah suatu platform Telegram berbasis algoritma untuk menjawab berbagai pertanyaan secara personal (one to one) yang ter-enkripsi guna melindungi kerahasian transmisi data dan percakapan anda.";
 				$text .= "\n";
-			    $text .="\nKomunikasi anda melalui platform ini akan dilayani oleh :";
-				$text .="\n1. Sistem algoritma auto-bot";
-				$text .="\n2. Officer Kantor Regional XI BKN";
+			    $text .="\nKomunikasi anda melalui platform ini akan dilayani oleh Sistem algoritma auto-bot";
 				$text .="\n";
-				$text .="\nBagi anda yang sudah mempunyai akun pada aplikasi <strong>Male_o 1.9</strong> dapat terhubung secara private dengan sistem auto-bot dan account officer, dengan cara Mendaftarkan Telegram ID Anda.";
+				$text .="\nBagi anda yang sudah mempunyai akun pada aplikasi <strong>Male_o 1.9</strong> dapat terhubung secara private dengan sistem auto-bot, dengan cara Mendaftarkan Telegram ID Anda.";
 				$text .="\n";
-				$text .="\nJika anda belum memiliki akun pada Aplikasi <strong>Male_o 1.9</strong> , anda dapat menghubungi kami";
-			    $text .="\n";
-				$text .="\nUntuk melanjutkan, Silahkan pilih menu pada keyboard dibawah";
-				$keyboard = [
-					['Tentang'],
-					['Layanan'],
-					['Daftar'],					
+				$text .="\nUntuk melanjutkan, Silahkan pilih menu dibawah";
+				
+				$inkeyboard = [
+					[
+						['text' => 'Tentang Male_o 1.9', 'callback_data' => 'Tentang'],
+						['text' => 'Layanan Kepegawaian', 'callback_data' => 'Layanan'],
+					],
+					[
+						['text' => 'Daftar Notifikasi Male_o 1.9', 'callback_data' => 'Daftar'],
+						
+					],
+					
 				];
-				$this->telegram->sendApiKeyboard($chatid, $text, $keyboard);
+				$this->telegram->sendApiKeyboard($chatid, $text, $inkeyboard, true);				
+				break;
+			case $pesan == '/tentang':
+				$this->telegram->sendApiAction($chatid);
+				$text = "Aplikasi Manajemen Layanan Elektronik Online <strong>(Male_o 1.9)</strong> merupakan layanan kepegawaian berbasis paperless secara Online di era industri 4.0 yang merupakan pendamping Sistem Aplikasi Layanan Kepegawaian (SAPK)";
+				$text .="\n";
+				$text .="\n";
+				$text .= "Ada 7 (Tujuh) Jenis layanan kepegawaian yang dapat dilakukan melalui Aplikasi <strong>Male_o 1.9</strong> adalah sebagai berikut:";
+				$text .="\n";
+				$text .= "\n1. Pertimbangan teknis pensiun (BUP,Janda/Duda, APS, dan tidak cakap jasmani dan/atau rohani);";
+				$text .="\n2. Pertimbangan teknis kenaikan pangkat (Jabatan Struktural, Jabatan Fungsional dan Penyesuaian Ijazah);";
+				$text .="\n3. Pertimbangan Teknis Mutasi/Pindah Instansi;";
+				$text .="\n4. Ijin penggunaan/pencatuman Gelar/peningkatan pendidikan;";
+				$text .="\n5. Kartu Pegawai (KARPEG);";
+				$text .="\n6. Kartu isteri/suami; dan";
+				$text .="\n7. TASPEN ( SK Janda/Dua/Yatim dan Mutasi/Penambahan Keluarga).";
+				$inkeyboard = [
+					[
+						['text' => 'Tentang Male_o 1.9', 'callback_data' => 'Tentang'],
+						['text' => 'Layanan Kepegawaian', 'callback_data' => 'Layanan'],
+					],
+					[
+						['text' => 'Daftar Notifikasi Male_o 1.9', 'callback_data' => 'Daftar'],
+						
+					],
+					
+				];
+				$this->telegram->sendApiKeyboard($chatid, $text, $inkeyboard, true);
 				break;
 				
 			case $pesan == 'Tentang':
@@ -116,12 +147,23 @@ class Bot extends CI_Controller {
 				$text .="\n5. Kartu Pegawai (KARPEG);";
 				$text .="\n6. Kartu isteri/suami; dan";
 				$text .="\n7. TASPEN ( SK Janda/Dua/Yatim dan Mutasi/Penambahan Keluarga).";
-				$this->telegram->sendApiMsg($chatid, $text, false, 'HTML');
+				$inkeyboard = [
+					[
+						['text' => 'Tentang Male_o 1.9', 'callback_data' => 'Tentang'],
+						['text' => 'Layanan Kepegawaian', 'callback_data' => 'Layanan'],
+					],
+					[
+						['text' => 'Daftar Notifikasi Male_o 1.9', 'callback_data' => 'Daftar'],
+						
+					],
+					
+				];
+				$this->telegram->sendApiKeyboard($chatid, $text, $inkeyboard, true);
 				break;
 				
 			case $pesan == 'Layanan':
 				$this->telegram->sendApiAction($chatid);
-				$text = "Silahkan ".$first_name." ".$last_name." kamu pilih menu yang ingin ditanyakan pada keyboard";
+				$text = "Silahkan kamu pilih menu yang ingin ditanyakan pada keyboard";
 				$keyboard = [
 					['Bidang Pengangkatan dan Pensiun'],
 					['Bidang Mutasi dan Status Kepegawaian'],
@@ -144,7 +186,7 @@ class Bot extends CI_Controller {
 				
 			case $pesan == 'Pensiun BUP':
 				$this->telegram->sendApiAction($chatid);
-				$text = "Baiklah,  Terima Kasih ".$first_name." ".$last_name." berikut persyaratan pensiun karena telah mencapai BUP yang kamu tanyakan:";				
+				$text = "Baiklah,".$first_name." ".$last_name." berikut persyaratan pensiun karena telah mencapai BUP yang kamu tanyakan:";				
 				$text .= "\n1. Surat Pengantar dari PPK";
 				$text .= "\n2. Surat Permohonan Pensiun YBS";
 				$text .= "\n3. Data perorangan calon penerima pensiun (DPCP)";
@@ -165,7 +207,7 @@ class Bot extends CI_Controller {
 				
 			case $pesan == 'Pensiun APS':
 				$this->telegram->sendApiAction($chatid);
-				$text = "Baiklah,  Terima Kasih ".$first_name." ".$last_name." berikut persyaratan pensiun atas permintaan sendiri yang kamu tanyakan:";				
+				$text = "Baiklah,".$first_name." ".$last_name." berikut persyaratan pensiun atas permintaan sendiri yang kamu tanyakan:";				
 				$text .= "\n1. Surat Pengantar dari PPK";
 				$text .= "\n2. Surat Permohonan Pensiun YBS";
 				$text .= "\n3. Data perorangan calon penerima pensiun (DPCP)";
@@ -186,7 +228,7 @@ class Bot extends CI_Controller {
 				
 			case $pesan == 'Pensiun Janda/Duda':
 				$this->telegram->sendApiAction($chatid);
-				$text = "Baiklah,  Terima Kasih ".$first_name." ".$last_name." berikut persyaratan pensiun Janda/Duda yang kamu tanyakan :";				
+				$text = "Baiklah,".$first_name." ".$last_name." berikut persyaratan pensiun Janda/Duda yang kamu tanyakan :";				
 				$text .= "\n1. Surat Pengantar dari PPK";
 				$text .= "\n2. Surat Permohonan Pensiun YBS";
 				$text .= "\n3. Data perorangan calon penerima pensiun (DPCP)";
@@ -207,7 +249,7 @@ class Bot extends CI_Controller {
 
 			case $pesan == 'Pensiun tidak cakap jasmani dan/atau rohani':
 				$this->telegram->sendApiAction($chatid);
-				$text = "Baiklah,  Terima Kasih ".$first_name." ".$last_name." berikut persyaratan pensiun tidak cakap jasmani dan/atau rohani yang kamu tanyakan :";				
+				$text = "Baiklah,".$first_name." ".$last_name." berikut persyaratan pensiun tidak cakap jasmani dan/atau rohani yang kamu tanyakan :";				
 				$text .= "\n1. Surat Pengantar dari PPK";
 				$text .= "\n2. Surat Permohonan Pensiun YBS";
 				$text .= "\n3. Data perorangan calon penerima pensiun (DPCP)";
@@ -228,7 +270,7 @@ class Bot extends CI_Controller {
 
              case $pesan == 'TASPEN':
 				$this->telegram->sendApiAction($chatid);
-				$text = "Untuk melihat persyaratan berkas TASPEN, silahkan pilih menu pada keyboard dibawah:";
+				$text = "Terimakasih, ".$first_name." ".$last_name. " silahkan kamu pilih menu pada keyboard dibawah untuk melihat persyaratan berkas TASPEN :";
 				$keyboard = [
 					['SK Janda/Duda/Yatim'],
 					['Penambahan Keluarga'],
@@ -239,7 +281,7 @@ class Bot extends CI_Controller {
 			 
 			case $pesan == 'SK Janda/Duda/Yatim':
 				$this->telegram->sendApiAction($chatid);
-				$text = "Persyaratan berkas TASPEN SK Janda/Duda adalah :";
+				$text = "Baiklah,".$first_name." ".$last_name." berikut persyaratan berkas TASPEN SK Janda/Duda/Yatim yang kamu tanyakan :";				
 				$text .="\n1. Membawa asli SK Pensiun almarhum/almarhumah";
 				$text .="\n2. Fotokopi Surat Nikah dilegalisir oleh KUA";
 				$text .="\n3. Fotokopi Surat Kematian sebanyak 1 lembar yang dilegalisir oleh Lurah";
@@ -261,7 +303,7 @@ class Bot extends CI_Controller {
 			
 			case $pesan == 'Penambahan Keluarga':
 				$this->telegram->sendApiAction($chatid);
-				$text = "Persyaratan berkas TASPEN Penambahan Keluarga adalah :";
+				$text = "Baiklah,".$first_name." ".$last_name." berikut persyaratan berkas TASPEN Penambahan Keluarga yang kamu tanyakan :";				
 				$keyboard = [
 					['TASPEN'],
 				];
@@ -531,7 +573,15 @@ class Bot extends CI_Controller {
 				
 			case preg_match("/REG(.*)/", $pesan, $hasil):
 			    $this->_setTelegramAkun($message,$hasil);			    
-				break;	
+				break;
+
+			case preg_match("/APPROVE(.*)/", $pesan, $hasil):
+			    $this->_ApproveMember($message,$hasil);			    
+				break;
+			
+            case preg_match("/AKTIF(.*)/", $pesan, $hasil):
+			    $this->_AktifMember($message,$hasil);			    
+				break;			
 				
 			case $pesan == '/keyboard':
 				$this->telegram->sendApiAction($chatid);
@@ -581,10 +631,9 @@ class Bot extends CI_Controller {
 		}
 	}	
 	
-	
-	function _setTelegramAkun($data,$hasil)
+	function _AktifMember($data,$hasil)
 	{
-		$result 		= $this->bot->setTelegramAkun($data,$hasil);
+		$result 		= $this->bot->AktifMember($data,$hasil);
 		$pesan 			= $data['text'];
 		$chatid 		= $data['chat']['id'];
 		$fromid 		= $data['from']['id'];
@@ -596,16 +645,41 @@ class Bot extends CI_Controller {
 		if($response)
 		{	
 			$this->telegram->sendApiAction($chatid);
-			$text = "Terimkasih <strong>".$first_name ." ".$last_name. " </strong> dengan NIP <strong>".$hasil[1]." </strong> akun Telegram anda telah kami daftar untuk menerima notifikasi";
+			$text = "Terimkasih <strong>".$first_name ." ".$last_name. " </strong>, ".$result['pesan'];
 			$this->telegram->sendApiMsg($chatid, $text , false, 'HTML');
 		}
 		else
 		{
 			$this->telegram->sendApiAction($chatid);
-			$text = "Maaf  <strong>".$first_name ." ".$last_name. " </strong> dengan NIP <strong>".$hasil[1]." </strong> akun Telegram anda GAGAL didaftarkan untuk menerima notifikasi";
+			$text = "Maaf  <strong>".$first_name ." ".$last_name. " </strong>,".$result['pesan'];
 			$this->telegram->sendApiMsg($chatid, $text , false, 'HTML');
 		}
-	}	
+	}
+	
+	function _ApproveMember($data,$hasil)
+	{
+		$result 		= $this->bot->ApproveMember($data,$hasil);
+		$pesan 			= $data['text'];
+		$chatid 		= $data['chat']['id'];
+		$fromid 		= $data['from']['id'];
+		$first_name 	= $data['from']['first_name'];
+		$last_name  	= $data['from']['last_name'];
+		
+		$response 		= $result['response'];
+		
+		if($response)
+		{	
+			$this->telegram->sendApiAction($chatid);
+			$text = "Terimkasih <strong>".$first_name ." ".$last_name. " </strong>, ".$result['pesan'];
+			$this->telegram->sendApiMsg($chatid, $text , false, 'HTML');
+		}
+		else
+		{
+			$this->telegram->sendApiAction($chatid);
+			$text = "Maaf  <strong>".$first_name ." ".$last_name. " </strong>,".$result['pesan'];
+			$this->telegram->sendApiMsg($chatid, $text , false, 'HTML');
+		}
+	}
 	
 	public function sendMessage_to_telegram_byid($hasil)
 	{
