@@ -67,15 +67,11 @@ class Hook extends CI_Controller {
 				$text .= "\n";
 				$text .= "\n<strong>Male_o 1.9 Bot</strong> adalah suatu platform Telegram berbasis algoritma untuk menjawab berbagai pertanyaan secara personal (one to one) yang ter-enkripsi guna melindungi kerahasian transmisi data dan percakapan anda.";
 				$text .= "\n";
-			    $text .="\nKomunikasi anda melalui platform ini akan dilayani oleh :";
-				$text .="\n1. Sistem algoritma auto-bot";
-				$text .="\n2. Officer Kantor Regional XI BKN";
+			    $text .="\nKomunikasi anda melalui platform ini akan dilayani oleh Sistem algoritma auto-bot";
 				$text .="\n";
-				$text .="\nBagi anda yang sudah mempunyai akun pada aplikasi <strong>Male_o 1.9</strong> dapat terhubung secara private dengan sistem auto-bot dan account officer, dengan cara Mendaftarkan Telegram ID Anda.";
+				$text .="\nBagi anda yang sudah mempunyai akun pada aplikasi <strong>Male_o 1.9</strong> dapat terhubung secara private dengan sistem auto-bot, dengan cara Mendaftarkan Telegram ID Anda.";
 				$text .="\n";
-				$text .="\nJika anda belum memiliki akun pada Aplikasi <strong>Male_o 1.9</strong> , anda dapat menghubungi kami";
-			    $text .="\n";
-				$text .="\nUntuk melanjutkan, Silahkan pilih menu pada keyboard dibawah";
+				$text .="\nUntuk melanjutkan, Silahkan pilih menu dibawah";
 				
 				$inkeyboard = [
 					[

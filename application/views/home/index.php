@@ -54,6 +54,7 @@
 					<li>Kartu isteri/suami.</li>
 					<li>Taspen (SK Janda/Duda/Yatim dan Mutasi Keluarga)</li>
 					</ul>
+					<p class="text-red text-right"><small>Male_o 1.9 &copy 2019-2020 BKN XI</small></p>
 				</div>				
 			</div>
 		</section><!-- /.content -->		

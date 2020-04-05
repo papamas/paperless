@@ -97,7 +97,7 @@
 																					 
 								</div>					
 								<div class="box-footer">
-								    <span><small>Male_o 1.9 &copy 2019 Kantor  Regional XI BKN</small></span>
+								    <span><small>Male_o 1.9 &copy 2019 BKN XI </small></span>
 									<button type="submit" class="btn bg-yellow-active btn-flat pull-right">Sign in</button>
 								</div>
 							</form>	
