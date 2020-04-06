@@ -563,6 +563,10 @@ class Hook extends CI_Controller {
 			case preg_match("/AKTIF(.*)/", $pesan, $hasil):
 			    $this->_AktifMember($message,$hasil);			    
 				break;
+			
+			case preg_match("/BLOK(.*)/", $pesan, $hasil):
+			    $this->_BlokMember($message,$hasil);			    
+				break;
 				
 			case $pesan == '/keyboard':
 				$this->telegram->sendApiAction($chatid);
@@ -610,6 +614,31 @@ class Hook extends CI_Controller {
 				// code...
 				break;
 		}
+	}
+
+	function _BlokMember($data,$hasil)
+	{
+		$result 		= $this->bot->BlokMember($data,$hasil);
+		$pesan 			= $data['text'];
+		$chatid 		= $data['chat']['id'];
+		$fromid 		= $data['from']['id'];
+		$first_name 	= $data['from']['first_name'];
+		$last_name  	= $data['from']['last_name'];
+		
+		$response 		= $result['response'];
+		
+		if($response)
+		{	
+			$this->telegram->sendApiAction($chatid);
+			$text = "Terimkasih <strong>".$first_name ." ".$last_name. "</strong>,".$result['pesan'];
+			$this->telegram->sendApiMsg($chatid, $text , false, 'HTML');
+		}
+		else
+		{
+			$this->telegram->sendApiAction($chatid);
+			$text = "Maaf  <strong>".$first_name ." ".$last_name. "</strong>,".$result['pesan'];
+			$this->telegram->sendApiMsg($chatid, $text , false, 'HTML');
+		}
 	}	
 	
 	function _AktifMember($data,$hasil)
@@ -626,13 +655,13 @@ class Hook extends CI_Controller {
 		if($response)
 		{	
 			$this->telegram->sendApiAction($chatid);
-			$text = "Terimkasih <strong>".$first_name ." ".$last_name. " </strong>, ".$result['pesan'];
+			$text = "Terimkasih <strong>".$first_name ." ".$last_name. "</strong>,".$result['pesan'];
 			$this->telegram->sendApiMsg($chatid, $text , false, 'HTML');
 		}
 		else
 		{
 			$this->telegram->sendApiAction($chatid);
-			$text = "Maaf  <strong>".$first_name ." ".$last_name. " </strong>,".$result['pesan'];
+			$text = "Maaf  <strong>".$first_name ." ".$last_name. "</strong>,".$result['pesan'];
 			$this->telegram->sendApiMsg($chatid, $text , false, 'HTML');
 		}
 	}
@@ -651,7 +680,7 @@ class Hook extends CI_Controller {
 		if($response)
 		{	
 			$this->telegram->sendApiAction($chatid);
-			$text = "Terimkasih <strong>".$first_name ." ".$last_name. " </strong>, ".$result['pesan'];
+			$text = "Terimkasih <strong>".$first_name ." ".$last_name. "</strong>,".$result['pesan'];
 			$this->telegram->sendApiMsg($chatid, $text , false, 'HTML');
 		}
 		else
@@ -676,13 +705,13 @@ class Hook extends CI_Controller {
 		if($response)
 		{	
 			$this->telegram->sendApiAction($chatid);
-			$text = "Terimkasih <strong>".$first_name ." ".$last_name. " </strong> dengan NIP <strong>".$hasil[1]." </strong> akun Telegram anda telah kami daftar untuk menerima notifikasi";
+			$text = "Terimkasih <strong>".$first_name ." ".$last_name. "</strong> dengan NIP <strong>".$hasil[1]." </strong> akun Telegram anda telah kami daftar untuk menerima notifikasi";
 			$this->telegram->sendApiMsg($chatid, $text , false, 'HTML');
 		}
 		else
 		{
 			$this->telegram->sendApiAction($chatid);
-			$text = "Maaf  <strong>".$first_name ." ".$last_name. " </strong> dengan NIP <strong>".$hasil[1]." </strong> akun Telegram anda GAGAL didaftarkan untuk menerima notifikasi";
+			$text = "Maaf  <strong>".$first_name ." ".$last_name. "</strong> dengan NIP <strong>".$hasil[1]." </strong> akun Telegram anda GAGAL didaftarkan untuk menerima notifikasi";
 			$this->telegram->sendApiMsg($chatid, $text , false, 'HTML');
 		}
 	}	

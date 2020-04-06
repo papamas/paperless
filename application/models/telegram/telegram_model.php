@@ -31,6 +31,53 @@ class Telegram_model extends CI_Model {
 		return $this->db->delete($this->user_temp);
 	}
 	
+	public function BlokMember($data,$pesan)
+	{
+		$telegram_id		= $data['from']['id'];
+		$id				    = trim($pesan[1]);		
+		
+		$db_debug 			= $this->db->db_debug; 
+		$this->db->db_debug = FALSE; 			
+			
+		if($telegram_id  == '882025162')
+		{
+			$this->db->set('active','NULL',FALSE);
+			$this->db->where('user_id',$id);
+			$this->db->or_where('nip', $id);
+			$this->db->update($this->table_user);
+			
+			if ($this->db->affected_rows() == 0)
+			{
+				$error = $this->db->_error_message();
+				if(!empty($error))
+				{
+					$data['pesan']		= $error;   
+					$data['response'] 	= FALSE;
+				}
+				else
+				{
+					$data['pesan']		= "Tidak ada data yang terupdate untuk User dengan <strong>UID/NIP : ".$id."</strong>.";
+					$data['response']	= FALSE;	
+				}
+					
+			}
+			else
+			{
+				$data['pesan']		= "User dengan <strong>UID/NIP : ".$id."</strong> sudah di NON aktifkan.";
+				$data['response']	= TRUE;				
+			}	
+        }	
+		else
+		{
+			$data['pesan']		= 'Hanya Administrator yang diizinkan mengakses menu BLOK Member';   
+			$data['response'] 	= FALSE;
+		}
+		
+		
+		$this->db->db_debug = $db_debug; //restore setting				
+		return $data;
+	}	
+	
 	public function AktifMember($data,$pesan)
 	{
 		$telegram_id		= $data['from']['id'];
@@ -69,7 +116,7 @@ class Telegram_model extends CI_Model {
         }	
 		else
 		{
-			$data['pesan']		= 'Hanya Administrator yang diizinkan Aktifasi Member';   
+			$data['pesan']		= 'Hanya Administrator yang diizinkan mengakses menu AKTIF member';   
 			$data['response'] 	= FALSE;
 		}
 		
@@ -120,7 +167,7 @@ class Telegram_model extends CI_Model {
         }	
 		else
 		{
-			$data['pesan']		= 'Hanya Administrator yang diizinkan Approve Member';   
+			$data['pesan']		= 'Hanya Administrator yang diizinkan mengakses menu APPROVE member';   
 			$data['response'] 	= FALSE;
 		}
 		

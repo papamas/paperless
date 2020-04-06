@@ -728,7 +728,7 @@ class Entry extends MY_Controller {
 		$this->form_validation->set_rules('pensiun_pokok', 'Pensiun Pokok', 'required');
 		$this->form_validation->set_rules('pensiun_tmt', 'Pensiun TMT', 'required');
 		$this->form_validation->set_rules('kantor', 'Kantor Taspen', 'required');
-		$this->form_validation->set_rules('tgl_meninggal', 'Tgl Meninggal', 'required');
+		$this->form_validation->set_rules('tgl_meninggal', 'Tgl Meninggal', 'trim');
 		$this->form_validation->set_rules('tgl_menikah', 'Tgl Menikah', 'required');
 		$this->form_validation->set_rules('gaji_pokok_terakhir', 'Gaji Pokok terakhir', 'required');	
 		
