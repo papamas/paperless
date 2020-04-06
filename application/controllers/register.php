@@ -5,8 +5,8 @@ class Register extends CI_Controller {
 	function __construct()
 	{
 	    parent::__construct();		
-	    $this->load->library(array('Auth','form_validation'));
-		$this->load->model('users_model', 'user');	
+	    $this->load->library(array('Auth','form_validation','Telegram'));
+		$this->load->model('users_model', 'user');			
 	} 
 	
 	public function index()
@@ -53,9 +53,12 @@ class Register extends CI_Controller {
 		}
 		else
 		{	
+			$this->db->trans_start();
+
 			if($this->auth->register($set))
 			{
 				$data['message']    = ' Your Register is successfuly , please contact administrator to active your account';
+				$this->send_to_Telegram($set);
 				$this->load->view('vregsuc',$data);
 			}
 			else
@@ -64,7 +67,9 @@ class Register extends CI_Controller {
 				$data['unit_kerja'] = $this->_getUnitKerja();
 				$data['instansi']   = $this->_getInstansi();
 				$this->load->view('vsignup',$data);
-			}		
+			}	
+
+			$this->db->trans_complete();	
         }      		
     }
 	
@@ -130,9 +135,55 @@ class Register extends CI_Controller {
         return $this->user->getBidang();
     }	
 	
-	 function _getInstansi()
+	function _getInstansi()
     {
         return $this->user->getInstansi();
     }	
+	
+	/* Kirim Notifikasi Pendaftaran ke Telegram*/
+	
+	function send_to_Telegram($data)
+	{
+		$AdminTelegram   = $this->getAdmin();
+		
+		if($AdminTelegram->num_rows() > 0)
+		{	
+			foreach($AdminTelegram->result() as $value)
+			{
+				$instansi		= $this->_getInstansi_name_by_id($data['id_instansi']);
+				// send to telegram API
+				$this->telegram->sendApiAction($value->telegram_id);
+				$text = "Hello, <strong>".$value->first_name ." ".$value->last_name. "</strong> Ada Member baru nih";
+				$text .= "\n Nama :". $data['first_name']." ".$data['last_name'];
+				$text .= "\n NIP  :". $data['nip'];
+				$text .= "\n Instansi  :". $instansi;
+				$this->telegram->sendApiMsg($value->telegram_id, $text , false, 'HTML');
+			}
+		}
+	}	
+	
+	function getAdmin()
+	{
+		$this->db->select('first_name,last_name,telegram_id');
+		$this->db->where('is_admin', 1);
+		$app_user		= $this->db->get('app_user');
+		return $app_user;
+	}	
+	
+	function _getInstansi_name_by_id($id)
+    {
+        $this->db->select('INS_NAMINS');
+		$this->db->where('INS_KODINS', $id);
+		$query	= $this->db->get('mirror.instansi');
+		$r  = NULL;
+		
+		if($query->num_rows() > 0)
+		{
+			$row    = $query->row();
+			$r      = $row->INS_NAMINS;	
+		}
+		
+		return $r;
+    }
 }
 

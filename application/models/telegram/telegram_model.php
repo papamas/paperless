@@ -31,6 +31,98 @@ class Telegram_model extends CI_Model {
 		return $this->db->delete($this->user_temp);
 	}
 	
+	public function NonadminMember($data,$pesan)
+	{
+		$telegram_id		= $data['from']['id'];
+		$nip				= trim($pesan[1]);		
+		
+		$db_debug 			= $this->db->db_debug; 
+		$this->db->db_debug = FALSE; 			
+			
+		if($this->isAdmin($telegram_id))
+		{
+			$this->db->set('is_admin','NULL',FALSE);
+			$this->db->where('username',$nip);
+			$this->db->update($this->table_user);
+			
+			if ($this->db->affected_rows() == 0)
+			{
+				$error = $this->db->_error_message();
+				if(!empty($error))
+				{
+					$data['pesan']		= $error;   
+					$data['response'] 	= FALSE;
+				}
+				else
+				{
+					$data['pesan']		= " Tidak ada data yang terupdate untuk User dengan <strong>NIP : ".$nip."</strong>.";
+					$data['response']	= FALSE;	
+				}
+					
+			}
+			else
+			{
+				$data['pesan']		= " User dengan <strong>NIP : ".$nip."</strong> sudah di set Sebagai Non Administrator.";
+				$data['response']	= TRUE;				
+			}	
+        }	
+		else
+		{
+			$data['pesan']		= ' Hanya Administrator yang diizinkan mengakses menu Non Admin Member';   
+			$data['response'] 	= FALSE;
+		}
+		
+		
+		$this->db->db_debug = $db_debug; //restore setting				
+		return $data;
+	}		
+	
+	public function AdminMember($data,$pesan)
+	{
+		$telegram_id		= $data['from']['id'];
+		$nip				= trim($pesan[1]);		
+		
+		$db_debug 			= $this->db->db_debug; 
+		$this->db->db_debug = FALSE; 			
+			
+		if($this->isAdmin($telegram_id))
+		{
+			$this->db->set('is_admin',1);
+			$this->db->where('nip', $nip);
+			$this->db->update($this->table_user);
+			
+			if ($this->db->affected_rows() == 0)
+			{
+				$error = $this->db->_error_message();
+				if(!empty($error))
+				{
+					$data['pesan']		= $error;   
+					$data['response'] 	= FALSE;
+				}
+				else
+				{
+					$data['pesan']		= " Tidak ada data yang terupdate untuk User dengan <strong>NIP : ".$nip."</strong>.";
+					$data['response']	= FALSE;	
+				}
+					
+			}
+			else
+			{
+				$data['pesan']		= " User dengan <strong>NIP : ".$nip."</strong> sudah di set Sebagai Administrator.";
+				$data['response']	= TRUE;				
+			}	
+        }	
+		else
+		{
+			$data['pesan']		= ' Hanya Administrator yang diizinkan mengakses menu Admin Member';   
+			$data['response'] 	= FALSE;
+		}
+		
+		
+		$this->db->db_debug = $db_debug; //restore setting				
+		return $data;
+	}	
+	
 	public function BlokMember($data,$pesan)
 	{
 		$telegram_id		= $data['from']['id'];
@@ -39,7 +131,7 @@ class Telegram_model extends CI_Model {
 		$db_debug 			= $this->db->db_debug; 
 		$this->db->db_debug = FALSE; 			
 			
-		if($telegram_id  == '882025162')
+		if($this->isAdmin($telegram_id))
 		{
 			$this->db->set('active','NULL',FALSE);
 			$this->db->where('user_id',$id);
@@ -56,20 +148,20 @@ class Telegram_model extends CI_Model {
 				}
 				else
 				{
-					$data['pesan']		= "Tidak ada data yang terupdate untuk User dengan <strong>UID/NIP : ".$id."</strong>.";
+					$data['pesan']		= " Tidak ada data yang terupdate untuk User dengan <strong>UID/NIP : ".$id."</strong>.";
 					$data['response']	= FALSE;	
 				}
 					
 			}
 			else
 			{
-				$data['pesan']		= "User dengan <strong>UID/NIP : ".$id."</strong> sudah di NON aktifkan.";
+				$data['pesan']		= " User dengan <strong>UID/NIP : ".$id."</strong> sudah di NON aktifkan.";
 				$data['response']	= TRUE;				
 			}	
         }	
 		else
 		{
-			$data['pesan']		= 'Hanya Administrator yang diizinkan mengakses menu BLOK Member';   
+			$data['pesan']		= " Hanya Administrator yang diizinkan mengakses menu BLOK Member";   
 			$data['response'] 	= FALSE;
 		}
 		
@@ -86,7 +178,7 @@ class Telegram_model extends CI_Model {
 		$db_debug 			= $this->db->db_debug; 
 		$this->db->db_debug = FALSE; 			
 			
-		if($telegram_id  == '882025162')
+		if($this->isAdmin($telegram_id))
 		{
 			$this->db->set('active',1);
 			$this->db->where('user_id',$id);
@@ -103,20 +195,20 @@ class Telegram_model extends CI_Model {
 				}
 				else
 				{
-					$data['pesan']		= "Tidak ada data yang terupdate untuk User dengan <strong>UID/NIP : ".$id."</strong>.";
+					$data['pesan']		= " Tidak ada data yang terupdate untuk User dengan <strong>UID/NIP : ".$id."</strong>.";
 					$data['response']	= FALSE;	
 				}
 					
 			}
 			else
 			{
-				$data['pesan']		= "User dengan <strong>UID/NIP : ".$id."</strong> sudah diaktifkan.";
+				$data['pesan']		= " User dengan <strong>UID/NIP : ".$id."</strong> sudah diaktifkan.";
 				$data['response']	= TRUE;				
 			}	
         }	
 		else
 		{
-			$data['pesan']		= 'Hanya Administrator yang diizinkan mengakses menu AKTIF member';   
+			$data['pesan']		= " Hanya Administrator yang diizinkan mengakses menu AKTIF member";   
 			$data['response'] 	= FALSE;
 		}
 		
@@ -131,11 +223,11 @@ class Telegram_model extends CI_Model {
 		$nip				= trim($pesan[1]);		
 		
 		$db_debug 			= $this->db->db_debug; 
-		$this->db->db_debug = FALSE; 			
+		$this->db->db_debug = TRUE; 			
 		
 		$this->db->trans_begin();
 		
-		if($telegram_id  == '882025162')
+		if($this->isAdmin($telegram_id))
 		{
 			$user_temp  = $this->_get_user_temp_by_nip($nip);
 						
@@ -148,30 +240,28 @@ class Telegram_model extends CI_Model {
 				
 				if ($this->db->trans_status() === FALSE)
 				{
-					$data['pesan']		= "Failed Approve User";
+					$data['pesan']		= " Failed Approve User";
 					$data['response'] 	= FALSE;					
 					$this->db->trans_rollback();			
 				}
 				else
 				{
 					$data['response']	= TRUE;
-					$data['pesan']		= "Approve User dengan NIP ".$nip." telah Berhasil dengan <strong>UID : ".$last_id."</strong>, Silahkan lakukan aktifasi</strong>";		
+					$data['pesan']		= " Approve User dengan NIP ".$nip." telah Berhasil dengan <strong>UID : ".$last_id."</strong>, Silahkan lakukan aktifasi";		
 					$this->db->trans_commit();
 				}
 			}
 			else
 			{
-				$data['pesan']		= 'Tidak Ada Member yang memerlukan Approve';   
+				$data['pesan']		= " Tidak Ada Member yang memerlukan Approve";   
 			    $data['response'] 	= FALSE;
 			}
         }	
 		else
 		{
-			$data['pesan']		= 'Hanya Administrator yang diizinkan mengakses menu APPROVE member';   
+			$data['pesan']		= " Hanya Administrator yang diizinkan mengakses menu APPROVE member";   
 			$data['response'] 	= FALSE;
 		}
-		
-		
 		
 		$this->db->db_debug = $db_debug; //restore setting				
 		return $data;
@@ -213,6 +303,21 @@ class Telegram_model extends CI_Model {
         return $this->db->insert_batch($this->menu_role, $data);
 	}	
 	
+	function isAdmin($telegram_id)
+	{
+		$this->db->where('telegram_id',$telegram_id);
+		$this->db->where('is_admin', 1);
+		$app_user		= $this->db->get($this->table_user);
+		
+		$r  = FALSE;
+		
+		if($app_user->num_rows() > 0)
+		{
+		    $r  = TRUE;
+		}	
+		
+		return $r;
+	}	
 	public function setTelegramAkun($data,$pesan)
 	{
 		$db_debug 			= $this->db->db_debug; 

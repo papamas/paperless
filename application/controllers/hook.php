@@ -61,6 +61,12 @@ class Hook extends CI_Controller {
 		
 
 		switch (true) {
+			case $pesan == 'myid':
+				$this->telegram->sendApiAction($chatid);
+				$text = 'Telegram ID Kamu adalah: '.$fromid;
+				$this->telegram->sendApiMsg($chatid, $text);
+				break;
+			
 			case $pesan == '/start':
 				$this->telegram->sendApiAction($chatid);
 				$text = "Terima kasih telah bergabung dengan <strong>Male_o 1.9 Bot</strong>";
@@ -568,6 +574,12 @@ class Hook extends CI_Controller {
 			    $this->_BlokMember($message,$hasil);			    
 				break;
 				
+			case preg_match("/ADMIN(.*)/", $pesan, $hasil):
+			    $this->_AdminMember($message,$hasil);			    
+				break;
+			case preg_match("/NONADM(.*)/", $pesan, $hasil):
+			    $this->_NonadminMember($message,$hasil);			    
+				break;
 			case $pesan == '/keyboard':
 				$this->telegram->sendApiAction($chatid);
 				
@@ -615,6 +627,56 @@ class Hook extends CI_Controller {
 				break;
 		}
 	}
+	
+	function _NonadminMember($data,$hasil)
+	{
+		$result 		= $this->bot->NonadminMember($data,$hasil);
+		$pesan 			= $data['text'];
+		$chatid 		= $data['chat']['id'];
+		$fromid 		= $data['from']['id'];
+		$first_name 	= $data['from']['first_name'];
+		$last_name  	= $data['from']['last_name'];
+		
+		$response 		= $result['response'];
+		
+		if($response)
+		{	
+			$this->telegram->sendApiAction($chatid);
+			$text = "Terimkasih <strong>".$first_name ." ".$last_name. "</strong>,".$result['pesan'];
+			$this->telegram->sendApiMsg($chatid, $text , false, 'HTML');
+		}
+		else
+		{
+			$this->telegram->sendApiAction($chatid);
+			$text = "Maaf  <strong>".$first_name ." ".$last_name. "</strong>,".$result['pesan'];
+			$this->telegram->sendApiMsg($chatid, $text , false, 'HTML');
+		}
+	}	
+	
+	function _AdminMember($data,$hasil)
+	{
+		$result 		= $this->bot->AdminMember($data,$hasil);
+		$pesan 			= $data['text'];
+		$chatid 		= $data['chat']['id'];
+		$fromid 		= $data['from']['id'];
+		$first_name 	= $data['from']['first_name'];
+		$last_name  	= $data['from']['last_name'];
+		
+		$response 		= $result['response'];
+		
+		if($response)
+		{	
+			$this->telegram->sendApiAction($chatid);
+			$text = "Terimkasih <strong>".$first_name ." ".$last_name. "</strong>,".$result['pesan'];
+			$this->telegram->sendApiMsg($chatid, $text , false, 'HTML');
+		}
+		else
+		{
+			$this->telegram->sendApiAction($chatid);
+			$text = "Maaf  <strong>".$first_name ." ".$last_name. "</strong>,".$result['pesan'];
+			$this->telegram->sendApiMsg($chatid, $text , false, 'HTML');
+		}
+	}	
 
 	function _BlokMember($data,$hasil)
 	{
@@ -681,7 +743,7 @@ class Hook extends CI_Controller {
 		{	
 			$this->telegram->sendApiAction($chatid);
 			$text = "Terimkasih <strong>".$first_name ." ".$last_name. "</strong>,".$result['pesan'];
-			$this->telegram->sendApiMsg($chatid, $text , false, 'HTML');
+			$this->telegram->sendApiMsg($chatid, $text, false, 'HTML');
 		}
 		else
 		{

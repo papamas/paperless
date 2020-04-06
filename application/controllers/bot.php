@@ -80,6 +80,12 @@ class Bot extends CI_Controller {
 		
 
 		switch (true) {
+			case $pesan == 'myid':
+				$this->telegram->sendApiAction($chatid);
+				$text = 'Telegram ID Kamu adalah: '.$fromid;
+				$this->telegram->sendApiMsg($chatid, $text);
+				break;
+			
 			case $pesan == '/start':
 				$this->telegram->sendApiAction($chatid);
 				$text = "Terima kasih telah bergabung dengan <strong>Male_o 1.9 Bot</strong>";
@@ -579,9 +585,13 @@ class Bot extends CI_Controller {
 			    $this->_ApproveMember($message,$hasil);			    
 				break;
 			
-            case preg_match("/AKTIF(.*)/", $pesan, $hasil):
+			case preg_match("/AKTIF(.*)/", $pesan, $hasil):
 			    $this->_AktifMember($message,$hasil);			    
-				break;			
+				break;
+			
+			case preg_match("/BLOK(.*)/", $pesan, $hasil):
+			    $this->_BlokMember($message,$hasil);			    
+				break;
 				
 			case $pesan == '/keyboard':
 				$this->telegram->sendApiAction($chatid);
@@ -629,6 +639,31 @@ class Bot extends CI_Controller {
 				// code...
 				break;
 		}
+	}
+
+	function _BlokMember($data,$hasil)
+	{
+		$result 		= $this->bot->BlokMember($data,$hasil);
+		$pesan 			= $data['text'];
+		$chatid 		= $data['chat']['id'];
+		$fromid 		= $data['from']['id'];
+		$first_name 	= $data['from']['first_name'];
+		$last_name  	= $data['from']['last_name'];
+		
+		$response 		= $result['response'];
+		
+		if($response)
+		{	
+			$this->telegram->sendApiAction($chatid);
+			$text = "Terimkasih <strong>".$first_name ." ".$last_name. "</strong>,".$result['pesan'];
+			$this->telegram->sendApiMsg($chatid, $text , false, 'HTML');
+		}
+		else
+		{
+			$this->telegram->sendApiAction($chatid);
+			$text = "Maaf  <strong>".$first_name ." ".$last_name. "</strong>,".$result['pesan'];
+			$this->telegram->sendApiMsg($chatid, $text , false, 'HTML');
+		}
 	}	
 	
 	function _AktifMember($data,$hasil)
@@ -645,13 +680,13 @@ class Bot extends CI_Controller {
 		if($response)
 		{	
 			$this->telegram->sendApiAction($chatid);
-			$text = "Terimkasih <strong>".$first_name ." ".$last_name. " </strong>, ".$result['pesan'];
+			$text = "Terimkasih <strong>".$first_name ." ".$last_name. "</strong>,".$result['pesan'];
 			$this->telegram->sendApiMsg($chatid, $text , false, 'HTML');
 		}
 		else
 		{
 			$this->telegram->sendApiAction($chatid);
-			$text = "Maaf  <strong>".$first_name ." ".$last_name. " </strong>,".$result['pesan'];
+			$text = "Maaf  <strong>".$first_name ." ".$last_name. "</strong>,".$result['pesan'];
 			$this->telegram->sendApiMsg($chatid, $text , false, 'HTML');
 		}
 	}
@@ -670,8 +705,8 @@ class Bot extends CI_Controller {
 		if($response)
 		{	
 			$this->telegram->sendApiAction($chatid);
-			$text = "Terimkasih <strong>".$first_name ." ".$last_name. " </strong>, ".$result['pesan'];
-			$this->telegram->sendApiMsg($chatid, $text , false, 'HTML');
+			$text = "Terimkasih <strong>".$first_name ." ".$last_name. "</strong>,".$result['pesan'];
+			$this->telegram->sendApiMsg($chatid, $text, false, 'HTML');
 		}
 		else
 		{
