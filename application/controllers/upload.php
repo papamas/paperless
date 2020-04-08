@@ -54,10 +54,10 @@ class upload extends MY_Controller {
 		$target_dir						='./uploads/'.$instansi;		
 		$config['upload_path']          = $target_dir;
 		$config['allowed_types']        = 'pdf';
-		$config['max_size']             = 3024;
+		$config['max_size']             = 4096;
 		$config['encrypt_name']			= FALSE;	
 		$config['overwrite']			= TRUE;	
-		$ocnfig['detect_mime']			= TRUE;
+		$config['detect_mime']			= TRUE;
 		
 		if(!file_exists($target_dir)){
 			mkdir($target_dir,0777);
@@ -75,6 +75,19 @@ class upload extends MY_Controller {
 			return FALSE;			
 		}			
 				
+		// Try cek file		
+		$cekFile	= $this->uploadFile->isAllowSize($_FILES['file']);
+		$response   = $cekFile['response'];
+		if(! $response)
+		{
+			$error = array('error' => $cekFile['pesan']);
+			
+			$this->output
+					->set_status_header(406)
+					->set_content_type('application/json', 'utf-8')
+					->set_output(json_encode($error));
+			return FALSE;
+		}
 
 		if ( ! $this->upload->do_upload('file'))
 		{

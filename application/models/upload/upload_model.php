@@ -108,6 +108,39 @@ class Upload_model extends CI_Model {
 		return $r;
 	}
 	
+	function isAllowSize($file)
+	{
+		$file_name  = $file['name'];
+		$file_size  = $file['size'];
+		
+		$query = $this->db->query("SELECT * FROM (SELECT *,locate(nama_dokumen,'$file_name') result from dokumen ) a
+ WHERE a.result = 1 AND a.aktif IS NOT NULL"); 
+		
+		if($query->num_rows() > 0){
+		    
+			$row 			= $query->row();
+			$file_size      = round($file_size/1024, 2);
+			
+			if ($file_size > $row->file_size)
+			{
+				$data['pesan']  		= " File Dokumen Jenis ".$row->nama_dokumen." Hanya diizinkan Maksimal ".round($row->file_size/1024)." MB";
+				$data['response'] 		= FALSE;
+			}
+			else
+			{
+				$data ['pesan']     = " File diizinkan";
+   				$data ['response']  = TRUE;
+			}
+		}
+		else
+		{
+			$data ['pesan']     = " File bukan arsip kepegawaian yang disyaratkan";
+   			$data ['response']  = FALSE;
+		}
+		
+		return $data;
+	}	
+	
 	function _extract_numbers($string)
 	{
 	    preg_match_all('/([\d]+)/', $string, $match);
