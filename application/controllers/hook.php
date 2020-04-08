@@ -85,12 +85,40 @@ class Hook extends CI_Controller {
 						['text' => 'Layanan Kepegawaian', 'callback_data' => 'Layanan'],
 					],
 					[
-						['text' => 'Daftar Notifikasi Male_o 1.9', 'callback_data' => 'Daftar'],
-						
+						['text' => 'Daftar Notifikasi', 'callback_data' => 'Daftar'],
+						['text' => 'Daftar Perintah ', 'callback_data' => 'Perintah'],
 					],
 					
 				];
 				$this->telegram->sendApiKeyboard($chatid, $text, $inkeyboard, true);				
+				break;
+				
+			case $pesan == 'Perintah':
+				$this->telegram->sendApiAction($chatid);
+				$text = "Daftar perintah pada <strong>Male_o 1.9 Bot</strong>";
+				$text .= "\n 1. REG NIP";
+				$text .= "\n 2. CEK NIP";
+				$text .= "\n 3. APPROVE NIP";
+				$text .= "\n 4. AKTIF NIP";
+				$text .= "\n 5. BLOK NIP";
+				$text .= "\n 6. ADMIN NIP";
+				$text .= "\n 7. NONADM NIP";
+				$text .= "\n 8. RESET NIP";
+				$text .= "\n 9.  myid";
+				$text .= "\n 10. Layanan";
+				
+			    $inkeyboard = [
+					[
+						['text' => 'Tentang Male_o 1.9', 'callback_data' => 'Tentang'],
+						['text' => 'Layanan Kepegawaian', 'callback_data' => 'Layanan'],
+					],
+					[
+						['text' => 'Daftar Notifikasi', 'callback_data' => 'Daftar'],
+						['text' => 'Daftar Perintah ', 'callback_data' => 'Perintah'],
+					],
+					
+				];
+			    $this->telegram->sendApiKeyboard($chatid, $text, $inkeyboard, true);				
 				break;
 			case $pesan == '/tentang':
 				$this->telegram->sendApiAction($chatid);
@@ -112,7 +140,8 @@ class Hook extends CI_Controller {
 						['text' => 'Layanan Kepegawaian', 'callback_data' => 'Layanan'],
 					],
 					[
-						['text' => 'Daftar Notifikasi Male_o 1.9', 'callback_data' => 'Daftar'],
+						['text' => 'Daftar Notifikasi', 'callback_data' => 'Daftar'],
+						['text' => 'Daftar Perintah ', 'callback_data' => 'Perintah'],
 						
 					],
 					
@@ -140,7 +169,8 @@ class Hook extends CI_Controller {
 						['text' => 'Layanan Kepegawaian', 'callback_data' => 'Layanan'],
 					],
 					[
-						['text' => 'Daftar Notifikasi Male_o 1.9', 'callback_data' => 'Daftar'],
+						['text' => 'Daftar Notifikasi', 'callback_data' => 'Daftar'],
+						['text' => 'Daftar Perintah ', 'callback_data' => 'Perintah'],
 						
 					],
 					
@@ -577,9 +607,23 @@ class Hook extends CI_Controller {
 			case preg_match("/ADMIN(.*)/", $pesan, $hasil):
 			    $this->_AdminMember($message,$hasil);			    
 				break;
+				
 			case preg_match("/NONADM(.*)/", $pesan, $hasil):
 			    $this->_NonadminMember($message,$hasil);			    
 				break;
+				
+			case preg_match("/RESET(.*)/", $pesan, $hasil):
+			    $this->_ResetMember($message,$hasil);			    
+				break;	
+				
+			case preg_match("/CEK(.*)/", $pesan, $hasil):
+			    $this->_cekUsul($message,$hasil);			    
+				break;
+				
+			case preg_match("/DETAIL(.*) ([0-9]*)/", $pesan, $hasil):
+			    $this->_detailUsul($message,$hasil);			    
+				break;	
+			
 			case $pesan == '/keyboard':
 				$this->telegram->sendApiAction($chatid);
 				
@@ -627,6 +671,99 @@ class Hook extends CI_Controller {
 				break;
 		}
 	}
+	
+	function _detailUsul($data,$hasil)
+	{
+		$detailUsul 	= $this->bot->detailUsul($data,$hasil);
+		$pesan 			= $data['text'];
+		$chatid 		= $data['chat']['id'];
+		$fromid 		= $data['from']['id'];
+		$first_name 	= $data['from']['first_name'];
+		$last_name  	= $data['from']['last_name'];
+		
+		if($detailUsul->num_rows() > 0)
+		{	
+	        $row  = $detailUsul->row();
+			$text = "Berikut <strong>Male_o 1.9</strong> kasih kamu detail usulnya :" ;
+			// send to telegram API
+			$this->telegram->sendApiAction($chatid);
+			$text .= "\n Nomor Usul : ".$row->agenda_nousul;
+			$text .= "\n Layanan	: ".$row->layanan_nama;
+			$text .= "\n NIP 		: ".$row->nip;
+			$text .= "\n Nama 		: ".$row->PNS_GLRDPN.' '.$row->PNS_PNSNAM.' '.$row->PNS_GLRBLK;
+			$text .= "\n Status		: ".$row->nomi_status;
+			$text .= "\n Keterangan	: ".$row->nomi_alasan;
+		}
+		else
+		{
+            $text = "Maaf, <strong>".$first_name ." ".$last_name." data tersebut tidak ada dalam detail usul";
+      	}	
+		
+		$this->telegram->sendApiMsg($chatid, $text , false, 'HTML');
+	}	
+	
+	
+	function _cekUsul($data,$hasil)
+	{
+		$listUsul 		= $this->bot->cekUsul($data,$hasil);
+		$pesan 			= $data['text'];
+		$chatid 		= $data['chat']['id'];
+		$fromid 		= $data['from']['id'];
+		$first_name 	= $data['from']['first_name'];
+		$last_name  	= $data['from']['last_name'];
+		
+		if($listUsul->num_rows() > 0)
+		{	
+	        $text = "Terimakasih, <strong>".$first_name ." ".$last_name. "</strong> berikut daftar usul untuk NIP : ".trim($hasil[1]);
+			$i = 0;
+			$text .= "\n Silahkan pilih nomor usul pada tombol dibawah untuk melihat detailnya";
+			// send to telegram API
+			$this->telegram->sendApiAction($chatid);
+						
+			foreach($listUsul->result() as $value)
+			{
+				$inkeyboard[] = array(
+					array(
+						'text' => $value->agenda_nousul, 'callback_data' => 'DETAIL '.$value->nip.' '.$value->agenda_id,
+			        )
+				);
+				
+				$i++;
+			}
+			$this->telegram->sendApiKeyboard($chatid, $text, $inkeyboard, true);
+		}
+		else
+		{
+            $text = "Maaf,<strong>".$first_name ." ".$last_name. "</strong> NIP : <strong>".trim($hasil[1])."</strong> tidak ada dalam usul";
+            $this->telegram->sendApiMsg($chatid, $text , false, 'HTML');
+		}	
+		
+	}	
+	
+	function _ResetMember($data,$hasil)
+	{
+		$result 		= $this->bot->ResetMember($data,$hasil);
+		$pesan 			= $data['text'];
+		$chatid 		= $data['chat']['id'];
+		$fromid 		= $data['from']['id'];
+		$first_name 	= $data['from']['first_name'];
+		$last_name  	= $data['from']['last_name'];
+		
+		$response 		= $result['response'];
+		
+		if($response)
+		{	
+			$this->telegram->sendApiAction($chatid);
+			$text = "Terimkasih <strong>".$first_name ." ".$last_name. "</strong>,".$result['pesan'];
+			$this->telegram->sendApiMsg($chatid, $text , false, 'HTML');
+		}
+		else
+		{
+			$this->telegram->sendApiAction($chatid);
+			$text = "Maaf  <strong>".$first_name ." ".$last_name. "</strong>,".$result['pesan'];
+			$this->telegram->sendApiMsg($chatid, $text , false, 'HTML');
+		}
+	}	
 	
 	function _NonadminMember($data,$hasil)
 	{

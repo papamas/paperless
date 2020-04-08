@@ -4,6 +4,11 @@ class Telegram_model extends CI_Model {
     var $table_user      = 'app_user';
 	var $user_temp	     ='user_temp';
 	var $menu_role       ='menu_role';
+	var $nominatif       ='nominatif';
+	var $instansi        ='mirror.instansi';
+	var $agenda          ='agenda';
+	var $layanan         ='layanan';
+	var $pupns           ='mirror.pupns';
 	
 	function __construct()
     {
@@ -31,6 +36,91 @@ class Telegram_model extends CI_Model {
 		return $this->db->delete($this->user_temp);
 	}
 	
+	function detailUsul($data,$pesan)
+	{
+		$telegram_id		= $data['from']['id'];
+		$nip			    = trim($pesan[1]);
+        $agenda_id			= trim($pesan[2]);		
+		
+		$sql="SELECT a.agenda_id,a.nip,a.nomi_status, a.nomi_alasan,
+		b.agenda_nousul,
+		c.layanan_nama,
+		e.PNS_PNSNAM,e.PNS_GLRDPN, e.PNS_GLRBLK
+		FROM $this->nominatif a
+		LEFT JOIN $this->agenda b ON a.agenda_id = b.agenda_id
+		LEFT JOIN $this->layanan c ON b.layanan_id = c.layanan_id
+		LEFT JOIN $this->instansi d ON b.agenda_ins = d.INS_KODINS
+		LEFT JOIN $this->pupns e ON e.PNS_NIPBARU = a.nip
+		WHERE a.nip='$nip' AND a.agenda_id='$agenda_id' ";
+		return $this->db->query($sql);
+	
+	}	
+	
+	function cekUsul($data,$pesan)
+	{
+		$telegram_id		= $data['from']['id'];
+		$nip				= trim($pesan[1]);		
+		
+		$sql="SELECT a.agenda_id,a.nip,a.nomi_status, a.nomi_alasan,
+		b.agenda_nousul,
+		c.layanan_nama,
+		e.PNS_PNSNAM,e.PNS_GLRDPN, e.PNS_GLRBLK
+		FROM $this->nominatif a
+		LEFT JOIN $this->agenda b ON a.agenda_id = b.agenda_id
+		LEFT JOIN $this->layanan c ON b.layanan_id = c.layanan_id
+		LEFT JOIN $this->instansi d ON b.agenda_ins = d.INS_KODINS
+		LEFT JOIN $this->pupns e ON e.PNS_NIPBARU = a.nip
+		WHERE a.nip='$nip' ";
+		return $this->db->query($sql);
+	
+	}
+	
+	public function ResetMember($data,$pesan)
+	{
+		$telegram_id		= $data['from']['id'];
+		$nip				= trim($pesan[1]);	
+        		
+		$db_debug 			= $this->db->db_debug; 
+		$this->db->db_debug = FALSE; 			
+			
+		if($this->isAdmin($telegram_id))
+		{
+			$sql="UPDATE $this->table_user SET password=SHA1($nip) where trim(nip)=trim('$nip') ";
+			$this->db->query($sql);
+			
+			if ($this->db->affected_rows() == 0)
+			{
+				$error = $this->db->_error_message();
+				if(!empty($error))
+				{
+					$data['pesan']		= $error;   
+					$data['response'] 	= FALSE;
+				}
+				else
+				{
+					$data['pesan']		= " Tidak ada data yang terupdate untuk User dengan <strong>NIP : ".$nip."</strong>.";
+					$data['response']	= FALSE;	
+				}
+					
+			}
+			else
+			{
+				$data['pesan']		= " User dengan <strong>NIP : ".$nip."</strong> sudah di Reset Password";
+				$data['response']	= TRUE;				
+			}	
+        }	
+		else
+		{
+			$data['pesan']		= ' Hanya Administrator yang diizinkan mengakses menu Reset Member';   
+			$data['response'] 	= FALSE;
+		}
+		
+		
+		$this->db->db_debug = $db_debug; //restore setting				
+		return $data;
+	}		
+
+	
 	public function NonadminMember($data,$pesan)
 	{
 		$telegram_id		= $data['from']['id'];
@@ -42,7 +132,7 @@ class Telegram_model extends CI_Model {
 		if($this->isAdmin($telegram_id))
 		{
 			$this->db->set('is_admin','NULL',FALSE);
-			$this->db->where('username',$nip);
+			$this->db->where('nip',$nip);
 			$this->db->update($this->table_user);
 			
 			if ($this->db->affected_rows() == 0)

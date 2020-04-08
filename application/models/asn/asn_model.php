@@ -80,7 +80,7 @@ ORDER BY a.`PEN_TAHLUL` DESC";
     k.JBF_NAMJAB,
     l.UNO_NAMUNO,
     l.UNO_NAMJAB,
-    l.UNO_DIATASAN_ID,
+    l.DIATASAN_ID,
     m.UNO_NAMUNO UNO_INDUK
 FROM
     mirror.pupns a
