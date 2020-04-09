@@ -37,13 +37,23 @@
 							<div class="box-body">
 								<div class="form-group">
 									<label class="control-label col-md-2 col-sm-2 col-xs-2">Usul</label>
-									<div class="col-md-10 col-sm-10 col-xs-10">
+									<div class="col-md-4 col-sm-4 col-xs-4">
 										<input type="radio" value="1" name="usul"  <?php echo  set_radio('usul', 1, TRUE); ?> />&nbsp;INSTANSI DAERAH/PUSAT
 										<?php if($this->session->userdata('session_bidang') == 2):?>
 										<input type="radio" value="2" name="usul"  <?php echo  set_radio('usul', 2); ?>/>&nbsp;TASPEN									
 										<?php endif;?>
-									</div>	
-									<span class="help-block text-red"><?php echo form_error('usul'); ?></span>
+										<span class="help-block text-red"><?php echo form_error('usul'); ?></span>
+									</div>
+									
+									<label class="control-label col-md-3 col-sm-3 col-xs-3">Tampilkan hanya yang belum diverifikasi oleh:</label>
+									<div class="col-md-3 col-sm-3 col-xs-3">
+										<select name="level" class="form-control">
+										    <option value="">--silahkan Pilih--</option>
+											<option value="1" <?php echo  set_select('level',1); ?>>Level 1</option>
+											<option value="2" <?php echo  set_select('level',2); ?>>Level 2</option>
+											<option value="3" <?php echo  set_select('level',3); ?>>Level 3</option>
+										</select>
+									</div>
 								</div> 	
 								
 								<div class="form-group">									   						 

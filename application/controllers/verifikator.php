@@ -62,6 +62,7 @@ class Verifikator extends MY_Controller {
 		$this->form_validation->set_rules('search', 'search', 'required');
 		$this->form_validation->set_rules('searchby', 'searchby', 'required');
 		$this->form_validation->set_rules('usul', 'usul', 'trim|required');
+		$this->form_validation->set_rules('level', 'level', 'trim');
 		
 		$data['menu']     				=  $this->menu->build_menu();	
 		$data['name']     				=  $this->auth->getName();

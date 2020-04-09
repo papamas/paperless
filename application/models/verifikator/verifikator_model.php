@@ -53,6 +53,8 @@ class Verifikator_model extends CI_Model {
 	    $searchby  = $search['searchby'];
 		$search    = $search['search'];		
 		
+		$level     = $this->input->post('level');
+		
 		$bidang  = $this->session->userdata('session_bidang');
 		$user_id = $this->session->userdata('user_id');
 		$tipe    = $this->session->userdata('session_user_tipe');
@@ -91,8 +93,28 @@ class Verifikator_model extends CI_Model {
         {
             $sql_work =" ";
         }			
+		
+		if(!empty($level))
+		{
+		    switch($level){
+				case 1:
+					$sql_level = " AND a.verifby_level_satu IS NULL";
+				break;
+				case 2:
+				   $sql_level = "  AND a.verifby_level_dua IS NULL ";
+				break;
+				case 3:
+				    $sql_level = " AND a.verifby_level_tiga IS NULL";
+				break;				
+			}	
+		}
+		else
+		{
+		    $sql_level = " ";
+		}		
       
-		$q="SELECT a.* FROM ( SELECT a.*, b.user_id, b.id_instansi FROM (SELECT a.agenda_id,a.tahapan_id, a.nip,a.nomi_locked,a.nomi_status,a.locked_by,
+		$q="SELECT a.* FROM ( SELECT a.*, b.user_id, b.id_instansi FROM (SELECT a.agenda_id,a.tahapan_id, a.nip,a.nomi_locked,a.nomi_status,
+		a.verifby_level_satu,a.verifby_level_dua,a.verifby_level_tiga,a.locked_by,
 b.layanan_id,b.agenda_ins,b.agenda_nousul,b.agenda_timestamp,b.agenda_dokumen,
 c.layanan_nama, f.INS_NAMINS instansi,
 g.PNS_PNSNAM nama,l.GOL_GOLNAM golongan,
@@ -135,10 +157,10 @@ AND a.tahapan_id IN ('4','5','6','7','8','9','10','11','12')  $sql_work
 GROUP BY a.nip,b.layanan_id ) a
 LEFT JOIN user_layanan_role b ON (a.layanan_id=b.layanan_id AND a.agenda_ins = b.id_instansi AND b.user_id='$user_id')
 ) a
-WHERE id_instansi IS NOT NULL
-ORDER BY nama ASC
+WHERE a.id_instansi IS NOT NULL $sql_level
+ORDER BY a.nama ASC
 ";
-		//var_dump($q);
+		//var_dump($q); EXIT;
 		$query 		= $this->db->query($q);
 		
         return      $query;		
