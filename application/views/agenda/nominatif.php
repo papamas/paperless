@@ -11,12 +11,7 @@
 <div class="wrapper">	
 	<header class="main-header">
         <!-- Logo -->
-        <a href="#" class="logo">
-          <!-- mini logo for sidebar mini 50x50 pixels -->
-          <span class="logo-mini"><b>A</b></span>
-          <!-- logo for regular state and mobile devices -->
-          <span class="logo-lg">AdminPanel</span>
-        </a>
+        <?php echo $this->load->view('vlogo');?>
         <!-- navbar header-->
 		<?php echo $this->load->view('vnavbar-header');?>
         <!-- end navbar header -->

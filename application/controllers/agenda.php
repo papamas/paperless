@@ -15,7 +15,7 @@ class Agenda extends MY_Controller {
 	
 	function __construct(){
 		parent::__construct();
-		$this->load->library(array('Auth','Menu','form_validation','Myencrypt'));
+		$this->load->library(array('Auth','Menu','form_validation','Myencrypt','Telegram'));
 		$this->load->model("agenda/magenda");
 		$this->load->helper('form');
 		$this->allow = $this->auth->isAuthMenu($this->menu_id);
@@ -427,51 +427,30 @@ class Agenda extends MY_Controller {
 		$tanggal_sekarang 		= date("Y-m-d");
 
 
-		$batas_kp = $this->magenda->mtanggal_bataskp($kp_periode)->periode_batas;
-		if($kp_periode != NULL){
-			if($tanggal_sekarang > $batas_kp){
-			  $this->session->set_flashdata('gagal', "Gagal Kirim, Batas KP berakhir pada $batas_kp");
-			  redirect('agenda/nominatif/'.$agenda_id);
-			}
-		}
-
 		$jumlahnom = $this->magenda->mhitung_nominatif($agenda_id);
 		if($agenda_jumlah != $jumlahnom){
 		  $this->session->set_flashdata('gagal', "Gagal Kirim, Jumlah Nominatif belum sesuai");
 		  redirect('agenda/nominatif/'.$agenda_id);
 		}
+		
+		$this->db->trans_begin();
 
-		//Update Status Agenda
-		$dataAgenda = array(
-					   'agenda_id' => $agenda_id,
-					   'agenda_status' => 'dikirim'
-					 );
-
-		$updateDataAgenda = array();
-		foreach($dataAgenda as $key) {
-			$updateDataAgenda[] = array(
-						   'agenda_id' => $agenda_id,
-						   'agenda_status' => 'dikirim'
-						 );
+		$this->magenda->mkirim_usul1($agenda_id);
+		$this->magenda->mkirim_usul2($agenda_id);
+		$this->send_to_Telegram($agenda_id);
+		
+		
+		if ($this->db->trans_status() === FALSE)
+		{
+			$this->db->trans_rollback();
+			$this->session->set_flashdata('gagal', "Usul Gagal dikirim");
+		}
+		else
+		{
+			$this->db->trans_commit();
+			$this->session->set_flashdata('berhasil', "Usul Berhasil dikirim");
 		}
 
-		//Update Status Nominatif
-		$dataNomi = array(
-					   'agenda_id' => $agenda_id,
-					   'tahapan_id' => '2'
-					 );
-
-		$updateDataNomi = array();
-		foreach($dataNomi as $key) {
-			$updateDataNomi[] = array(
-						   'agenda_id' => $agenda_id,
-						   'tahapan_id' => '2'
-						 );
-		}
-
-		$this->magenda->mkirim_usul1($updateDataAgenda, 'agenda_id');
-		$this->magenda->mkirim_usul2($updateDataNomi, 'agenda_id');
-		$this->session->set_flashdata('berhasil', "Usul Berhasil dikirim");
 		redirect('agenda');
 	  
 	}
@@ -497,6 +476,32 @@ class Agenda extends MY_Controller {
 		header('Content-Disposition:attachment; filename=FileContohImport.xls');                      
 		header('Expires:0'); 
 		readfile(base_url().'format/FormatNominatif.xls');
+	}	
+	
+	/* Kirim Notifikasi Telegram ke BKN per bidang layanan*/
+	
+	function send_to_Telegram($agenda_id)
+	{
+		$row_agenda	    =  $this->magenda->mdetail_agenda($agenda_id);
+		$TelegramAkun   =  $this->magenda->getTelegramAkun_bybidang($row_agenda->layanan_bidang);
+				
+		if($TelegramAkun->num_rows() > 0)
+		{	
+			foreach($TelegramAkun->result() as $value)
+			{	
+				// send to telegram API
+				if(!empty($value->telegram_id))
+				{	
+					$this->telegram->sendApiAction($value->telegram_id);
+					$text  = "Hello, <strong>".$value->first_name ." ".$value->last_name. "</strong>  Ada Usul berkas baru nih :";
+					$text .= "\n Nomor Usul :".$row_agenda->agenda_nousul;
+					$text .= "\n Layanan	:".$row_agenda->layanan_nama;
+					$text .= "\n Instansi   :".$row_agenda->instansi;
+					$this->telegram->sendApiMsg($value->telegram_id, $text , false, 'HTML');
+					
+				}	
+			}
+		}
 	}	
 
 }

@@ -104,8 +104,10 @@ class Magenda extends CI_Model {
     public function mdetail_agenda($id){
 
     
-		$sql="SELECT * FROM agenda
-		LEFT JOIN layanan ON agenda.layanan_id = layanan.layanan_id
+		$sql="SELECT a.* , b.layanan_grup, b.layanan_bidang, b.layanan_nama , c.INS_NAMINS instansi
+		FROM agenda a
+		LEFT JOIN layanan b ON a.layanan_id = b.layanan_id
+		LEFT JOIN mirror.instansi c ON a.agenda_ins = c.INS_KODINS
 		WHERE agenda_id='$id'";
 
 		$query = $this->db->query($sql);
@@ -317,16 +319,29 @@ class Magenda extends CI_Model {
 
   
     //KIRIM USUL (UPDATE DATA AGENDA)
-    public function mkirim_usul1($data, $kolom){
-
-        $this->db->update_batch('agenda', $data, $kolom);
+    public function mkirim_usul1($agenda_id){
+       
+	    $this->db->set('agenda_status','dikirim');
+		$this->db->where('agenda_id',$agenda_id);
+	    $this->db->update('agenda');
     }
 
     //KIRIM USUL (UPDATE DATA NOMINATIF)
-	public function mkirim_usul2($data, $kolom){
+	public function mkirim_usul2($agenda_id){
 
-		$this->db->update_batch('nominatif', $data, $kolom);
+		$this->db->set('tahapan_id',2);
+		$this->db->where('agenda_id',$agenda_id);
+	    $this->db->update('nominatif');
+		
 	}
+	
+	function getTelegramAkun_bybidang($id_bidang)
+	{	
+		$this->db->select('first_name,last_name,telegram_id');
+		$this->db->where('id_bidang', $id_bidang);
+		$this->db->where('id_instansi', 4011);
+		return $this->db->get('app_user');		
+	}	
 
 }
 
