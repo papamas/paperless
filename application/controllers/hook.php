@@ -98,14 +98,15 @@ class Hook extends CI_Controller {
 				$text = "Daftar perintah pada <strong>Male_o 1.9 Bot</strong>";
 				$text .= "\n 1. REG NIP";
 				$text .= "\n 2. CEK NIP";
-				$text .= "\n 3. APPROVE NIP";
-				$text .= "\n 4. AKTIF NIP";
-				$text .= "\n 5. BLOK NIP";
-				$text .= "\n 6. ADMIN NIP";
-				$text .= "\n 7. NONADM NIP";
-				$text .= "\n 8. RESET NIP";
-				$text .= "\n 9.  myid";
-				$text .= "\n 10. Layanan";
+				$text .= "\n 3. CEKTASPEN NIP";
+				$text .= "\n 4. APPROVE NIP";
+				$text .= "\n 5. AKTIF NIP";
+				$text .= "\n 6. BLOK NIP";
+				$text .= "\n 7. ADMIN NIP";
+				$text .= "\n 8. NONADM NIP";
+				$text .= "\n 9. RESET NIP";
+				$text .= "\n 10.  myid";
+				$text .= "\n 11.  Layanan";
 				
 			    $inkeyboard = [
 					[
@@ -616,13 +617,21 @@ class Hook extends CI_Controller {
 			    $this->_ResetMember($message,$hasil);			    
 				break;	
 				
-			case preg_match("/CEK(.*)/", $pesan, $hasil):
+			case preg_match("/^CEK (.*)/", $pesan, $hasil):
 			    $this->_cekUsul($message,$hasil);			    
 				break;
-				
+							
 			case preg_match("/DETAIL(.*) ([0-9]*)/", $pesan, $hasil):
 			    $this->_detailUsul($message,$hasil);			    
+				break;
+				
+			case preg_match("/^CEKTASPEN (.*)/", $pesan, $hasil):
+			    $this->_cekUsulTaspen($message,$hasil);			    
 				break;	
+				
+			case preg_match("/DTASPEN(.*) ([0-9]*)/", $pesan, $hasil):
+			    $this->_detailUsulTaspen($message,$hasil);			    
+				break;		
 			
 			case $pesan == '/keyboard':
 				$this->telegram->sendApiAction($chatid);
@@ -672,6 +681,77 @@ class Hook extends CI_Controller {
 		}
 	}
 	
+	function _cekUsulTaspen($data,$hasil)
+	{
+		$listUsul 		= $this->bot->cekTaspen($data,$hasil);
+		$pesan 			= $data['text'];
+		$chatid 		= $data['chat']['id'];
+		$fromid 		= $data['from']['id'];
+		$first_name 	= $data['from']['first_name'];
+		$last_name  	= $data['from']['last_name'];
+		
+		if($listUsul->num_rows() > 0)
+		{	
+	        $text = "Terimakasih, <strong>".$first_name ." ".$last_name. "</strong> berikut daftar usul TASPEN dengan NIP : ".trim($hasil[1]);
+			$i = 0;
+			$text .= "\n Silahkan pilih nomor usul pada tombol dibawah untuk melihat detailnya";
+			// send to telegram API
+			$this->telegram->sendApiAction($chatid);
+						
+			foreach($listUsul->result() as $value)
+			{
+				$inkeyboard[] = array(
+					array(
+						'text' => $value->nomor_usul, 'callback_data' => 'DTASPEN '.$value->nip.' '.$value->usul_id,
+			        )
+				);
+				
+				$i++;
+			}
+			$this->telegram->sendApiKeyboard($chatid, $text, $inkeyboard, true);
+		}
+		else
+		{
+            $text = "Maaf,<strong>".$first_name ." ".$last_name. "</strong> NIP : <strong>".trim($hasil[1])."</strong> tidak ada dalam usul TASPEN";
+            $this->telegram->sendApiMsg($chatid, $text , false, 'HTML');
+		}	
+		
+	}
+	
+	function _detailUsulTaspen($data,$hasil)
+	{
+		$detailUsul 	= $this->bot->detailUsulTaspen($data,$hasil);
+		$pesan 			= $data['text'];
+		$chatid 		= $data['chat']['id'];
+		$fromid 		= $data['from']['id'];
+		$first_name 	= $data['from']['first_name'];
+		$last_name  	= $data['from']['last_name'];
+		
+		
+		if($detailUsul->num_rows() > 0)
+		{	
+	        $row  = $detailUsul->row();
+			$text = "Berikut <strong>Male_o 1.9</strong> kasih kamu detail usulnya :" ;
+			// send to telegram API
+			$this->telegram->sendApiAction($chatid);
+			$text .= "\n Nomor Usul : ".$row->nomor_usul;
+			$text .= "\n Layanan	: ".$row->layanan_nama;
+			$text .= "\n NIP 		: ".$row->nip;
+			$text .= "\n Nama PNS		: ".$row->nama_pns;
+			($row->layanan_id == 16 || $row->layanan_id == 17 ? $text .= "\n Nama JD/YT		: ".$row->nama_janda_duda : '');
+			$text .= "\n Status		: ".$row->usul_status;
+			$text .= "\n Tahapan	: ".$row->tahapan_nama;			
+			$text .= "\n Keterangan	: ".$row->usul_alasan;
+		}
+		else
+		{
+            $text = "Maaf, <strong>".$first_name ." ".$last_name." data tersebut tidak ada dalam detail usul";
+      	}	
+		
+		$this->telegram->sendApiMsg($chatid, $text , false, 'HTML');
+	}	
+	
+	
 	function _detailUsul($data,$hasil)
 	{
 		$detailUsul 	= $this->bot->detailUsul($data,$hasil);
@@ -692,6 +772,7 @@ class Hook extends CI_Controller {
 			$text .= "\n NIP 		: ".$row->nip;
 			$text .= "\n Nama 		: ".$row->PNS_GLRDPN.' '.$row->PNS_PNSNAM.' '.$row->PNS_GLRBLK;
 			$text .= "\n Status		: ".$row->nomi_status;
+			$text .= "\n Tahapan	: ".$row->tahapan_nama;			
 			$text .= "\n Keterangan	: ".$row->nomi_alasan;
 		}
 		else

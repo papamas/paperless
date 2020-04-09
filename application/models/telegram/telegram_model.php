@@ -9,6 +9,9 @@ class Telegram_model extends CI_Model {
 	var $agenda          ='agenda';
 	var $layanan         ='layanan';
 	var $pupns           ='mirror.pupns';
+	var $usultaspen      ='usul_taspen';
+	var $tahapan         ='tahapan';
+	
 	
 	function __construct()
     {
@@ -36,6 +39,39 @@ class Telegram_model extends CI_Model {
 		return $this->db->delete($this->user_temp);
 	}
 	
+	function detailUsulTaspen($data,$pesan)
+	{
+		$telegram_id		= $data['from']['id'];
+		$nip			    = trim($pesan[1]);
+        $usul_id			= trim($pesan[2]);		
+		
+		$sql="SELECT a.usul_id, a.nomor_usul, a.tgl_usul, a.nama_pns, 
+		a.nama_janda_duda,a.nip,a.nopen , a.usul_status,a.usul_alasan,
+		b.tahapan_nama,
+		c.layanan_id, c.layanan_nama
+		FROM $this->usultaspen a 
+		LEFT JOIN $this->tahapan b ON a.usul_tahapan_id = b.tahapan_id
+		LEFT JOIN $this->layanan c ON a.layanan_id = c.layanan_id
+		WHERE a.nip='$nip' AND a.usul_id ='$usul_id'  ";
+		return $this->db->query($sql);
+	
+	}	
+	
+	function cekTaspen($data,$pesan)
+	{
+		$telegram_id		= $data['from']['id'];
+		$nip				= trim($pesan[1]);		
+		
+		$sql="SELECT a.usul_id, a.nomor_usul, a.tgl_usul, a.nama_pns, 
+		a.nama_janda_duda,a.nip,a.nopen , a.usul_status,a.usul_alasan,
+		b.tahapan_nama
+		FROM $this->usultaspen a 
+		LEFT JOIN $this->tahapan b ON a.usul_tahapan_id = b.tahapan_id
+		WHERE a.nip='$nip' ";
+		return $this->db->query($sql);
+	
+	}
+	
 	function detailUsul($data,$pesan)
 	{
 		$telegram_id		= $data['from']['id'];
@@ -45,12 +81,14 @@ class Telegram_model extends CI_Model {
 		$sql="SELECT a.agenda_id,a.nip,a.nomi_status, a.nomi_alasan,
 		b.agenda_nousul,
 		c.layanan_nama,
-		e.PNS_PNSNAM,e.PNS_GLRDPN, e.PNS_GLRBLK
+		e.PNS_PNSNAM,e.PNS_GLRDPN, e.PNS_GLRBLK,
+		f.tahapan_nama
 		FROM $this->nominatif a
 		LEFT JOIN $this->agenda b ON a.agenda_id = b.agenda_id
 		LEFT JOIN $this->layanan c ON b.layanan_id = c.layanan_id
 		LEFT JOIN $this->instansi d ON b.agenda_ins = d.INS_KODINS
 		LEFT JOIN $this->pupns e ON e.PNS_NIPBARU = a.nip
+		LEFT JOIN $this->tahapan f ON a.tahapan_id = f.tahapan_id
 		WHERE a.nip='$nip' AND a.agenda_id='$agenda_id' ";
 		return $this->db->query($sql);
 	
