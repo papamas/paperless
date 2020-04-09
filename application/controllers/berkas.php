@@ -306,12 +306,36 @@ class Berkas extends MY_Controller {
 		$data['nip']     = $this->myencrypt->decode($this->input->post('nip'));
 		$data['agenda']  = $this->myencrypt->decode($this->input->post('agenda'));
 		
-		$data['response']	= $this->berkas->KirimUlang($data);
+		$this->db->trans_begin();
 		
-		$this->output
+        $agenda_id          = $this->myencrypt->decode($this->input->post('agenda'));
+		$data['response']	= $this->berkas->KirimUlang($data);		
+		
+		if ($this->db->trans_status() === FALSE)
+		{
+			$this->db->trans_rollback();
+			
+			$data['pesan']		= 'Berkas Gagal dikirim kembali ke BKN';
+			$this->output
+			->set_status_header(406)
+			->set_content_type('application/json', 'utf-8')
+			->set_output(json_encode($data));
+		}
+		else
+		{
+			
+			$data['pesan']		= 'Berkas berhasil dikirim kembali ke BKN';			
+			// send notifikasi to  telegram			
+			$this->send_to_Telegram($agenda_id);			
+			$this->db->trans_commit();			
+			$this->output
 			->set_status_header(200)
 			->set_content_type('application/json', 'utf-8')
 			->set_output(json_encode($data));
+		}
+		
+		
+		
 		
 	}
 	
@@ -523,5 +547,28 @@ class Berkas extends MY_Controller {
         echo $html;		
 		
 	}
+	/* Kirim Notifikasi Telegram kirim ulang  Berkas BTL BKN per bidang layanan*/
 	
+	function send_to_Telegram($agenda_id)
+	{
+		$row_agenda	    =  $this->berkas->getAgenda_byid($agenda_id)->row();
+		$TelegramAkun   =  $this->berkas->getTelegramAkun_bybidang($row_agenda->layanan_bidang);
+				
+		if($TelegramAkun->num_rows() > 0)
+		{	
+			foreach($TelegramAkun->result() as $value)
+			{	
+				// send to telegram API
+				if(!empty($value->telegram_id))
+				{	
+					$this->telegram->sendApiAction($value->telegram_id);
+					$text  = "Hello, <strong>".$value->first_name ." ".$value->last_name. "</strong>  Ada berkas BTL yang sudah dikirim ulang nih :";
+					$text .= "\n Nomor Usul :".$row_agenda->agenda_nousul;
+					$text .= "\n Layanan	:".$row_agenda->layanan_nama;
+					$text .= "\n Instansi   :".$row_agenda->instansi;
+					$this->telegram->sendApiMsg($value->telegram_id, $text , false, 'HTML');					
+				}	
+			}
+		}
+	}	
 }

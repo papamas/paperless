@@ -120,7 +120,7 @@ GROUP BY a.nip,b.layanan_id
 	
 	public function KirimUlang($data)
 	{
-		// kirim ulang berkas BTL ke TU
+		// kirim ulang berkas BTL ke TEKNIS
 		$r					  = FALSE;
 		$agenda_id			  = $data['agenda'];
 		$nip                  = $data['nip'];
@@ -129,7 +129,6 @@ GROUP BY a.nip,b.layanan_id
 		$set['kirim_by']      = $this->session->userdata('user_id');
 		$set['nomi_status']   = 'BELUM';	
 		
-        $this->db->trans_start();
 		$db_debug 			= $this->db->db_debug; 
 		$this->db->db_debug = FALSE; 
 		
@@ -151,7 +150,6 @@ GROUP BY a.nip,b.layanan_id
 			}     
         }
         $this->db->db_debug = $db_debug; //restore setting			
-		$this->db->trans_complete();
 		
 		return $r;
 	}
@@ -261,4 +259,22 @@ GROUP BY a.nip,b.layanan_id
 		return $this->db->update($this->tablenom);
 
 	}
+	
+	public function getAgenda_byid($id)
+	{    
+		$sql="SELECT a.* , b.layanan_grup, b.layanan_bidang, b.layanan_nama , c.INS_NAMINS instansi
+		FROM agenda a
+		LEFT JOIN layanan b ON a.layanan_id = b.layanan_id
+		LEFT JOIN mirror.instansi c ON a.agenda_ins = c.INS_KODINS
+		WHERE a.agenda_id='$id'";
+    	return $this->db->query($sql);
+	}
+	
+	function getTelegramAkun_bybidang($id_bidang)
+	{	
+		$this->db->select('first_name,last_name,telegram_id');
+		$this->db->where('id_bidang', $id_bidang);
+		$this->db->where('id_instansi', 4011);
+		return $this->db->get('app_user');		
+	}	
 }
