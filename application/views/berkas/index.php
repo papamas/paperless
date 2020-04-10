@@ -379,7 +379,7 @@
 				url : "<?php echo site_url()?>/berkas/kirim",
 				data: data,
 				success: function(){					
-					$('#kirimModal #msg').text('Berkas sudah dikirim kembali ke Tim Teknis BKN, lakukan pencarian ulang untuk melihat perubahan')
+					$('#kirimModal #msg').text('Berkas sudah dikirim kembali ke Tim Teknis BKN, silahkan tutup kotak dialog ini dan lakukan pencarian ulang untuk melihat perubahan')
 						.removeClass( "text-blue")
 						.addClass( "text-green" );
 					//refreshTable();			

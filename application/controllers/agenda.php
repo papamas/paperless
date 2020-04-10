@@ -101,18 +101,7 @@ class Agenda extends MY_Controller {
 		  redirect('agenda');
 		}
 
-		//Cek Batas KP
-		if($layanan_grup == 'KP'){
-		  if($tanggal_sekarang <= $batas_kp){
-			$kp_periode = $this->magenda->mcek_bataskp()->periode_id;
-		  }else{
-			$this->session->set_flashdata('gagal', "Periode KP sudah berakhir pada tanggal $batas_kp ");
-			redirect('agenda');
-		  }
-		}else{
-		  $kp_periode = NULL;
-		}
-
+		
 		$data = array(
 				   'agenda_nousul' 		=> $no_usul,
 				   'layanan_id' 		=> $layanan_id,
@@ -120,7 +109,8 @@ class Agenda extends MY_Controller {
                    'agenda_ins' 		=> $this->session->userdata['session_instansi'],
                    'agenda_tgl' 		=> $tanggal_sekarang,
                    'agenda_thn' 		=> date('Y'),
-                   'kp_periode' 		=> $kp_periode
+                   'agenda_created_by' 	=> $this->session->userdata['user_id'],
+				   
 		);
 
 

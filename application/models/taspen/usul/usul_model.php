@@ -9,6 +9,7 @@ class Usul_model extends CI_Model {
 	private     $golongan			= 'mirror.golru';
 	private     $tempistri			= 'mutasi_istri_suami';
 	private     $tempanak			= 'mutasi_anak';
+	private     $tahapan            = 'tahapan';
 		
     function __construct()
     {
@@ -156,7 +157,7 @@ class Usul_model extends CI_Model {
 	
 	public function setKirim()
 	{
-		// kirim dari TU ke Teknis		
+		// kirim dari TASPEN  ke TU		
 		$r					  = FALSE;
 		$usul_id			  = $this->input->post('usul_id');
 		$nip                  = $this->input->post('usul_nip');		
@@ -165,7 +166,6 @@ class Usul_model extends CI_Model {
 		$set['kirim_bkn_by']      = $this->session->userdata('user_id');
 		$set['kirim_bkn']   	  = 1;
 		
-        $this->db->trans_start();
 		$db_debug 			= $this->db->db_debug; 
 		$this->db->db_debug = FALSE; 
 		
@@ -187,10 +187,30 @@ class Usul_model extends CI_Model {
 			}     
         }
         $this->db->db_debug = $db_debug; //restore setting			
-		$this->db->trans_complete();
-		
-		return $r;
+				return $r;
 	}
+	
+	function getUsul_byid($usul_id,$nip)
+	{
+		$sql="SELECT a.usul_id, a.nomor_usul, a.tgl_usul, a.nama_pns, 
+		a.nama_janda_duda,a.nip,a.nopen , a.usul_status,a.usul_alasan,
+		b.tahapan_nama,
+		c.layanan_id, c.layanan_nama, c.layanan_bidang
+		FROM $this->usul a 
+		LEFT JOIN $this->tahapan b ON a.usul_tahapan_id = b.tahapan_id
+		LEFT JOIN $this->layanan c ON a.layanan_id = c.layanan_id
+		WHERE a.usul_id ='$usul_id' AND a.nip='$nip' ";
+		return $this->db->query($sql);
+		
+	}	
+	
+	function getTelegramAkun_bybidang()
+	{	
+		$this->db->select('first_name,last_name,telegram_id');
+		$this->db->where('id_bidang',2);
+		$this->db->where('id_instansi',4011);
+		return $this->db->get('app_user');		
+	}	
 	
 	public function getUploadDokumen($nip)
 	{

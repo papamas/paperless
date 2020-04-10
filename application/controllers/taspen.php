@@ -26,7 +26,7 @@ class Taspen extends MY_Controller {
 	function __construct()
     {
         parent::__construct();
-		$this->load->library(array('Auth','Menu','Myencrypt','form_validation'));
+		$this->load->library(array('Auth','Menu','Myencrypt','form_validation','Telegram'));
 		$this->load->model('taspen/upload/upload_model', 'uploadFile');
 		$this->load->model('taspen/berkas/berkas_model', 'berkas');
 		$this->load->model('taspen/validasi/validasi_model', 'validasi');
@@ -943,12 +943,38 @@ class Taspen extends MY_Controller {
 	
 	public function kirim()
 	{
+		$this->db->trans_begin();
 		$data['response']	= $this->usul->setKirim();
 		
-		$this->output
+		if ($this->db->trans_status() === FALSE)
+		{
+			$this->db->trans_rollback();
+			
+			$data['pesan']		= 'Berkas Gagal dikirim kembali ke BKN';
+			
+			$this->output
+			->set_status_header(406)
+			->set_content_type('application/json', 'utf-8')
+			->set_output(json_encode($data));
+		}
+		else
+		{
+			$data['usul_id']	  = $this->input->post('usul_id');
+			$data['nip']          = $this->input->post('usul_nip');	
+			
+			// send notifikasi to  telegram			
+			$this->send_to_Telegram($data);			
+			
+			$this->db->trans_commit();
+			$data['pesan']		= 'Berkas berhasil dikirim kembali ke BKN';
+			
+			$this->output
 			->set_status_header(200)
 			->set_content_type('application/json', 'utf-8')
 			->set_output(json_encode($data));
+			
+		}	
+		
 		
 	}
 	
@@ -1427,6 +1453,37 @@ class Taspen extends MY_Controller {
 			->set_output(json_encode($data));
 		
 	}
+	
+	/* Kirim Notifikasi Telegram ke BKN per bidang Pensiun*/
+	
+	function send_to_Telegram($data)
+	{
+		$usul_id		= $data['usul_id'];
+		$nip			= $data['nip'];
+		
+		$row_usul	    =  $this->usul->getUsul_byid($usul_id,$nip)->row();
+		$TelegramAkun   =  $this->usul->getTelegramAkun_bybidang($row_usul->layanan_bidang);
+				
+		if($TelegramAkun->num_rows() > 0)
+		{	
+			foreach($TelegramAkun->result() as $value)
+			{	
+				// send to telegram API
+				if(!empty($value->telegram_id))
+				{	
+					$this->telegram->sendApiAction($value->telegram_id);
+					$text  = "Hello, <strong>".$value->first_name ." ".$value->last_name. "</strong>  Ada Usul berkas TASPEN baru nih :";
+					$text .= "\n Tanggal    :".date('d-m-Y H:i:s');
+					$text .= "\n Nomor Usul :".trim($row_usul->nomor_usul);
+					$text .= "\n Nama PNS   :".$row_usul->nama_pns;
+					($row_usul->layanan_id == 16 || $row_usul->layanan_id == 17 ? $text .= "\n Nama JD/YT :".$row_usul->nama_janda_duda : '' );
+					$text .= "\n Layanan	:".$row_usul->layanan_nama;					
+					$this->telegram->sendApiMsg($value->telegram_id, $text , false, 'HTML');	
+					
+				}	
+			}
+		}
+	}	
 }
 
 /* End of file welcome.php */
