@@ -273,8 +273,8 @@ GROUP BY a.nip,b.layanan_id
 	function getTelegramAkun_bybidang($id_bidang)
 	{	
 		$this->db->select('first_name,last_name,telegram_id');
-		$this->db->where('id_bidang', $id_bidang);
-		$this->db->where('id_instansi', 4011);
+		$this->db->where('id_bidang',$id_bidang);
+		$this->db->where('id_instansi',4011);
 		return $this->db->get('app_user');		
 	}	
 }

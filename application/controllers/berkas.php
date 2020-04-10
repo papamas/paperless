@@ -7,7 +7,7 @@ class Berkas extends MY_Controller {
 	function __construct()
 	{
 	    parent::__construct();		
-	    $this->load->library(array('Auth','Menu','form_validation','Myencrypt'));
+	    $this->load->library(array('Auth','Menu','form_validation','Myencrypt','Telegram'));
 		$this->load->model('berkas/berkas_model', 'berkas');
 		$this->allow = $this->auth->isAuthMenu($this->menu_id);
 	} 
@@ -325,8 +325,10 @@ class Berkas extends MY_Controller {
 		{
 			
 			$data['pesan']		= 'Berkas berhasil dikirim kembali ke BKN';			
+			
 			// send notifikasi to  telegram			
 			$this->send_to_Telegram($agenda_id);			
+			
 			$this->db->trans_commit();			
 			$this->output
 			->set_status_header(200)
@@ -553,6 +555,7 @@ class Berkas extends MY_Controller {
 	{
 		$row_agenda	    =  $this->berkas->getAgenda_byid($agenda_id)->row();
 		$TelegramAkun   =  $this->berkas->getTelegramAkun_bybidang($row_agenda->layanan_bidang);
+		
 				
 		if($TelegramAkun->num_rows() > 0)
 		{	
@@ -566,7 +569,9 @@ class Berkas extends MY_Controller {
 					$text .= "\n Nomor Usul :".$row_agenda->agenda_nousul;
 					$text .= "\n Layanan	:".$row_agenda->layanan_nama;
 					$text .= "\n Instansi   :".$row_agenda->instansi;
-					$this->telegram->sendApiMsg($value->telegram_id, $text , false, 'HTML');					
+					$this->telegram->sendApiMsg($value->telegram_id, $text , false, 'HTML');
+
+					
 				}	
 			}
 		}

@@ -27,7 +27,7 @@ class Verifikator extends MY_Controller {
     {
         parent::__construct();
 		$this->load->model('verifikator/verifikator_model', 'verifikator');
-		$this->load->library(array('Auth','Menu','Myencrypt','form_validation'));				
+		$this->load->library(array('Auth','Menu','Myencrypt','form_validation','Telegram'));				
 		$this->load->model('menu_model');
 		$this->allow = $this->auth->isAuthMenu($this->menu_id);
 		
@@ -277,15 +277,32 @@ class Verifikator extends MY_Controller {
 		}
 		else
 		{
+			$this->db->trans_begin();
 			$data['response']	    = $this->verifikator->setVerifikator($data);
-			$this->output
+			
+			if ($this->db->trans_status() === FALSE)
+			{
+				$this->db->trans_rollback();
+				
+				$data['error']	    = 'Something, Wrong';
+				$this->output
+				->set_status_header(406)
+				->set_content_type('application/json', 'utf-8')
+				->set_output(json_encode($data));
+			}
+			else
+			{			   
+				$this->send_to_Telegram($data);
+				
+				$this->db->trans_commit();				
+				
+				$this->output
 				->set_status_header(200)
 				->set_content_type('application/json', 'utf-8')
 				->set_output(json_encode($data));
-		}
-		
-		
-		
+            }			
+			
+		}		
 	}
 
 
@@ -652,6 +669,45 @@ class Verifikator extends MY_Controller {
 			->set_output(json_encode($data));
 		
 	}	
+	
+	/* Kirim Notifikasi Telegram ke Instansi*/
+	
+	function send_to_Telegram($data)
+	{
+		$agenda_id      = $data['id_agenda'];
+		$nip			= $data['nip'];
+		
+		$row_agenda	    =  $this->verifikator->getAgenda_byid($agenda_id,$nip)->row();
+		$TelegramAkun   =  $this->verifikator->getTelegramAkun_byInstansi($row_agenda->agenda_ins);
+				
+		if($TelegramAkun->num_rows() > 0)
+		{	
+			foreach($TelegramAkun->result() as $value)
+			{	
+				// send to telegram API
+				if(!empty($value->telegram_id))
+				{	
+					$this->telegram->sendApiAction($value->telegram_id);
+					$text  = "Hello, <strong>".$value->first_name ." ".$value->last_name. "</strong>  Berkas kamu sudah selesai verifikasi dengan hasil berikut ini :";
+					$text .= "\n Tanggal    		:".date('d-m-Y H:i:s');
+					$text .= "\n Nomor Usul 		:".$row_agenda->agenda_nousul;
+					$text .= "\n Layanan			:".$row_agenda->layanan_nama;
+					$text .= "\n NIP				:".$row_agenda->nip;
+					$text .= "\n Nama PNS			:".$row_agenda->PNS_GLRDPN.''.$row_agenda->PNS_PNSNAM.''.$row_agenda->PNS_GLRBLK;
+					$text .= "\n Tahapan			:".$row_agenda->tahapan_nama;
+					(!empty($row_agenda->status_level_satu) ? $text .= "\n Status  Level 1	:".$row_agenda->status_level_satu : '');
+					(!empty($row_agenda->status_level_dua)  ? $text .= "\n Status  Level 2	:".$row_agenda->status_level_dua : '');
+					(!empty($row_agenda->status_level_tiga) ? $text .= "\n Status  Level 3	:".$row_agenda->status_level_tiga : '');
+					$text .= "\n Status Berkas		:".$row_agenda->nomi_status;
+					$text .= "\n Keterangan			:".$row_agenda->nomi_alasan;
+					$text .= "\n Instansi   		:".$row_agenda->instansi;
+					$this->telegram->sendApiMsg($value->telegram_id, $text , false, 'HTML');
+										
+				}	
+			}
+		}
+	}	
+
 }
 
 /* End of file welcome.php */
