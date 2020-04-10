@@ -327,7 +327,7 @@ class Berkas extends MY_Controller {
 			$data['pesan']		= 'Berkas berhasil dikirim kembali ke BKN';			
 			
 			// send notifikasi to  telegram			
-			$this->send_to_Telegram($agenda_id);			
+			$this->send_to_Telegram($data);			
 			
 			$this->db->trans_commit();			
 			$this->output
@@ -551,9 +551,12 @@ class Berkas extends MY_Controller {
 	}
 	/* Kirim Notifikasi Telegram kirim ulang  Berkas BTL BKN per bidang layanan*/
 	
-	function send_to_Telegram($agenda_id)
+	function send_to_Telegram($data)
 	{
-		$row_agenda	    =  $this->berkas->getAgenda_byid($agenda_id)->row();
+		$agenda_id      = $data['agenda'];
+		$nip			= $data['nip'];
+		
+		$row_agenda	    =  $this->berkas->getAgenda_byid($agenda_id,$nip)->row();
 		$TelegramAkun   =  $this->berkas->getTelegramAkun_bybidang($row_agenda->layanan_bidang);
 		
 				
@@ -566,12 +569,13 @@ class Berkas extends MY_Controller {
 				{	
 					$this->telegram->sendApiAction($value->telegram_id);
 					$text  = "Hello, <strong>".$value->first_name ." ".$value->last_name. "</strong>  Ada berkas BTL yang sudah dikirim ulang nih :";
+					$text .= "\n Tanggal    :".date('d-m-Y H:i:s');
 					$text .= "\n Nomor Usul :".$row_agenda->agenda_nousul;
 					$text .= "\n Layanan	:".$row_agenda->layanan_nama;
+					$text .= "\n NIP		:".$row_agenda->nip;
+					$text .= "\n Nama PNS	:".$row_agenda->PNS_GLRDPN.''.$row_agenda->PNS_PNSNAM.''.$row_agenda->PNS_GLRBLK;
 					$text .= "\n Instansi   :".$row_agenda->instansi;
 					$this->telegram->sendApiMsg($value->telegram_id, $text , false, 'HTML');
-
-					
 				}	
 			}
 		}
