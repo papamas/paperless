@@ -477,7 +477,7 @@
 						</form>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-default" id="nBtn">Simpan</button>
+						<button type="button" class="btn bg-maroon" id="nBtn">Simpan</button>
 					</div>
 				</div>
 			</div>	
@@ -538,7 +538,13 @@
 		
 		$('[data-tooltip="tooltip"]').tooltip();
 
-
+		$('#verifikasiModal').on('hide.bs.modal',function(event){
+			$("#nBtn").show();
+		});	
+		
+		$('#verifikasiModal').on('show.bs.modal',function(event){
+			$("#nBtn").show();
+		});	
 		$('#verifikasiModal').on('show.bs.modal',function(event){
 		    $('#verifikasiModal #msg').text('Hasil Verifikasi Berkas') 
 			.removeClass( "text-green")
@@ -560,9 +566,11 @@
 				url : "<?php echo site_url()?>/verifikator/save",
 				data: data,
 				success: function(){
-					$('#verifikasiModal #msg').text('Hasil verifikasi berkas berhasil disimpan.....')
+					$('#verifikasiModal #msg').text('Hasil verifikasi berkas telah berhasil disimpan, silahkan anda close dialog ini')
                              .removeClass( "text-blue")
-				             .addClass( "text-green" ); 					
+				             .addClass( "text-green" ); 
+					
+					$("#nBtn").hide();
 				}, 
 				error : function(r) {
 				    

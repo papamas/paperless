@@ -354,7 +354,12 @@
 	$(document).ready(function () {
 	    $('[data-tooltip="tooltip"]').tooltip();
 		
+		$('#kirimModal').on('hide.bs.modal',function(e){
+			$("#nBtnKirim").show();
+		});
+		
 		$('#kirimModal').on('show.bs.modal',function(e){
+			
 		     $('#kirimModal #msg').text('Konfirmasi Pengiriman Kembali Berkas BTL')
 			.removeClass( "text-green")
 		    .removeClass( "text-blue" ); 
@@ -364,6 +369,7 @@
 			
 			$('#kirimModal input[name=nip]').val(nip);
 			$('#kirimModal input[name=agenda]').val(agenda);
+		
 		});
 		
 		$("#nBtnKirim").on("click",function(e){
@@ -379,10 +385,11 @@
 				url : "<?php echo site_url()?>/berkas/kirim",
 				data: data,
 				success: function(){					
-					$('#kirimModal #msg').text('Berkas sudah dikirim kembali ke Tim Teknis BKN, silahkan tutup kotak dialog ini dan lakukan pencarian ulang untuk melihat perubahan')
+					$('#kirimModal #msg').text('Berkas BTL sudah dikirimkan kembali ke Tim Teknis BKN XI, Silahkan anda Close dialog ini')
 						.removeClass( "text-blue")
 						.addClass( "text-green" );
-					//refreshTable();			
+					refreshTable();		
+                    $("#nBtnKirim").hide();					
 			    }, // akhir fungsi sukses
 				error : function(r) {
 					$('#kirimModal #msg').text('Something wrong..')
