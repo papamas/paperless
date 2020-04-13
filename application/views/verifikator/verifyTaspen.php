@@ -306,7 +306,7 @@
 						</form>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-default" id="nBtn">Simpan</button>
+						<button type="button" class="btn bg-maroon" id="nBtn">Simpan</button>
 					</div>
 				</div>
 			</div>	
@@ -371,6 +371,10 @@
 
 
 		$('#verifikasiModal').on('show.bs.modal',function(event){
+			$("#nBtn").show();
+		});
+		
+		$('#verifikasiModal').on('show.bs.modal',function(event){
 		    $('#verifikasiModal #msg').text('Hasil Verifikasi Berkas') 
 			.removeClass( "text-green")
 		    .removeClass( "text-blue" ); 
@@ -393,7 +397,8 @@
 				success: function(){
 					$('#verifikasiModal #msg').text('Hasil verifikasi berkas berhasil disimpan.....')
                              .removeClass( "text-blue")
-				             .addClass( "text-green" ); 					
+				             .addClass( "text-green" ); 
+					$("#nBtn").hide();			
 				}, 
 				error : function(r) {
 				    

@@ -565,11 +565,29 @@ class Verifikator extends MY_Controller {
 		}
 		else
 		{
+			$this->db->trans_begin();
 			$data['response']	    = $this->verifikator->setHasilVerifikatorTaspen($data);
-			$this->output
+			
+			if ($this->db->trans_status() === FALSE)
+			{
+				$this->db->trans_rollback();
+				
+				$data['error']	    = 'Something, Wrong';
+				$this->output
+				->set_status_header(406)
+				->set_content_type('application/json', 'utf-8')
+				->set_output(json_encode($data));
+			}
+			else
+			{			   
+				$this->db->trans_commit();				
+				
+				$this->send_taspen_Telegram($data);
+				$this->output
 				->set_status_header(200)
 				->set_content_type('application/json', 'utf-8')
 				->set_output(json_encode($data));
+            }				
 		}
 		
 		
@@ -668,6 +686,41 @@ class Verifikator extends MY_Controller {
 			->set_content_type('application/json', 'utf-8')
 			->set_output(json_encode($data));
 		
+	}	
+	
+	/* Kirim Notifikasi Telegram ke TASPEN*/
+	
+	function send_taspen_Telegram($data)
+	{
+		$usul_id        = $data['usul_id'];
+		$nip			= $data['nip'];
+		
+		$row_usul	    =  $this->verifikator->getUsul_byid($data)->row();
+		$TelegramAkun   =  $this->verifikator->getTelegramAkun_byUserId($row_usul->kirim_bkn_by);
+				
+		if($TelegramAkun->num_rows() > 0)
+		{	
+			foreach($TelegramAkun->result() as $value)
+			{	
+				// send to telegram API
+				if(!empty($value->telegram_id))
+				{	
+					$this->telegram->sendApiAction($value->telegram_id);
+					$text  = "<pre>Hello, <strong>".$value->first_name ." ".$value->last_name. "</strong>  Berkas kamu sudah selesai verifikasi dengan hasil berikut ini :";
+					$text .= "\n Tanggal :".date('d-m-Y H:i:s');
+					$text .= "\n Nomor Usul :".$row_usul->nomor_usul;
+					$text .= "\n Layanan :".$row_usul->layanan_nama;
+					$text .= "\n NIP :".$row_usul->nip;
+					$text .= "\n Nama PNS :".$row_usul->nama_pns;
+					$text .= "\n Tahapan :".$row_usul->tahapan_nama;
+					$text .= "\n Status Berkas :".$row_usul->usul_status;
+					$text .= "\n Keterangan :".$row_usul->usul_alasan;
+					$text .= "</pre>";
+					$this->telegram->sendApiMsg($value->telegram_id, $text , false, 'HTML');
+									
+				}	
+			}
+		}
 	}	
 	
 	/* Kirim Notifikasi Telegram ke Instansi*/

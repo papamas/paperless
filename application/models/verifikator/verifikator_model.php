@@ -992,4 +992,26 @@ where f.usul_status='BELUM' AND  f.usul_id='$usul_id' ";
 		$this->db->where('nip', $data['usul_nip']);
 		return $this->db->update($this->usul);
 	}
+	
+	public function getUsul_byid($data)
+	{
+		$usul_id   	= $data['usul_id'];
+		$nip		= $data['nip'];
+		
+		$sql ="SELECT a.* ,
+		b.layanan_nama,
+		c.tahapan_nama
+		FROM $this->usul a
+		LEFT JOIN $this->tablelayanan b ON a.layanan_id = b.layanan_id
+		LEFT JOIN $this->tabletahapan c ON a.usul_tahapan_id = c.tahapan_id
+		WHERE a.usul_id='$usul_id' AND a.nip=trim('$nip')  ";
+		return $this->db->query($sql);
+	}
+	
+	function getTelegramAkun_byUserid($user_id)
+	{	
+		$this->db->select('first_name,last_name,telegram_id');
+		$this->db->where('user_id', $user_id);
+		return $this->db->get($this->tableuser);		
+	}	
 }
