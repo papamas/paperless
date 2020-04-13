@@ -1472,12 +1472,12 @@ class Taspen extends MY_Controller {
 				if(!empty($value->telegram_id))
 				{	
 					$this->telegram->sendApiAction($value->telegram_id);
-					$text  = "Hello, <strong>".$value->first_name ." ".$value->last_name. "</strong>  Ada Usul berkas TASPEN baru nih :";
-					$text .= "\n Tanggal    :".date('d-m-Y H:i:s');
+					$text  = "<pre>Hello, <strong>".$value->first_name ." ".$value->last_name. "</strong>  Ada Usul berkas TASPEN baru nih :";
+					$text .= "\n Tanggal :".date('d-m-Y H:i:s');
 					$text .= "\n Nomor Usul :".trim($row_usul->nomor_usul);
-					$text .= "\n Nama PNS   :".$row_usul->nama_pns;
+					$text .= "\n Nama PNS :".$row_usul->nama_pns;
 					($row_usul->layanan_id == 16 || $row_usul->layanan_id == 17 ? $text .= "\n Nama JD/YT :".$row_usul->nama_janda_duda : '' );
-					$text .= "\n Layanan	:".$row_usul->layanan_nama;					
+					$text .= "\n Layanan :".$row_usul->layanan_nama.'</pre>';					
 					$this->telegram->sendApiMsg($value->telegram_id, $text , false, 'HTML');	
 					
 				}	

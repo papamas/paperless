@@ -60,7 +60,7 @@ class Berkas_model extends CI_Model {
 		}			
 		
 		
-		$q="SELECT a.agenda_id,a.nip,a.nomi_locked,a.nomi_status,a.nomi_alasan,
+		$q="SELECT a.agenda_id,a.nip,a.nomi_locked,a.nomi_status,a.nomi_alasan,a.btl_from,
 CASE a.nomi_status
     WHEN 'ACC' THEN 'badge bg-green'
     WHEN 'TMS' THEN 'badge bg-red'
@@ -92,7 +92,7 @@ LEFT JOIN $this->tableuser j ON j.user_id = a.work_by
 LEFT JOIN $this->tabletahapan k ON k.tahapan_id = a.tahapan_id
 LEFT JOIN $this->tableuser l ON l.user_id = a.locked_by
 where 1=1 AND  f.INS_KODINS='$instansi'  $sql $sql_status 
-GROUP BY a.nip,b.layanan_id
+GROUP BY a.nip,b.layanan_id,a.agenda_id
 ";
 		//var_dump($q);exit;
 		$query 		= $this->db->query($q);
@@ -124,8 +124,9 @@ GROUP BY a.nip,b.layanan_id
 		$r					  = FALSE;
 		$agenda_id			  = $data['agenda'];
 		$nip                  = $data['nip'];
-        
-		$set['tahapan_id']    = 4;	
+		$btlFrom			  = $data['btlFrom'];
+		        
+		$set['tahapan_id']    = $btlFrom;	
 		$set['kirim_by']      = $this->session->userdata('user_id');
 		$set['nomi_status']   = 'BELUM';	
 		

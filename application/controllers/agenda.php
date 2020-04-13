@@ -426,9 +426,7 @@ class Agenda extends MY_Controller {
 		$this->db->trans_begin();
 
 		$this->magenda->mkirim_usul1($agenda_id);
-		$this->magenda->mkirim_usul2($agenda_id);
-		$this->send_to_Telegram($agenda_id);
-		
+		$this->magenda->mkirim_usul2($agenda_id);	
 		
 		if ($this->db->trans_status() === FALSE)
 		{
@@ -438,6 +436,7 @@ class Agenda extends MY_Controller {
 		else
 		{
 			$this->db->trans_commit();
+			$this->send_to_Telegram($agenda_id,$agenda_jumlah);
 			$this->session->set_flashdata('berhasil', "Usul Berhasil dikirim");
 		}
 
@@ -470,7 +469,7 @@ class Agenda extends MY_Controller {
 	
 	/* Kirim Notifikasi Telegram ke BKN per bidang layanan*/
 	
-	function send_to_Telegram($agenda_id)
+	function send_to_Telegram($agenda_id,$agenda_jumlah)
 	{
 		$row_agenda	    =  $this->magenda->mdetail_agenda($agenda_id);
 		$TelegramAkun   =  $this->magenda->getTelegramAkun_bybidang($row_agenda->layanan_bidang);
@@ -483,10 +482,12 @@ class Agenda extends MY_Controller {
 				if(!empty($value->telegram_id))
 				{	
 					$this->telegram->sendApiAction($value->telegram_id);
-					$text  = "Hello, <strong>".$value->first_name ." ".$value->last_name. "</strong>  Ada Usul berkas baru nih :";
+					$text  = "<pre>Hello, <strong>".$value->first_name ." ".$value->last_name. "</strong>  Ada Usul berkas baru nih :";
+					$text .= "\n Tanggal :".date('d-m-Y H:i:s');
 					$text .= "\n Nomor Usul :".$row_agenda->agenda_nousul;
-					$text .= "\n Layanan	:".$row_agenda->layanan_nama;
-					$text .= "\n Instansi   :".$row_agenda->instansi;
+					$text .= "\n Layanan :".$row_agenda->layanan_nama;
+					$text .= "\n Instansi :".$row_agenda->instansi;
+					$text .= "\n Jumlah :".$agenda_jumlah.'</pre>';
 					$this->telegram->sendApiMsg($value->telegram_id, $text , false, 'HTML');
 					
 				}	

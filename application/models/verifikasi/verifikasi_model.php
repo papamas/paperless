@@ -58,7 +58,7 @@ LEFT JOIN $this->tablepupns e ON b.nip = e.PNS_NIPBARU
 WHERE c.layanan_bidang='$bidang' 
 AND b.nomi_status='BELUM' 
 AND a.agenda_status='dikirim'
-AND b.tahapan_id='2' 
+AND b.tahapan_id IN('2','3') 
 $sql_instansi  $sql_layanan";
 		
 		$query 		= $this->db->query($q);
@@ -164,6 +164,28 @@ $sql_instansi  $sql_layanan";
 		return $r;
 	}
 	
+	public function setBtl()
+	{
+		// kirim BTL dari TU ke Instansi	
+		$r					  = FALSE;
+		$agenda_id			  = $this->input->post('agenda');
+		$nip                  = $this->input->post('nip');		
+		
+		$set['nomi_status']   = 'BTL';
+		$set['nomi_alasan']   = $this->input->post('alasan');
+		$set['nomi_verifby']  = $this->session->userdata('user_id');
+		$set['btl_from']	  = 3;
+		$set['btl_tu_alasan'] = $this->input->post('alasan');
+		$set['tahapan_id']    = 3;
+		
+		$this->db->set($set);	
+        $this->db->set('verify_date','NOW()',FALSE);
+		$this->db->set('btl_tu_date','NOW()',FALSE);
+		$this->db->set('btl_counter','btl_counter+1',FALSE);		
+		$this->db->where('agenda_id', $agenda_id);		
+		$this->db->where('nip', $nip);	
+		return $this->db->update($this->tablenominatif);	 
+	}
 	
 	/*TASPEN*/
 	public function getUsulDokumenTaspen()
@@ -290,5 +312,30 @@ $sql_instansi  $sql_layanan";
 		$sql="SELECT * FROM $this->tableuser WHERE id_bidang='$bidang' AND id_instansi='4011' ";	
 		return $this->db->query($sql);
 		
+	}	
+	
+	public function getAgenda_byid($id_agenda,$nip)
+	{    
+		$sql="SELECT a.* , 
+		b.layanan_grup, b.layanan_bidang, b.layanan_nama ,
+		c.INS_NAMINS instansi,
+		d.nip, d.nomi_status, d.nomi_alasan,d.status_level_satu, d.status_level_dua,d.status_level_tiga,
+		e.PNS_PNSNAM,e.PNS_GLRDPN, e.PNS_GLRBLK,
+		f.tahapan_nama
+		FROM $this->tableagenda a
+		LEFT JOIN $this->tablelayanan  b ON a.layanan_id = b.layanan_id
+		LEFT JOIN $this->tableinstansi c ON a.agenda_ins = c.INS_KODINS
+		LEFT JOIN $this->tablenominatif d ON a.agenda_id  = d.agenda_id
+		LEFT JOIN $this->tablepupns e ON e.PNS_NIPBARU = d.nip
+		LEFT JOIN $this->tabletahapan f ON f.tahapan_id = d.tahapan_id
+		WHERE a.agenda_id='$id_agenda' AND d.nip='$nip' ";
+    	return $this->db->query($sql);
+	}
+	
+	function getTelegramAkun_byInstansi($instansi)
+	{	
+		$this->db->select('first_name,last_name,telegram_id');
+		$this->db->where('id_instansi', $instansi);
+		return $this->db->get($this->tableuser);		
 	}	
 }

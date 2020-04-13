@@ -154,7 +154,7 @@ where 1=1 $sql
 AND a.nomi_status='BELUM'
 AND c.layanan_bidang='$bidang'
 AND a.tahapan_id IN ('4','5','6','7','8','9','10','11','12')  $sql_work
-GROUP BY a.nip,b.layanan_id ) a
+GROUP BY a.nip,b.layanan_id,a.agenda_id ) a
 LEFT JOIN user_layanan_role b ON (a.layanan_id=b.layanan_id AND a.agenda_ins = b.id_instansi AND b.user_id='$user_id')
 ) a
 WHERE a.id_instansi IS NOT NULL $sql_level
@@ -228,7 +228,7 @@ AND a.tahapan_id IN ('4','5','6','7','8','9','10','11','12')
 AND b.layanan_id='$layanan_id'  
 AND a.agenda_id='$id_agenda' 
 $sql_work
-GROUP BY a.nip,b.layanan_id";  
+GROUP BY a.nip,b.layanan_id,a.agenda_id";  
         //var_dump($q);exit;
 		$query 		= $this->db->query($q);
         return      $query;		
@@ -562,6 +562,16 @@ GROUP BY a.nip,b.layanan_id";
 			break;
 		}	
 		
+		// jika status BTL rekam BTL FROM
+		if($status == 'BTL')
+		{	
+			// 4 BTL FROM Teknis
+			$set['btl_from']	  	  = 4;
+			$set['btl_teknis_alasan'] = $data['catatan'];			
+			$this->db->set('btl_teknis_date','NOW()',FALSE);
+			$this->db->set('btl_counter','btl_counter+1',FALSE);	
+        }	
+		
 		$this->db->set($set);		
 		$this->db->where('agenda_id', $data['id_agenda']);		
 		$this->db->where('nip', $data['nip']);
@@ -577,7 +587,7 @@ GROUP BY a.nip,b.layanan_id";
 		d.nip, d.nomi_status, d.nomi_alasan,d.status_level_satu, d.status_level_dua,d.status_level_tiga,
 		e.PNS_PNSNAM,e.PNS_GLRDPN, e.PNS_GLRBLK,
 		f.tahapan_nama
-		FROM agenda a
+		FROM $this->tableagenda a
 		LEFT JOIN $this->tablelayanan  b ON a.layanan_id = b.layanan_id
 		LEFT JOIN $this->tableinstansi c ON a.agenda_ins = c.INS_KODINS
 		LEFT JOIN $this->tablenom d ON a.agenda_id  = d.agenda_id

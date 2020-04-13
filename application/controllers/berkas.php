@@ -305,6 +305,7 @@ class Berkas extends MY_Controller {
 	{
 		$data['nip']     = $this->myencrypt->decode($this->input->post('nip'));
 		$data['agenda']  = $this->myencrypt->decode($this->input->post('agenda'));
+		$data['btlFrom'] = $this->myencrypt->decode($this->input->post('btlFrom'));
 		
 		$this->db->trans_begin();
 		
@@ -475,7 +476,7 @@ class Berkas extends MY_Controller {
 		$html .='<table id="tb-entry" class="table table-striped table-condensed">
 						<thead>
 							<tr>
-								<th style="width:75px;"></th>	
+								<th style="width:100px;"></th>	
 								<th>NOUSUL</th>									
 								<th style="width:16%">NIP</th>
 								<th>NAMA</th>
@@ -493,7 +494,7 @@ class Berkas extends MY_Controller {
 			$link2 ='';
 			if($value->nomi_status == 'BTL')
 			{
-				$link='<a href="#" class="btn bg-maroon btn-flat btn-xs" data-tooltip="tooltip"  title="Kirim Ulang Berkas BTL ini" data-toggle="modal" data-target="#kirimModal" data-nip="'.$this->myencrypt->encode($value->nip).'" data-agenda="'.$this->myencrypt->encode($value->agenda_id).'" ><i class="fa fa-mail-forward"></i></a>';	
+				$link='&nbsp;<a href="#" class="btn bg-maroon btn-flat btn-xs" data-tooltip="tooltip"  title="Kirim Ulang Berkas BTL ini" data-toggle="modal" data-target="#kirimModal" data-nip="'.$this->myencrypt->encode($value->nip).'" data-agenda="'.$this->myencrypt->encode($value->agenda_id).'" data-btl="'.$this->myencrypt->encode($value->btl_from).'" ><i class="fa fa-mail-forward"></i></a>';	
 				$link2='<a href="#" class="btn bg-orange btn-xs" data-tooltip="tooltip"  title="Cek Keterangan Alasan BTL" data-toggle="modal" data-target="#cekModal" data-id="?n='.$this->myencrypt->encode($value->nip).'&a='.$this->myencrypt->encode($value->agenda_id).'">'.$value->nomi_status.'</a>';
 			}
 			else
@@ -555,10 +556,19 @@ class Berkas extends MY_Controller {
 	{
 		$agenda_id      = $data['agenda'];
 		$nip			= $data['nip'];
+		$btlFrom        = $data['btlFrom'];
 		
 		$row_agenda	    =  $this->berkas->getAgenda_byid($agenda_id,$nip)->row();
 		$TelegramAkun   =  $this->berkas->getTelegramAkun_bybidang($row_agenda->layanan_bidang);
 		
+		if($btlFrom  == 3)
+		{
+			$txt 	= 'TU';
+		}
+		else
+		{
+			$txt    = 'TEKNIS'; 
+		}	
 				
 		if($TelegramAkun->num_rows() > 0)
 		{	
@@ -568,14 +578,15 @@ class Berkas extends MY_Controller {
 				if(!empty($value->telegram_id))
 				{	
 					$this->telegram->sendApiAction($value->telegram_id);
-					$text  = "Hello, <strong>".$value->first_name ." ".$value->last_name. "</strong>  Ada berkas BTL yang sudah dikirim ulang nih :";
-					$text .= "\n Tanggal    :".date('d-m-Y H:i:s');
+					$text  = "<pre>Hello, <strong>".$value->first_name ." ".$value->last_name. "</strong>  Ada berkas yang telah di BTL kan oleh ".$txt."  sudah dikirim ulang nih :";
+					$text .= "\n Tanggal :".date('d-m-Y H:i:s');
 					$text .= "\n Nomor Usul :".$row_agenda->agenda_nousul;
-					$text .= "\n Layanan	:".$row_agenda->layanan_nama;
-					$text .= "\n NIP		:".$row_agenda->nip;
-					$text .= "\n Nama PNS	:".$row_agenda->PNS_GLRDPN.''.$row_agenda->PNS_PNSNAM.''.$row_agenda->PNS_GLRBLK;
-					$text .= "\n Instansi   :".$row_agenda->instansi;
+					$text .= "\n Layanan :".$row_agenda->layanan_nama;
+					$text .= "\n NIP :".$row_agenda->nip;
+					$text .= "\n Nama PNS :".$row_agenda->PNS_GLRDPN.''.$row_agenda->PNS_PNSNAM.''.$row_agenda->PNS_GLRBLK;
+					$text .= "\n Instansi :".$row_agenda->instansi.'</pre>';
 					$this->telegram->sendApiMsg($value->telegram_id, $text , false, 'HTML');
+				
 				}	
 			}
 		}

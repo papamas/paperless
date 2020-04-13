@@ -434,6 +434,10 @@
 			$("input[name=alamat]").val(alamat);
 		});	
 		
+		$('#kirimModal').on('hide.bs.modal',function(e){
+			$("#nBtnKirim").show();
+		});
+		
 		$('#kirimModal').on('show.bs.modal',function(e){
 		     $('#kirimModal #msg').text('Konfirmasi Pengiriman Usul')
 			.removeClass( "text-green")
@@ -462,7 +466,8 @@
 					$('#kirimModal #msg').text('Usul sudah dikirim ke BKN....')
 						.removeClass( "text-blue")
 						.addClass( "text-green" );
-					refreshTable();											 
+					refreshTable();	
+					$("#nBtnKirim").hide();
 			    }, // akhir fungsi sukses
 		    });
 			return false;

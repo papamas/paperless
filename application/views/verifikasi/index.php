@@ -152,9 +152,10 @@
 								<?php if($usul->num_rows() > 0):?>
 								<?php  foreach($usul->result() as $value):?>
 								<tr>
-									<td style="width:65px;">
+									<td style="width:100px;">
 									<a href="#" class="btn bg-orange btn-flat btn-xs" data-tooltip="tooltip"  title="Lihat Berkas" data-toggle="modal" data-target="#lihatModal" data-id="<?php echo '?n='.$this->myencrypt->encode($value->nip).'&l='.$this->myencrypt->encode($value->layanan_nama)?>"><i class="fa fa-search"></i></a>
-									<a href="#" class="btn btn-danger btn-flat btn-xs" data-tooltip="tooltip"  title="Kirim Teknis" data-toggle="modal" data-target="#kirimModal" data-nip="<?php echo $value->nip?>" data-agenda="<?php echo $value->agenda_id?>" ><i class="fa fa-mail-forward"></i></a>
+									<a href="#" class="btn btn-danger btn-flat btn-xs" data-tooltip="tooltip"  title="Set BTL" data-toggle="modal" data-target="#btlModal" data-nip="<?php echo $value->nip?>" data-agenda="<?php echo $value->agenda_id?>" ><i class="fa fa-mail-reply"></i></a>
+                                    <a href="#" class="btn btn-danger btn-flat btn-xs" data-tooltip="tooltip"  title="Kirim Teknis" data-toggle="modal" data-target="#kirimModal" data-nip="<?php echo $value->nip?>" data-agenda="<?php echo $value->agenda_id?>" ><i class="fa fa-mail-forward"></i></a>
                                      
 									</td>
 									<td><?php echo $value->agenda_nousul?></td>													
@@ -273,6 +274,32 @@
 		</div>	
 	</div>
 	
+	<div class="modal fade" id="btlModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+					<h4 class="modal-title" id="myModalLabel"><span id="msg"></span></h4>
+				</div>
+				<div class="modal-body">
+					<form id="nfrmBtl">
+					  <input type="hidden" name="<?php echo $this->security->get_csrf_token_name()?>" value="<?php echo $this->security->get_csrf_hash()?>" style="display: none">
+					  <div class="form-group"><label>Yakin berkas ini akan anda BTL Kan ?</label></div>
+                       <input type="hidden" name="nip"/>	
+					   <input type="hidden" name="agenda"/>	
+					    <div class="form-group">
+							<label>Masukan Alasan BTL</label>
+							<textarea name="alasan" class="form-control"></textarea>
+						</div>
+					</form>
+				 </div>
+				<div class="modal-footer">
+					<button type="button" class="btn bg-maroon" id="nBtnBtl">OK SET BTL !</button>
+				</div>
+			</div>
+		</div>	
+	</div>
+	
 	<script src="<?php echo base_url()?>assets/plugins/jQuery/jQuery-2.1.4.min.js"></script>    
     <script src="<?php echo base_url()?>assets/bootstrap/js/bootstrap.min.js"></script> 
     <script src="<?php echo base_url()?>assets/dist/js/app.min.js"></script>
@@ -300,6 +327,10 @@
 	    });
 		
 		$('#kirimModal').on('show.bs.modal',function(e){
+			$("#nBtnKirim").show();
+		});
+		
+		$('#kirimModal').on('show.bs.modal',function(e){
 		     $('#kirimModal #msg').text('Konfirmasi Pengiriman Berkas')
 			.removeClass( "text-green")
 		    .removeClass( "text-blue" ); 
@@ -323,12 +354,61 @@
 				type: "POST",
 				url : "<?php echo site_url()?>/verifikasi/kirim",
 				data: data,
-				success: function(){					
+				success: function(){
+					$("#nBtnKirim").hide();
+					
 					$('#kirimModal #msg').text('Berkas sudah dikirim ke Teknis....')
 						.removeClass( "text-blue")
-						.addClass( "text-green" );
-					refreshTable();											 
+						.addClass( "text-green");
+					refreshTable();
+						
 			    }, // akhir fungsi sukses
+		    });
+			return false;
+		});
+		
+		$('#btlModal').on('hide.bs.modal',function(e){
+			$("#nBtnBtl").show();
+		});	
+		$('#btlModal').on('show.bs.modal',function(e){
+		     $('#btlModal #msg').text('Konfirmasi Set BTL Berkas')
+			.removeClass( "text-green")
+		    .removeClass( "text-blue" ); 
+			
+			var nip		=  $(e.relatedTarget).attr('data-nip');
+			var agenda  =  $(e.relatedTarget).attr('data-agenda');
+			
+			$('#btlModal input[name=nip]').val(nip);
+			$('#btlModal input[name=agenda]').val(agenda);
+		});
+		
+		$("#nBtnBtl").on("click",function(e){
+			e.preventDefault();
+			var data = $('#nfrmBtl').serialize();
+			
+			$('#btlModal #msg').text('Updating Please Wait.....')
+                     .removeClass( "text-green")
+				     .addClass( "text-blue" );  
+			
+			$.ajax({
+				type: "POST",
+				url : "<?php echo site_url()?>/verifikasi/setBtl",
+				data: data,
+				success: function(){	
+					$("#nBtnBtl").hide();
+					
+					$('#btlModal #msg').text('Berkas sudah BTL dan dikirim ulang ke instansi')
+						.removeClass( "text-blue")
+						.addClass( "text-green" );
+					refreshTable();		
+					
+			    }, // akhir fungsi sukses
+				error : function(r) {				    
+					 $('#btlModal #msg').text(r.responseJSON.error)
+                     .removeClass( "text-green")
+					 .removeClass( "text-blue")
+				     .addClass( "text-red" ); 
+				}	
 		    });
 			return false;
 		});

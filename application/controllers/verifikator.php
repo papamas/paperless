@@ -688,19 +688,19 @@ class Verifikator extends MY_Controller {
 				if(!empty($value->telegram_id))
 				{	
 					$this->telegram->sendApiAction($value->telegram_id);
-					$text  = "Hello, <strong>".$value->first_name ." ".$value->last_name. "</strong>  Berkas kamu sudah selesai verifikasi dengan hasil berikut ini :";
-					$text .= "\n Tanggal    		:".date('d-m-Y H:i:s');
-					$text .= "\n Nomor Usul 		:".$row_agenda->agenda_nousul;
-					$text .= "\n Layanan			:".$row_agenda->layanan_nama;
-					$text .= "\n NIP				:".$row_agenda->nip;
-					$text .= "\n Nama PNS			:".$row_agenda->PNS_GLRDPN.''.$row_agenda->PNS_PNSNAM.''.$row_agenda->PNS_GLRBLK;
-					$text .= "\n Tahapan			:".$row_agenda->tahapan_nama;
-					(!empty($row_agenda->status_level_satu) ? $text .= "\n Status  Level 1	:".$row_agenda->status_level_satu : '');
-					(!empty($row_agenda->status_level_dua)  ? $text .= "\n Status  Level 2	:".$row_agenda->status_level_dua : '');
-					(!empty($row_agenda->status_level_tiga) ? $text .= "\n Status  Level 3	:".$row_agenda->status_level_tiga : '');
-					$text .= "\n Status Berkas		:".$row_agenda->nomi_status;
-					$text .= "\n Keterangan			:".$row_agenda->nomi_alasan;
-					$text .= "\n Instansi   		:".$row_agenda->instansi;
+					$text  = "<pre>Hello, <strong>".$value->first_name ." ".$value->last_name. "</strong>  Berkas kamu sudah selesai verifikasi dengan hasil berikut ini :";
+					$text .= "\n Tanggal :".date('d-m-Y H:i:s');
+					$text .= "\n Nomor Usul :".$row_agenda->agenda_nousul;
+					$text .= "\n Layanan :".$row_agenda->layanan_nama;
+					$text .= "\n NIP :".$row_agenda->nip;
+					$text .= "\n Nama PNS :".$row_agenda->PNS_GLRDPN.' '.$row_agenda->PNS_PNSNAM.' '.$row_agenda->PNS_GLRBLK;
+					$text .= "\n Tahapan :".$row_agenda->tahapan_nama;
+					(!empty($row_agenda->status_level_satu) ? $text .= "\n Status Level 1 :".$row_agenda->status_level_satu : '');
+					(!empty($row_agenda->status_level_dua)  ? $text .= "\n Status Level 2 :".$row_agenda->status_level_dua : '');
+					(!empty($row_agenda->status_level_tiga) ? $text .= "\n Status Level 3 :".$row_agenda->status_level_tiga : '');
+					$text .= "\n Status Berkas :".$row_agenda->nomi_status;
+					$text .= "\n Keterangan :".$row_agenda->nomi_alasan;
+					$text .= "\n Instansi :".$row_agenda->instansi.'</pre>';
 					$this->telegram->sendApiMsg($value->telegram_id, $text , false, 'HTML');
 										
 				}	
