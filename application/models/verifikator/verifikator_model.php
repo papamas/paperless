@@ -430,7 +430,8 @@ GROUP BY a.nip,b.layanan_id,a.agenda_id";
 					$set['nomi_status']   	  = $data['status'];
 					$set['nomi_alasan']		  = $data['catatan'];
 					$set['nomi_verifby']	  = $this->session->userdata('user_id');
-					$set['tahapan_id']   	  = 7;					
+					$set['tahapan_id']   	  = 7;		
+                    $this->db->set('verify_date','NOW()',FALSE);					
 				break;
 				case 23:
 					$set['nomi_status']   	  = $data['status'];
