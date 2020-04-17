@@ -71,7 +71,7 @@ class pdf extends TCPDF
 			'dash'  => 0,
 			'color' => array(0, 0, 0)
 			);
-		$this->Line(10, 46, $this->getPageWidth() - 10, 46, $style);
+		$this->Line(5, 46, $this->getPageWidth() - 5, 46, $style);
 		$style1 = array(
 			'width' => 1,
 			'cap'   => 'butt',
@@ -79,7 +79,7 @@ class pdf extends TCPDF
 			'dash'  => 0,
 			'color' => array(0, 0, 0)
 			);
-		$this->Line(10, 47, $this->getPageWidth() - 10, 47, $style1);
+		$this->Line(5, 47, $this->getPageWidth() - 5, 47, $style1);
 	}
 
 	public function Header2()

@@ -153,10 +153,10 @@ class Register extends CI_Controller {
 				$instansi		= $this->_getInstansi_name_by_id($data['id_instansi']);
 				// send to telegram API
 				$this->telegram->sendApiAction($value->telegram_id);
-				$text = "Hello, <strong>".$value->first_name ." ".$value->last_name. "</strong> Ada Member baru nih";
+				$text = "<pre>Hello, <strong>".$value->first_name ." ".$value->last_name. "</strong> Ada Member baru nih";
 				$text .= "\n Nama :". $data['first_name']." ".$data['last_name'];
 				$text .= "\n NIP  :". $data['nip'];
-				$text .= "\n Instansi  :". $instansi;
+				$text .= "\n Instansi  :". $instansi.'</pre>';
 				$this->telegram->sendApiMsg($value->telegram_id, $text , false, 'HTML');
 			}
 		}

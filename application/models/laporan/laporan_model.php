@@ -12,6 +12,9 @@ class Laporan_model extends CI_Model {
 	private     $tablesyarat 		= 'syarat_layanan';
 	private     $usul			    = 'usul_taspen';
 	private     $tabletahapan 	    = 'tahapan';
+	private     $tablejabatan		= 'jabatan';
+	private     $tablespesimen      = 'spesimen_pengeluaran';
+	private     $tablepengeluaran	= 'nomor_pengeluaran';
 	
     function __construct()
     {
@@ -225,4 +228,82 @@ $sql_order ";
 	    $query 		= $this->db->query($q);		
         return      $query;
 	}	
+	
+	
+	public function getPengeluaran()
+	{
+		$agenda_id		= trim($this->input->post('nomorUsul'));
+				
+		$sql ="SELECT a.agenda_nousul , formatTanggal(a.agenda_tgl) tgl_usul,
+		b.nomi_persetujuan, formatTanggal(b.tanggal_persetujuan) tgl_acc,
+		c.PNS_NIPBARU, c.PNS_PNSNAM,
+		d.nama_jabatan, d.nama_daerah, d.lokasi_daerah,
+		formatTanggal(NOW()) sekarang,
+		e.nip nip_spesimen, e.jabatan jabatan_spesimen,
+		REPLACE(REPLACE(REPLACE(REPLACE(e.format_surat,'bln',toRoman(MONTH(NOW()))),'tahun',YEAR(NOW())),'jenis_layanan',g.layanan_sk),'nomor_surat',h.last_number) nomor_surat,
+		f.PNS_PNSNAM nama_spesimen, f.PNS_GLRDPN glrdpn_spesimen, f.PNS_GLRBLK glrblk_spesimen
+		FROM $this->tableagenda a
+		LEFT JOIN $this->tablenom b ON a.agenda_id = b.agenda_id
+		LEFT JOIN $this->tablepupns c ON b.nip = c.PNS_NIPBARU
+		LEFT JOIN $this->tablejabatan d ON a.agenda_ins = d.id_instansi
+		LEFT JOIN $this->tablespesimen e ON e.layanan_id = a.layanan_id
+		LEFT JOIN $this->tablepupns f ON (e.nip = f.PNS_NIPBARU AND e.aktif='1') 
+		LEFT JOIN $this->tablelayanan g ON g.layanan_id = a.layanan_id
+		LEFT JOIN $this->tablepengeluaran h ON h.agenda_id = a.agenda_id
+		WHERE trim(a.agenda_id)= trim('$agenda_id') AND b.nomi_status='ACC' ";
+		
+		return $this->db->query($sql);
+	
+	}	
+	
+	public function getAgenda($search)
+	{
+	    $sql="SELECT a.agenda_id id ,CONCAT(a.agenda_nousul,' - ', b.INS_NAMINS) as text		
+		FROM $this->tableagenda a
+		LEFT JOIN $this->tableinstansi b ON a.agenda_ins = b.INS_KODINS
+		WHERE a.agenda_nousul LIKE '$search%' ";
+	    return $this->db->query($sql);
+	   
+	}	
+	
+	public function getAgenda_byid($id)
+	{
+		$sql="SELECT a.agenda_id ,a.layanan_id		
+		FROM $this->tableagenda a
+		WHERE trim(a.agenda_id)= trim('$id') ";
+	    return $this->db->query($sql);
+	}	
+	
+	public function getPengeluaran_byid($id)
+	{
+		$sql="SELECT a.agenda_id,a.last_number		
+		FROM $this->tablepengeluaran a
+		WHERE trim(a.agenda_id)= trim('$id') ";
+	    return $this->db->query($sql);
+	}	
+	
+	public function addPengeluaran()
+	{
+		$agenda_id				= trim($this->input->post('nomorUsul'));		
+		$pengeluaran			= $this->getPengeluaran_byid($agenda_id);
+		$row					= $this->getAgenda_byid($agenda_id)->row();
+		
+		if($pengeluaran->num_rows() == 0)
+		{	
+			$data['agenda_id']		= $row->agenda_id;
+			$data['layanan_id']     = $row->layanan_id;
+			$data['last_number']    = trim($this->input->post('nomorPengeluaran'));
+			$this->db->insert($this->tablepengeluaran, $data);
+		}
+		else
+		{
+			$set['agenda_id']	   = $row->agenda_id;
+			$set['layanan_id']     = $row->layanan_id;
+			$set['last_number']    = trim($this->input->post('nomorPengeluaran'));	
+			
+			$this->db->set($set);
+			$this->db->where('agenda_id',$agenda_id);
+			$this->db->update($this->tablepengeluaran);
+		}
+	}
 }
