@@ -18,7 +18,7 @@ class Berkas_model extends CI_Model {
 	public function getBerkas()
 	{		
 	    $searchby  = $this->input->post('searchby');
-		$search    = $this->input->post('search');
+		$search    = trim($this->input->post('search'));
 		
 		switch($searchby){
             case 1:

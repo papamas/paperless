@@ -84,11 +84,9 @@
 						  <h3 class="box-title">Lacak Status Usul TASPEN</h3>
 						</div><!-- /.box-header -->
 						<!-- form start -->
-						<form class="form-horizontal" role="form" method="post" action="<?php echo site_url()?>/taspen/getBerkas">
+						<form name="frmLacak" class="form-horizontal" role="form" method="post" action="<?php echo site_url()?>/taspen/getBerkas">
 						  <div class="box-body">
 							<input type="hidden" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash();?>" style="display: none">
-							
-							
 							<div class="form-group row">							   						 
 							    <label class=" control-label col-md-2 col-sm-2 col-xs-2">Filter</label>									
 								<div class="col-md-4 col-sm-4 col-xs-4">
@@ -271,6 +269,10 @@
 			})			
 	    });
 		
+		$('#kirimModal').on('hide.bs.modal',function(e){
+			$("#nBtnKirim").show();
+		});
+		
 		$('#kirimModal').on('show.bs.modal',function(e){
 		     $('#kirimModal #msg').text('Konfirmasi Pengiriman Kembali Berkas BTL')
 			.removeClass( "text-green")
@@ -295,11 +297,12 @@
 				type: "POST",
 				url : "<?php echo site_url()?>/taspen/kirimBTL",
 				data: data,
-				success: function(){					
-					$('#kirimModal #msg').text('Berkas sudah dikirim kembali ke Tim Teknis BKN, silahkan lakukan pencarian ulang untuk melihat perubahan')
+				success: function(){	
+                    $("#nBtnKirim").hide();				
+					$('#kirimModal #msg').text('Berkas sudah dikirim kembali ke Tim Teknis BKN')
 						.removeClass( "text-blue")
 						.addClass( "text-green" );
-					//refreshTable();			
+					refreshTable();			
 			    }, // akhir fungsi sukses
 				error : function(r) {
 					$('#kirimModal #msg').text('Something wrong..')
@@ -310,6 +313,17 @@
 		    });
 			return false;
 		});
+		
+		function refreshTable(){						
+			$.ajax({   
+			    type: 'POST',   
+			    url: '<?php echo site_url()?>/taspen/getBerkasAll',   				
+			    data: $('form[name=frmLacak]').serialize(),
+			    success: function(res) {
+					$("#tb-lacak").html(res);
+				},
+			});
+		}
 		
 		// hide empty column
 		var columns = $("#tb-lacak > tbody > tr:first > td").length;

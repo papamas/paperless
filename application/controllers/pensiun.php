@@ -278,12 +278,12 @@ class Pensiun extends MY_Controller {
 				$this->pdf->Text(25, 58, ':');
 				$this->pdf->writeHTMLCell(70,55,28,58,'Penyampaian Asli Pertimbangan Teknis an. '.$row->PNS_PNSNAM.' ,dkk',0,0,false,true,'J',true);
 				
-				$this->pdf->Text(140, 60, 'Kepada');
-				$this->pdf->Text(130, 65, 'Yth.');
-				$this->pdf->writeHTMLCell(60,65,140,65,$row->nama_jabatan,0,0,false,true,'J',true);
-				$this->pdf->writeHTMLCell(60,65,140,75,$row->nama_daerah,0,0,false,true,'J',true);
-				$this->pdf->Text(140, 85, 'Di');	
-				$this->pdf->Text(145, 90, $row->lokasi_daerah);
+				$this->pdf->Text(130, 60, 'Kepada');
+				$this->pdf->Text(120, 65, 'Yth.');
+				$this->pdf->writeHTMLCell(75,65,130,65,$row->nama_jabatan,0,0,false,true,'J',true);
+				$this->pdf->writeHTMLCell(75,65,130,75,$row->nama_daerah,0,0,false,true,'J',true);
+				$this->pdf->Text(130, 80, 'Di');	
+				$this->pdf->Text(135, 85, $row->lokasi_daerah);
 				
 				$text='Berkenaan dengan surat Saudara Nomor : '.$row->agenda_nousul.' Tanggal '.$row->tgl_usul.' , bersama ini disampaikan Asli Keputusan Kepala Badan Kepegawaian Negara Tentang Pensiun PNS atas nama : ';
 				$this->pdf->Text(10, 100, '1.');		
@@ -429,36 +429,37 @@ class Pensiun extends MY_Controller {
 				$this->pdf->Text(130,$starty+40,ucwords(strtolower($row->nama_spesimen)));
 				$this->pdf->Text(130,$starty+45, 'NIP. '.$row->nip_spesimen);
 				
-				
-				$tbl ='
-		<table  cellspacing="0" cellpadding="1" border="1" nobr="true">
-			<tr>
-				<td width="80px;">Diterima</td>
-				<td width="200px;"> MANADO</td>			
-			</tr>
-			<tr>
-				<td>Pada Tanggal</td>
-				<td></td>			
-			</tr>
-			<tr>
-				<td>Nama</td>
-				<td></td>			
-			</tr>
-			<tr>
-				<td>NIP</td>
-				<td></td>			
-			</tr>
-			<tr>
-				<td>Jabatan</td>
-				<td></td>			
-			</tr>
-			<tr>
-				<td height="55px">Tanda Tangan</td>
-				<td></td>			
-			</tr></table>';		
-				$this->pdf->SetXY(10,$starty+15);
-				$this->pdf->writeHTML($tbl, true, false, false, false, '');	
-
+				if($this->input->post('tandaTerima') == 1)
+				{		
+					$tbl ='
+						<table  cellspacing="0" cellpadding="1" border="1" nobr="true">
+							<tr>
+								<td width="80px;">Diterima</td>
+								<td width="200px;"> MANADO</td>			
+							</tr>
+							<tr>
+								<td>Pada Tanggal</td>
+								<td></td>			
+							</tr>
+							<tr>
+								<td>Nama</td>
+								<td></td>			
+							</tr>
+							<tr>
+								<td>NIP</td>
+								<td></td>			
+							</tr>
+							<tr>
+								<td>Jabatan</td>
+								<td></td>			
+							</tr>
+							<tr>
+								<td height="55px">Tanda Tangan</td>
+								<td></td>			
+							</tr></table>';		
+					$this->pdf->SetXY(10,$starty+15);
+					$this->pdf->writeHTML($tbl, true, false, false, false, '');	
+				}
 				
 			}		
 		

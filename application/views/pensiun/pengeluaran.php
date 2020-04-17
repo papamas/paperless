@@ -69,7 +69,14 @@
 									<span class="help-block text-red"><?php echo form_error('nomorPengeluaran'); ?></span>	
 								</div>
 							</div>
-														
+							<div class="form-group row">
+							    <label class="control-label col-md-2 col-sm-2 col-xs-2">Cetak Tanda Terima:</label>
+								<div class="col-md-4 col-sm-4 col-xs-4">
+								    <input type="radio" value="1" name="tandaTerima"  <?php echo  set_radio('tandaTerima', 1);?>  />&nbsp;Ya
+									<input type="radio" value="2" name="tandaTerima"  <?php echo  set_radio('tandaTerima', 2,true);?>  />&nbsp;Tidak
+									<span class="help-block text-red"><?php echo form_error('tanda_terima'); ?></span>
+								</div>
+							</div>		
 						   </div>
 						    <div class="box-footer">
 							<button type="submit" class="btn btn-primary"><i class="fa fa-print"></i>&nbsp;Print</button>

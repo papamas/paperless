@@ -709,6 +709,10 @@
 			refreshTempAnak();
 		});	
 		
+		$('#kirimModal').on('hide.bs.modal',function(e){
+			$("#nBtnKirim").show();			
+		});	
+		
 		$('#kirimModal').on('show.bs.modal',function(e){
 		     $('#kirimModal #msg').text('Konfirmasi Pengiriman Usul')
 			.removeClass( "text-green")
@@ -734,6 +738,8 @@
 				url : "<?php echo site_url()?>/taspen/kirim",
 				data: data,
 				success: function(){					
+					$("#nBtnKirim").hide();
+					
 					$('#kirimModal #msg').text('Usul sudah dikirim ke BKN....')
 						.removeClass( "text-blue")
 						.addClass( "text-green" );

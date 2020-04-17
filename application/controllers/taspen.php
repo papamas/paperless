@@ -950,7 +950,7 @@ class Taspen extends MY_Controller {
 		{
 			$this->db->trans_rollback();
 			
-			$data['pesan']		= 'Berkas Gagal dikirim kembali ke BKN';
+			$data['pesan']		= 'Berkas Gagal dikirim ke BKN';
 			
 			$this->output
 			->set_status_header(406)
@@ -961,12 +961,12 @@ class Taspen extends MY_Controller {
 		{
 			$data['usul_id']	  = $this->input->post('usul_id');
 			$data['nip']          = $this->input->post('usul_nip');	
-			
+			$data['pesantg']	  = ' Usul berkas TASPEN baru  ';
 			// send notifikasi to  telegram			
 			$this->send_to_Telegram($data);			
 			
 			$this->db->trans_commit();
-			$data['pesan']		= 'Berkas berhasil dikirim kembali ke BKN';
+			$data['pesan']		= 'Berkas berhasil dikirim ke BKN';
 			
 			$this->output
 			->set_status_header(200)
@@ -1054,7 +1054,9 @@ class Taspen extends MY_Controller {
 			$html .='<tr>';
 			$html .='<td>';
             $html .='<button class="edit btn btn-primary btn-xs" data-tooltip="tooltip"  title="Edit Usul" data-nomor="'.$value->nomor_usul.'" data-tgl="'.$value->tgl.'" data-layanan="'.$value->layanan_id.'" data-nama="'.$value->nama_pns.'" data-jd="'.$value->nama_janda_duda.'" data-nopen="'.$value->nopen.'" data-usul="'.$value->usul_id.'" data-nip="'.$value->nip.'"><i class="fa fa-edit"></i></button>';
-            $html .='&nbsp;<a href="#" class="btn btn-danger btn-flat btn-xs" data-tooltip="tooltip"  title="Kirim Usul BKN" data-toggle="modal" data-target="#kirimModal" data-nip="'.$value->nip.'" data-usul="'.$value->usul_id.'" ><i class="fa fa-mail-forward"></i></a>';
+			$html .='&nbsp;<a href="#" class="btn btn-success btn-flat btn-xs" data-toggle="modal" data-target="#istriModal" data-tooltip="tooltip"  title="Tambah data Istri" data-usul="'.$value->usul_id.'"> <i class="fa fa-user-plus"></i></a>';
+			$html .='&nbsp;<a href="#" class="btn btn-primary btn-flat btn-xs" data-toggle="modal" data-target="#anakModal" data-tooltip="tooltip"  title="Tambah data Anak" data-usul="'.$value->usul_id.'"><i class="fa fa-child"></i></a>';
+			$html .='&nbsp;<a href="#" class="btn btn-danger btn-flat btn-xs" data-tooltip="tooltip"  title="Kirim Usul BKN" data-toggle="modal" data-target="#kirimModal" data-nip="'.$value->nip.'" data-usul="'.$value->usul_id.'" ><i class="fa fa-mail-forward"></i></a>';
 			$html .='</td>';
 			$html .='<td>'.$value->nomor_usul.'</td>';
 			$html .='<td>'.$value->tgl.'</td>';
@@ -1160,7 +1162,7 @@ class Taspen extends MY_Controller {
 	public function getBerkas()
 	{
 		$this->form_validation->set_rules('searchby', 'Filter', 'required');
-		$this->form_validation->set_rules('search', 'Data', 'required');		
+		$this->form_validation->set_rules('search', 'Data', 'trim|required');		
 		
 		$perintah           		   = $this->input->post('perintah');
 		
@@ -1208,6 +1210,78 @@ class Taspen extends MY_Controller {
 			}
 		}	
 	}
+	
+	public function getBerkasAll()
+	{
+		$berkas	  						   = $this->berkas->getBerkas();	
+		
+		$html = '';
+		$html .='<table id="tb-lacak" class="table table-striped table-condensed">
+						<thead>
+						    <tr>
+								<th></th>
+								<th>NOMOR</th>									
+								<th>NIP</th>
+								<th>NAMA PNS</th>
+								<th>NAMA</th>
+								<th>UPDATE</th>
+								<th>PELAYANAN</th>
+								<th>FILE</th>
+								<th>STATUS</th>
+								<th>TAHAPAN</th>
+							</tr>
+					</thead>';
+		$html .='<tbody>';	
+		$link  ='';
+		$link2 ='';
+		
+		foreach($berkas->result() as $value)
+		{
+			if($value->usul_status == 'BTL')
+			{	
+				$link= '<a href="#" class="btn bg-maroon btn-flat btn-xs" data-tooltip="tooltip"  title="Kirim Ulang Berkas BTL ini" data-toggle="modal" data-target="#kirimModal" data-nip="'.$this->myencrypt->encode($value->nip).'" data-usul="'.$this->myencrypt->encode($value->usul_id).'" ><i class="fa fa-mail-forward"></i></a>';	
+				$link2= '&nbsp;<a href="#" class="btn bg-orange btn-xs" data-tooltip="tooltip"  title="Cek Keterangan Alasan BTL" data-toggle="modal" data-target="#cekModal" data-id="?n='.$this->myencrypt->encode($value->nip).'&a='.$this->myencrypt->encode($value->usul_id).'">'.$value->usul_status.'</a>';
+			}
+			else
+			{
+				$link2='<span class="'.$value->bg.'">'.$value->usul_status.'</span>';
+			}
+			
+			$html .='<tr>';
+			$html .='<td>';
+			$html .= $link;
+			$html .='</td>';
+			$html .='<td>'.$value->	nomor_usul.'</td>';
+			$html .='<td>'.(!empty($value->nip_lama) ? $value->nip_lama.' / '.$value->nip_baru : $value->nip).'</td>';
+		    $html .='<td>'.$value->nama_pns.'</td>';
+			$html .='<td>'.$value->nama_janda_duda.'</td>';
+			$html .='<td>'.$value->updated_date.'</td>';
+			$html .='<td>'.$value->layanan_nama.'</td>';
+			$html .='<td>';
+			if(!empty($value->file_persetujuan))
+			{
+				$file = $value->file_persetujuan;
+				
+				$html .='<span data-toggle="tooltip" data-original-title="Ada File Persetujuan">
+				<i class="fa fa-file-pdf-o" data-toggle="modal" data-target="#lihatFileModal" data-id="?t='.$this->myencrypt->encode('application/pdf').'&f='.$this->myencrypt->encode($file).'" style="color:red;"></i></span>';
+			}
+			else
+			{
+				$html .= '<span data-toggle="tooltip" data-original-title="Tidak Ada File Persetujuan">
+				<i class="fa fa-file-o" style="color:red;"></i></span>';
+			}			
+			$html .='</td>';
+			$html .='<td>';
+			$html .= $link2;
+			$html .='</td>';
+			$html .='<td>';
+			$html .= '<span class="badge bg-maroon">'.$value->tahapan_nama.'</span>';
+			$html .='</td>';
+            $html .='</tr>';
+		}
+		$html .='</tbody></table>';
+		echo $html;	
+	}	
 	
 	private function _getBerkasExcel($q)
 	{
@@ -1445,12 +1519,43 @@ class Taspen extends MY_Controller {
 		$data['usul_nip']     = $this->myencrypt->decode($this->input->post('usul_nip'));
 		$data['usul_id']      = $this->myencrypt->decode($this->input->post('usul_id'));
 		
+		
+		$this->db->trans_begin();
 		$data['response']	= $this->berkas->KirimBTL($data);
 		
-		$this->output
+		if ($this->db->trans_status() === FALSE)
+		{
+			$this->db->trans_rollback();
+			
+			$data['pesan']		= 'Berkas Gagal dikirim kembali ke BKN';
+			
+			$this->output
+			->set_status_header(406)
+			->set_content_type('application/json', 'utf-8')
+			->set_output(json_encode($data));
+		}
+		else
+		{
+			// send notifikasi to  telegram			
+			$data['usul_id']		= $this->myencrypt->decode($this->input->post('usul_id'));
+			$data['nip']			= $this->myencrypt->decode($this->input->post('usul_nip'));
+		    $data['pesantg']		= ' berkas BTL dari TASPEN yang sudah dikirim ulang ';
+		
+			$this->send_to_Telegram($data);			
+			
+			$this->db->trans_commit();
+			$data['pesan']		= 'Berkas berhasil dikirim kembali ke BKN';
+			
+			$this->output
 			->set_status_header(200)
 			->set_content_type('application/json', 'utf-8')
 			->set_output(json_encode($data));
+			
+		}	
+		
+		
+		
+		
 		
 	}
 	
@@ -1460,6 +1565,7 @@ class Taspen extends MY_Controller {
 	{
 		$usul_id		= $data['usul_id'];
 		$nip			= $data['nip'];
+		$pesan          = $data['pesantg'];
 		
 		$row_usul	    =  $this->usul->getUsul_byid($usul_id,$nip)->row();
 		$TelegramAkun   =  $this->usul->getTelegramAkun_bybidang($row_usul->layanan_bidang);
@@ -1472,7 +1578,7 @@ class Taspen extends MY_Controller {
 				if(!empty($value->telegram_id))
 				{	
 					$this->telegram->sendApiAction($value->telegram_id);
-					$text  = "<pre>Hello, <strong>".$value->first_name ." ".$value->last_name. "</strong>  Ada Usul berkas TASPEN baru nih :";
+					$text  = "<pre>Hello, <strong>".$value->first_name ." ".$value->last_name. "</strong>  Ada ".$pesan." nih :";
 					$text .= "\n Tanggal :".date('d-m-Y H:i:s');
 					$text .= "\n Nomor Usul :".trim($row_usul->nomor_usul);
 					$text .= "\n Nama PNS :".$row_usul->nama_pns;
