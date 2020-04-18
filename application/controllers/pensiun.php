@@ -201,7 +201,7 @@ class Pensiun extends MY_Controller {
         $data['jabatan']  =  $this->auth->getJabatan();
 		$data['member']	  =  $this->auth->getCreated();
 		$data['avatar']	  =  $this->auth->getAvatar();
-		
+		$data['spesimen'] =  $this->laporan->getSpesimen_pengeluaran();
 		
 		if(!$this->allow)
 		{
@@ -215,8 +215,12 @@ class Pensiun extends MY_Controller {
 	{
 		$this->form_validation->set_rules('nomorUsul', 'Nomor Usul', 'required');
 		$this->form_validation->set_rules('nomorPengeluaran', 'Nomor Pengeluaran', 'required');
-
-		
+		$this->form_validation->set_rules('spesimenPengeluaran', 'Spesimen Pengeluaran', 'required');
+		$this->form_validation->set_rules('checkSatker', 'Check Satker', 'trim');
+		$this->form_validation->set_rules('tandaTerima', 'Tanda Terima', 'trim');
+				
+		$check		= $this->input->post('checkSatker');
+				
 		if($this->form_validation->run() == FALSE)
 		{
 			$data['menu']     =  $this->menu->build_menu();		
@@ -226,6 +230,7 @@ class Pensiun extends MY_Controller {
 			$data['jabatan']  =  $this->auth->getJabatan();
 			$data['member']	  =  $this->auth->getCreated();
 			$data['avatar']	  =  $this->auth->getAvatar();
+			$data['spesimen'] =  $this->laporan->getSpesimen_pengeluaran();
 			
 			if(!$this->allow)
 			{
@@ -238,8 +243,10 @@ class Pensiun extends MY_Controller {
 		{	
 			$add				= $this->laporan->addPengeluaran();
 			$pengeluaran		= $this->laporan->getPengeluaran();
-			$row 				= $pengeluaran->first_row();		
+			$row 				= $pengeluaran->first_row();
+			$spesimen           = $this->laporan->getSpesimen_pengeluaran_by_nip();
 			
+						
 			$this->load->library('PDF', array());	
 			
 			$this->pdf->setPrintHeader(true);
@@ -278,12 +285,21 @@ class Pensiun extends MY_Controller {
 				$this->pdf->Text(25, 58, ':');
 				$this->pdf->writeHTMLCell(70,55,28,58,'Penyampaian Asli Pertimbangan Teknis an. '.$row->PNS_PNSNAM.' ,dkk',0,0,false,true,'J',true);
 				
+				if(strlen($row->satker) > 41 || strlen($row->nama_jabatan) > 41 )
+				{
+				   $yd	=75;
+				}
+				else
+				{
+					$yd  =70;						
+				}
+					
 				$this->pdf->Text(130, 60, 'Kepada');
 				$this->pdf->Text(120, 65, 'Yth.');
-				$this->pdf->writeHTMLCell(75,65,130,65,$row->nama_jabatan,0,0,false,true,'J',true);
-				$this->pdf->writeHTMLCell(75,65,130,75,$row->nama_daerah,0,0,false,true,'J',true);
-				$this->pdf->Text(130, 80, 'Di');	
-				$this->pdf->Text(135, 85, $row->lokasi_daerah);
+				$this->pdf->writeHTMLCell(75,65,130,65,(empty($check) ? $row->nama_jabatan : $row->satker),0,0,false,true,'J',true);
+				$this->pdf->writeHTMLCell(75,65,130,$yd,$row->nama_daerah,0,0,false,true,'J',true);
+				$this->pdf->Text(130, $yd+5, 'Di');	
+				$this->pdf->Text(135, $yd+10, (empty($check) ? $row->lokasi_daerah : $row->lokasi));
 				
 				$text='Berkenaan dengan surat Saudara Nomor : '.$row->agenda_nousul.' Tanggal '.$row->tgl_usul.' , bersama ini disampaikan Asli Keputusan Kepala Badan Kepegawaian Negara Tentang Pensiun PNS atas nama : ';
 				$this->pdf->Text(10, 100, '1.');		
@@ -423,11 +439,11 @@ class Pensiun extends MY_Controller {
 			
 			
 			
-				$text2='an.Kepala Kantor Regional XI Badan Kepegawaian Negara '.$row->jabatan_spesimen;
+				$text2='an.Kepala Kantor Regional XI Badan Kepegawaian Negara '.$spesimen->jabatan_spesimen;
 				$this->pdf->writeHTMLCell(60,125,130,$starty+10,$text2,0,0,false,true,'L',true);
 				
-				$this->pdf->Text(130,$starty+40,ucwords(strtolower($row->nama_spesimen)));
-				$this->pdf->Text(130,$starty+45, 'NIP. '.$row->nip_spesimen);
+				$this->pdf->Text(130,$starty+40,$spesimen->glrdpn.''.ucwords(strtolower($spesimen->nama_spesimen)).''.(!empty($spesimen->glrblk) ? ','.$spesimen->glrblk :''));
+				$this->pdf->Text(130,$starty+45, 'NIP. '.$spesimen->nip_spesimen);
 				
 				if($this->input->post('tandaTerima') == 1)
 				{		
@@ -492,4 +508,6 @@ class Pensiun extends MY_Controller {
 		}
 	    echo json_encode($data);
 	}	
+	
+	
 }

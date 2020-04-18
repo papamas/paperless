@@ -13,6 +13,7 @@ class Laporan_model extends CI_Model {
 	private     $usul			    = 'usul_taspen';
 	private     $tabletahapan 	    = 'tahapan';
 	private     $tablejabatan		= 'jabatan';
+	private     $tablesformatsurat  = 'format_surat';
 	private     $tablespesimen      = 'spesimen_pengeluaran';
 	private     $tablepengeluaran	= 'nomor_pengeluaran';
 	
@@ -233,23 +234,23 @@ $sql_order ";
 	public function getPengeluaran()
 	{
 		$agenda_id		= trim($this->input->post('nomorUsul'));
+		$spesimen		= trim($this->input->post('spesimenPengeluaran'));
 				
 		$sql ="SELECT a.agenda_nousul , formatTanggal(a.agenda_tgl) tgl_usul,
 		b.nomi_persetujuan, formatTanggal(b.tanggal_persetujuan) tgl_acc,
 		c.PNS_NIPBARU, c.PNS_PNSNAM,
 		d.nama_jabatan, d.nama_daerah, d.lokasi_daerah,
 		formatTanggal(NOW()) sekarang,
-		e.nip nip_spesimen, e.jabatan jabatan_spesimen,
-		REPLACE(REPLACE(REPLACE(REPLACE(e.format_surat,'bln',toRoman(MONTH(NOW()))),'tahun',YEAR(NOW())),'jenis_layanan',g.layanan_sk),'nomor_surat',h.last_number) nomor_surat,
-		f.PNS_PNSNAM nama_spesimen, f.PNS_GLRDPN glrdpn_spesimen, f.PNS_GLRBLK glrblk_spesimen
+		REPLACE(REPLACE(REPLACE(REPLACE(e.format_surat,'bln',toRoman(MONTH(NOW()))),'tahun',YEAR(NOW())),'jenis_layanan',f.layanan_sk),'nomor_surat',g.last_number) nomor_surat,
+		g.satker, g.lokasi
 		FROM $this->tableagenda a
 		LEFT JOIN $this->tablenom b ON a.agenda_id = b.agenda_id
 		LEFT JOIN $this->tablepupns c ON b.nip = c.PNS_NIPBARU
 		LEFT JOIN $this->tablejabatan d ON a.agenda_ins = d.id_instansi
-		LEFT JOIN $this->tablespesimen e ON e.layanan_id = a.layanan_id
-		LEFT JOIN $this->tablepupns f ON (e.nip = f.PNS_NIPBARU AND e.aktif='1') 
-		LEFT JOIN $this->tablelayanan g ON g.layanan_id = a.layanan_id
-		LEFT JOIN $this->tablepengeluaran h ON h.agenda_id = a.agenda_id
+		LEFT JOIN $this->tablesformatsurat e ON e.layanan_id = a.layanan_id
+		LEFT JOIN $this->tablelayanan f ON f.layanan_id = a.layanan_id
+		LEFT JOIN $this->tablepengeluaran g ON g.agenda_id = a.agenda_id
+		
 		WHERE trim(a.agenda_id)= trim('$agenda_id') AND b.nomi_status='ACC' ";
 		
 		return $this->db->query($sql);
@@ -293,6 +294,8 @@ $sql_order ";
 			$data['agenda_id']		= $row->agenda_id;
 			$data['layanan_id']     = $row->layanan_id;
 			$data['last_number']    = trim($this->input->post('nomorPengeluaran'));
+			$data['satker']   		= $this->input->post('satker');
+			$data['lokasi']	   		= $this->input->post('lokasiSatker');
 			$this->db->insert($this->tablepengeluaran, $data);
 		}
 		else
@@ -300,10 +303,34 @@ $sql_order ";
 			$set['agenda_id']	   = $row->agenda_id;
 			$set['layanan_id']     = $row->layanan_id;
 			$set['last_number']    = trim($this->input->post('nomorPengeluaran'));	
+			$set['satker']   		= $this->input->post('satker');
+			$set['lokasi']	   		= $this->input->post('lokasiSatker');
 			
 			$this->db->set($set);
 			$this->db->where('agenda_id',$agenda_id);
 			$this->db->update($this->tablepengeluaran);
 		}
 	}
+	
+	public function getSpesimen_pengeluaran()
+	{
+		$sql="SELECT a.nip,a.jabatan,
+		b.PNS_PNSNAM nama, b.PNS_GLRDPN glrdpn, b.PNS_GLRBLK glrblk
+		FROM $this->tablespesimen a
+		LEFT JOIN $this->tablepupns b ON a.nip = b.PNS_NIPBARU
+		WHERE a.aktif='1' ";
+	    return $this->db->query($sql);
+	}
+
+	public function getSpesimen_pengeluaran_by_nip()
+	{
+		$nip 			= $this->input->post('spesimenPengeluaran');
+		
+		$sql="SELECT a.nip nip_spesimen,a.jabatan jabatan_spesimen,
+		b.PNS_PNSNAM nama_spesimen, b.PNS_GLRDPN glrdpn, b.PNS_GLRBLK glrblk
+		FROM $this->tablespesimen a
+		LEFT JOIN $this->tablepupns b ON a.nip = b.PNS_NIPBARU
+		WHERE a.nip='$nip' ";
+	    return $this->db->query($sql)->row();
+	}		
 }
