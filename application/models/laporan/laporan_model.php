@@ -377,7 +377,7 @@ $sql_order ";
 	
 	public function getUsulTaspen($search)
 	{
-	    $sql="SELECT a.usul_id id ,CONCAT(a.nomor_usul,'-', a.nama_pns,'-',a.nama_janda_duda) as text		
+	    $sql="SELECT a.usul_id id ,CONCAT(a.nomor_usul,'-', a.nama_pns,'-',IF(a.nama_janda_duda IS NULL,'',a.nama_janda_duda)) as text		
 		FROM $this->usul a
 		WHERE a.nomor_usul LIKE '$search%' ";
 	    return $this->db->query($sql);
