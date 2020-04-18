@@ -43,68 +43,122 @@
         <section class="content ">
 		    <div class="row">
 		        <div class="col-md-12">
-					<div class="box box-primary">
+					<div class="box box-danger">
 						<div class="box-header with-border">
 						  <h3 class="box-title">Pengeluaran Bidang Pensiun</h3>
 						</div><!-- /.box-header -->
-						<!-- form start -->
-						<form class="form-horizontal" method="post" action="<?php echo site_url()?>/pensiun/getPengeluaran" role="form" >
-						<input type="hidden" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash();?>" style="display: none">
-						  <div class="box-body">
-							<div class="form-group">
-							  <label class="col-md-2 col-sm-2 col-xs-2">Nomor Usul Instansi</label>
-							    <div class="col-sm-10 col-md-10 col-xs-10">
-									<select name="nomorUsul" id="nomorUsul" class="form-control">
-										<option value="">--</option>										
-									</select>
-									<span class="help-block text-red"><?php echo form_error('nomorUsul'); ?></span>	
-							    </div>							    						  
-							</div>							
-							<div class="form-group row">
-								<label class="control-label col-md-2 col-sm-2 col-xs-2">Nomor Pengeluaran</label>
-								<div class="col-md-4 col-xs-4 col-sm-4">
-								   	<input type="number"   name="nomorPengeluaran" class="form-control" value=""/>  					
-									<span class="help-block text-red"><?php echo form_error('nomorPengeluaran'); ?></span>	
-								</div>
-								<label class="control-label col-md-2 col-sm-2 col-xs-2">Cetak Tanda Terima:</label>
-								<div class="col-md-4 col-sm-4 col-xs-4">
-								    <input type="radio" value="1" name="tandaTerima"  <?php echo  set_radio('tandaTerima', 1);?>  />&nbsp;Ya
-									<input type="radio" value="2" name="tandaTerima"  <?php echo  set_radio('tandaTerima', 2,true);?>  />&nbsp;Tidak
-									<span class="help-block text-red"><?php echo form_error('tandaTerima'); ?></span>
-								</div>
-							</div>							
-							<div class="form-group">
-							  <label class="col-md-2 col-sm-2 col-xs-2">Spesimen Pengeluaran</label>
-							    <div class="col-sm-10 col-md-10 col-xs-10">
-									<select name="spesimenPengeluaran" class="form-control">
-										<option value="">-Silahkan Pilih-</option>
-										<?php foreach($spesimen->result() as $value ):?>
-										<option value="<?php echo $value->nip?>"><?php echo $value->nama?></option>
-										<?php endforeach;?>
-									</select>
-									<span class="help-block text-red"><?php echo form_error('spesimenPengeluaran'); ?></span>	
-							    </div>							    						  
+						<div class="nav-tabs-custom">
+							<ul class="nav nav-tabs">							
+							  <li class="<?php echo $tab1 ?>"> <a href="#tab1" data-toggle="tab">INSTANSI DAERAH/PUSAT</a></li>
+							  <li class="<?php echo $tab2 ?>"> <a href="#tab2" data-toggle="tab">TASPEN</a></li>                  
+							</ul>
+						</div>	
+						<div class="tab-content">					   
+							<div class="<?php echo $tab1 ?> tab-pane" id="tab1">
+								<form class="form-horizontal" method="post" action="<?php echo site_url()?>/pensiun/getPengeluaran" role="form" >
+								<input type="hidden" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash();?>" style="display: none">
+								  <div class="box-body">
+									<div class="form-group">
+									  <label class="col-md-2 col-sm-2 col-xs-2">Nomor Usul Instansi</label>
+										<div class="col-sm-10 col-md-10 col-xs-10">
+											<select name="nomorUsul" id="nomorUsul" class="form-control">
+												<option value="">--</option>										
+											</select>
+											<span class="help-block text-red"><?php echo form_error('nomorUsul'); ?></span>	
+										</div>							    						  
+									</div>							
+									<div class="form-group row">
+										<label class="control-label col-md-2 col-sm-2 col-xs-2">Nomor Pengeluaran</label>
+										<div class="col-md-4 col-xs-4 col-sm-4">
+											<input type="number"   name="nomorPengeluaran" class="form-control" value=""/>  					
+											<span class="help-block text-red"><?php echo form_error('nomorPengeluaran'); ?></span>	
+										</div>
+										<label class="control-label col-md-2 col-sm-2 col-xs-2">Cetak Tanda Terima:</label>
+										<div class="col-md-4 col-sm-4 col-xs-4">
+											<input type="radio" value="1" name="tandaTerima"  <?php echo  set_radio('tandaTerima', 1);?>  />&nbsp;Ya
+											<input type="radio" value="2" name="tandaTerima"  <?php echo  set_radio('tandaTerima', 2,true);?>  />&nbsp;Tidak
+											<span class="help-block text-red"><?php echo form_error('tandaTerima'); ?></span>
+										</div>
+									</div>							
+									<div class="form-group">
+									  <label class="col-md-2 col-sm-2 col-xs-2">Spesimen Pengeluaran</label>
+										<div class="col-sm-10 col-md-10 col-xs-10">
+											<select name="spesimenPengeluaran" class="form-control">
+												<option value="">-Silahkan Pilih-</option>
+												<?php foreach($spesimen->result() as $value ):?>
+												<option value="<?php echo $value->nip?>"><?php echo $value->nama?></option>
+												<?php endforeach;?>
+											</select>
+											<span class="help-block text-red"><?php echo form_error('spesimenPengeluaran'); ?></span>	
+										</div>							    						  
+									</div>
+									<div class="form-group row">
+										<label class="control-label col-md-2 col-sm-2 col-xs-2">Jabatan Satuan Kerja</label>
+										<div class="col-md-9 col-xs-9 col-sm-9">
+											<textarea  name="satker" class="form-control" ></textarea> 					
+										</div>
+										<div class="col-md-1 col-xs-1 col-sm-1">
+											<input type="checkbox" class="checkbox" name="checkSatker" /> 
+										</div>
+									</div>
+									<div class="form-group row">
+										<label class="control-label col-md-2 col-sm-2 col-xs-2">Lokasi Satker</label>
+										<div class="col-md-10 col-xs-10 col-sm-10">
+											<input type="text"  name="lokasiSatker" class="form-control" value=""/>  					
+										</div>
+									</div>
+								   </div>
+									<div class="box-footer">
+									<button type="submit" class="btn btn-primary"><i class="fa fa-print"></i>&nbsp;Print</button>
+								  </div>
+								</form>
 							</div>
-							<div class="form-group row">
-								<label class="control-label col-md-2 col-sm-2 col-xs-2">Jabatan Satuan Kerja</label>
-								<div class="col-md-9 col-xs-9 col-sm-9">
-								   	<textarea  name="satker" class="form-control" ></textarea> 					
-								</div>
-								<div class="col-md-1 col-xs-1 col-sm-1">
-								    <input type="checkbox" class="checkbox" name="checkSatker" /> 
-								</div>
+							
+							<div class="<?php echo $tab2 ?> tab-pane" id="tab2">
+								<form class="form-horizontal" method="post" action="<?php echo site_url()?>/pensiun/getPengeluaranTaspen" role="form" >
+								<input type="hidden" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash();?>" style="display: none">
+								    <div class="box-body">
+										<div class="form-group">
+										  <label class="col-md-2 col-sm-2 col-xs-2">Nomor Usul Taspen</label>
+											<div class="col-sm-10 col-md-10 col-xs-10">
+												<select name="usulTaspen" id="usulTaspen" class="form-control">
+													<option value="">--</option>										
+												</select>
+												<span class="help-block text-red"><?php echo form_error('usulTaspen'); ?></span>	
+											</div>							    						  
+										</div>	
+										<div class="form-group row">
+											<label class="control-label col-md-2 col-sm-2 col-xs-2">Nomor Pengeluaran</label>
+											<div class="col-md-4 col-xs-4 col-sm-4">
+												<input type="number"   name="nomorPengeluaranTaspen" class="form-control" value=""/>  					
+												<span class="help-block text-red"><?php echo form_error('nomorPengeluaranTaspen'); ?></span>	
+											</div>
+											<label class="control-label col-md-2 col-sm-2 col-xs-2">Cetak Tanda Terima:</label>
+											<div class="col-md-4 col-sm-4 col-xs-4">
+												<input type="radio" value="1" name="tandaTerimaTaspen"  <?php echo  set_radio('tandaTerimaTaspen', 1);?>  />&nbsp;Ya
+												<input type="radio" value="2" name="tandaTerimaTaspen"  <?php echo  set_radio('tandaTerimaTaspen', 2,true);?>  />&nbsp;Tidak
+												<span class="help-block text-red"><?php echo form_error('tandaTerimaTaspen'); ?></span>
+											</div>
+										</div>
+										<div class="form-group">
+										    <label class="col-md-2 col-sm-2 col-xs-2">Spesimen Pengeluaran</label>
+											<div class="col-sm-10 col-md-10 col-xs-10">
+												<select name="spesimenPengeluaranTaspen" class="form-control">
+													<option value="">-Silahkan Pilih-</option>
+													<?php foreach($spesimen->result() as $value ):?>
+													<option value="<?php echo $value->nip?>"><?php echo $value->nama?></option>
+													<?php endforeach;?>
+												</select>
+												<span class="help-block text-red"><?php echo form_error('spesimenPengeluaranTaspen'); ?></span>	
+											</div>							    						  
+										</div>
+									</div>
+									<div class="box-footer">
+										<button type="submit" class="btn btn-primary"><i class="fa fa-print"></i>&nbsp;Print</button>
+								    </div>
+								</form>
 							</div>
-							<div class="form-group row">
-								<label class="control-label col-md-2 col-sm-2 col-xs-2">Lokasi Satker</label>
-								<div class="col-md-10 col-xs-10 col-sm-10">
-								   	<input type="text"  name="lokasiSatker" class="form-control" value=""/>  					
-								</div>
-							</div>
-						   </div>
-						    <div class="box-footer">
-							<button type="submit" class="btn btn-primary"><i class="fa fa-print"></i>&nbsp;Print</button>
-						  </div>
-						</form>
+						</div>	
 					</div>
                 </div>
             </div> 				
@@ -163,6 +217,43 @@
 		
 		$("input[name=lokasiSatker]").on('keyup',function(e){
 			$("input[name=checkSatker]").prop("checked",true);
+		});	
+		
+		$("#usulTaspen").select2({
+			placeholder: '-Masukan Nomor Usul TASPEN-',
+			width: '100%',
+		    minimumInputLength: 10,
+    	    ajax: {
+				url:  '<?php echo site_url() ?>'+'/pensiun/getUsulTaspen',
+				dataType:'json',
+				type:'GET',
+				cache: "true",
+				delay: 250,	
+                
+			},
+			results: function(data, page) {
+			    return { results: data.results };               
+            }  
+		});	
+
+		$("#usulTaspen").change(function(){			
+			$.ajax({
+			    url: "<?php echo site_url()?>/pensiun/getNomorPengeluaranTaspen",
+				dataType:'json',
+				type:'GET',
+				data:{q:this.value},
+				success: function(r){		
+                    $("input[name=nomorPengeluaranTaspen]").val(r.last_number);
+					if(r.ada)
+					{
+						$("input[name=nomorPengeluaranTaspen]").prop("readonly",true);
+					}
+					else
+					{
+						$("input[name=nomorPengeluaranTaspen]").prop("readonly",false);
+					}		
+		        },
+			});		
 		});	
 		
 	});

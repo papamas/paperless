@@ -941,6 +941,7 @@ class Entry extends MY_Controller {
 		$row						= $this->entry->getEntryOneTaspen($data)->row();
 		$mutasiIstri				= $this->entry->getMutasiIstri($row->usul_id);
 		$mutasiAnak				    = $this->entry->getMutasiAnak($row->usul_id);
+		$spesimen					= $this->entry->getSpesimenTaspen()->row();
 		
 		$this->load->library('PDF', array());	
 		$this->pdf->setPrintHeader(false);
@@ -1214,12 +1215,12 @@ class Entry extends MY_Controller {
 		$this->pdf->Text(212, 145, 'Nomor ');
 		$this->pdf->Text(260, 145, ': '.$row->usul_no_persetujuan);
 		
-		$this->pdf->Text(250, 155, 'AN. KEPALA KANTOR');
-		$this->pdf->Text(235, 160, 'REGIONAL XI BADAN KEPEGAWAIAN NEGARA');
-		$this->pdf->Text(234, 165, 'KEPALA SEKSI PENSIUN PEGAWAI NEGERI SIPIL');
-		$this->pdf->Text(245, 170, 'INSTANSI VERTIKAL DAN PROPINSI');
-		$this->pdf->Text(250, 185, 'WAISUL QORNI,S.Sos, M.Si');
-		$this->pdf->Text(250, 190, 'NIP. 19751231 199503 1 001');
+		$this->pdf->writeHTMLCell(75,'',235,155,'AN. KEPALA KANTOR',0,0,false,false,'C',true);
+		$this->pdf->writeHTMLCell(75,'',235,160,'REGIONAL XI BADAN KEPEGAWAIAN NEGARA',0,0,false,false,'C',true);
+		$text1= strtoupper($spesimen->jabatan);
+		$this->pdf->writeHTMLCell(75,'',235,164,$text1,0,0,false,false,'C',true);
+		$this->pdf->Text(250, 185, strtoupper($spesimen->nama_spesimen).(!empty($spesimen->glrblk) ? ','.$spesimen->glrblk : ''));
+		$this->pdf->Text(250, 189, 'NIP. '.$spesimen->nip);
 		
 		
 		
@@ -1274,12 +1275,13 @@ class Entry extends MY_Controller {
 		$this->pdf->Text(25, 65, ': Pengambilan formulir ');
 		$this->pdf->Text(27, 70, 'Model A/II/1969 Pens ');
 		
-		$this->pdf->Text(140, 60, 'KEPADA ');
-		$this->pdf->Text(130, 65, 'Yth. '.$row->nama_pns);
-		$this->pdf->Text(130, 70, 'NIP : '.$row->nip);
-		$this->pdf->Text(130, 75, 'D/a.  ');
+		$this->pdf->Text(140, 60, 'Kepada');
+		$this->pdf->Text(130, 65, 'Yth.');
+		$this->pdf->Text(140, 65,$row->nama_pns);
+		$this->pdf->Text(140, 70, 'NIP. '.$row->nip);
+		$this->pdf->Text(130, 75, 'D/a. ');
 		$text1=$row->alamat;
-		$this->pdf->writeHTMLCell(70,'',138,75,$text1,0,0,false,false,'J',true);
+		$this->pdf->writeHTMLCell(70,'',140,75,$text1,0,0,false,false,'J',true);
 		
 		$this->pdf->Text(25, 100, '1.');
 		$text1='Menunjuk Surat dari Ka. PT. Taspen (persero) Cabang '.$row->nama_taspen.'  Nomor '.$row->nomor_usul.' Perihal permohonan Saudara Tanggal '.$row->atgl_usul.' untuk mengesahkan/mencatat mutasi keluarga, bersama ini kami kirimkan kembali Formulir Model A/II/Pens, tentang pendataran Isteri/Suami/Anak sebagai yang berhak menerima pensiun Janda/Duda yang telah disahkan/dicatat.';
@@ -1297,11 +1299,26 @@ class Entry extends MY_Controller {
 		$text1='Demikian untuk dipergunakan sebagaimana mestinya.';
 		$this->pdf->writeHTMLCell(175,'',30,165,$text1,0,0,false,false,'J',true);
 		
-		$text2='an.Kepala Kantor Regional XI Badan Kepegawaian Negara Kepala Seksi Pensiun Pegawai Negeri Sipil Instansi Vertikal dan Propinisi';
-		$this->pdf->writeHTMLCell(60,125,130,175,$text2,0,0,false,true,'L',true);
 		
-		$this->pdf->Text(130, 215, 'Waisul Qorni, S.Sos, M.Si');
-		$this->pdf->Text(130, 220, 'NIP. 19751231 199503 1 001');
+		// set style for barcode
+		$style = array(
+			'border' => false,
+			'padding' => 0,
+			'fgcolor' => array(0, 0, 0),
+			'bgcolor' => false, //array(255,255,255)
+			'module_width' => 1, // width of a single module in points
+			'module_height' => 1 // height of a single module in points
+		);
+		
+		$code  = 'SK Mutasi Keluarga PNS '.$row->nama_pns;					
+		$this->pdf->write2DBarcode($code, 'QRCODE,Q', 20, 190, 25, 25, $style, 'N'); 
+		
+		$this->pdf->Text(125, 175, 'an.');
+		$text2='Kepala Kantor Regional XI Badan Kepegawaian Negara '.$spesimen->jabatan;
+		$this->pdf->writeHTMLCell(75,125,130,175,$text2,0,0,false,true,'L',true);
+		
+		$this->pdf->Text(130, 215,ucwords(strtolower($spesimen->nama_spesimen)).(!empty($spesimen->glrblk) ? ','.$spesimen->glrblk : ''));
+		$this->pdf->Text(130, 220, 'NIP. '.$spesimen->nip);
 		
 		$this->pdf->Text(20, 225, 'Tembusan, Yth :');
 		$this->pdf->Text(20, 230, '1. Kepala Kantor Cabang PT. Taspen (Persero) di '.$row->nama_taspen);
@@ -1326,7 +1343,8 @@ class Entry extends MY_Controller {
 			break;
 		}		
 		
-		$row						= $this->entry->getEntryOneTaspen($data)->row();				
+		$row						= $this->entry->getEntryOneTaspen($data)->row();
+        $spesimen					= $this->entry->getSpesimenTaspen()->row();		
 				
 		$this->load->library('PDF', array());	
 		$this->pdf->setPrintHeader(false);
@@ -1514,12 +1532,11 @@ EOD;
 		$this->pdf->Text(280, 130, ':');
 		$this->pdf->Text(285, 130, $row->persetujuan_tgl);
 		
-		$this->pdf->Text(260, 135, 'a.n. KEPALA BADAN KEPEGAWAIAN NEGARA');
-		$this->pdf->Text(270, 140, 'KEPALA SEKSI PENSIUN PEGAWAI');
-		$this->pdf->Text(270, 145, 'NEGERI SIPIL INSTANSI VERTIKAL');
-		$this->pdf->Text(270, 150, 'DAN PROPINSI ');
-		$this->pdf->Text(270, 170, 'WAISUL QORNI, S.Sos, M.Si ');
-		$this->pdf->Text(270, 175, 'NIP. 197512311995031001 ');
+		$this->pdf->Text(255, 135, 'an.');
+		$this->pdf->Text(260, 135, 'KEPALA BADAN KEPEGAWAIAN NEGARA');
+		$this->pdf->writeHTMLCell(60,'',260,139,strtoupper($spesimen->jabatan),0,0,false,false,'J',true);
+		$this->pdf->Text(260, 170, $spesimen->nama_spesimen.(!empty($spesimen->glrblk) ? ','.$spesimen->glrblk : ''));
+		$this->pdf->Text(260, 174, 'NIP. '.$spesimen->nip);
 		
 	    $this->pdf->Text(170, 185, 'Tembusan, Keputusan ini disampaikan kepada :');
 		$this->pdf->Text(170, 190, '1. Kepala Kantor Cabang PT.TASPEN (PERSERO)/PT.ASABRI (PERSERO) di '.$row->nama_taspen);

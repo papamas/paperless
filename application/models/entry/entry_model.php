@@ -19,6 +19,7 @@ class Entry_model extends CI_Model {
 	private     $usul			    = 'usul_taspen';
 	private     $uploadtaspen		= 'upload_dokumen_taspen';
 	private     $kantorTaspen		= 'kantor_taspen';
+	private     $spesimenTaspen     = 'spesimen_taspen';
 		
     function __construct()
     {
@@ -688,6 +689,17 @@ ORDER  by e.PNS_PNSNAM ASC
 		WHERE a.usul_id='$usul_id'";
 		$query 	=   $this->db->query($sql);
 		return      $query;	
+	}	
+	
+	public function getSpesimenTaspen()
+	{
+		$sql="SELECT a.* ,
+		b.PNS_PNSNAM nama_spesimen, b.PNS_GLRBLK glrblk, b.PNS_GLRDPN glrdpn
+		FROM $this->spesimenTaspen a
+		LEFT JOIN $this->tablepupns b ON a.nip = b.PNS_NIPBARU
+		WHERE a.aktif='1' ";	
+		return $this->db->query($sql);
+		
 	}	
 }
 

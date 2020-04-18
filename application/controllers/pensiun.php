@@ -202,6 +202,8 @@ class Pensiun extends MY_Controller {
 		$data['member']	  =  $this->auth->getCreated();
 		$data['avatar']	  =  $this->auth->getAvatar();
 		$data['spesimen'] =  $this->laporan->getSpesimen_pengeluaran();
+		$data['tab1']	  = 'active';
+		$data['tab2']	  = '';
 		
 		if(!$this->allow)
 		{
@@ -231,6 +233,8 @@ class Pensiun extends MY_Controller {
 			$data['member']	  =  $this->auth->getCreated();
 			$data['avatar']	  =  $this->auth->getAvatar();
 			$data['spesimen'] =  $this->laporan->getSpesimen_pengeluaran();
+			$data['tab1']	  = 'active';
+			$data['tab2']	  = '';
 			
 			if(!$this->allow)
 			{
@@ -507,7 +511,294 @@ class Pensiun extends MY_Controller {
 			$data['ada']			= FALSE;
 		}
 	    echo json_encode($data);
+	}
+
+	
+	
+	public function getUsulTaspen()
+	{
+		$search   		= $this->input->get('q');	    
+    	$query			= $this->laporan->getUsulTaspen($search);
+	    $ret['results'] = $query->result_array();
+	    echo json_encode($ret);
+	}
+	
+	public function getPengeluaranTaspen()
+	{
+		$this->form_validation->set_rules('usulTaspen', 'Nomor Usul', 'required');
+		$this->form_validation->set_rules('nomorPengeluaranTaspen', 'Nomor Pengeluaran', 'required');
+		$this->form_validation->set_rules('spesimenPengeluaranTaspen', 'Spesimen Pengeluaran', 'required');
+		$this->form_validation->set_rules('tandaTerimaTaspen', 'Tanda Terima', 'trim');
+		
+		if($this->form_validation->run() == FALSE)
+		{
+			$data['menu']     =  $this->menu->build_menu();		
+			$data['message']  = '';
+			$data['lname']    =  $this->auth->getLastName();        
+			$data['name']     =  $this->auth->getName();
+			$data['jabatan']  =  $this->auth->getJabatan();
+			$data['member']	  =  $this->auth->getCreated();
+			$data['avatar']	  =  $this->auth->getAvatar();
+			$data['spesimen'] =  $this->laporan->getSpesimen_pengeluaran();
+			$data['tab1']	  = '';
+			$data['tab2']	  = 'active';
+			
+			if(!$this->allow)
+			{
+				$this->load->view('403/index',$data);
+				return;
+			}
+			$this->load->view('pensiun/pengeluaran',$data);
+		}
+		else
+		{
+			$usul_id	= $this->input->post('usulTaspen');
+			$row		= $this->laporan->getUsulTaspen_byid($usul_id)->row();
+			
+			if($row->layanan_id == 15)
+			{
+				$this->cetakMk();
+			}
+			else
+			{
+				$this->cetakJd();
+			}		
+		}
 	}	
 	
+	function cetakMk()
+	{
+		$add				        = $this->laporan->addPengeluaranTaspen();
+		$row						= $this->laporan->getEntryOneTaspen()->row();
+		$spesimen                   = $this->laporan->getSpesimen_pengeluaranTaspen_by_nip();
+		
+		
+		$this->load->library('PDF', array());	
+		$this->pdf->setPrintHeader(true);
+		$this->pdf->setPrintFooter(false);		
+		
+		$this->pdf->SetAutoPageBreak(false, 0);
+		$this->pdf->AddPage('P', 'A4', false, false);
+		
+		$this->pdf->SetFont('freeSerif', '', 12);
+		$this->pdf->Text(150, 50, 'Manado, '.$row->persetujuan_tgl);
+		
+		$this->pdf->Text(5, 55, 'Nomor ');
+		$this->pdf->Text(25, 55, ': '.$row->usul_no_persetujuan);
+		
+		$this->pdf->Text(5, 60, 'Lampiran ');
+		$this->pdf->Text(25, 60, ':  ');
+		
+		$this->pdf->Text(5, 65, 'Perihal ');
+		$this->pdf->Text(25, 65, ': Pengambilan formulir ');
+		$this->pdf->Text(27, 70, 'Model A/II/1969 Pens ');
+		
+		$this->pdf->Text(140, 60, 'Kepada ');
+		$this->pdf->Text(130, 65, 'Yth.');
+		$this->pdf->Text(140, 65, $row->nama_pns);
+		$this->pdf->Text(140, 70, 'NIP.'.$row->nip);
+		$this->pdf->Text(130, 75, 'D/a.');
+		$text1=$row->alamat;
+		$this->pdf->writeHTMLCell(70,'',140,75,$text1,0,0,false,false,'J',true);
+		
+		$this->pdf->Text(25, 100, '1.');
+		$text1='Menunjuk Surat dari Ka. PT. Taspen (persero) Cabang '.$row->nama_taspen.'  Nomor '.$row->nomor_usul.' Perihal permohonan Saudara Tanggal '.$row->atgl_usul.' untuk mengesahkan/mencatat mutasi keluarga, bersama ini kami kirimkan kembali Formulir Model A/II/Pens, tentang pendataran Isteri/Suami/Anak sebagai yang berhak menerima pensiun Janda/Duda yang telah disahkan/dicatat.';
+		$this->pdf->writeHTMLCell(175,'',30,100,$text1,0,0,false,false,'J',true);
+		
+		$this->pdf->Text(25, 125, '2.');
+		$text1='Mengingat bahwa bukti pendaftaran tersebut sangat penting sebagai kelengkapan permohonan pensiun Janda/Duda sebagai Isteri/Suami/Anak/Saudara, kami harapkan agar formulir tersebut disimpan dengan baik.';
+		$this->pdf->writeHTMLCell(175,'',30,125,$text1,0,0,false,false,'J',true);
+		
+		$this->pdf->Text(25, 145, '3.');
+		$text1='Perlu kami jelaskan bahwa pendaftaran yang saudara lakukan telah melebihi batas waktu 1 (satu) tahun setelah terjadinya perkawinan tersebut sebagaimana ditetapkan dalam pasal 19 ayat 6 Undang-Undang Nomor 11 Tahun 1969, maka pendaftaran tersebut hanya kami catat, tetapi tidak disahkan.';
+		$this->pdf->writeHTMLCell(175,'',30,145,$text1,0,0,false,false,'J',true);
+		
+		$this->pdf->Text(25, 165, '4.');
+		$text1='Demikian untuk dipergunakan sebagaimana mestinya.';
+		$this->pdf->writeHTMLCell(175,'',30,165,$text1,0,0,false,false,'J',true);
+		
+		// set style for barcode
+		$style = array(
+			'border' => false,
+			'padding' => 0,
+			'fgcolor' => array(0, 0, 0),
+			'bgcolor' => false, //array(255,255,255)
+			'module_width' => 1, // width of a single module in points
+			'module_height' => 1 // height of a single module in points
+		);
+		
+		$code  = 'SK Mutasi Keluarga PNS '.$row->nama_pns;					
+		$this->pdf->write2DBarcode($code, 'QRCODE,Q', 20, 190, 25, 25, $style, 'N'); 
+				
+		$this->pdf->Text(125, 175, 'an.');
+		$text2='Kepala Kantor Regional XI Badan Kepegawaian Negara '.$spesimen->jabatan;
+		$this->pdf->writeHTMLCell(75,125,130,175,$text2,0,0,false,true,'L',true);
+		
+		$this->pdf->Text(130, 215, $spesimen->glrdpn.''.ucwords(strtolower($spesimen->nama_spesimen)).''.(!empty($spesimen->glrblk) ? ','.$spesimen->glrblk :''));
+		$this->pdf->Text(130, 220, 'NIP.'.$spesimen->nip);
+		
+		$this->pdf->Text(20, 225, 'Tembusan, Yth :');
+		$this->pdf->Text(20, 230, '1. Kepala Kantor Cabang PT. Taspen (Persero) di '.$row->nama_taspen);
+		$this->pdf->Text(20, 235, '2. Direktur Pensiun PNS dan Pejabat Negara BKN di Jakarta');
+		
+		if($this->input->post('tandaTerimaTaspen') == 1)
+		{
+			$tbl ='
+				<table  cellspacing="0" cellpadding="1" border="1" nobr="true">
+					<tr>
+						<td width="80px;">Diterima</td>
+						<td width="200px;"> MANADO</td>			
+					</tr>
+					<tr>
+						<td>Pada Tanggal</td>
+						<td></td>			
+					</tr>
+					<tr>
+						<td>Nama</td>
+						<td></td>			
+					</tr>
+					<tr>
+						<td>NIP</td>
+						<td></td>			
+					</tr>
+					<tr>
+						<td>Jabatan</td>
+						<td></td>			
+					</tr>
+					<tr>
+						<td height="55px">Tanda Tangan</td>
+						<td></td>			
+					</tr></table>';		
+			$this->pdf->SetXY(15,245);
+			$this->pdf->writeHTML($tbl, true, false, false, false, '');			
+		}
+		
+		$this->pdf->Output('cetakSuratMutasiKeluarga.pdf', 'D');
+	}	
 	
+	function cetakJd()
+	{
+	    $add				        = $this->laporan->addPengeluaranTaspen();
+		$row						= $this->laporan->getEntryOneTaspen()->row();
+		$spesimen                   = $this->laporan->getSpesimen_pengeluaranTaspen_by_nip();
+		
+		if($row->layanan_id == 16)
+		{
+			$label  = 'JD.ALM';
+		}
+		else
+		{
+			$label  = 'YT.ALM';
+		}
+		
+		$this->load->library('PDF', array());	
+			
+		$this->pdf->setPrintHeader(true);
+		$this->pdf->setPrintFooter(false);	
+		
+		$this->pdf->SetAutoPageBreak(false, PDF_MARGIN_BOTTOM);
+		$this->pdf->AddPage('P', 'A4', false, false);
+		$this->pdf->SetFont('freeSerif', '', 11);
+
+		$this->pdf->Text(17, 60, 'Kepada');
+		$this->pdf->Text(10, 65,  'Yth:');
+		$this->pdf->Text(17, 65, $row->nama_janda_duda);
+		$this->pdf->Text(100, 65,$label );
+		$this->pdf->Text(17, 70, $row->nama_pns);
+		$this->pdf->Text(17, 75, 'NIP. '.$row->nip);
+		$text1= $row->alamat;
+		$this->pdf->writeHTMLCell(60,'',17,80,$text1,0,0,false,false,'J',true);
+		
+		$this->pdf->SetFont('freeSerif', 'B', 12);
+		$text1='SURAT PENGANTAR';
+		$this->pdf->writeHTMLCell(170,'',20,100,$text1,0,0,false,false,'C',true);
+		
+		$text1='Nomor : '.$row->nomor_surat;
+		$this->pdf->writeHTMLCell(170,'',20,104,$text1,0,0,false,false,'C',true);
+
+		$this->pdf->SetFont('freeSerif', '', 11);
+        $this->pdf->Text(10, 115, '1. ');
+		$text1='Bersama ini kami sampaikan Asli Keputusan Kepala Badan Kepegawaian Negara Nomor '.$row->usul_no_persetujuan.' Tanggal '.$row->persetujuan_tgl;
+		$this->pdf->writeHTMLCell(170,'',15,115,$text1,0,0,false,false,'J',true);
+		
+		$this->pdf->Text(10, 125, '2. ');
+		$text1='Demikian untuk digunakan sebagaimana mestinya';
+		$this->pdf->writeHTMLCell(170,'',15,125,$text1,0,0,false,false,'J',true);
+		
+		// set style for barcode
+		$style = array(
+			'border' => false,
+			'padding' => 0,
+			'fgcolor' => array(0, 0, 0),
+			'bgcolor' => false, //array(255,255,255)
+			'module_width' => 1, // width of a single module in points
+			'module_height' => 1 // height of a single module in points
+		);
+		
+		$code  = ' Pengantar SK '.$row->nama_janda_duda.' Nomor : '.$row->nomor_surat ;					
+		$this->pdf->write2DBarcode($code, 'QRCODE,Q', 15, 155, 25, 25, $style, 'N'); 
+				
+		
+		$this->pdf->Text(125, 155, 'an.');
+		$text2='Kepala Kantor Regional XI Badan Kepegawaian Negara '.$spesimen->jabatan;
+		$this->pdf->writeHTMLCell(75,125,130,155,$text2,0,0,false,true,'L',true);
+		
+		$this->pdf->Text(130, 190, $spesimen->glrdpn.''.ucwords(strtolower($spesimen->nama_spesimen)).''.(!empty($spesimen->glrblk) ? ','.$spesimen->glrblk :''));
+		$this->pdf->Text(130, 195, 'NIP. '.$spesimen->nip);
+		
+		$this->pdf->Text(15, 200, 'Tembusan, Yth :');
+		$this->pdf->Text(15, 205, '1. Kepala Kantor Cabang PT. Taspen (Persero) di '.$row->nama_taspen);
+		$this->pdf->Text(15, 210, '2. Pertinggal');
+		
+		if($this->input->post('tandaTerimaTaspen') == 1)
+		{
+			$tbl ='
+				<table  cellspacing="0" cellpadding="1" border="1" nobr="true">
+					<tr>
+						<td width="80px;">Diterima</td>
+						<td width="200px;"> MANADO</td>			
+					</tr>
+					<tr>
+						<td>Pada Tanggal</td>
+						<td></td>			
+					</tr>
+					<tr>
+						<td>Nama</td>
+						<td></td>			
+					</tr>
+					<tr>
+						<td>NIP</td>
+						<td></td>			
+					</tr>
+					<tr>
+						<td>Jabatan</td>
+						<td></td>			
+					</tr>
+					<tr>
+						<td height="55px">Tanda Tangan</td>
+						<td></td>			
+					</tr></table>';		
+			$this->pdf->SetXY(15,220);
+			$this->pdf->writeHTML($tbl, true, false, false, false, '');			
+		}
+		$this->pdf->Output('pengantarJandaDudaYatim.pdf', 'D');
+	}	
+	
+	public function getNomorPengeluaranTaspen()
+	{
+		$search   		= $this->input->get('q');	    
+    	$query			= $this->laporan->getPengeluaranTaspen_byid($search);
+		if($query->num_rows() > 0)
+		{
+			$row					= $query->row();
+			$data['last_number']	= $row->last_number;
+			$data['ada']			= TRUE;
+		}
+		else
+		{
+			$data['last_number']	= NULL;
+			$data['ada']			= FALSE;
+		}
+	    echo json_encode($data);
+	}
 }

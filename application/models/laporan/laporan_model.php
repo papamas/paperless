@@ -16,6 +16,10 @@ class Laporan_model extends CI_Model {
 	private     $tablesformatsurat  = 'format_surat';
 	private     $tablespesimen      = 'spesimen_pengeluaran';
 	private     $tablepengeluaran	= 'nomor_pengeluaran';
+	private     $kantorTaspen		= 'kantor_taspen';
+	private     $tablegolru			= 'mirror.golru';
+	private     $spesimenTaspen     = 'spesimen_taspen';
+	private     $tblpengeluaranTaspen	= 'nomor_pengeluaran_taspen';
 	
     function __construct()
     {
@@ -327,6 +331,107 @@ $sql_order ";
 		$nip 			= $this->input->post('spesimenPengeluaran');
 		
 		$sql="SELECT a.nip nip_spesimen,a.jabatan jabatan_spesimen,
+		b.PNS_PNSNAM nama_spesimen, b.PNS_GLRDPN glrdpn, b.PNS_GLRBLK glrblk
+		FROM $this->tablespesimen a
+		LEFT JOIN $this->tablepupns b ON a.nip = b.PNS_NIPBARU
+		WHERE a.nip='$nip' ";
+	    return $this->db->query($sql)->row();
+	}		
+	
+	public function getEntryOneTaspen()
+	{
+		$usul			= trim($this->input->post('usulTaspen'));
+		
+		$sql   = "SELECT a.*,
+		formatTanggal(a.usul_tgl_persetujuan) persetujuan_tgl,
+		formatTanggal(a.tgl_usul) atgl_usul,
+		b.layanan_nama,
+		c.tahapan_nama,
+		d.PNS_NIPBARU nip_baru, d.PNS_PNSNIP nip_lama,
+		e.nama_taspen,
+		REPLACE(REPLACE(REPLACE(REPLACE(f.format_surat,'bln',toRoman(MONTH(NOW()))),'tahun',YEAR(NOW())),'jenis_layanan',b.layanan_sk),'nomor_surat',g.last_number) nomor_surat
+		FROM $this->usul a
+		LEFT JOIN $this->tablelayanan b ON a.layanan_id = b.layanan_id	
+		LEFT JOIN $this->tabletahapan c ON c.tahapan_id = a.usul_tahapan_id
+		LEFT JOIN $this->tablepupns d ON (a.nip = d.PNS_NIPBARU OR a.nip = d.PNS_PNSNIP)
+		LEFT JOIN $this->kantorTaspen e ON e.id_taspen = a.kantor_taspen
+		LEFT JOIN $this->tablesformatsurat f ON a.layanan_id = f.layanan_id
+		LEFT JOIN $this->tblpengeluaranTaspen g ON a.layanan_id = g.layanan_id
+		WHERE a.usul_id='$usul'  ";
+		
+		$query 	=   $this->db->query($sql);
+		return      $query;	
+	}	
+	
+	public function getSpesimenTaspen()
+	{
+		$sql="SELECT a.* ,
+		b.PNS_PNSNAM nama_spesimen, b.PNS_GLRBLK glrblk, b.PNS_GLRDPN glrdpn
+		FROM $this->spesimenTaspen a
+		LEFT JOIN $this->tablepupns b ON a.nip = b.PNS_NIPBARU
+		WHERE a.aktif='1' ";	
+		return $this->db->query($sql);
+		
+	}
+
+	
+	public function getUsulTaspen($search)
+	{
+	    $sql="SELECT a.usul_id id ,CONCAT(a.nomor_usul,'-', a.nama_pns,'-',a.nama_janda_duda) as text		
+		FROM $this->usul a
+		WHERE a.nomor_usul LIKE '$search%' ";
+	    return $this->db->query($sql);
+	   
+	}	
+	
+	
+	public function getUsulTaspen_byid($id)
+	{
+		$sql="SELECT a.usul_id ,a.layanan_id		
+		FROM $this->usul a
+		WHERE trim(a.usul_id)= trim('$id') ";
+	    return $this->db->query($sql);
+	}	
+	
+	public function getPengeluaranTaspen_byid($id)
+	{
+		$sql="SELECT a.usul_id,a.last_number		
+		FROM $this->tblpengeluaranTaspen a
+		WHERE trim(a.usul_id)= trim('$id') ";
+	    return $this->db->query($sql);
+	}	
+	
+	
+	public function addPengeluaranTaspen()
+	{
+		$usul_id				= trim($this->input->post('usulTaspen'));		
+		$pengeluaran			= $this->getPengeluaranTaspen_byid($usul_id);
+		$row					= $this->getUsulTaspen_byid($usul_id)->row();
+		
+		if($pengeluaran->num_rows() == 0)
+		{	
+			$data['usul_id']		= $row->usul_id;
+			$data['layanan_id']     = $row->layanan_id;
+			$data['last_number']    = trim($this->input->post('nomorPengeluaranTaspen'));
+			$this->db->insert($this->tblpengeluaranTaspen, $data);
+		}
+		else
+		{
+			$set['usul_id']	   	   = $row->usul_id;
+			$set['layanan_id']     = $row->layanan_id;
+			$set['last_number']    = trim($this->input->post('nomorPengeluaranTaspen'));	
+			
+			$this->db->set($set);
+			$this->db->where('usul_id',$usul_id);
+			$this->db->update($this->tblpengeluaranTaspen);
+		}
+	}
+	
+	public function getSpesimen_pengeluaranTaspen_by_nip()
+	{
+		$nip 			= $this->input->post('spesimenPengeluaranTaspen');
+		
+		$sql="SELECT a.nip ,a.jabatan ,
 		b.PNS_PNSNAM nama_spesimen, b.PNS_GLRDPN glrdpn, b.PNS_GLRBLK glrblk
 		FROM $this->tablespesimen a
 		LEFT JOIN $this->tablepupns b ON a.nip = b.PNS_NIPBARU
