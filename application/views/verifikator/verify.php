@@ -415,8 +415,9 @@
 	<!-- Modal -->
 	<?php 
 	    if($usul->num_rows() > 0){		
-	    $row 		 = $usul->row();
-		$layanan_id  = $row->layanan_id;
+	    $row 		 	 = $usul->row();
+		$layanan_id  	 = $row->layanan_id;
+		$bidang          = $this->session->userdata('session_bidang');
 		
 		$tipe        = $this->session->userdata('session_user_tipe');
 		$check       = "";
@@ -442,6 +443,15 @@
 		{
             $hidden  ="hidden";
         }	
+		
+		if($bidang == 2)
+		{
+			$kpp_hidden = " ";			
+		}
+		else
+		{
+			$kpp_hidden = "hidden";		
+		}
 		echo '<div class="modal fade" id="verifikasiModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
@@ -469,6 +479,12 @@
 								<label class="form-check-label text-red">
 									<input type="checkbox" value="1" '.$check.' name="finish">&nbsp;Klik disini jika berkas ini selesai verifikasi sampai Level 2									
 								</label>	
+							</div>
+							
+							<div class="form-group '.$kpp_hidden.'">
+								<label class="control-label">Berkas ini pensiun KPP :</label>
+								<input type="radio" value="1" name="kpp_status" />&nbsp;Ya
+								<input type="radio" value="2" name="kpp_status"  checked/>&nbsp;Tidak
 							</div>
                             <input class="form-control" type="hidden" value="'.$row->agenda_id.'" name="id_agenda" />	
 							<input class="form-control" type="hidden" value="'.$row->nip.'" name="nip" />

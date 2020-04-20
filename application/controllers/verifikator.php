@@ -264,7 +264,8 @@ class Verifikator extends MY_Controller {
 		$data['id_agenda']      = $this->input->post('id_agenda');
 		$data['layanan_id']     = $this->input->post('layanan_id');
 		$data['golongan']       = $this->input->post('golongan');
-		$data['finish']         = $this->input->post('finish');		
+		$data['finish']         = $this->input->post('finish');	
+		$data['kpp_status']     = ($this->input->post('kpp_status') == 2 ? NULL : $this->input->post('kpp_status'));			
 		
 
 		if ($this->form_validation->run() == FALSE)

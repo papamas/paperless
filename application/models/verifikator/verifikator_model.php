@@ -382,7 +382,7 @@ GROUP BY a.nip,b.layanan_id,a.agenda_id";
 		$tipe    				      = $this->session->userdata('session_user_tipe');
 		
 		// jika layanan pindah instansi hanya eeselon 2 spesimen
-		// eselon 4 dan 3 hanya periksa , kaalau PG eselon 4 periksa 
+		// eselon 4 dan 3 hanya periksa , kalau PG eselon 4 periksa 
 		// eselon 3 ttd surat
 		if($layanan_id == 13 || $layanan_id == 14)
 		{
@@ -396,6 +396,7 @@ GROUP BY a.nip,b.layanan_id,a.agenda_id";
 					$set['nomi_alasan']		  = $data['catatan'];
 					$set['nomi_verifby']	  = $this->session->userdata('user_id');
 					$set['tahapan_id']   	  = 7;
+					$set['kpp_status']		  = $data['kpp_status'];
 					$this->db->set('verify_date','NOW()',FALSE);
 				break;
 				case 12:
@@ -403,6 +404,7 @@ GROUP BY a.nip,b.layanan_id,a.agenda_id";
 					$set['nomi_alasan']		  = $data['catatan'];
 					$set['nomi_verifby']	  = $this->session->userdata('user_id');
 					$set['tahapan_id']   	  = 7;		
+					$set['kpp_status']		  = $data['kpp_status'];
 					$this->db->set('verify_date','NOW()',FALSE);				
 				break;
 				case 13:
@@ -410,6 +412,7 @@ GROUP BY a.nip,b.layanan_id,a.agenda_id";
 					$set['nomi_alasan']		  = $data['catatan'];
 					$set['nomi_verifby']	  = $this->session->userdata('user_id');
 					$set['tahapan_id']   	  = 7;	
+					$set['kpp_status']		  = $data['kpp_status'];
 					$this->db->set('verify_date','NOW()',FALSE);				
 				break;
 				case 14:
@@ -417,6 +420,7 @@ GROUP BY a.nip,b.layanan_id,a.agenda_id";
 					$set['nomi_alasan']		  = $data['catatan'];
 					$set['nomi_verifby']	  = $this->session->userdata('user_id');
 					$set['tahapan_id']   	  = 7;	
+					$set['kpp_status']		  = $data['kpp_status'];
 					$this->db->set('verify_date','NOW()',FALSE);				
 				break;
 				case 21:
@@ -424,6 +428,7 @@ GROUP BY a.nip,b.layanan_id,a.agenda_id";
 					$set['nomi_alasan']		  = $data['catatan'];
 					$set['nomi_verifby']	  = $this->session->userdata('user_id');
 					$set['tahapan_id']   	  = 7;	
+					$set['kpp_status']		  = $data['kpp_status'];
 					$this->db->set('verify_date','NOW()',FALSE);				
 				break;
 				case 22:
@@ -431,13 +436,15 @@ GROUP BY a.nip,b.layanan_id,a.agenda_id";
 					$set['nomi_alasan']		  = $data['catatan'];
 					$set['nomi_verifby']	  = $this->session->userdata('user_id');
 					$set['tahapan_id']   	  = 7;		
+					$set['kpp_status']		  = $data['kpp_status'];
                     $this->db->set('verify_date','NOW()',FALSE);					
 				break;
 				case 23:
 					$set['nomi_status']   	  = $data['status'];
 					$set['nomi_alasan']		  = $data['catatan'];
 					$set['nomi_verifby']	  = $this->session->userdata('user_id');
-					$set['tahapan_id']   	  = 7;		
+					$set['tahapan_id']   	  = 7;
+					$set['kpp_status']		  = $data['kpp_status'];
 					$this->db->set('verify_date','NOW()',FALSE);				
 				break;
 				case 24:
@@ -445,6 +452,7 @@ GROUP BY a.nip,b.layanan_id,a.agenda_id";
 					$set['nomi_alasan']		  = $data['catatan'];
 					$set['nomi_verifby']	  = $this->session->userdata('user_id');
 					$set['tahapan_id']   	  = 7;		
+					$set['kpp_status']		  = $data['kpp_status'];
 					$this->db->set('verify_date','NOW()',FALSE); 				
 				break;
 				case 31:
@@ -452,13 +460,15 @@ GROUP BY a.nip,b.layanan_id,a.agenda_id";
 					$set['nomi_alasan']		  = $data['catatan'];
 					$set['nomi_verifby']	  = $this->session->userdata('user_id');
 					$set['tahapan_id']   	  = 7;	
+					$set['kpp_status']		  = $data['kpp_status'];
 					$this->db->set('verify_date','NOW()',FALSE);				
 				break;
 				case 32:
 					$set['nomi_status']   	  = $data['status'];
 					$set['nomi_alasan']		  = $data['catatan'];
 					$set['nomi_verifby']	  = $this->session->userdata('user_id');
-					$set['tahapan_id']   	  = 7;		
+					$set['tahapan_id']   	  = 7;	
+					$set['kpp_status']		  = $data['kpp_status'];
 					$this->db->set('verify_date','NOW()',FALSE);				
 				break;
 				case 33:
@@ -466,26 +476,33 @@ GROUP BY a.nip,b.layanan_id,a.agenda_id";
 					$set['nomi_alasan']		  = $data['catatan'];
 					$set['nomi_verifby']	  = $this->session->userdata('user_id');
 					$set['tahapan_id']   	  = 7;	// end verifikasi jika KP sampai III/D	
+					$set['kpp_status']		  = $data['kpp_status'];
 					$this->db->set('verify_date','NOW()',FALSE);				
 				break;
 				case 34:
 					// mulai dari sini pengawas cuma paraf				
-					$set['tahapan_id']   	  = 7;                    				
+					$set['tahapan_id']   	  = 7;   
+					$set['kpp_status']		  = $data['kpp_status'];
 				break;
 				case 41:
-					$set['tahapan_id']   	  = 7;				
+					$set['tahapan_id']   	  = 7;	
+					$set['kpp_status']		  = $data['kpp_status'];
 				break;
 				case 42:
-					$set['tahapan_id']   	  = 7;				
+					$set['tahapan_id']   	  = 7;
+					$set['kpp_status']		  = $data['kpp_status'];
 				break;
 				case 43:
-					$set['tahapan_id']   	  = 7;				
+					$set['tahapan_id']   	  = 7;
+					$set['kpp_status']		  = $data['kpp_status'];	
 				break;
 				case 44:
-					$set['tahapan_id']   	  = 7;				
+					$set['tahapan_id']   	  = 7;
+					$set['kpp_status']		  = $data['kpp_status'];	
 				break;
 				case 45:
-					$set['tahapan_id']   	  = 7;				
+					$set['tahapan_id']   	  = 7;
+					$set['kpp_status']		  = $data['kpp_status'];	
 				break;
 			}	
 		}
@@ -506,6 +523,14 @@ GROUP BY a.nip,b.layanan_id,a.agenda_id";
 					$set['nomi_verifby']	  = $this->session->userdata('user_id');
 					$this->db->set('verify_date','NOW()',FALSE);
 				}
+				// jika golongan 34 dan Pensiun KPP maka berkas berakhir di eselon 4
+				if($golongan == 34 && $data['kpp_status'] == 1)
+				{
+					$set['nomi_status']   	  = $data['status'];
+					$set['nomi_alasan']		  = $data['catatan'];
+					$set['nomi_verifby']	  = $this->session->userdata('user_id');
+					$this->db->set('verify_date','NOW()',FALSE);	
+                }			
 			break;
 			// eselon 3
 			case 2:
