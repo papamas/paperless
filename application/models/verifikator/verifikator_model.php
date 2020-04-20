@@ -524,7 +524,7 @@ GROUP BY a.nip,b.layanan_id,a.agenda_id";
 					$this->db->set('verify_date','NOW()',FALSE);
 				}
 				// jika golongan 34 dan Pensiun KPP maka berkas berakhir di eselon 4
-				if($golongan == 34 && $data['kpp_status'] == 1)
+				if($golongan == 34 && $data['kpp_status'] == 2)
 				{
 					$set['nomi_status']   	  = $data['status'];
 					$set['nomi_alasan']		  = $data['catatan'];
