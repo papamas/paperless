@@ -378,6 +378,7 @@ GROUP BY a.nip,b.layanan_id,a.agenda_id";
 		$golongan                     = $data['golongan'];
 		$finish					      = $data['finish'];
 		$layanan_id                   = $data['layanan_id'];
+		$bidang  			          = $this->session->userdata('session_bidang');
 		
 		$tipe    				      = $this->session->userdata('session_user_tipe');
 		
@@ -523,8 +524,8 @@ GROUP BY a.nip,b.layanan_id,a.agenda_id";
 					$set['nomi_verifby']	  = $this->session->userdata('user_id');
 					$this->db->set('verify_date','NOW()',FALSE);
 				}
-				// jika golongan 34 dan Pensiun KPP maka berkas berakhir di eselon 4
-				if($golongan == 34 && $data['kpp_status'] == 2)
+				// jika bidang pensiun golongan 34 dan Pensiun NON KPP maka berkas berakhir di eselon 4
+				if($bidang == 2 && $golongan == 34 && $data['kpp_status'] == NULL)
 				{
 					$set['nomi_status']   	  = $data['status'];
 					$set['nomi_alasan']		  = $data['catatan'];
