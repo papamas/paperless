@@ -44,15 +44,15 @@
 
 				  <p class="text-muted text-center page-header"><b>Aplikasi Manajemen Layanan Kepegawaian Elektronik Online</b></p>
 				  
-				   <p class="text-muted ">Jenis layanan kepegawaian yang dapat dilakukan melalui Aplikasi Male_o 1.9 :</p>
+				   <p class="text-muted ">8 (delapan) Jenis layanan kepegawaian yang dapat dilakukan melalui Aplikasi Male_o 1.9 :</p>
 					<ul class="text-muted">
-					<li>Pertimbangan teknis pensiun (pensiun karena BUP, pensiun Janda/Duda, pensiun atas permintaan sendiri, dan pensiun karena tidak cakap jasmani dan/atau rohani);</li>
-					<li>Pertimbangan teknis kenaikan pangkat (Kenaikan Pangkat Pilihan Jabatan Struktural, Kenaikan Pangkat Pilihan </li>                                                                                                                                                                    Jabatan Fungsional dan Kenaikan Pangkat Penyesuaian Ijazah);
-					<li>Pertimbangan Teknis Mutasi/Pindah Instansi;</li>
-					<li>Ijin penggunaan/pencatuman Gelar/peningkatan pendidikan;</li>
-					<li>Kartu Pegawai (KARPEG); dan</li>
-					<li>Kartu isteri/suami.</li>
-					<li>Taspen (SK Janda/Duda/Yatim dan Mutasi Keluarga)</li>
+					<li>Pemberian Pertimbangan teknis pensiun (pensiun karena BUP, pensiun Janda/Duda, pensiun atas permintaan sendiri, dan pensiun karena tidak cakap jasmani dan/atau rohani);</li>
+					<li>Pemberian Pertimbangan teknis kenaikan pangkat (Kenaikan Pangkat Pilihan Jabatan Struktural, Kenaikan Pangkat Pilihan Jabatan Fungsional dan Kenaikan Pangkat Penyesuaian Ijazah); </li>                                                                                                                                                                    Jabatan Fungsional dan Kenaikan Pangkat Penyesuaian Ijazah);
+					<li>Pemberian Pertimbangan Teknis Mutasi/Pindah Instansi;</li>
+					<li>Pemberian Ijin penggunaan/pencatuman Gelar/peningkatan pendidikan;</li>
+					<li>Kartu Pegawai (KARPEG); </li>
+					<li>Pengajuan dan penetapan surat keputusan pemberian hak Pensiun Janda/Duda dari Pensiuan PNS yang meninggal dunia dan yang dalam surat keputusan pensiun pegawai belum ditetapkan secara otomatis pensiun janda/dudanya; dan</li>
+					<li>Pengajuan dan pengesahan atau pencatatan pendaftaran  isteri (isteri-isteri)/suami atau anak dari Pensiunan PNS.</li>
 					</ul>
 					<p class="text-red text-right"><small>Male_o 1.9 &copy 2019-2020 BKN XI</small></p>
 				</div>				

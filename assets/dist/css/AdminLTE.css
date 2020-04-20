@@ -3012,6 +3012,42 @@ table.text-center th {
  * Component: Social Widgets
  * -------------------------
  */
+.widget-login .widget-login-header {
+  padding: 20px;
+  height: 100px;
+  border-top-right-radius: 3px;
+  border-top-left-radius: 3px;
+}
+
+.widget-login .widget-login-username {
+  margin-top: 0;
+  margin-bottom: 5px;
+  font-size: 25px;
+  font-weight: 300;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.widget-login .widget-login-desc {
+  margin-top: 0;
+} 
+
+.widget-login .widget-login-image {
+  position: absolute; 
+  top: 25px;
+  left: 50%;
+  margin-left: -70px;
+}
+
+ 
+.widget-login .widget-login-image > img {
+  width: 125px;
+  height: auto;
+}
+
+.widget-login .box-footer {
+  padding-top: 30px;
+}
+
 .box-widget {
   border: none;
   position: relative;

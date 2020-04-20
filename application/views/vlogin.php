@@ -61,21 +61,20 @@
 			<div class="">
 				<div class="row aligned-row">
 					<div class="col col-md-6 col-xs-12 no-padding">
-						<div class="box box-widget widget-user">
+						<div class="box box-widget widget-login">
 							<!-- Add the bg color to the header using any of the bg-* classes -->
-							<div class="widget-user-header bg-yellow-active">
+							<div class="widget-login-header bg-red-active">
 							 
 							 
 							</div>
-							<div class="widget-user-image">
-							  <img class="img-circle" src="<?php echo base_url()?>assets/dist/img/asn2.png" alt="User Avatar">
+							<div class="widget-login-image">
+							  <img src="<?php echo base_url()?>assets/dist/img/logo-garuda-hd.png" alt="login-maleo">
 							</div>
-							
-							
+						
 							<form class="form-horizontal" method="post" action="<?php echo site_url()?>/autho/login/">
 								<div class="box-body">						
 									<input type="hidden" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash();?>" style="display: none">
-									 <br/><br/>
+									 <br/><br/><br/>
 									 <?php echo $message;?>
 									
 										<div class="col-md-12">
@@ -98,7 +97,7 @@
 								</div>					
 								<div class="box-footer">
 								    <span><small>Male_o 1.9 &copy 2019 BKN XI </small></span>
-									<button type="submit" class="btn bg-yellow-active btn-flat pull-right">Sign in</button>
+									<button type="submit" class="btn bg-red-active btn-flat pull-right">Sign in</button>
 								</div>
 							</form>	
 						</div>
