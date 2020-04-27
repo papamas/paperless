@@ -39,6 +39,8 @@ class upload extends MY_Controller {
         $data['jabatan']  =  $this->auth->getJabatan();
 		$data['member']	  =  $this->auth->getCreated();
 		$data['avatar']	  =  $this->auth->getAvatar();
+		$data['dokumen']  =  $this->uploadFile->getFormatDokumen();
+		
 		if(!$this->allow)
 		{
 			$this->load->view('403/index',$data);

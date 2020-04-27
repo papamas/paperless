@@ -218,4 +218,10 @@ class Upload_model extends CI_Model {
 		
 	}	
 	
+	function getFormatDokumen()
+	{
+		$sql=" SELECT * FROM $this->dokumen WHERE aktif='1' ORDER BY nama_dokumen ASC";
+		return $this->db->query($sql);
+	}	
+	
 }

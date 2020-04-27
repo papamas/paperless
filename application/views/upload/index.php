@@ -31,6 +31,39 @@
 				<input type="hidden" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash();?>" style="display: none">
 
 			</form>
+			<div class="row">
+		        <div class="col-md-12">
+					<div class="box box-primary">
+						<div class="box-header with-border">
+						  <h3 class="box-title">Daftar Tabel Format Dokumen Kepegawaian</h3>
+						</div><!-- /.box-header -->					
+						<div class="table-responsive">
+							<table class="table table-striped">
+							<thead>
+								<tr>
+									<th>No</th>
+									<th>Nama Dokumen</th>
+									<th>Format</th>
+									<th>Flag</th>
+									<th>Keterangan</th>													
+								</tr>
+							</thead>   
+							<tbody>	
+							    <?php $i=1;foreach($dokumen->result() as $value):?>
+								<tr>
+									<td><?php echo $i?></td>
+									<td><?php echo $value->nama_dokumen?></td>
+									<td><?php echo $value->format?></td>
+									<td><?php echo ($value->flag == 1 ? "<span class='badge bg-red' data-tooltip='tooltip' title='Dokumen Wajib ada'>Dokumen_Utama</span>" :" " )?></td>
+									<td><?php echo $value->keterangan?></td>
+								</tr>
+								<?php $i++;endforeach;?>
+							</tbody>
+							</table>
+						</div>	
+					</div>	
+				</div>
+			</div>			
         </section><!-- /.content -->
 
 		
@@ -49,6 +82,8 @@
         Dropzone.options.upload = {
 			dictDefaultMessage: "Letakkan file dokumen kepegawaian yang akan di upload disini"
 		};
+		
+		$('[data-tooltip="tooltip"]').tooltip();
 		
 	});	
    </script>

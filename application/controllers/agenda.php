@@ -103,7 +103,7 @@ class Agenda extends MY_Controller {
 
 		
 		$data = array(
-				   'agenda_nousul' 		=> $no_usul,
+				   'agenda_nousul' 		=> trim($no_usul),
 				   'layanan_id' 		=> $layanan_id,
                    'agenda_jumlah' 		=> $jumlah,
                    'agenda_ins' 		=> $this->session->userdata['session_instansi'],
