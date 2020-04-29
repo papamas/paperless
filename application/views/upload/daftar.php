@@ -3,7 +3,9 @@
  <head>
     <?php echo $this->load->view('vheader');?>
 	<link rel="stylesheet" href="<?php echo base_url()?>assets/dist/css/tree.css">   
-	<link rel="stylesheet" href="<?php echo base_url()?>assets/dist/css/custom.css">   
+	<link rel="stylesheet" href="<?php echo base_url()?>assets/dist/css/custom.css"> 
+	<link rel="stylesheet" href="<?php echo base_url()?>assets/plugins/select2/select2.css">
+
   </head> 	
 	
 	<style>
@@ -320,12 +322,15 @@
 	<script src="<?php echo base_url()?>assets/plugins/jQuery/jQuery-2.1.4.min.js"></script>    
     <script src="<?php echo base_url()?>assets/bootstrap/js/bootstrap.min.js"></script> 
     <script src="<?php echo base_url()?>assets/dist/js/app.min.js"></script>
-	<!--
-	<script src="<?php echo base_url()?>assets/plugins/pdfo/pdfobject.js"></script>	
-	!-->
+    <script src="<?php echo base_url()?>assets/plugins/select2/select2.full.min.js"></script>
+
 	<script>	
 	$(document).ready(function () {
 	    
+		$(".select2").select2({
+			width: '100%'
+		});	
+		
 		$('[data-tooltip="tooltip"]').tooltip();
 		
 		$('#skModal').on('show.bs.modal',function(e) {    		

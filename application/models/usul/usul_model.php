@@ -149,13 +149,12 @@ ORDER BY e.PNS_PNSNAM ASC
 		
         $sql="SELECT a.*,COUNT(a.usul_id) jumlah_usul,
 		b.layanan_nama,
-		c.tahapan_nama,
-        d.PNS_NIPBARU nip_baru, d.PNS_PNSNIP nip_lama		
+		c.tahapan_nama		
 		FROM usul_taspen a 
 		LEFT JOIN layanan b ON a.layanan_id = b.layanan_id
 		LEFT JOIN tahapan c ON a.usul_tahapan_id = c.tahapan_id
-		LEFT JOIN mirror.pupns d ON (a.nip = d.PNS_NIPBARU OR a.nip = d.PNS_PNSNIP)
-		WHERE 1=1  AND usul_status ='BELUM' AND a.usul_tahapan_id IN ('4','5','6','7','8','9','10','11','12')
+		WHERE 1=1  AND usul_status ='BELUM' 
+		AND a.usul_tahapan_id IN ('4','5','6','7','8','9','10','11','12')
 		GROUP BY a.usul_id";
         $query = $this->db->query($sql);
         return $query;		

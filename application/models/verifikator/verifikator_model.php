@@ -23,12 +23,25 @@ class Verifikator_model extends CI_Model {
 	
 	public function getAllTab($nip)
 	{		
-	    $sql="SELECT a.*,b.*,
+	    // jika layanan perbaikan pertek pensiun hilangkan status aktif
+		$layanan_id = $this->session->userdata('layanan_id');
+		
+		if($layanan_id == 5)
+		{
+			$sql_aktif = " ";
+		}	
+		else
+		{
+			$sql_aktif = " AND b.aktif='1'";
+		}
+		
+		$sql="SELECT a.*,b.*,
 		group_concat(minor_dok SEPARATOR ',') grup_dok ,
 		GROUP_CONCAT(raw_name SEPARATOR ',') upload_raw_name  
 		FROM $this->table a 
 		LEFT JOIN $this->tabledokumen b ON a.id_dokumen = b.id_dokumen 		
-		where a.nip ='$nip' AND b.flag IS NULL AND b.aktif='1'
+		where a.nip ='$nip' AND b.flag IS NULL 
+		$sql_aktif
 		group by b.id_dokumen order by created_date desc";
 		
 		//var_dump($sql);exit;

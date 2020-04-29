@@ -576,6 +576,9 @@ class Entry extends MY_Controller {
 			case 4:
 				$name  = 'PERTEK_PENSIUN_'.$nip;				
 			break;
+			case 5:
+				$name  = 'PERTEK_PENSIUN_'.$nip;				
+			break;
 			case 6:
 				$name  = 'PERTEK_PENSIUN_'.$nip;			
 			break;

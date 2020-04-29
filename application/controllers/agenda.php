@@ -364,7 +364,14 @@ class Agenda extends MY_Controller {
 		  redirect('agenda/nominatif/'.$agenda_id);
 		}
 
-		$cek_nominatif = $this->magenda->mcek_nominatif($agenda_id, $nip);
+		$belum_selesai = $this->magenda->belum_selesai($nip);
+		if($belum_selesai > 0)
+		{
+		    $this->session->set_flashdata('gagal', "NIP masih dalam proses pada Sistem Male_o 1.9");
+			redirect('agenda/nominatif/'.$agenda_id);
+		}			
+		
+		/* $cek_nominatif = $this->magenda->mcek_nominatif($agenda_id, $nip);
 		if($cek_nominatif > 0){
 		  $this->session->set_flashdata('gagal', "NIP telah terdaftar di agenda ini");
 		  redirect('agenda/nominatif/'.$agenda_id);
@@ -386,7 +393,7 @@ class Agenda extends MY_Controller {
 				 }
 			  }
 		   }
-		}
+		} */
 
 		$data = array(
 					   'agenda_id' => $agenda_id,

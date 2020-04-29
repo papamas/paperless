@@ -129,7 +129,7 @@
 						<table class="table table-striped">
 						<thead>
 							<tr>
-								<th>NO</th>								
+								<th>NOUSUL</th>								
 								<th>NIP</th>
 								<th>NAMA</th>
 								<th>USUL DATE</th>

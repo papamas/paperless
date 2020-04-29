@@ -210,7 +210,13 @@ class Magenda extends CI_Model {
 		}
 
 	}
-
+    
+	/* Cek Nominatif berdasarkan NIP yang usulnya belum kelar*/
+	public function belum_selesai($nip){
+		$this->db->where('nomi_status','BELUM');
+		$this->db->where('nip',$nip);
+		return $this->db->get('nominatif');
+	}	
 
 	//CEK NOMINATIF
 	public function mcek_nominatif($agenda_id, $nip){
