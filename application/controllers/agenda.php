@@ -365,9 +365,11 @@ class Agenda extends MY_Controller {
 		}
 
 		$belum_selesai = $this->magenda->belum_selesai($nip);
-		if($belum_selesai > 0)
+		
+		if($belum_selesai->num_rows() > 0)
 		{
-		    $this->session->set_flashdata('gagal', "NIP masih dalam proses pada Sistem Male_o 1.9");
+		    $row =  $belum_selesai->row();
+			$this->session->set_flashdata('gagal', "NIP masih dalam proses pada Sistem Male_o 1.9 dengan Nomor Usul :".$row->agenda_nousul." pada layanan ".$row->layanan_nama);
 			redirect('agenda/nominatif/'.$agenda_id);
 		}			
 		

@@ -213,9 +213,15 @@ class Magenda extends CI_Model {
     
 	/* Cek Nominatif berdasarkan NIP yang usulnya belum kelar*/
 	public function belum_selesai($nip){
-		$this->db->where('nomi_status','BELUM');
-		$this->db->where('nip',$nip);
-		return $this->db->get('nominatif');
+		$sql="SELECT a.agenda_id,a.nip,a.nomi_status,
+		b.layanan_id,b.agenda_nousul,
+		c.layanan_nama
+		FROM nominatif a 
+		LEFT JOIN agenda b ON a.agenda_id = b.agenda_id
+		LEFT JOIN layanan c ON b.layanan_id = c.layanan_id
+		WHERE a.nomi_status IN ('BELUM', 'BTL')
+		AND a.nip='$nip' ";
+		return $this->db->query($sql);
 	}	
 
 	//CEK NOMINATIF
