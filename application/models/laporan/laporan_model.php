@@ -239,9 +239,22 @@ $sql_order ";
 	{
 		$agenda_id		= trim($this->input->post('nomorUsul'));
 		$spesimen		= trim($this->input->post('spesimenPengeluaran'));
-				
+		$pilihan		= trim($this->input->post('pilihanPengeluaran'));
+		$last_number	= trim($this->input->post('nomorPengeluaran'));
+		
+		switch($pilihan){
+		   case 1:
+				$sql_pilihan  = " ";
+		   break;
+		   case 2:
+				$sql_pilihan  = " AND b.out_status IS NOT NULL ";
+		   break;
+		   case 3:
+				$sql_pilihan  = " AND b.out_status IS NULL";
+		   break;
+		}		
 		$sql ="SELECT a.agenda_nousul , formatTanggal(a.agenda_tgl) tgl_usul,
-		b.nomi_persetujuan, formatTanggal(b.tanggal_persetujuan) tgl_acc,
+		b.agenda_id,b.nip, b.nomi_persetujuan, formatTanggal(b.tanggal_persetujuan) tgl_acc,
 		c.PNS_NIPBARU, c.PNS_PNSNAM,
 		d.nama_jabatan, d.nama_daerah, d.lokasi_daerah,
 		formatTanggal(NOW()) sekarang,
@@ -253,12 +266,25 @@ $sql_order ";
 		LEFT JOIN $this->tablejabatan d ON a.agenda_ins = d.id_instansi
 		LEFT JOIN $this->tablesformatsurat e ON e.layanan_id = a.layanan_id
 		LEFT JOIN $this->tablelayanan f ON f.layanan_id = a.layanan_id
-		LEFT JOIN $this->tablepengeluaran g ON g.agenda_id = a.agenda_id
+		LEFT JOIN $this->tablepengeluaran g ON g.agenda_id = a.agenda_id		
+		WHERE trim(a.agenda_id)= trim('$agenda_id') 
+		AND b.nomi_status='ACC' 
+		AND g.last_number='$last_number' 
+		$sql_pilihan ";
 		
-		WHERE trim(a.agenda_id)= trim('$agenda_id') AND b.nomi_status='ACC' ";
+		//var_dump($sql);exit;
 		
 		return $this->db->query($sql);
 	
+	}	
+	
+	public function update_out_status($agenda_id,$nip)
+	{
+	
+		$this->db->set('out_status','1');
+		$this->db->where('agenda_id',$agenda_id);
+		$this->db->where('nip',$nip);
+		return $this->db->update('nominatif');
 	}	
 	
 	public function getAgenda($search)
@@ -279,39 +305,49 @@ $sql_order ";
 	    return $this->db->query($sql);
 	}	
 	
+	public function getPengeluaran_byid_and_last_number($id,$last_number)
+	{
+		$sql="SELECT a.agenda_id,a.last_number		
+		FROM $this->tablepengeluaran a
+		WHERE trim(a.agenda_id)= trim('$id') AND a.last_number = '$last_number' ";
+	    return $this->db->query($sql);
+	}	
+	
 	public function getPengeluaran_byid($id)
 	{
 		$sql="SELECT a.agenda_id,a.last_number		
 		FROM $this->tablepengeluaran a
-		WHERE trim(a.agenda_id)= trim('$id') ";
+		WHERE trim(a.agenda_id)= trim('$id') ORDER BY a.last_number DESC limit 1";
 	    return $this->db->query($sql);
 	}	
 	
 	public function addPengeluaran()
 	{
+		$last_number			= trim($this->input->post('nomorPengeluaran'));	 
 		$agenda_id				= trim($this->input->post('nomorUsul'));		
-		$pengeluaran			= $this->getPengeluaran_byid($agenda_id);
+		$pengeluaran			= $this->getPengeluaran_byid_and_last_number($agenda_id,$last_number);
 		$row					= $this->getAgenda_byid($agenda_id)->row();
 		
 		if($pengeluaran->num_rows() == 0)
 		{	
 			$data['agenda_id']		= $row->agenda_id;
 			$data['layanan_id']     = $row->layanan_id;
-			$data['last_number']    = trim($this->input->post('nomorPengeluaran'));
+			$data['last_number']    = $last_number;
 			$data['satker']   		= $this->input->post('satker');
 			$data['lokasi']	   		= $this->input->post('lokasiSatker');
 			$this->db->insert($this->tablepengeluaran, $data);
 		}
 		else
 		{
-			$set['agenda_id']	   = $row->agenda_id;
-			$set['layanan_id']     = $row->layanan_id;
-			$set['last_number']    = trim($this->input->post('nomorPengeluaran'));	
+			$set['agenda_id']	    = $row->agenda_id;
+			$set['layanan_id']      = $row->layanan_id;
+			$set['last_number']     = $last_number;	
 			$set['satker']   		= $this->input->post('satker');
 			$set['lokasi']	   		= $this->input->post('lokasiSatker');
 			
 			$this->db->set($set);
 			$this->db->where('agenda_id',$agenda_id);
+			$this->db->where('last_number',$last_number);
 			$this->db->update($this->tablepengeluaran);
 		}
 	}

@@ -220,6 +220,7 @@ class Pensiun extends MY_Controller {
 		$this->form_validation->set_rules('spesimenPengeluaran', 'Spesimen Pengeluaran', 'required');
 		$this->form_validation->set_rules('checkSatker', 'Check Satker', 'trim');
 		$this->form_validation->set_rules('tandaTerima', 'Tanda Terima', 'trim');
+		$this->form_validation->set_rules('pilihanPengeluaran', 'Pilihan Pengeluaran', 'trim');
 				
 		$check		= $this->input->post('checkSatker');
 				
@@ -261,6 +262,8 @@ class Pensiun extends MY_Controller {
 			
 			if($pengeluaran->num_rows() > 0)
 			{					
+				
+				
 				$this->pdf->AddPage('P', 'A4');
 				// set style for barcode
 				$style = array(
@@ -342,6 +345,8 @@ class Pensiun extends MY_Controller {
 						
 				foreach($pengeluaran->result() as $value)
 				{
+					
+					
 					if(strlen($value->PNS_PNSNAM) > 31)
 					{
 						$ynama='';
@@ -435,7 +440,8 @@ class Pensiun extends MY_Controller {
 				
 					$y++;
 					$starty +=10;
-					
+					// flag status
+					$this->laporan->update_out_status($value->agenda_id,$value->nip);
 				}	
 			
 				$text ='2. Demikian atas kerjasamannya disampaikan terimakasih';

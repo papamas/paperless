@@ -69,16 +69,26 @@
 									</div>							
 									<div class="form-group row">
 										<label class="control-label col-md-2 col-sm-2 col-xs-2">Nomor Pengeluaran</label>
-										<div class="col-md-4 col-xs-4 col-sm-4">
+										<div class="col-md-2 col-xs-2 col-sm-2">
 											<input type="number"   name="nomorPengeluaran" class="form-control" value=""/>  					
 											<span class="help-block text-red"><?php echo form_error('nomorPengeluaran'); ?></span>	
 										</div>
+										<label class="control-label col-md-2 col-sm-2 col-xs-2">Pilihan Pengeluaran:</label>
+										<div class="col-md-2 col-sm-2 col-xs-2">
+											<select name="pilihanPengeluaran" class="form-control">
+												<option value="1">Semua</option>	
+												<option value="2">Yang Sudah Saja</option>
+												<option value="3">Yang Belum Saja</option>	
+											</select>
+											<span class="help-block text-red"><?php echo form_error('pilihanPengeluaran'); ?></span>
+										</div>
 										<label class="control-label col-md-2 col-sm-2 col-xs-2">Cetak Tanda Terima:</label>
-										<div class="col-md-4 col-sm-4 col-xs-4">
+										<div class="col-md-2 col-sm-2 col-xs-2">
 											<input type="radio" value="1" name="tandaTerima"  <?php echo  set_radio('tandaTerima', 1);?>  />&nbsp;Ya
 											<input type="radio" value="2" name="tandaTerima"  <?php echo  set_radio('tandaTerima', 2,true);?>  />&nbsp;Tidak
 											<span class="help-block text-red"><?php echo form_error('tandaTerima'); ?></span>
 										</div>
+										
 									</div>							
 									<div class="form-group">
 									  <label class="col-md-2 col-sm-2 col-xs-2">Spesimen Pengeluaran</label>
@@ -203,14 +213,14 @@
 				data:{q:this.value},
 				success: function(r){		
                     $("input[name=nomorPengeluaran]").val(r.last_number);
-					if(r.ada)
+					/*if(r.ada)
 					{
 						$("input[name=nomorPengeluaran]").prop("readonly",true);
 					}
 					else
 					{
 						$("input[name=nomorPengeluaran]").prop("readonly",false);
-					}		
+					}*/	
 		        },
 			});		
 		});	
@@ -251,7 +261,7 @@
 					else
 					{
 						$("input[name=nomorPengeluaranTaspen]").prop("readonly",false);
-					}		
+					}	
 		        },
 			});		
 		});	
