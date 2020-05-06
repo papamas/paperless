@@ -128,7 +128,7 @@
 								  <span class="help-block text-red"><?php echo form_error('reportrange'); ?></span>
 								</div>
                                 <div class="col-md-6 col-sm-6 col-xs-6">
-									<label class=" control-label col-md-2 col-sm-2 col-xs-2">Spesimen</label>									
+									<label class=" control-label col-md-2 col-sm-2 col-xs-2">Pemeriksa</label>									
 									<div class="col-md-10 col-sm-10 col-xs-10">
 										<select name="spesimen" class="form-control">
 											<option value="">--silahkan Pilih--</option>
@@ -260,6 +260,7 @@
 					    <input class="form-control" type="hidden" name="<?php echo $this->security->get_csrf_token_name()?>" value="<?php echo $this->security->get_csrf_hash()?>">
 		                <input class="form-control" type="hidden" value="" name="nip" />
 						<input class="form-control" type="hidden" value="" name="usul" />
+						<input class="form-control" type="hidden" value="" name="layananId" />
 						
 						<div class="form-group row">
 							<label class="control-label col-md-2 col-sm-2 col-xs-2">Nomor Surat</label>
@@ -298,8 +299,8 @@
 																	
 								</div>
 							</div>	 
-							<label class="control-label col-md-2 col-sm-2 col-xs-2">Meninggal</label>	
-							<div class="col-md-4 col-sm-4 col-xs-4">	
+							<label class="meninggal control-label col-md-2 col-sm-2 col-xs-2 ">Meninggal</label>	
+							<div class="meninggal col-md-4 col-sm-4 col-xs-4">	
 								<div class='input-group date'>
 									<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
 									<input   pattern="^\d{1,2}\-\d{1,2}\-\d{4}$" type='text'  name="tgl_meninggal" value="<?php echo date('d-m-Y')?>" class="form-control datetimepicker" />
@@ -323,6 +324,21 @@
 							<span class="help-block text-red"><?php echo form_error('kantor'); ?></span>
 						  </div>	
 						</div>
+						
+						<div class="form-group row">
+							<label class=" control-label col-md-2 col-sm-2 col-xs-2">Spesimen</label>									
+							<div class="col-md-10 col-sm-10 col-xs-10">
+								<select name="spesimenTaspen" class="form-control">
+									<option value="">--silahkan Pilih--</option>
+									<?php if($spesimenTaspen->num_rows() > 0):?>
+									<?php foreach($spesimenTaspen->result() as $value):?>
+									<option value="<?php echo $value->nip?>"><?php echo $value->nama_spesimen?></option>
+									<?php endforeach;?>
+									<?php endif;?>
+								</select>
+								<span class="help-block text-red"><?php echo form_error('spesimen'); ?></span>
+							</div>						
+						</div>	
 					</form>
 				</div>
 				<div class="modal-footer">
@@ -428,6 +444,7 @@
 			$("input[name=tgl_meninggal]").val('');
 			$("input[name=tgl_menikah]").val('');
 			$("input[name=gaji_pokok_terakhir]").val('');
+			$("[name=spesimenTaspen]").val('');
 			$("input[name=usul]").val(usul);
 			$("input[name=nip]").val(nip);
 			
@@ -445,6 +462,17 @@
 					$('#skModal input[name=tgl_menikah]').val(r.entry[0].atgl_perkawinan);
 					$('#skModal input[name=tgl_meninggal]').val(r.entry[0].tgl_meninggal);
 					$('#skModal input[name=gaji_pokok_terakhir]').val(r.entry[0].gaji_pokok_terakhir);
+					$('#skModal [name=spesimenTaspen]').val(r.entry[0].usul_spesimen);
+					$('#skModal input[name=layananId]').val(r.entry[0].layanan_id);
+
+					if(r.entry[0].layanan_id == 15)
+					{	
+						$('.meninggal').addClass( "hidden" ); 
+					}
+					else
+					{
+						$('.meninggal').removeClass( "hidden" );
+					}		
 				},
 			});	
 		});

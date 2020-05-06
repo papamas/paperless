@@ -128,7 +128,7 @@
 								  <span class="help-block text-red"><?php echo form_error('reportrange'); ?></span>
 								</div>
                                 <div class="col-md-6 col-sm-6 col-xs-6">
-									<label class=" control-label col-md-2 col-sm-2 col-xs-2">Spesimen</label>									
+									<label class=" control-label col-md-2 col-sm-2 col-xs-2">Pemeriksa</label>									
 									<div class="col-md-10 col-sm-10 col-xs-10">
 										<select name="spesimen" class="form-control">
 											<option value="">--silahkan Pilih--</option>

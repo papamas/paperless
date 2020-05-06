@@ -26,6 +26,7 @@ class Entry extends MY_Controller {
 		$data['instansi']  		= $this->entry->getInstansi();
 		$data['ijazah']         = $this->entry->getIjazah();
 		$data['spesimen']    	= $this->entry->getSpesimen();
+		$data['spesimenTaspen'] = $this->entry->getSpesimenTaspen();
 		
 		$data['show']  			= FALSE;	
 		if(!$this->allow)
@@ -87,7 +88,8 @@ class Entry extends MY_Controller {
 			$data['ijazah']         = $this->entry->getIjazah();
 			$data['show']  			= FALSE;
 			$data['spesimen']    	= $this->entry->getSpesimen();
-			$data['kantor']    	= $this->entry->getKantorTaspen();
+			$data['spesimenTaspen'] = $this->entry->getSpesimenTaspen();
+			$data['kantor']    	    = $this->entry->getKantorTaspen();
 			
 			$this->load->view('entry/index',$data);
 		
@@ -108,6 +110,7 @@ class Entry extends MY_Controller {
 			$data['ijazah']     = $this->entry->getIjazah();
 			$data['show']  		= TRUE;
 			$data['spesimen']   = $this->entry->getSpesimen();
+			$data['spesimenTaspen'] = $this->entry->getSpesimenTaspen();
 			$data['kantor']    	= $this->entry->getKantorTaspen();
 			
 			if($perintah == 1)
@@ -715,26 +718,38 @@ class Entry extends MY_Controller {
 
 	public function simpanTaspen()
 	{
-		$data['usul_id'] 			= $this->myencrypt->decode($this->input->post('usul'));
-		$data['nip']       			= $this->myencrypt->decode($this->input->post('nip'));
-		$data['persetujuan']		= $this->input->post('persetujuan');
-		$data['tanggal']			= $this->input->post('tanggal');
+		$data['usul_id'] 				= $this->myencrypt->decode($this->input->post('usul'));
+		$data['nip']       				= $this->myencrypt->decode($this->input->post('nip'));
+		$data['persetujuan']			= $this->input->post('persetujuan');
+		$data['tanggal']				= $this->input->post('tanggal');
 		$data['pensiun_pokok']			= $this->input->post('pensiun_pokok');
 		$data['pensiun_tmt']			= $this->input->post('pensiun_tmt');
 		$data['kantor_taspen']			= $this->input->post('kantor');
 		$data['tgl_meninggal']			= $this->input->post('tgl_meninggal');
 		$data['tgl_menikah']			= $this->input->post('tgl_menikah');
 		$data['gaji_pokok_terakhir']	= $this->input->post('gaji_pokok_terakhir');
+		$data['usul_spesimen']	        = $this->input->post('spesimenTaspen');
 		
 		$this->form_validation->set_rules('persetujuan', 'Persetujuan', 'required');
 		$this->form_validation->set_rules('tanggal', 'Tanggal', 'required');
 		$this->form_validation->set_rules('pensiun_pokok', 'Pensiun Pokok', 'required');
 		$this->form_validation->set_rules('pensiun_tmt', 'Pensiun TMT', 'required');
 		$this->form_validation->set_rules('kantor', 'Kantor Taspen', 'required');
-		$this->form_validation->set_rules('tgl_meninggal', 'Tgl Meninggal', 'trim');
+		
 		$this->form_validation->set_rules('tgl_menikah', 'Tgl Menikah', 'required');
 		$this->form_validation->set_rules('gaji_pokok_terakhir', 'Gaji Pokok terakhir', 'required');	
+		$this->form_validation->set_rules('spesimenTaspen', 'Spesimen', 'required');
 		
+		$layanan_id    = $this->input->post('layananId');
+		
+		if($layanan_id == 15)
+		{
+            $this->form_validation->set_rules('tgl_meninggal', 'Tgl Meninggal', 'trim');
+		}
+		else
+		{
+			$this->form_validation->set_rules('tgl_meninggal', 'Tgl Meninggal', 'required');
+        }	
 		
 		if($this->form_validation->run() == FALSE)
 		{
@@ -944,7 +959,7 @@ class Entry extends MY_Controller {
 		$row						= $this->entry->getEntryOneTaspen($data)->row();
 		$mutasiIstri				= $this->entry->getMutasiIstri($row->usul_id);
 		$mutasiAnak				    = $this->entry->getMutasiAnak($row->usul_id);
-		$spesimen					= $this->entry->getSpesimenTaspen()->row();
+		//$spesimen					= $this->entry->getSpesimenTaspen()->row();
 		
 		$this->load->library('PDF', array());	
 		$this->pdf->setPrintHeader(false);
@@ -1220,10 +1235,10 @@ class Entry extends MY_Controller {
 		
 		$this->pdf->writeHTMLCell(75,'',235,155,'AN. KEPALA KANTOR',0,0,false,false,'C',true);
 		$this->pdf->writeHTMLCell(75,'',235,160,'REGIONAL XI BADAN KEPEGAWAIAN NEGARA',0,0,false,false,'C',true);
-		$text1= strtoupper($spesimen->jabatan);
+		$text1= strtoupper($row->jabatan_spesimen);
 		$this->pdf->writeHTMLCell(75,'',235,164,$text1,0,0,false,false,'C',true);
-		$this->pdf->Text(250, 185, strtoupper($spesimen->nama_spesimen).(!empty($spesimen->glrblk) ? ','.$spesimen->glrblk : ''));
-		$this->pdf->Text(250, 189, 'NIP. '.$spesimen->nip);
+		$this->pdf->Text(250, 185, strtoupper($row->nama_spesimen).(!empty($row->glrblk) ? ','.$row->glrblk : ''));
+		$this->pdf->Text(250, 189, 'NIP. '.$row->nip_spesimen);
 		
 		
 		
@@ -1317,11 +1332,11 @@ class Entry extends MY_Controller {
 		$this->pdf->write2DBarcode($code, 'QRCODE,Q', 20, 190, 25, 25, $style, 'N'); 
 		
 		$this->pdf->Text(125, 175, 'an.');
-		$text2='Kepala Kantor Regional XI Badan Kepegawaian Negara '.$spesimen->jabatan;
+		$text2='Kepala Kantor Regional XI Badan Kepegawaian Negara '.$row->jabatan_spesimen;
 		$this->pdf->writeHTMLCell(75,125,130,175,$text2,0,0,false,true,'L',true);
 		
-		$this->pdf->Text(130, 215,ucwords(strtolower($spesimen->nama_spesimen)).(!empty($spesimen->glrblk) ? ','.$spesimen->glrblk : ''));
-		$this->pdf->Text(130, 220, 'NIP. '.$spesimen->nip);
+		$this->pdf->Text(130, 215,ucwords(strtolower($row->nama_spesimen)).(!empty($row->glrblk) ? ','.$row->glrblk : ''));
+		$this->pdf->Text(130, 220, 'NIP. '.$row->nip_spesimen);
 		
 		$this->pdf->Text(20, 225, 'Tembusan, Yth :');
 		$this->pdf->Text(20, 230, '1. Kepala Kantor Cabang PT. Taspen (Persero) di '.$row->nama_taspen);

@@ -464,7 +464,6 @@ ORDER  by e.PNS_PNSNAM ASC
 		END AS bg,
 		b.layanan_nama,
 		c.tahapan_nama,
-		d.PNS_NIPBARU nip_baru, d.PNS_PNSNIP nip_lama,
 		e.first_name kirim_by,
 		f.first_name usul_kirim_name,
 		g.first_name usul_lock_name,
@@ -473,13 +472,17 @@ ORDER  by e.PNS_PNSNAM ASC
 		FROM $this->usul a
 		LEFT JOIN $this->tablelayanan b ON a.layanan_id = b.layanan_id	
 		LEFT JOIN $this->tabletahapan c ON c.tahapan_id = a.usul_tahapan_id
-		LEFT JOIN $this->tablepupns d ON (a.nip = d.PNS_NIPBARU OR a.nip = d.PNS_PNSNIP)
 		LEFT JOIN $this->tableuser e ON e.user_id = a.kirim_bkn_by
 		LEFT JOIN $this->tableuser f ON f.user_id = a.usul_kirim_by
 		LEFT JOIN $this->tableuser g ON g.user_id = a.usul_lock_by
 		LEFT JOIN $this->tableuser h ON h.user_id = a.usul_verif_by
 		LEFT JOIN $this->tableuser i ON i.user_id = a.usul_entry_by
-        WHERE 1=1 AND a.usul_status='ACC' $sql_layanan  $sql_filter  $sql_date  $sql_spesimen $sql_status ";
+        WHERE 1=1 AND a.usul_status='ACC' 
+		$sql_layanan  
+		$sql_filter 
+		$sql_date  
+		$sql_spesimen
+		$sql_status ";
 		
 		
 		$query 		= $this->db->query($q);
@@ -504,7 +507,9 @@ ORDER  by e.PNS_PNSNAM ASC
 		$usul			= $data['usul_id'] ;
 		$nip			= $data['nip'];
 		
-		$sql   = "SELECT a.*,DATE_FORMAT(a.tgl_usul,'%d-%m-%Y') tgl,
+		$sql   = "SELECT a.*,
+		b.PNS_PNSNAM nama_spesimen, b.PNS_GLRBLK glrblk, b.PNS_GLRDPN glrdpn
+		FROM (SELECT a.*,DATE_FORMAT(a.tgl_usul,'%d-%m-%Y') tgl,
 		DATE_FORMAT(a.usul_tgl_persetujuan,'%d-%m-%Y') tgl_persetujuan,
 		DATE_FORMAT(a.pensiun_tmt,'%d-%m-%Y') tmt_pensiun,
 		DATE_FORMAT(a.meninggal_dunia,'%d-%m-%Y') tgl_meninggal,
@@ -520,18 +525,17 @@ ORDER  by e.PNS_PNSNAM ASC
 		replace(format(a.pensiun_pokok,0),',','.') penpok,
 		b.layanan_nama,
 		c.tahapan_nama,
-		d.PNS_NIPBARU nip_baru, d.PNS_PNSNIP nip_lama,
 		e.first_name kirim_by,
 		f.first_name usul_kirim_name,
 		g.first_name usul_lock_name,
 		h.first_name usul_verif_name,
 		i.first_name usul_entry_name,
 		j.GOl_PKTNAM,j.GOL_GOLNAM,
-		k.nama_taspen
+		k.nama_taspen,
+		l.nip nip_spesimen, l.jabatan jabatan_spesimen
 		FROM $this->usul a
 		LEFT JOIN $this->tablelayanan b ON a.layanan_id = b.layanan_id	
 		LEFT JOIN $this->tabletahapan c ON c.tahapan_id = a.usul_tahapan_id
-		LEFT JOIN $this->tablepupns d ON (a.nip = d.PNS_NIPBARU OR a.nip = d.PNS_PNSNIP)
 		LEFT JOIN $this->tableuser e ON e.user_id = a.kirim_bkn_by
 		LEFT JOIN $this->tableuser f ON f.user_id = a.usul_kirim_by
 		LEFT JOIN $this->tableuser g ON g.user_id = a.usul_lock_by
@@ -539,7 +543,9 @@ ORDER  by e.PNS_PNSNAM ASC
 		LEFT JOIN $this->tableuser i ON i.user_id = a.usul_entry_by
 		LEFT JOIN $this->tablegolru j ON j.GOL_KODGOL = a.golongan
 		LEFT JOIN $this->kantorTaspen k ON k.id_taspen = a.kantor_taspen
-		WHERE a.nip='$nip' AND a.usul_id='$usul'  ";
+		LEFT JOIN $this->spesimenTaspen l ON l.nip = a.usul_spesimen
+		WHERE a.nip='$nip' AND a.usul_id='$usul' ) a
+		LEFT JOIN $this->tablepupns b ON a.nip_spesimen = b.PNS_NIPBARU";
 		
 		$query 	=   $this->db->query($sql);
 		return      $query;	
@@ -558,6 +564,7 @@ ORDER  by e.PNS_PNSNAM ASC
 		$meninggal_dunia	= date('Y-m-d',strtotime($data['tgl_meninggal']));
 		$tgl_menikah		= date('Y-m-d',strtotime($data['tgl_menikah']));
 		$gaji_pokok			= $data['gaji_pokok_terakhir'];
+		$usul_spesimen		= $data['usul_spesimen'];
 		
 		$set['usul_no_persetujuan']    	=   strtoupper($nomor); 
 		$set['usul_tgl_persetujuan']   	=   $tanggal; 
@@ -569,6 +576,7 @@ ORDER  by e.PNS_PNSNAM ASC
 		$set['meninggal_dunia']			=   $meninggal_dunia;
 		$set['tgl_perkawinan']			=   $tgl_menikah;
 		$set['gaji_pokok_terakhir']		=   $gaji_pokok;
+		$set['usul_spesimen']		    =   $usul_spesimen;
 		
 		$this->db->where('usul_id',$usul_id);
 		$this->db->where('nip',$nip);
@@ -664,6 +672,7 @@ ORDER  by e.PNS_PNSNAM ASC
 		return $this->db->query($sql);
 		
 	}	
+	
 	
 	public function getMutasiIstri($usul_id)
 	{
