@@ -14,6 +14,8 @@ class Verifikator_model extends CI_Model {
 	private     $tabletahapan   = 'tahapan';
 	private     $tablegolru     = 'mirror.golru';
 	private     $usul			= 'usul_taspen';
+	private     $kantorTaspen		= 'kantor_taspen';
+	private     $spesimenTaspen     = 'spesimen_taspen';
 		
     function __construct()
     {
@@ -1053,5 +1055,92 @@ where f.usul_status='BELUM' AND  f.usul_id='$usul_id' ";
 		$this->db->select('first_name,last_name,telegram_id');
 		$this->db->where('user_id', $user_id);
 		return $this->db->get($this->tableuser);		
+	}	
+	
+	/* Draft SK TASPEN*/
+	public function getEntryOneTaspen($data)
+	{
+		$usul			= $data['usul_id'] ;
+		$nip			= $data['nip'];
+		
+		$sql   = "SELECT a.*,
+		b.PNS_PNSNAM nama_spesimen, b.PNS_GLRBLK glrblk, b.PNS_GLRDPN glrdpn
+		FROM (SELECT a.*,DATE_FORMAT(a.tgl_usul,'%d-%m-%Y') tgl,
+		DATE_FORMAT(a.usul_tgl_persetujuan,'%d-%m-%Y') tgl_persetujuan,
+		DATE_FORMAT(a.pensiun_tmt,'%d-%m-%Y') tmt_pensiun,
+		DATE_FORMAT(a.meninggal_dunia,'%d-%m-%Y') tgl_meninggal,
+		DATE_FORMAT(a.tgl_perkawinan,'%d-%m-%Y') atgl_perkawinan,
+		formatTanggal(a.tgl_lahir) atgl_lahir,
+		formatTanggal(a.tgl_skep) atgl_skep,
+		formatTanggal(a.meninggal_dunia) meninggal,
+		formatTanggal(a.tgl_perkawinan) perkawinan,
+		formatTanggal(a.pensiun_tmt) pensiun,
+		formatTanggal(a.usul_tgl_persetujuan) persetujuan_tgl,
+		formatTanggal(a.tgl_usul) atgl_usul,
+		replace(format(a.gaji_pokok_terakhir,0),',','.') gapok,
+		replace(format(a.pensiun_pokok,0),',','.') penpok,
+		b.layanan_nama,
+		c.tahapan_nama,
+		e.first_name kirim_by,
+		f.first_name usul_kirim_name,
+		g.first_name usul_lock_name,
+		h.first_name usul_verif_name,
+		i.first_name usul_entry_name,
+		j.GOl_PKTNAM,j.GOL_GOLNAM,
+		k.nama_taspen,
+		l.nip nip_spesimen, l.jabatan jabatan_spesimen
+		FROM $this->usul a
+		LEFT JOIN $this->tablelayanan b ON a.layanan_id = b.layanan_id	
+		LEFT JOIN $this->tabletahapan c ON c.tahapan_id = a.usul_tahapan_id
+		LEFT JOIN $this->tableuser e ON e.user_id = a.kirim_bkn_by
+		LEFT JOIN $this->tableuser f ON f.user_id = a.usul_kirim_by
+		LEFT JOIN $this->tableuser g ON g.user_id = a.usul_lock_by
+		LEFT JOIN $this->tableuser h ON h.user_id = a.usul_verif_by
+		LEFT JOIN $this->tableuser i ON i.user_id = a.usul_entry_by
+		LEFT JOIN $this->tablegolru j ON j.GOL_KODGOL = a.golongan
+		LEFT JOIN $this->kantorTaspen k ON k.id_taspen = a.kantor_taspen
+		LEFT JOIN $this->spesimenTaspen l ON l.nip = a.usul_spesimen
+		WHERE a.nip='$nip' AND a.usul_id='$usul' ) a
+		LEFT JOIN $this->tablepupns b ON a.nip_spesimen = b.PNS_NIPBARU";
+		
+		$query 	=   $this->db->query($sql);
+		return      $query;	
+	}	
+	
+	public function getMutasiIstri($usul_id)
+	{
+		$sql   = "SELECT a.*,
+		DATE_FORMAT(a.tgl_lahir,'%d-%m-%Y') atgl_lahir,
+		DATE_FORMAT(a.tgl_nikah,'%d-%m-%Y') atgl_nikah,
+		DATE_FORMAT(a.tgl_pendaftaran,'%d-%m-%Y') atgl_pendaftaran,
+		DATE_FORMAT(a.tgl_cerai,'%d-%m-%Y') atgl_cerai,
+		DATE_FORMAT(a.tgl_wafat,'%d-%m-%Y') atgl_wafat
+		FROM mutasi_istri_suami a
+		WHERE a.usul_id='$usul_id'";
+		$query 	=   $this->db->query($sql);
+		return      $query;	
+	}	
+	
+	public function getMutasiAnak($usul_id)
+	{
+		$sql   = "SELECT a.*,
+		DATE_FORMAT(a.tgl_lahir,'%d-%m-%Y') atgl_lahir,
+		DATE_FORMAT(a.cerai_tgl,'%d-%m-%Y') acerai_tgl,
+		DATE_FORMAT(a.meninggal_tgl,'%d-%m-%Y') ameninggal_tgl
+		FROM mutasi_anak a 
+		WHERE a.usul_id='$usul_id'";
+		$query 	=   $this->db->query($sql);
+		return      $query;	
+	}
+
+	public function getSpesimenTaspen()
+	{
+		$sql="SELECT a.* ,
+		b.PNS_PNSNAM nama_spesimen, b.PNS_GLRBLK glrblk, b.PNS_GLRDPN glrdpn
+		FROM $this->spesimenTaspen a
+		LEFT JOIN $this->tablepupns b ON a.nip = b.PNS_NIPBARU
+		WHERE a.aktif='1' ";	
+		return $this->db->query($sql);
+		
 	}	
 }

@@ -164,8 +164,8 @@
 					<ul class="zoom-menu">
 					  <li><a class="hidden zoom-fab zoom-btn-sm zoom-btn-feedback scale-transition scale-out" data-tooltip="tooltip" data-placement="top" title="'.$row->tahapan_nama.'"><i class="fa fa-bell"></i></a></li>
 					  <li><a id="kerja" class="zoom-fab zoom-btn-sm zoom-btn-person scale-transition scale-out" data-toggle="modal" data-target="'.($row->usul_locked == 1 ? $target : '#kerjaModal').'" data-tooltip="tooltip" data-placement="top" title="'.($row->usul_locked == '1' ? 'Berkas telah di kunci oleh '.$row->usul_lock_name :  'Kerjakan berkas Layanan '.$row->layanan_nama.' atas nama '.$row->nama_pns).'"><i id="fa-user" class="fa fa-user"></i></a></li>
-					  <li><a id="verifikasi" class="hidden zoom-fab zoom-btn-sm zoom-btn-doc scale-transition scale-out" data-toggle="modal" data-target="#verifikasiModal" data-tooltip="tooltip" data-placement="top" title="" data-original-title="Hasil Verifikasi berkas ASN atas nama '.$row->nama_pns.'"><i class="fa fa-book"></i></a></li>
-					  <li><a class="hidden zoom-fab zoom-btn-sm zoom-btn-tangram scale-transition scale-out"><i class="fa fa-dashboard"></i></a></li>
+					  <li><a id="verifikasi" class="hidden zoom-fab zoom-btn-sm zoom-btn-doc scale-transition scale-out" data-toggle="modal" data-target="#verifikasiModal" data-tooltip="tooltip" data-placement="top" title="" data-original-title="Hasil Verifikasi berkas '.$row->nama_pns.'"><i class="fa fa-book"></i></a></li>
+					  <li><a href="#draft" id="?u='.$this->myencrypt->encode($row->usul_id).'&l='.$this->myencrypt->encode($row->layanan_id).'&n='.$this->myencrypt->encode($row->nip).'" class="hidden zoom-fab zoom-btn-sm zoom-btn-report scale-transition scale-out" data-tooltip="tooltip" data-placement="top" data-original-title="Cetak Draft SK '.$row->nama_pns.'"><i class="fa fa-print"></i></a></li>
 					  <li><a class="hidden zoom-fab zoom-btn-sm zoom-btn-report scale-transition scale-out"><i class="fa fa-edit"></i></a></li>
 					  
 					</ul>				
@@ -343,6 +343,7 @@
 			var data = $('#nfrmKerja').serialize();
 			var div = $("#verifikasi");
 			var berkas = $("#berkas");
+			var draft = $("a[href='#draft']");
 			var kerja = $("#kerja #fa-user");
 			
 			$('#kerjaModal #msg').text('Updating Please Wait.....')
@@ -360,6 +361,7 @@
 							 
 					div.removeClass('hidden').addClass("visible"); 		
 					berkas.removeClass('hidden').addClass("visible"); 
+					draft.removeClass('hidden').addClass("visible");
 					kerja.removeClass('fa fa-user').addClass("fa fa-lock"); 
 					
 				}, // akhir fungsi sukses
@@ -439,7 +441,10 @@
 		  }
 		});
 
-		
+		$('a[href="#draft"]').click(function(){
+			var id= this.id;
+		    document.location = "<?php echo site_url()?>/verifikator/draftTaspen/"+id;
+		}); 
 	});	
    </script>
   </body>
