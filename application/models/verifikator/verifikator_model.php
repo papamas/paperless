@@ -562,7 +562,7 @@ GROUP BY a.nip,b.layanan_id,a.agenda_id";
 					$set['nomi_verifby']	  = $this->session->userdata('user_id');
 					$this->db->set('verify_date','NOW()',FALSE);					
 				}
-				
+				$status					  = $data['status'];
 			break;
 			// eselon 2
 			case 3:
@@ -578,6 +578,7 @@ GROUP BY a.nip,b.layanan_id,a.agenda_id";
 				$set['nomi_alasan']		  = $data['catatan'];
 				$set['nomi_verifby']	  = $this->session->userdata('user_id');
 				$this->db->set('verify_date','NOW()',FALSE);
+				$status					  = $data['status'];
 			break;
 		}
 		
@@ -711,8 +712,15 @@ GROUP BY a.nip,b.layanan_id,a.agenda_id";
 		if(!empty($startdate) AND !empty($enddate))
 		{
 		
-			$sql_date = " AND DATE( a.verify_date ) BETWEEN STR_TO_DATE( '$startdate', '%d/%m/%Y ' )
-			AND STR_TO_DATE( '$enddate', '%d/%m/%Y ' ) ";
+			$sql_date = " AND (DATE( a.verify_date ) BETWEEN STR_TO_DATE( '$startdate', '%d/%m/%Y ' )
+			AND STR_TO_DATE( '$enddate', '%d/%m/%Y')
+			OR DATE( a.verifdate_level_satu ) BETWEEN STR_TO_DATE( '$startdate', '%d/%m/%Y ' )
+			AND STR_TO_DATE( '$enddate', '%d/%m/%Y' )
+			OR DATE( a.verifdate_level_dua ) BETWEEN STR_TO_DATE( '$startdate', '%d/%m/%Y ' )
+			AND STR_TO_DATE( '$enddate', '%d/%m/%Y' )
+			OR DATE( a.verifdate_level_tiga ) BETWEEN STR_TO_DATE( '$startdate', '%d/%m/%Y ' )
+			AND STR_TO_DATE( '$enddate', '%d/%m/%Y' )
+			) ";
 		}
 		else
 		{	
@@ -726,19 +734,29 @@ GROUP BY a.nip,b.layanan_id,a.agenda_id";
         }
         else
 		{
-			$sql_status = " AND a.nomi_status = '$status' ";
+			$sql_status = " AND (a.nomi_status = '$status'  
+			OR a.status_level_satu = '$status'
+			OR a.status_level_dua = '$status'
+			OR a.status_level_tiga = '$status') ";
 		}			
 		
 		if(!empty($verify))
 		{
-			$sql_verify = "  AND a.nomi_verifby ='$verify'";
+			$sql_verify = "  AND (a.nomi_verifby ='$verify'
+			OR a.verifby_level_satu ='$verify' 
+			OR a.verifby_level_dua ='$verify'
+			OR a.verifby_level_tiga ='$verify')";
         }
         else
 		{
 			$sql_verify = " ";   
 		}		
 		
-		$sql="select a.agenda_id, a.nip, a.nomi_status, a.nomi_alasan, a.verify_date,
+		$sql="select a.agenda_id, a.nip,
+		a.nomi_status, a.nomi_alasan, a.verify_date,
+		a.status_level_satu, a.verifdate_level_satu, CONCAT(f.first_name,' ',f.last_name) verif_name_satu,
+		a.status_level_dua , a.verifdate_level_dua, CONCAT(g.first_name,' ',g.last_name) verif_name_dua,
+		a.status_level_tiga, a.verifdate_level_tiga, CONCAT(h.first_name,' ',h.last_name) verif_name_tiga,
 CASE a.nomi_status
 	WHEN 'ACC' THEN 'badge bg-green'
 	WHEN 'TMS' THEN 'badge bg-red'
@@ -754,7 +772,16 @@ LEFT JOIN $this->tableagenda b ON a.agenda_id = b.agenda_id
 LEFT JOIN $this->tablelayanan c ON b.layanan_id = c.layanan_id
 LEFT JOIN $this->tableinstansi d ON d.INS_KODINS = b.agenda_ins
 LEFT JOIN $this->tablepupns e ON e.PNS_NIPBARU = a.nip
-WHERE 1=1 $sql_instansi  $sql_layanan   $sql_date  $sql_status  $sql_verify  order by e.PNS_PNSNAM ASC";
+LEFT JOIN $this->tableuser f ON f.user_id = verifby_level_satu
+LEFT JOIN $this->tableuser g ON g.user_id = verifby_level_dua
+LEFT JOIN $this->tableuser h ON h.user_id = verifby_level_tiga
+WHERE 1=1 
+$sql_instansi 
+$sql_layanan
+$sql_date 
+$sql_status
+$sql_verify 
+order by e.PNS_PNSNAM ASC";
        
 	   //var_dump($sql);
 

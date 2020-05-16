@@ -432,11 +432,33 @@ class Agenda extends MY_Controller {
 		  redirect('agenda/nominatif/'.$agenda_id);
 		}
 		
+		// cek by nip apakah ada dokumen usul	
+		$cek  = TRUE;
+		$nip  = array();
+		
+		$result    = $this->magenda->cekDokumen($agenda_id);
+		for($i=0;$i < count($result);$i++)
+		{
+			// jika salah satu tidak ada dokumen batalkan seluruhnya
+			$cek &= $result[$i]['response'];
+			if($result[$i]['response'] == FALSE)
+			{	
+			    $nip[]  = $result[$i]['nip'];	
+			}	
+		}
+		
+		if(!boolval($cek))
+		{	
+			$p  = implode(",",$nip);
+			$this->session->set_flashdata('gagal', "Gagal Kirim, NIP ".$p." tidak ada dokumen usul");
+			redirect('agenda/nominatif/'.$agenda_id);
+		}
+		
 		$this->db->trans_begin();
 
-		$this->magenda->mkirim_usul1($agenda_id);
-		$this->magenda->mkirim_usul2($agenda_id);	
-		
+	    $this->magenda->mkirim_usul1($agenda_id);
+		$this->magenda->mkirim_usul2($agenda_id);
+				
 		if ($this->db->trans_status() === FALSE)
 		{
 			$this->db->trans_rollback();

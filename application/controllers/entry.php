@@ -27,6 +27,7 @@ class Entry extends MY_Controller {
 		$data['ijazah']         = $this->entry->getIjazah();
 		$data['spesimen']    	= $this->entry->getSpesimen();
 		$data['spesimenTaspen'] = $this->entry->getSpesimenTaspen();
+		$data['kantor']    	    = $this->entry->getKantorTaspen();
 		
 		$data['show']  			= FALSE;	
 		if(!$this->allow)
@@ -111,7 +112,7 @@ class Entry extends MY_Controller {
 			$data['show']  		= TRUE;
 			$data['spesimen']   = $this->entry->getSpesimen();
 			$data['spesimenTaspen'] = $this->entry->getSpesimenTaspen();
-			$data['kantor']    	= $this->entry->getKantorTaspen();
+			$data['kantor']    	    = $this->entry->getKantorTaspen();
 			
 			if($perintah == 1)
 			{
@@ -550,7 +551,7 @@ class Entry extends MY_Controller {
 		$this->pdf->Text(20, 225, 'Tembusan, Yth :');
 		$this->pdf->Text(20, 230, '1. Kepala Kantor Regional XI sebagai laporan;');
 		$this->pdf->Text(20, 235, '2. Kepala Bidang Informasi Kepegawaian  Kanreg  XI BKN;');
-		$this->pdf->Text(20, 240, '3. Saudara '.$row->nama.' pada Pemerintah Daerah '.$row->nama_daerah.'.');
+		$this->pdf->Text(20, 240, '3. Saudara '.$row->nama);
 		
 		$this->pdf->Output('cetakSurat.pdf', 'D');
 		

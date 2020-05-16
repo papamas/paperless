@@ -16,6 +16,7 @@ class Entry_model extends CI_Model {
 	private     $tablegolru			= 'mirror.golru';
 	private     $tablejabatan		= 'jabatan';
 	private     $tableijazah		= 'ijazah';
+	private     $spesimenPG         = 'spesimen_pg';
 	private     $usul			    = 'usul_taspen';
 	private     $uploadtaspen		= 'upload_dokumen_taspen';
 	private     $kantorTaspen		= 'kantor_taspen';
@@ -272,6 +273,8 @@ ORDER  by e.PNS_PNSNAM ASC
 		$this->db->select('*');
 		return $this->db->get($this->tableijazah);
 	}	
+	
+	
 	
 	public function insertUpload($data)
 	{

@@ -95,7 +95,9 @@
 							<div class="nav-tabs-custom">
 								<ul class="nav nav-tabs">							
 								  <li class="active"> <a href="#tab1" data-toggle="tab">INSTANSI DAERAH/PUSAT</a></li>
-								  <li> <a href="#tab2" data-toggle="tab">TASPEN</a></li>                  
+								  <?php if($this->session->userdata('session_bidang') == 2):?>
+								  <li> <a href="#tab2" data-toggle="tab">TASPEN</a></li>    
+								  <?php endif;?>
 								</ul>
 							</div>	
 						
@@ -111,7 +113,8 @@
 												<th>INSTANSI</th>
 												<th>TANGGAL KIRIM</th>
 												<th>PELAYANAN</th> 
-												<th>JUMLAH</th>
+												<th>ANTRIAN</th>
+												<th>NOMINATIF</th>												
 												<th>PERINTAH</th>								
 											</tr>
 										</thead>   
@@ -125,6 +128,7 @@
 												<td><?php echo $value->agenda_timestamp?></td>
 												<td style="width:20px"><?php echo $value->layanan_nama?></td>
 												<td class="text-center text-info"><?php echo $value->jumlah_usul?></td>
+												<td class="text-center text-red"><?php echo $value->agenda_jumlah?></td>												
 												<td>
 												<button class="btn btn-primary btn-xs" data-tooltip="tooltip"  title="Lihat Pengantar" data-toggle="modal" data-target="#pengantarModal" data-id="?id=<?php echo $this->myencrypt->encode($value->agenda_ins).'&f='.$this->myencrypt->encode($value->agenda_dokumen)?>"><i class="fa fa-search"></i></button>
 												<a href="#dPdf" class="btn btn-danger btn-xs"  data-tooltip="tooltip"  title="Unduh Pengantar" id="?id=<?php echo $this->myencrypt->encode($value->agenda_ins).'&f='.$this->myencrypt->encode($value->agenda_dokumen)?>"><i class="fa fa-file-pdf-o"></i></a>

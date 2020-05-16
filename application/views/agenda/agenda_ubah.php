@@ -47,9 +47,11 @@
 						   <div class="col-md-4">
 							<label>Pilih Layanan :</label>
 							<select class="form-control" name="input_layanan" required>
+								<!--
 								<option value="<?php echo $detail_agenda->layanan_id ?>"><?php echo $detail_agenda->layanan_nama ?></option>
+								!-->
 								<?php foreach ($list_layanan as $layanan) { ?>
-								<option value="<?php echo $layanan->layanan_id ?>"><?php echo $layanan->layanan_nama ?></option>
+								<option value="<?php echo $layanan->layanan_id ?>" <?php echo ($layanan->layanan_id == $detail_agenda->layanan_id ? "selected" : '') ?> ><?php echo $layanan->layanan_nama ?></option>
 								<?php } ?>
 							</select>
 						   </div>

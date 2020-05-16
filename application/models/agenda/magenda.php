@@ -347,6 +347,59 @@ class Magenda extends CI_Model {
 		
 	}
 	
+	public function cekDokumen($agenda_id)
+	{
+		$sql ="SELECT a.nip ,a.agenda_id, b.layanan_id
+		FROM nominatif a  
+		LEFT JOIN agenda b ON a.agenda_id = b.agenda_id
+		WHERE a.agenda_id='$agenda_id' ";
+		$query = $this->db->query($sql);
+		
+		$cek   = array();
+		if($query->num_rows() > 0)
+		{
+			foreach($query->result() as $value)
+			{
+				$cek []  = $this->cekMain_dokumen($value->agenda_id,$value->layanan_id,$value->nip);		
+
+			}			
+		}
+			
+		
+		return $cek;
+	}	
+	
+	function cekMain_dokumen($agenda_id,$layanan_id,$nip)
+	{
+	    // cek dokumen usul sebelum kirim usul per nip
+		$sql ="SELECT a.nip,c.dokumen_id, d.layanan_nama ,
+		e.id_dokumen, f.nama_dokumen, f.flag 
+		FROM nominatif a 
+		LEFT JOIN agenda b ON a.agenda_id = b.agenda_id
+		LEFT JOIN syarat_layanan c ON b.layanan_id = c.layanan_id
+	    LEFT JOIN layanan d ON d.layanan_id = c.layanan_id
+		LEFT JOIN upload_dokumen e ON (a.nip = e.nip AND e.id_dokumen = c.dokumen_id)
+		LEFT JOIN dokumen f ON e.id_dokumen = f.id_dokumen
+		WHERE a.agenda_id='$agenda_id' 
+		AND b.layanan_id='$layanan_id'
+		AND e.nip ='$nip'
+		AND f.flag='1' ";
+		$query = $this->db->query($sql);
+		if($query->num_rows() > 0)
+		{	
+		    $r['response'] = TRUE;
+			$r['nip']      = $nip;
+        }
+		else
+		{
+			$r['response'] = FALSE;
+			$r['nip']      = $nip;
+			
+		}
+		
+		return $r;
+	}
+	
 	function getTelegramAkun_bybidang($id_bidang)
 	{	
 		$this->db->select('first_name,last_name,telegram_id');

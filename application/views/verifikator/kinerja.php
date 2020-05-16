@@ -106,7 +106,7 @@
 										<select name="verifikator" class="form-control">										
 											<?php if($verifikator->num_rows() > 0):?>
 											<?php foreach($verifikator->result() as $value):?>
-											<option value="<?php echo $value->user_id?>" <?php echo ($this->session->userdata('user_id') == $value->user_id ? 'selected="selected"' : '')?>><?php echo $value->last_name?></option>
+											<option value="<?php echo $value->user_id?>" <?php echo ($this->session->userdata('user_id') == $value->user_id ? 'selected="selected"' : '')?>><?php echo $value->first_name.' '.$value->last_name?></option>
 											<?php endforeach;?>
 											<?php endif;?>
 										</select>

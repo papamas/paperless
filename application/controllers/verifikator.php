@@ -446,12 +446,15 @@ class Verifikator extends MY_Controller {
 					<th>NIP</th>
 					<th>NAMA</th>
 					<th>INSTANSI</th>
-					<th>USUL</th>
-					<th>TANGGAL USUL</th>
-					<th>TANGGAL VERIFIKATOR</th>
+					<th>LAYANAN</th>
+					<th>USUL</th>					
+					<th>LEVEL 1</th>
+					<th>LEVEL 2</th>
+					<th>LEVEL 3</th>
+					<th>TANGGAL SELESAI</th>
 					<th>STATUS</th>
 					<th>ALASAN</th>
-					<th>LAYANAN</th>
+					
 					'; 
 		$html 	.= '</tr>';
 		if($q->num_rows() > 0){
@@ -461,12 +464,15 @@ class Verifikator extends MY_Controller {
 				$html .= "<td class=str>{$r->nip}</td>";	
                 $html .= "<td>{$r->nama}</td>";					
 				$html .= "<td>{$r->instansi}</td>";	
-				$html .= "<td>{$r->agenda_nousul}</td>";	
-				$html .= "<td>{$r->agenda_timestamp}</td>";	
-				$html .= "<td>{$r->verify_date}</td>";	
+				$html .= "<td>{$r->layanan_nama}</td>";	
+				$html .= "<td>{$r->agenda_nousul}<br/>{$r->agenda_timestamp}</td>";					
+                $html .= "<td>{$r->status_level_satu}<br/>{$r->verif_name_satu}<br/>{$r->verifdate_level_satu}</td>";	
+                $html .= "<td>{$r->status_level_dua}<br/>{$r->verif_name_dua}<br/>{$r->verifdate_level_dua}</td>";	
+                $html .= "<td>{$r->status_level_tiga}<br/>{$r->verif_name_tiga}<br/>{$r->verifdate_level_tiga}</td>";	
+               	$html .= "<td>{$r->verify_date}</td>";	
 				$html .= "<td>{$r->nomi_status}</td>";
 				$html .= "<td>{$r->nomi_alasan}</td>";	
-				$html .= "<td>{$r->layanan_nama}</td>";	
+				
 				$html .= "</tr>";
 				$i++;
 			}
