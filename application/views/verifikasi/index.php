@@ -354,15 +354,15 @@
 				type: "POST",
 				url : "<?php echo site_url()?>/verifikasi/kirim",
 				data: data,
-				success: function(){
-					$('#kirimModal #msg').text('Berkas sudah dikirim ke Teknis....')
+				success: function(r){
+					$('#kirimModal #msg').text(r.pesan)
 						.removeClass( "text-blue")
 						.addClass( "text-green");
 					refreshTable();
 					$("#nBtnKirim").hide();	
 			    }, // akhir fungsi sukses
 				error : function(r) {				    
-					 $('#kirimModal #msg').text(r.responseJSON.error)
+					 $('#kirimModal #msg').text(r.responseJSON.pesan)
                      .removeClass( "text-green")
 					 .removeClass( "text-blue")
 				     .addClass( "text-red" ); 
@@ -446,7 +446,7 @@
 				data: data,
 				success: function(res){				
 					if(res.nip != null){						
-						$('#kirimAllModal #msg').text('Semua Berkas sudah dikirim ke Teknis....')
+						$('#kirimAllModal #msg').text(res.pesan)
 								 .removeClass( "text-blue")
 								 .addClass( "text-green" );
 						refreshTable();
@@ -454,6 +454,12 @@
                     $('a[href="#kirim').attr("data-target", "#");
 		            $('a[href="#kirim').attr("disabled", "disabled");					
 			    }, // akhir fungsi sukses
+				error : function(r) {				    
+					 $('#kirimAllModal #msg').text(r.responseJSON.pesan)
+                     .removeClass( "text-green")
+					 .removeClass( "text-blue")
+				     .addClass( "text-red" ); 
+				}	
 		    });
 			return false;
 			

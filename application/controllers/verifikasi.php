@@ -301,31 +301,112 @@ class Verifikasi extends MY_Controller {
 	
 	public function kirim()
 	{
-		$data['response']	= $this->verifikasi->setKirim();
+		$id       = $this->input->post('agenda');
 		
-		$this->output
-			->set_status_header(200)
+		$this->db->trans_begin();
+		
+		    $data['response']	= $this->verifikasi->setKirim();
+			$row      = $this->verifikasi->getAgendaData($id)->row();
+			$baris    = $this->verifikasi->getUserLayananRole($row->layanan_id,$row->agenda_ins);
+			
+		if ($this->db->trans_status() === FALSE)
+		{
+			$this->db->trans_rollback();
+			
+			$data['pesan']		= 'Berkas Gagal dikirim ke Teknis';
+			$this->output
+			->set_status_header(406)
 			->set_content_type('application/json', 'utf-8')
 			->set_output(json_encode($data));
-		
+		}
+		else
+		{	
+			if($baris->num_rows() > 0)
+			{
+				$rbaris  = $baris->row();			
+				// kirim notifikasi ke teknis jika ada telegram id
+				if(!empty($rbaris->telegram_id))
+				{	
+					$this->telegram->sendApiAction($rbaris->telegram_id);
+					$text  = "<pre>Hello, <strong>".$rbaris->first_name ." ".$rbaris->last_name. "</strong> ada berkas kiriman untuk kamu nih dari TU :";
+					$text .= "\n Tanggal :".date('d-m-Y H:i:s');
+					$text .= "\n Nomor Usul:".$row->agenda_nousul;
+					$text .= "\n Layanan:".$row->layanan_nama;
+					$text .= "\n Instansi:".$row->instansi;
+					$text .= "\n Jumlah:".$row->agenda_jumlah;
+					$this->telegram->sendApiMsg($rbaris->telegram_id, $text , false, 'HTML');	
+											
+				}			
+			}		
+			
+			$data['pesan']		= 'Berkas sudah dikirim ke Teknis';
+			$this->output
+				->set_status_header(200)
+				->set_content_type('application/json', 'utf-8')
+				->set_output(json_encode($data));
+		}
 	}
 	
 	public function kirimAll()
 	{
 		$nip                = $this->input->post('nip');
 		$agenda             = $this->input->post('agenda');
-		for($i=0;$i < count($nip);$i++)
-        {
-			$data['agenda']     = $agenda[$i];
-			$data['nip']        = $nip[$i];
-			$data['response']	= $this->verifikasi->setKirimAll($data);
-			$this->output
-				->set_status_header(200)
-				->set_content_type('application/json', 'utf-8')
-				->set_output(json_encode($data));
+		$agenda_unik        = array_unique($agenda);
+		
+		$this->db->trans_begin();
+		if ($this->db->trans_status() === FALSE)
+		{
+			$this->db->trans_rollback();
 			
-		}   
-        	
+			$data['pesan']		= 'Berkas Gagal dikirim ke Teknis';
+			$this->output
+			->set_status_header(406)
+			->set_content_type('application/json', 'utf-8')
+			->set_output(json_encode($data));
+		}
+		else
+		{	
+			// kirim notifikasi berdasarkan agenda dan layanan
+			for($j=0;$j < count($agenda_unik);$j++){
+			   
+				$id       = $agenda_unik[$j];
+				$row      = $this->verifikasi->getAgendaData($id)->row();
+				$baris    = $this->verifikasi->getUserLayananRole($row->layanan_id,$row->agenda_ins);
+				
+				if($baris->num_rows() > 0)
+				{
+					foreach($baris->result() as $value)
+					{
+						// kirim notifikasi ke teknis jika ada telegram id
+						if(!empty($value->telegram_id))
+						{	
+							$this->telegram->sendApiAction($value->telegram_id);
+							$text  = "<pre>Hello, <strong>".$value->first_name ." ".$value->last_name. "</strong> ada berkas kiriman untuk kamu nih dari TU :";
+							$text .= "\n Tanggal :".date('d-m-Y H:i:s');
+							$text .= "\n Nomor Usul:".$row->agenda_nousul;
+							$text .= "\n Layanan:".$row->layanan_nama;
+							$text .= "\n Instansi:".$row->instansi;
+							$text .= "\n Jumlah:".$row->agenda_jumlah;
+							$this->telegram->sendApiMsg($value->telegram_id, $text , false, 'HTML');	
+													
+						}					
+					}			
+				}	
+			}
+			
+			for($i=0;$i < count($nip);$i++)
+			{
+				$data['agenda']     = $agenda[$i];
+				$data['nip']        = $nip[$i];
+				$data['response']	= $this->verifikasi->setKirimAll($data);
+				$data['pesan']		= 'Berkas sudah dikirim ke Teknis';
+				$this->output
+					->set_status_header(200)
+					->set_content_type('application/json', 'utf-8')
+					->set_output(json_encode($data));
+				
+			}   
+        }	
 	}
 
 	public function setBtl()

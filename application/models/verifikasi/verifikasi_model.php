@@ -12,6 +12,7 @@ class Verifikasi_model extends CI_Model {
 	private     $tableuser		= 'app_user';
 	private     $tablesyarat 	= 'syarat_layanan';
 	private     $tabletahapan 	= 'tahapan';
+	private     $tablerole      = 'user_layanan_role';
 		
     function __construct()
     {
@@ -88,6 +89,33 @@ $sql_instansi  $sql_layanan";
 		$sql="SELECT * FROM $this->tablelayanan WHERE status='1' AND layanan_bidang='$bidang' ORDER BY layanan_nama ASC ";	
 		return $this->db->query($sql);
 		
+	}	
+	
+	function getAgendaData($id)
+	{
+		$sql="SELECT a.agenda_ins,a.layanan_id,
+		a.agenda_nousul, a.agenda_jumlah,
+		b.INS_NAMINS instansi,
+		c.layanan_nama
+		FROM $this->tableagenda a 
+		LEFT JOIN $this->tableinstansi b ON a.agenda_ins  = b.INS_KODINS
+		LEFT JOIN $this->tablelayanan c ON a.layanan_id = c.layanan_id
+		WHERE a.agenda_id='$id' ";
+		return $this->db->query($sql);
+	}	
+	
+	function getUserLayananRole($layanan,$instansi)
+	{
+		$sql="SELECT a.user_id, b.first_name,
+		b.last_name, b.telegram_id 
+		FROM $this->tablerole a
+		LEFT JOIN $this->tableuser b ON a.user_id = b.user_id 
+		WHERE a.layanan_id ='$layanan' 
+		AND a.id_instansi ='$instansi'
+		AND b.active ='1'
+		AND b.telegram_id IS NOT NULL
+		";
+		return $this->db->query($sql);
 	}	
 	
 	public function setKirim()
@@ -334,6 +362,7 @@ $sql_instansi  $sql_layanan";
 	{	
 		$this->db->select('first_name,last_name,telegram_id');
 		$this->db->where('id_instansi', $instansi);
+		$this->db->where('active', 1);
 		return $this->db->get($this->tableuser);		
 	}	
 }

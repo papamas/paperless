@@ -514,11 +514,11 @@ class Agenda extends MY_Controller {
 				{	
 					$this->telegram->sendApiAction($value->telegram_id);
 					$text  = "<pre>Hello, <strong>".$value->first_name ." ".$value->last_name. "</strong>  Ada Usul berkas baru nih :";
-					$text .= "\n Tanggal :".date('d-m-Y H:i:s');
-					$text .= "\n Nomor Usul :".$row_agenda->agenda_nousul;
-					$text .= "\n Layanan :".$row_agenda->layanan_nama;
-					$text .= "\n Instansi :".$row_agenda->instansi;
-					$text .= "\n Jumlah :".$agenda_jumlah.'</pre>';
+					$text .= "\n Tanggal:".date('d-m-Y H:i:s');
+					$text .= "\n Nomor Usul:".$row_agenda->agenda_nousul;
+					$text .= "\n Layanan:".$row_agenda->layanan_nama;
+					$text .= "\n Instansi:".$row_agenda->instansi;
+					$text .= "\n Jumlah:".$agenda_jumlah.'</pre>';
 					$this->telegram->sendApiMsg($value->telegram_id, $text , false, 'HTML');
 					
 				}	

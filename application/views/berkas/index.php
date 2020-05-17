@@ -387,19 +387,19 @@
 				type: "POST",
 				url : "<?php echo site_url()?>/berkas/kirim",
 				data: data,
-				success: function(){					
-					$('#kirimModal #msg').text('Berkas BTL sudah dikirimkan kembali ke Tim Teknis BKN XI, Silahkan anda Close dialog ini')
+				success: function(r){					
+					$('#kirimModal #msg').text(r.pesan)
 						.removeClass( "text-blue")
 						.addClass( "text-green" );
 					refreshTable();		
                     $("#nBtnKirim").hide();					
 			    }, // akhir fungsi sukses
-				error : function(r) {
-					$('#kirimModal #msg').text('Something wrong..')
+				error : function(r) {					
+					$('#kirimModal #msg').text(r.responseJSON.pesan)
 						.removeClass( "text-blue")
 						.removeClass( "text-green")
-						.addClass( "text-danger" );
-				}	
+						.addClass( "text-danger" ); 
+				}
 		    });
 			return false;
 		});

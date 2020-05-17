@@ -559,7 +559,7 @@ class Berkas extends MY_Controller {
 		$btlFrom        = $data['btlFrom'];
 		
 		$row_agenda	    =  $this->berkas->getAgenda_byid($agenda_id,$nip)->row();
-		$TelegramAkun   =  $this->berkas->getTelegramAkun_bybidang($row_agenda->layanan_bidang);
+		$TelegramAkun   =  $this->berkas->getTelegramAkun_bybidang($row_agenda->layanan_bidang,$btlFrom);
 		
 		if($btlFrom  == 3)
 		{
@@ -579,14 +579,14 @@ class Berkas extends MY_Controller {
 				{	
 					$this->telegram->sendApiAction($value->telegram_id);
 					$text  = "<pre>Hello, <strong>".$value->first_name ." ".$value->last_name. "</strong>  Ada berkas yang telah di BTL kan oleh ".$txt."  sudah dikirim ulang nih :";
-					$text .= "\n Tanggal :".date('d-m-Y H:i:s');
-					$text .= "\n Nomor Usul :".$row_agenda->agenda_nousul;
-					$text .= "\n Layanan :".$row_agenda->layanan_nama;
+					$text .= "\n Tanggal:".date('d-m-Y H:i:s');
+					$text .= "\n Nomor Usul:".$row_agenda->agenda_nousul;
+					$text .= "\n Layanan:".$row_agenda->layanan_nama;
 					$text .= "\n NIP :".$row_agenda->nip;
-					$text .= "\n Nama PNS :".$row_agenda->PNS_GLRDPN.''.$row_agenda->PNS_PNSNAM.''.$row_agenda->PNS_GLRBLK;
-					$text .= "\n Instansi :".$row_agenda->instansi.'</pre>';
+					$text .= "\n Nama PNS:".$row_agenda->PNS_GLRDPN.''.$row_agenda->PNS_PNSNAM.''.$row_agenda->PNS_GLRBLK;
+					$text .= "\n Instansi:".$row_agenda->instansi.'</pre>';
 					$this->telegram->sendApiMsg($value->telegram_id, $text , false, 'HTML');
-				
+				    
 				}	
 			}
 		}
