@@ -306,8 +306,6 @@ class Verifikasi extends MY_Controller {
 		$this->db->trans_begin();
 		
 		    $data['response']	= $this->verifikasi->setKirim();
-			$row      = $this->verifikasi->getAgendaData($id)->row();
-			$baris    = $this->verifikasi->getUserLayananRole($row->layanan_id,$row->agenda_ins);
 			
 		if ($this->db->trans_status() === FALSE)
 		{
@@ -320,23 +318,27 @@ class Verifikasi extends MY_Controller {
 			->set_output(json_encode($data));
 		}
 		else
-		{	
+		{	$row      = $this->verifikasi->getAgendaData($id)->row();
+			$baris    = $this->verifikasi->getUserLayananRole($row->layanan_id,$row->agenda_ins);
+			
 			if($baris->num_rows() > 0)
 			{
-				$rbaris  = $baris->row();			
-				// kirim notifikasi ke teknis jika ada telegram id
-				if(!empty($rbaris->telegram_id))
-				{	
-					$this->telegram->sendApiAction($rbaris->telegram_id);
-					$text  = "<pre>Hello, <strong>".$rbaris->first_name ." ".$rbaris->last_name. "</strong> ada berkas kiriman untuk kamu nih dari TU :";
-					$text .= "\n Tanggal :".date('d-m-Y H:i:s');
-					$text .= "\n Nomor Usul:".$row->agenda_nousul;
-					$text .= "\n Layanan:".$row->layanan_nama;
-					$text .= "\n Instansi:".$row->instansi;
-					$text .= "\n Jumlah:".$row->agenda_jumlah;
-					$this->telegram->sendApiMsg($rbaris->telegram_id, $text , false, 'HTML');	
-											
-				}			
+				foreach($baris->result() as $value)
+				{
+					// kirim notifikasi ke teknis jika ada telegram id
+					if(!empty($value->telegram_id))
+					{	
+						$this->telegram->sendApiAction($value->telegram_id);
+						$text  = "<pre>Hello, <strong>".$value->first_name ." ".$value->last_name. "</strong> ada berkas kiriman untuk kamu nih dari TU :";
+						$text .= "\n Tanggal :".date('d-m-Y H:i:s');
+						$text .= "\n Nomor Usul:".$row->agenda_nousul;
+						$text .= "\n Layanan:".$row->layanan_nama;
+						$text .= "\n Instansi:".$row->instansi;
+						$text .= "\n Jumlah:".$row->agenda_jumlah.'</pre>';
+						$this->telegram->sendApiMsg($value->telegram_id, $text , false, 'HTML');	
+												
+					}					
+				}		
 			}		
 			
 			$data['pesan']		= 'Berkas sudah dikirim ke Teknis';
@@ -386,7 +388,7 @@ class Verifikasi extends MY_Controller {
 							$text .= "\n Nomor Usul:".$row->agenda_nousul;
 							$text .= "\n Layanan:".$row->layanan_nama;
 							$text .= "\n Instansi:".$row->instansi;
-							$text .= "\n Jumlah:".$row->agenda_jumlah;
+							$text .= "\n Jumlah:".$row->agenda_jumlah.'</pre>';
 							$this->telegram->sendApiMsg($value->telegram_id, $text , false, 'HTML');	
 													
 						}					
