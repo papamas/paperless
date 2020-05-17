@@ -355,14 +355,18 @@
 				url : "<?php echo site_url()?>/verifikasi/kirim",
 				data: data,
 				success: function(){
-					$("#nBtnKirim").hide();
-					
 					$('#kirimModal #msg').text('Berkas sudah dikirim ke Teknis....')
 						.removeClass( "text-blue")
 						.addClass( "text-green");
 					refreshTable();
-						
+					$("#nBtnKirim").hide();	
 			    }, // akhir fungsi sukses
+				error : function(r) {				    
+					 $('#kirimModal #msg').text(r.responseJSON.error)
+                     .removeClass( "text-green")
+					 .removeClass( "text-blue")
+				     .addClass( "text-red" ); 
+				}	
 		    });
 			return false;
 		});

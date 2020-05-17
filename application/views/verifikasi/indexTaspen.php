@@ -368,6 +368,12 @@
 						.addClass( "text-green" );
 					refreshTable();											 
 			    }, // akhir fungsi sukses
+				error : function(r) {				    
+					 $('#kirimModal #msg').text(r.responseJSON.error)
+                     .removeClass( "text-green")
+					 .removeClass( "text-blue")
+				     .addClass( "text-red" ); 
+				}	
 		    });
 			return false;
 		});
@@ -411,6 +417,12 @@
                     $('a[href="#kirim').attr("data-target", "#");
 		            $('a[href="#kirim').attr("disabled", "disabled");					
 			    }, // akhir fungsi sukses
+				error : function(r) {				    
+					 $('#kirimAllModal #msg').text(r.responseJSON.error)
+                     .removeClass( "text-green")
+					 .removeClass( "text-blue")
+				     .addClass( "text-red" ); 
+				}	
 		    });
 			return false;
 			

@@ -5,6 +5,7 @@ class Upload_model extends CI_Model {
 	private     $table  			= 'upload_dokumen_taspen';
 	private     $dokumen  			= 'dokumen_taspen';
 	private     $appuser  			= 'app_user';
+	private     $usul  			    = 'usul_taspen';
 	
 		
     function __construct()
@@ -79,11 +80,14 @@ class Upload_model extends CI_Model {
 		
 		$sql=" SELECT a.*, 
 		b.nama_dokumen,b.keterangan,
-		c.first_name upload_name
+		c.first_name upload_name,
+		d.nama_pns
 		FROM $this->table a
-		LEFT JOIN $this->dokumen b ON a.id_dokumen = b.id_dokumen
+		LEFT JOIN $this->dokumen b ON a.id_dokumen = b.id_dokumen		
 		LEFT JOIN $this->appuser c ON a.upload_by = c.user_id
+		LEFT JOIN $this->usul d ON a.nip = d.nip
 		WHERE 1=1 $sql_nip  
+		GROUP BY a.id_dokumen
 		ORDER BY b.keterangan ASC";	
 		
 				

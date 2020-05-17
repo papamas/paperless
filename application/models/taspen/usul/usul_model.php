@@ -10,6 +10,7 @@ class Usul_model extends CI_Model {
 	private     $tempistri			= 'mutasi_istri_suami';
 	private     $tempanak			= 'mutasi_anak';
 	private     $tahapan            = 'tahapan';
+	private     $syarat             = 'syarat_layanan_taspen';
 		
     function __construct()
     {
@@ -124,6 +125,7 @@ class Usul_model extends CI_Model {
 		}
 		
 		switch($layanan){
+			// JANDA-DUDA-YT
 			case 1:
 			$sql_layanan  =" AND a.layanan_id  IN  (16,17)";
 			break;
@@ -142,11 +144,9 @@ class Usul_model extends CI_Model {
 		DATE_FORMAT(a.tgl_perkawinan,'%d-%m-%Y') perkawinan,
 		DATE_FORMAT(a.meninggal_dunia,'%d-%m-%Y') meninggal,
 		DATE_FORMAT(a.pensiun_tmt,'%d-%m-%Y') pensiun,
-		b.layanan_nama,
-		c.PNS_NIPBARU nip_baru, c.PNS_PNSNIP nip_lama
+		b.layanan_nama
 		FROM $this->usul a
-		LEFT JOIN $this->layanan b ON a.layanan_id = b.layanan_id	
-		LEFT JOIN $this->tablepupns c ON (a.nip = c.PNS_NIPBARU OR a.nip = c.PNS_PNSNIP)
+		LEFT JOIN $this->layanan b ON a.layanan_id = b.layanan_id		
         WHERE 1=1 AND a.kirim_bkn IS NULL $sql_find	 $sql_layanan	
 		ORDER by created_date DESC
 		LIMIT 50 
@@ -160,8 +160,9 @@ class Usul_model extends CI_Model {
 		// kirim dari TASPEN  ke TU		
 		$r					  = FALSE;
 		$usul_id			  = $this->input->post('usul_id');
-		$nip                  = $this->input->post('usul_nip');		
-		
+		$nip                  = $this->input->post('usul_nip');	
+		$layanan_id           = $this->input->post('usul_layanan');			
+			
 		$set['usul_tahapan_id']   = 2;	
 		$set['kirim_bkn_by']      = $this->session->userdata('user_id');
 		$set['kirim_bkn']   	  = 1;
@@ -187,9 +188,50 @@ class Usul_model extends CI_Model {
 			}     
         }
         $this->db->db_debug = $db_debug; //restore setting			
-				return $r;
+		return $r;
 	}
 	
+	function cekDokumen($usul_id,$layanan_id,$nip)
+	{
+		$sql="SELECT a.nip, a.layanan_id,
+		c.id_dokumen, c.nama_dokumen, c.flag		
+		FROM $this->usul a 
+		LEFT JOIN $this->syarat b ON a.layanan_id = b.layanan_id 
+		LEFT JOIN $this->dokumen c ON b.dokumen_id = c.id_dokumen
+		WHERE a.usul_id='$usul_id' 
+		AND b.layanan_id='$layanan_id'
+		AND c.flag='1' 
+		";
+		$query  = $this->db->query($sql);
+		$ada    = FALSE;
+		
+		if($query->num_rows() > 0)
+		{
+            $row  = $query->row();
+			$ada  = $this->cekMainDokumen($row->nip,$row->id_dokumen);
+        }
+
+		return $ada;
+	}
+
+	function cekMainDokumen($nip,$id_dokumen)
+	{
+		$sql="SELECT a.* 
+		FROM $this->upload a 
+		WHERE a.nip='$nip' 
+		AND a.id_dokumen='$id_dokumen' ";
+		$query  		= $this->db->query($sql);
+		if($query->num_rows() > 0)
+		{
+			$r = TRUE;
+		}
+		else
+		{
+			$r = FALSE;
+		}
+
+		return $r;	
+	}
 	function getUsul_byid($usul_id,$nip)
 	{
 		$sql="SELECT a.usul_id, a.nomor_usul, a.tgl_usul, a.nama_pns, 

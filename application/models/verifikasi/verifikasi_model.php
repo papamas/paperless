@@ -205,12 +205,10 @@ $sql_instansi  $sql_layanan";
 				
 		$q="SELECT a.*,
 		b.layanan_nama,		
-        c.tahapan_nama,
-        d.PNS_NIPBARU nip_baru, d.PNS_PNSNIP nip_lama		
-		FROM usul_taspen a 
+        c.tahapan_nama
+       	FROM usul_taspen a 
 		LEFT JOIN layanan b ON a.layanan_id = b.layanan_id
 		LEFT JOIN tahapan c ON a.usul_tahapan_id = c.tahapan_id
-		LEFT JOIN mirror.pupns d ON (a.nip = d.PNS_NIPBARU OR a.nip = d.PNS_PNSNIP)		
 		WHERE 1=1 AND a.usul_tahapan_id IN (2,3) $sql_layanan";
 		
 		$query 		= $this->db->query($q);

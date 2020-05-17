@@ -42,12 +42,10 @@ class Berkas_model extends CI_Model {
 			ELSE 'badge bg-light-blue'
 		END AS bg,
 		b.layanan_nama,
-		c.tahapan_nama,
-		d.PNS_NIPBARU nip_baru, d.PNS_PNSNIP nip_lama
+		c.tahapan_nama		
 		FROM $this->usul a
 		LEFT JOIN $this->layanan b ON a.layanan_id = b.layanan_id	
 		LEFT JOIN $this->tahapan c ON c.tahapan_id = a.usul_tahapan_id
-		LEFT JOIN $this->tablepupns d ON (a.nip = d.PNS_NIPBARU OR a.nip = d.PNS_PNSNIP)
         WHERE 1=1 $sql ";
 		//var_dump($q);
 		$query 		= $this->db->query($q);		

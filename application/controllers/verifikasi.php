@@ -466,13 +466,26 @@ class Verifikasi extends MY_Controller {
 	
 	public function kirimTaspen()
 	{
-		$data['response']	= $this->verifikasi->setKirimTaspen();
-		
-		$this->output
-			->set_status_header(200)
-			->set_content_type('application/json', 'utf-8')
-			->set_output(json_encode($data));
-		
+		$this->form_validation->set_rules('penerima','Penerima', 'required');
+		if ($this->form_validation->run() == FALSE)
+		{
+			$data['error']	    = 'Lengkapi Form';
+			$data['response']	= FALSE;
+			$this->output
+				->set_status_header(406)
+				->set_content_type('application/json', 'utf-8')
+				->set_output(json_encode($data));
+		}
+		else
+		{
+			$data['response']	= $this->verifikasi->setKirimTaspen();
+			
+			$this->output
+				->set_status_header(200)
+				->set_content_type('application/json', 'utf-8')
+				->set_output(json_encode($data));
+		}		
+			
 	}
 	
 	public function kirimAllTaspen()
@@ -481,19 +494,31 @@ class Verifikasi extends MY_Controller {
 		$usul_id            = $this->input->post('usul_id');
 		$penerima			= $this->input->post('penerima');
 		
-		for($i=0;$i < count($nip);$i++)
-        {
-			$data['usul_id']    = $usul_id[$i];
-			$data['nip']        = $nip[$i];
-			$data['penerima']	= $penerima;
-			$data['response']	= $this->verifikasi->setKirimAllTaspen($data);
+		$this->form_validation->set_rules('penerima','Penerima', 'required');
+		if ($this->form_validation->run() == FALSE)
+		{
+			$data['error']	    = 'Lengkapi Form';
+			$data['response']	= FALSE;
 			$this->output
-				->set_status_header(200)
+				->set_status_header(406)
 				->set_content_type('application/json', 'utf-8')
 				->set_output(json_encode($data));
-			
-		}   
-        	
+		}
+		else
+		{
+			for($i=0;$i < count($nip);$i++)
+			{
+				$data['usul_id']    = $usul_id[$i];
+				$data['nip']        = $nip[$i];
+				$data['penerima']	= $penerima;
+				$data['response']	= $this->verifikasi->setKirimAllTaspen($data);
+				$this->output
+					->set_status_header(200)
+					->set_content_type('application/json', 'utf-8')
+					->set_output(json_encode($data));
+				
+			}   
+        }	
 	}
 
 	

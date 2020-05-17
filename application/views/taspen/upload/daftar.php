@@ -137,6 +137,7 @@
 								<th></th>
 								<th>DOKUMEN</th>								
 								<th>NIP</th>
+								<th>NAMA</th>
 								<th>KETERANGAN</th>
 								<th>BY</th>
                                 <th>UPLOAD DATE</th>								
@@ -149,6 +150,7 @@
 							    <td><button class="btn btn-primary btn-xs" data-tooltip="tooltip"  title="Lihat Dokumen" data-toggle="modal" data-target="#skModal" data-id="?f=<?php echo $this->myencrypt->encode($value->orig_name)?>&t=<?php echo $this->myencrypt->encode($value->file_type)?>"><i class="fa fa-search"></i></button></td>
 								<td><?php echo $value->nama_dokumen?></td>								
 								<td><?php echo (!empty($value->nip_lama) ? $value->nip_lama.'/'.$value->nip_baru : $value->nip)?></td>
+								<td><?php echo $value->nama_pns?></td>
 								<td><?php echo $value->keterangan?></td>
 								<td><?php echo $value->upload_name?></td>		
                                 <td><?php echo $value->created_date?></td>									

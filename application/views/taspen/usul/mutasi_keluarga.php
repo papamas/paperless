@@ -354,12 +354,12 @@
 								<tr>
 									<td>
 										<?php 
-										echo'<button class="edit btn btn-primary btn-xs" data-tooltip="tooltip"  title="Edit Usul" data-nomor="'.$value->nomor_usul.'" data-tgl="'.$value->tgl.'" data-layanan="'.$value->layanan_id.'" data-nama="'.$value->nama_pns.'" data-nama_kecil="'.$value->nama_kecil.'" data-nopen="'.$value->nopen.'" data-usul="'.$value->usul_id.'" data-nip="'.$value->nip.'" data-tempat_lahir="'.$value->tempat_lahir.'" data-tgl_lahir="'.$value->atgl_lahir.'" data-nomor_skep="'.$value->nomor_skep.'" data-tgl_skep="'.$value->atgl_skep.'" data-penpok="'.$value->pensiun_pokok.'" data-pensiun_tmt="'.$value->apensiun_tmt.'" data-alamat="'.$value->alamat.'"><i class="fa fa-edit"></i></button>';
+										echo'<a href="#edit" class="btn btn-primary btn-xs" data-tooltip="tooltip"  title="Edit Usul" data-nomor="'.$value->nomor_usul.'" data-tgl="'.$value->tgl.'" data-layanan="'.$value->layanan_id.'" data-nama="'.$value->nama_pns.'" data-nama_kecil="'.$value->nama_kecil.'" data-nopen="'.$value->nopen.'" data-usul="'.$value->usul_id.'" data-nip="'.$value->nip.'" data-tempat_lahir="'.$value->tempat_lahir.'" data-tgl_lahir="'.$value->atgl_lahir.'" data-nomor_skep="'.$value->nomor_skep.'" data-tgl_skep="'.$value->atgl_skep.'" data-penpok="'.$value->pensiun_pokok.'" data-pensiun_tmt="'.$value->apensiun_tmt.'" data-alamat="'.$value->alamat.'"><i class="fa fa-edit"></i></a>';
 										?>
 										<a href="#" class="btn bg-orange btn-flat btn-xs" data-tooltip="tooltip"  title="Lihat Kelengkapan Berkas" data-toggle="modal" data-target="#lihatModal" data-id="<?php echo '?n='.$this->myencrypt->encode($value->nip).'&l='.$this->myencrypt->encode($value->layanan_nama)?>"><i class="fa fa-search"></i></a>
 										<a href="#" class="btn btn-success btn-flat btn-xs" data-toggle="modal" data-target="#istriModal" data-tooltip="tooltip"  title="Tambah data Istri" data-usul="<?php echo $value->usul_id?>"> <i class="fa fa-user-plus"></i></a>
 									    <a href="#" class="btn btn-primary btn-flat btn-xs" data-toggle="modal" data-target="#anakModal" data-tooltip="tooltip"  title="Tambah data Anak" data-usul="<?php echo $value->usul_id?>"><i class="fa fa-child"></i></a>
-									   	<a href="#" class="btn btn-danger btn-flat btn-xs" data-tooltip="tooltip"  title="Kirim Usul BKN" data-toggle="modal" data-target="#kirimModal" data-nip="<?php echo $value->nip?>" data-usul="<?php echo $value->usul_id?>" ><i class="fa fa-mail-forward"></i></a>
+									   	<a href="#" class="btn btn-danger btn-flat btn-xs" data-tooltip="tooltip"  title="Kirim Usul BKN" data-toggle="modal" data-target="#kirimModal" data-nip="<?php echo $value->nip?>" data-usul="<?php echo $value->usul_id?>" data-layanan="<?php echo $value->layanan_id?>"><i class="fa fa-mail-forward"></i></a>
 
 									</td>
 									<td><?php echo $value->nomor_usul ?></td>
@@ -440,7 +440,8 @@
 					  <input type="hidden" name="<?php echo $this->security->get_csrf_token_name()?>" value="<?php echo $this->security->get_csrf_hash()?>" style="display: none">
 					  <div class="form-group"> Yakin Usul ini akan dikirim ke BKN ?</div>
                        <input type="hidden" name="usul_nip"/>	
-					   <input type="hidden" name="usul_id"/>					   
+					   <input type="hidden" name="usul_id"/>	
+					   <input type="hidden" name="usul_layanan"/>	
 					</form>
 				 </div>
 				<div class="modal-footer">
@@ -671,7 +672,7 @@
 			iframe.attr('src', '<?php echo site_url()?>'+'/taspen/getInlineTaspen/'+id);			
 	    });
 		
-		$(".edit").on("click",function(){
+		$('.table-responsive').on("click",'a[href="#edit"]',function(e){
 			var nip     =  $(this).attr('data-nip'),
 			    nomor   =  $(this).attr('data-nomor'),
 				tgl     =  $(this).attr('data-tgl'),
@@ -719,10 +720,12 @@
 		    .removeClass( "text-blue" ); 
 			
 			var nip		=  $(e.relatedTarget).attr('data-nip'),
+				layanan	=  $(e.relatedTarget).attr('data-layanan'),
 				usul    =  $(e.relatedTarget).attr('data-usul');
 			
 			$('#kirimModal input[name=usul_nip]').val(nip);
 			$('#kirimModal input[name=usul_id]').val(usul);
+			$('#kirimModal input[name=usul_layanan]').val(layanan);
 		});
 		
 		$("#nBtnKirim").on("click",function(e){
@@ -745,6 +748,13 @@
 						.addClass( "text-green" );
 					refreshTable();											 
 			    }, // akhir fungsi sukses
+				error: function(res){
+					$('#kirimModal #msg').text(res.responseJSON.pesan)
+						.removeClass( "text-blue")
+						.addClass( "text-red" );
+					refreshTable();	
+					$("#nBtnKirim").hide();
+				}	
 		    });
 			return false;
 		});
