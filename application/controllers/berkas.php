@@ -38,6 +38,7 @@ class Berkas extends MY_Controller {
 		$this->form_validation->set_rules('instansi', 'instansi', 'required');
 		$this->form_validation->set_rules('searchby', 'Filter', 'required');
 		$this->form_validation->set_rules('search', 'Data', 'required');
+		$this->form_validation->set_rules('status', 'status', 'trim');
 		
 		$search['search']              = $this->input->post('search');
 		$search['searchby']            = $this->input->post('searchby');

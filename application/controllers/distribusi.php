@@ -7,7 +7,7 @@ class Distribusi extends MY_Controller {
 	function __construct()
 	{
 	    parent::__construct();		
-	    $this->load->library(array('Auth','Menu','form_validation','Myencrypt'));
+	    $this->load->library(array('Auth','Menu','form_validation','Myencrypt','Telegram'));
 		$this->load->model('distribusi/distribusi_model', 'distribusi');
 		$this->allow = $this->auth->isAuthMenu($this->menu_id);
 	} 
@@ -301,10 +301,12 @@ class Distribusi extends MY_Controller {
 	public function kirim()
 	{
 		$this->form_validation->set_rules('penerima', 'penerima', 'trim|required');
+		
+		
 		if($this->form_validation->run() == FALSE)
 		{
 			$data['response']	= FALSE;
-			$data['message']    = validation_errors();
+			$data['pesan']      = 'Lengkapi Form';
 			
 			$this->output
 				->set_status_header(400)
@@ -313,13 +315,53 @@ class Distribusi extends MY_Controller {
 		}
 		else
 		{	
-		
+			$this->db->trans_begin();
+			
+			$penerima 			= $this->input->post('penerima');
+			$nip 			    = $this->input->post('nip');
+			$id 			    = $this->input->post('agenda');
+			
 			$data['response']	= $this->distribusi->setKirim();
-		
-			$this->output
-				->set_status_header(200)
+			$agenda             = $this->distribusi->getAgendaData($id)->row();
+			$telegram			= $this->distribusi->getTelegramAkun_byPenerima($penerima);
+		    
+			if ($this->db->trans_status() === FALSE)
+			{
+				$this->db->trans_rollback();				
+				$data['pesan']		= 'Berkas Gagal dikirim ke Teknis';
+				$this->output
+				->set_status_header(406)
 				->set_content_type('application/json', 'utf-8')
 				->set_output(json_encode($data));
+			}
+			else
+			{	
+				if($telegram->num_rows() > 0)
+			    {
+					$row  = $telegram->row();
+					// kirim notifikasi ke teknis jika ada telegram id
+					if(!empty($row->telegram_id))
+					{	
+						$this->telegram->sendApiAction($row->telegram_id);
+						$text  = "<pre>Hello, <strong>".$row->first_name ." ".$row->last_name. "</strong> ada berkas kiriman untuk kamu nih dari TU :";
+						$text .= "\n Tanggal :".date('d-m-Y H:i:s');
+						$text .= "\n Nomor Usul:".$agenda->agenda_nousul;
+						$text .= "\n Layanan:".$agenda->layanan_nama;
+						$text .= "\n Instansi:".$agenda->instansi;
+						$text .= "\n NIP:".$nip.'</pre>';
+						$this->telegram->sendApiMsg($row->telegram_id, $text , false, 'HTML');	
+											
+					}		
+				}
+				
+				$data['pesan']		= 'Berkas sudah dikirim ke Teknis';
+				$this->output
+					->set_status_header(200)
+					->set_content_type('application/json', 'utf-8')
+					->set_output(json_encode($data));
+					
+				$this->db->trans_commit();	
+			}		
 		}
 	}
 	
@@ -334,7 +376,7 @@ class Distribusi extends MY_Controller {
 		if($this->form_validation->run() == FALSE)
 		{
 			$data['response']	= FALSE;
-			$data['message']    = validation_errors();
+			$data['pesan']		= 'Berkas Gagal dikirim ke Teknis';
 			
 			$this->output
 				->set_status_header(400)
@@ -343,19 +385,63 @@ class Distribusi extends MY_Controller {
 		}
         else
         {			
+			$this->db->trans_begin();			
+			
 			for($i=0;$i < count($nip);$i++)
 			{
 				$data['agenda']          = $agenda[$i];
 				$data['nip']             = $nip[$i];
 				$data['penerima']        = $penerima;
 				
-				$data['response']	= $this->distribusi->setKirimAll($data);
+				$data['response']	= $this->distribusi->setKirimAll($data);		
+			}
+			
+			if ($this->db->trans_status() === FALSE)
+			{
+				$this->db->trans_rollback();				
+				$data['pesan']		= 'Berkas Gagal dikirim ke Teknis';
+				$this->output
+				->set_status_header(406)
+				->set_content_type('application/json', 'utf-8')
+				->set_output(json_encode($data));
+			}
+			else
+			{	
+				$agenda_unik        = array_unique($agenda);
+				
+				// kirim notifikasi berdasarkan agenda dan layanan
+				for($j=0;$j < count($agenda_unik);$j++){
+					$id            = $agenda_unik[$j];
+					$dtAgenda      = $this->distribusi->getAgendaData($id)->row();
+					$telegram      = $this->distribusi->getTelegramAkun_byPenerima($penerima);
+					
+					if($telegram->num_rows() > 0)
+					{
+						$row  = $telegram->row();
+						// kirim notifikasi ke teknis jika ada telegram id
+						if(!empty($row->telegram_id))
+						{	
+							$this->telegram->sendApiAction($row->telegram_id);
+							$text  = "<pre>Hello, <strong>".$row->first_name ." ".$row->last_name. "</strong> ada berkas kiriman untuk kamu nih dari TU :";
+							$text .= "\n Tanggal :".date('d-m-Y H:i:s');
+							$text .= "\n Nomor Usul:".$dtAgenda->agenda_nousul;
+							$text .= "\n Layanan:".$dtAgenda->layanan_nama;
+							$text .= "\n Instansi:".$dtAgenda->instansi;
+							$text .= "\n Jumlah:".count($nip).'</pre>';
+							$this->telegram->sendApiMsg($row->telegram_id, $text , false, 'HTML');	
+								
+						}		
+					}
+				}	
+				
+			    $data['pesan']		= 'Berkas sudah dikirim ke Teknis';
 				$this->output
 					->set_status_header(200)
 					->set_content_type('application/json', 'utf-8')
 					->set_output(json_encode($data));
-				
-			}   
+					
+			    $this->db->trans_commit();
+			}
         }	
 	}
 
@@ -393,6 +479,7 @@ class Distribusi extends MY_Controller {
                         <td>
 						   <input type="checkbox" value="'.$value->nip.'" class="checkbox" name="nip[]" /> 
 						   <input type="checkbox" value="'.$value->agenda_id.'" class="checkbox" name="agenda[]"  style="opacity: 0.0; position: absolute; left: -9999px">
+						    <input type="hidden" name="penerima"/>
 						</td>						
 					</tr>';	
 		}

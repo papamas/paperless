@@ -346,6 +346,8 @@ class Verifikasi extends MY_Controller {
 				->set_status_header(200)
 				->set_content_type('application/json', 'utf-8')
 				->set_output(json_encode($data));
+				
+			$this->db->trans_commit();	
 		}
 	}
 	
@@ -408,6 +410,8 @@ class Verifikasi extends MY_Controller {
 					->set_output(json_encode($data));
 				
 			}   
+			
+			$this->db->trans_commit();
         }	
 	}
 

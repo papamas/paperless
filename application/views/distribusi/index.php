@@ -46,7 +46,14 @@
 		pointer-events: all;
 	}
 	
-	
+	#spinner-modal .modal-dialog,
+    #spinner-modal .modal-content,
+    #spinner-modal .modal-body {
+        background: transparent;
+        color: rgba(255,255,255,1);
+        box-shadow: none;
+        border: none;
+    }
 	</style>
   </head>
   <body class="skin-yellow">
@@ -262,9 +269,11 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+					
 					<h4 class="modal-title" id="myModalLabel"><span id="msg"></span></h4>
 				</div>
 				<div class="modal-body">
+				    
 					<form id="nfrmKirim">
 					    <input type="hidden" name="<?php echo $this->security->get_csrf_token_name()?>" value="<?php echo $this->security->get_csrf_hash()?>" style="display: none">
 					    <div class="form-group row">							   						 
@@ -337,6 +346,20 @@
 		</div>	
 	</div>
 	
+	<!--[ SPINNER MODAL ]-->
+	<div class="modal fade" id="spinner-modal">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-body text-center">
+				    <img src="<?php echo base_url()?>/assets/dist/img/loading.gif" alt="waiting..." />
+					<h3><i class="fa fa-cog fa-spin"></i> Working...</h3>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+	 
 	<script src="<?php echo base_url()?>assets/plugins/jQuery/jQuery-2.1.4.min.js"></script>    
     <script src="<?php echo base_url()?>assets/bootstrap/js/bootstrap.min.js"></script> 
     <script src="<?php echo base_url()?>assets/dist/js/app.min.js"></script>
@@ -388,18 +411,24 @@
 				type: "POST",
 				url : "<?php echo site_url()?>/distribusi/kirim",
 				data: data,
-				success: function(){					
-					$('#kirimModal #msg').text('Berkas sudah dikirim ke Teknis....')
+				success: function(r){					
+					$('#kirimModal #msg').text(r.pesan)
 						.removeClass( "text-blue")
 						.addClass( "text-green" );
-					refreshTable();			
+					refreshTable();				
 			    }, // akhir fungsi sukses
 				error : function(r) {
-					$('#kirimModal #msg').text('Lengkapi Form..')
+					$('#kirimModal #msg').text(r.responseJSON.pesan)
 						.removeClass( "text-blue")
 						.removeClass( "text-green")
 						.addClass( "text-danger" );
-				}	
+				},
+                beforeSend: function () {
+                   $('#spinner-modal').modal('show');	 
+                },
+                complete: function () {
+                    $('#spinner-modal').modal('hide');
+                }				
 		    });
 			return false;
 		});
@@ -441,8 +470,8 @@
 				type: "POST",
 				url : "<?php echo site_url()?>/distribusi/kirimAll",
 				data: data,
-				success: function(){					
-					$('#kirimAllModal #msg').text('Berkas sudah dikirim ke Teknis....')
+				success: function(r){					
+					$('#kirimAllModal #msg').text(r.pesan)
 						.removeClass( "text-blue")
 						.addClass( "text-green" );
 					refreshTable();	
@@ -452,11 +481,17 @@
 					
 			    }, // akhir fungsi sukses
 				error : function(r) {
-					$('#kirimAllModal #msg').text('Lengkapi Form..')
+					$('#kirimAllModal #msg').text(r.responseJSON.pesan)
 						.removeClass( "text-blue")
 						.removeClass( "text-green")
 						.addClass( "text-danger" );
-				}	
+				},
+				beforeSend: function () {
+                   $('#spinner-modal').modal('show');	 
+                },
+                complete: function () {
+                    $('#spinner-modal').modal('hide');
+                }	
 		    });
 			return false;
 		});

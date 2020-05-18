@@ -207,4 +207,25 @@ $sql_instansi  $sql_layanan  $sql_golongan   $sql_nousul ";
 		
 		return $r;
 	}
+	
+	function getTelegramAkun_byPenerima($id)
+	{	
+		$this->db->select('first_name,last_name,telegram_id');
+		$this->db->where('active', 1);
+		$this->db->where('user_id', $id);
+		return $this->db->get($this->tableuser);		
+	}	
+	
+	function getAgendaData($id)
+	{
+		$sql="SELECT a.agenda_ins,a.layanan_id,
+		a.agenda_nousul, a.agenda_jumlah,
+		b.INS_NAMINS instansi,
+		c.layanan_nama
+		FROM $this->tableagenda a 
+		LEFT JOIN $this->tableinstansi b ON a.agenda_ins  = b.INS_KODINS
+		LEFT JOIN $this->tablelayanan c ON a.layanan_id = c.layanan_id
+		WHERE a.agenda_id='$id' ";
+		return $this->db->query($sql);
+	}	
 }
