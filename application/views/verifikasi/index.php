@@ -490,7 +490,13 @@
                      .removeClass( "text-green")
 					 .removeClass( "text-blue")
 				     .addClass( "text-red" ); 
-				}	
+				},
+				beforeSend: function () {
+                   $('#spinner-modal').modal('show');	 
+                },
+                complete: function () {
+                    $('#spinner-modal').modal('hide');
+                }	
 		    });
 			return false;
 			
