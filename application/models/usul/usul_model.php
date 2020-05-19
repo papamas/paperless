@@ -69,7 +69,8 @@ GROUP BY a.agenda_id
 ) a
 LEFT JOIN $this->tableuserlayananrole  b ON (a.layanan_id=b.layanan_id AND a.agenda_ins = b.id_instansi AND b.user_id='$user_id')
 ) a 
-WHERE id_instansi IS NOT NULL";
+WHERE id_instansi IS NOT NULL
+ORDER BY a.agenda_timestamp DESC";
 
      // var_dump($sql);
 
