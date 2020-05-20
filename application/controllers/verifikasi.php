@@ -358,10 +358,17 @@ class Verifikasi extends MY_Controller {
 		$agenda_unik        = array_unique($agenda);
 		
 		$this->db->trans_begin();
+		
+		for($i=0;$i < count($nip);$i++)
+		{
+			$data['agenda']     = $agenda[$i];
+			$data['nip']        = $nip[$i];
+			$data['response']	= $this->verifikasi->setKirimAll($data);		
+		}   
+		
 		if ($this->db->trans_status() === FALSE)
 		{
-			$this->db->trans_rollback();
-			
+			$this->db->trans_rollback();			
 			$data['pesan']		= 'Berkas Gagal dikirim ke Teknis';
 			$this->output
 			->set_status_header(406)
@@ -370,6 +377,8 @@ class Verifikasi extends MY_Controller {
 		}
 		else
 		{	
+			$this->db->trans_commit();
+			
 			// kirim notifikasi berdasarkan agenda dan layanan
 			for($j=0;$j < count($agenda_unik);$j++){
 			   
@@ -396,22 +405,13 @@ class Verifikasi extends MY_Controller {
 						}					
 					}			
 				}	
-			}
+			}		
 			
-			for($i=0;$i < count($nip);$i++)
-			{
-				$data['agenda']     = $agenda[$i];
-				$data['nip']        = $nip[$i];
-				$data['response']	= $this->verifikasi->setKirimAll($data);
-				$data['pesan']		= 'Berkas sudah dikirim ke Teknis';
+			$data['pesan']		= 'Berkas sudah dikirim ke Teknis';
 				$this->output
 					->set_status_header(200)
 					->set_content_type('application/json', 'utf-8')
 					->set_output(json_encode($data));
-				
-			}   
-			
-			$this->db->trans_commit();
         }	
 	}
 
@@ -554,6 +554,8 @@ class Verifikasi extends MY_Controller {
 	public function kirimTaspen()
 	{
 		$this->form_validation->set_rules('penerima','Penerima', 'required');
+		
+		
 		if ($this->form_validation->run() == FALSE)
 		{
 			$data['error']	    = 'Lengkapi Form';
@@ -565,12 +567,55 @@ class Verifikasi extends MY_Controller {
 		}
 		else
 		{
+			$this->db->trans_begin();			
 			$data['response']	= $this->verifikasi->setKirimTaspen();
 			
-			$this->output
-				->set_status_header(200)
+			$penerima = $this->input->post('penerima');
+			$id       = $this->input->post('usul_id');
+			
+			$row      = $this->verifikasi->getUsulTaspen_byid($id)->row();
+			$baris    = $this->verifikasi->getTelegramAkun_byPenerima($penerima);
+			
+			
+			if ($this->db->trans_status() === FALSE)
+			{
+				$this->db->trans_rollback();
+				
+				$data['error']		= 'Berkas Gagal dikirim ke Teknis';
+				$this->output
+				->set_status_header(406)
 				->set_content_type('application/json', 'utf-8')
 				->set_output(json_encode($data));
+			}
+			else
+			{
+				if($baris->num_rows() > 0)
+				{
+					$rbaris   = $baris->row();
+					
+					// kirim notifikasi ke teknis jika ada telegram id
+					if(!empty($rbaris->telegram_id))
+					{	
+						$this->telegram->sendApiAction($rbaris->telegram_id);
+						$text  = "<pre>Hello, <strong>".$rbaris->first_name ." ".$rbaris->last_name. "</strong> ada berkas kiriman untuk kamu nih dari TU :";
+						$text .= "\n Tanggal:".date('d-m-Y H:i:s');
+						$text .= "\n Nomor Usu:".$row->nomor_usul;
+						$text .= "\n Layanan:".$row->layanan_nama;
+						$text .= "\n Instansi: TASPEN";
+						$text .= '</pre>';
+						$this->telegram->sendApiMsg($rbaris->telegram_id, $text , false, 'HTML');	
+												
+					}		
+				}
+
+                $this->db->trans_commit();
+				
+				$data['pesan']      = 'Berkas sudah dikirim ke Teknis';
+				$this->output
+					->set_status_header(200)
+					->set_content_type('application/json', 'utf-8')
+					->set_output(json_encode($data));				
+			}		
 		}		
 			
 	}
@@ -581,7 +626,9 @@ class Verifikasi extends MY_Controller {
 		$usul_id            = $this->input->post('usul_id');
 		$penerima			= $this->input->post('penerima');
 		
+		
 		$this->form_validation->set_rules('penerima','Penerima', 'required');
+		
 		if ($this->form_validation->run() == FALSE)
 		{
 			$data['error']	    = 'Lengkapi Form';
@@ -593,18 +640,65 @@ class Verifikasi extends MY_Controller {
 		}
 		else
 		{
+			$this->db->trans_begin();	
+			
 			for($i=0;$i < count($nip);$i++)
 			{
 				$data['usul_id']    = $usul_id[$i];
 				$data['nip']        = $nip[$i];
 				$data['penerima']	= $penerima;
-				$data['response']	= $this->verifikasi->setKirimAllTaspen($data);
+				$data['response']	= $this->verifikasi->setKirimAllTaspen($data);			
+			}
+
+			
+			
+            if ($this->db->trans_status() === FALSE)
+			{
+				$this->db->trans_rollback();
+				
+				$data['error']		= 'Berkas Gagal dikirim ke Teknis';
+				$this->output
+				->set_status_header(406)
+				->set_content_type('application/json', 'utf-8')
+				->set_output(json_encode($data));
+			}
+			else
+			{		
+               	$this->db->trans_commit();
+				$usul_unik          = array_unique($usul_id);
+				
+				for($j=0;$j < count($usul_unik);$j++){
+			   
+					$usul_id  = $usul_unik[$j];
+					$row      = $this->verifikasi->getUsulTaspen_byid($usul_id)->row();
+			        $baris    = $this->verifikasi->getTelegramAkun_byPenerima($penerima);
+					
+					if($baris->num_rows() > 0)
+					{
+						$rbaris   = $baris->row();
+						
+						// kirim notifikasi ke teknis jika ada telegram id
+						if(!empty($rbaris->telegram_id))
+						{	
+							$this->telegram->sendApiAction($rbaris->telegram_id);
+							$text  = "<pre>Hello, <strong>".$rbaris->first_name ." ".$rbaris->last_name. "</strong> ada berkas kiriman untuk kamu nih dari TU :";
+							$text .= "\n Tanggal:".date('d-m-Y H:i:s');
+							$text .= "\n Nomor Usul:".$row->nomor_usul;
+							$text .= "\n Layanan:".$row->layanan_nama;
+							$text .= "\n Instansi: TASPEN";
+							$text .= "\n Jumlah: ".count($usul_id) .'</pre>';
+							$this->telegram->sendApiMsg($rbaris->telegram_id, $text , false, 'HTML');	
+																	
+						}			
+					}	
+				}		
+				
+				$data['pesan']      = 'Berkas sudah dikirim ke Teknis';
 				$this->output
 					->set_status_header(200)
 					->set_content_type('application/json', 'utf-8')
-					->set_output(json_encode($data));
-				
-			}   
+					->set_output(json_encode($data));	
+            }		
         }	
 	}
 

@@ -981,12 +981,13 @@ class Taspen extends MY_Controller {
 				$data['usul_id']	  = $this->input->post('usul_id');
 				$data['nip']          = $this->input->post('usul_nip');	
 				$data['pesantg']	  = ' Usul berkas TASPEN baru  ';
+				$data['tahapan_id']   = '1';
+				
 				// send notifikasi to  telegram			
-				//$this->send_to_Telegram($data);			
+				$this->send_to_Telegram($data);
 				
 				$this->db->trans_commit();
-				$data['pesan']		= 'Berkas berhasil dikirim ke BKN';
-				
+				$data['pesan']		= 'Berkas berhasil dikirim ke BKN';				
 				$this->output
 				->set_status_header(200)
 				->set_content_type('application/json', 'utf-8')
@@ -1561,16 +1562,18 @@ class Taspen extends MY_Controller {
 		}
 		else
 		{
+			$this->db->trans_commit();
+			
+			
 			// send notifikasi to  telegram			
 			$data['usul_id']		= $this->myencrypt->decode($this->input->post('usul_id'));
 			$data['nip']			= $this->myencrypt->decode($this->input->post('usul_nip'));
 		    $data['pesantg']		= ' berkas BTL dari TASPEN yang sudah dikirim ulang ';
-		
+		    $data['tahapan_id']     = '4';
+			
 			$this->send_to_Telegram($data);			
 			
-			$this->db->trans_commit();
 			$data['pesan']		= 'Berkas berhasil dikirim kembali ke BKN';
-			
 			$this->output
 			->set_status_header(200)
 			->set_content_type('application/json', 'utf-8')
@@ -1591,9 +1594,11 @@ class Taspen extends MY_Controller {
 		$usul_id		= $data['usul_id'];
 		$nip			= $data['nip'];
 		$pesan          = $data['pesantg'];
+		$tahapan        = $data['tahapan_id'];
+		
 		
 		$row_usul	    =  $this->usul->getUsul_byid($usul_id,$nip)->row();
-		$TelegramAkun   =  $this->usul->getTelegramAkun_bybidang($row_usul->layanan_bidang);
+		$TelegramAkun   =  $this->usul->getTelegramAkun_bybidang($tahapan);
 				
 		if($TelegramAkun->num_rows() > 0)
 		{	
@@ -1610,7 +1615,7 @@ class Taspen extends MY_Controller {
 					($row_usul->layanan_id == 16 || $row_usul->layanan_id == 17 ? $text .= "\n Nama JD/YT :".$row_usul->nama_janda_duda : '' );
 					$text .= "\n Layanan :".$row_usul->layanan_nama.'</pre>';					
 					$this->telegram->sendApiMsg($value->telegram_id, $text , false, 'HTML');	
-					
+					//var_dump($text);
 				}	
 			}
 		}

@@ -170,7 +170,7 @@
 												<div class="box-footer no-padding">								
 												  <ul class="nav nav-stacked">
 													<li><a href="#">Jabatan<span class="pull-right"><?php echo $unor->JBF_NAMJAB?></span></a></li>						
-													<li><a href="#">Unit Organisasi<span class="pull-right"><?php echo $unor->UNO_NAMUNO?></span></a></li>						
+													<li><a href="#">Unit Organisasi<span class="pull-right"><?php echo $unor->NAMA_UNOR?></span></a></li>						
 													<li><a href="#">Unit Organisasi Induk<span class="pull-right"><?php echo $unor->UNO_INDUK?></span></a></li>						
 												  </ul>
 												</div> 

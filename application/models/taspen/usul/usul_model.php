@@ -246,11 +246,22 @@ class Usul_model extends CI_Model {
 		
 	}	
 	
-	function getTelegramAkun_bybidang()
+	function getTelegramAkun_bybidang($tahapan)
 	{	
+		if($tahapan  == '1')
+		{
+			$txt 	= array('TU');
+		}
+		else
+		{
+			$txt    = array('1','2','3'); 
+		}	
+		
 		$this->db->select('first_name,last_name,telegram_id');
 		$this->db->where('id_bidang',2);
 		$this->db->where('id_instansi',4011);
+		$this->db->where('active', 1);
+		$this->db->where_in('user_tipe', $txt);
 		return $this->db->get('app_user');		
 	}	
 	

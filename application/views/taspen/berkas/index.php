@@ -45,7 +45,14 @@
 		pointer-events: all;
 	}
 	
-	
+	#spinner-modal .modal-dialog,
+    #spinner-modal .modal-content,
+    #spinner-modal .modal-body {
+        background: transparent;
+        color: rgba(255,255,255,1);
+        box-shadow: none;
+        border: none;
+    }
     </style>
   </head>
   <body class="hold-transition skin-yellow">
@@ -249,6 +256,18 @@
 		</div>	
 	</div>
 	
+	<!--[ SPINNER MODAL ]-->
+	<div class="modal fade" id="spinner-modal">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-body text-center">
+				    <img src="<?php echo base_url()?>/assets/dist/img/loading.gif" alt="waiting..." />
+					<h3><i class="fa fa-cog fa-spin"></i> Working...</h3>
+				</div>
+			</div>
+		</div>
+	</div>
+	
 	<script src="<?php echo base_url()?>assets/plugins/jQuery/jQuery-2.1.4.min.js"></script>    
     <script src="<?php echo base_url()?>assets/bootstrap/js/bootstrap.min.js"></script> 
     <script src="<?php echo base_url()?>assets/dist/js/app.min.js"></script>
@@ -305,11 +324,17 @@
 					refreshTable();			
 			    }, // akhir fungsi sukses
 				error : function(r) {
-					$('#kirimModal #msg').text('Something wrong..')
+					$('#kirimModal #msg').text(r.responseJSON.pesan)
 						.removeClass( "text-blue")
 						.removeClass( "text-green")
 						.addClass( "text-danger" );
-				}	
+				},
+				beforeSend: function () {
+                   $('#spinner-modal').modal('show');	 
+                },
+                complete: function () {
+                    $('#spinner-modal').modal('hide');
+                }		
 		    });
 			return false;
 		});

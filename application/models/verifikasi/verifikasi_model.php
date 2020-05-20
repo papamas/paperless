@@ -332,6 +332,25 @@ $sql_instansi  $sql_layanan";
 		return $r;
 	}
 	
+	function getUsulTaspen_byid($id)
+	{
+		$q="SELECT a.*,
+		b.layanan_nama	
+       	FROM usul_taspen a 
+		LEFT JOIN layanan b ON a.layanan_id = b.layanan_id
+		WHERE a.usul_id='$id' ";		
+		$query 		= $this->db->query($q);
+		return      $query;	
+		
+	}	
+	function getTelegramAkun_byPenerima($id)
+	{	
+		$this->db->select('first_name,last_name,telegram_id');
+		$this->db->where('active', 1);
+		$this->db->where('user_id', $id);
+		return $this->db->get($this->tableuser);		
+	}	
+	
 	public function getPenerima()
 	{
 		$bidang  = $this->session->userdata('session_bidang');

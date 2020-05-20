@@ -1080,6 +1080,7 @@ where f.usul_status='BELUM' AND  f.usul_id='$usul_id' ";
 	function getTelegramAkun_byUserid($user_id)
 	{	
 		$this->db->select('first_name,last_name,telegram_id');
+		$this->db->where('active', 1);
 		$this->db->where('user_id', $user_id);
 		return $this->db->get($this->tableuser);		
 	}	

@@ -78,10 +78,10 @@ ORDER BY a.`PEN_TAHLUL` DESC";
     h.INS_NAMINS INSDUK,
     j.JJB_JJBNAM,
     k.JBF_NAMJAB,
-    l.UNO_NAMUNO,
-    l.UNO_NAMJAB,
+    l.NAMA_UNOR,
+    l.NAMA_JABATAN,
     l.DIATASAN_ID,
-    m.UNO_NAMUNO UNO_INDUK
+    m.NAMA_UNOR UNO_INDUK
 FROM
     mirror.pupns a
         LEFT JOIN
@@ -91,11 +91,9 @@ FROM
         LEFT JOIN
     mirror.jabfun k ON a.PNS_JABFUN = k.JBF_KODJAB
 		LEFT JOIN
-    mirror.unor l ON (a.PNS_UNITOR = l.UNO_KODUNO
-        AND a.PNS_INSDUK = l.UNO_INSTAN
-        AND a.PNS_UNOR = l.UNO_ID)
-    LEFT join
-    mirror.unor m ON (l.UNO_DIATASAN_ID = m.UNO_ID  AND a.PNS_INSDUK = m.UNO_INSTAN) 
+    mirror.unor l ON a.PNS_UNOR = l.UNOR_ID
+		LEFT join
+    mirror.unor m ON l.DIATASAN_ID = m.UNOR_ID			
 WHERE
     a.PNS_NIPBARU='$search'";
 		$r = $this->db->query($sql);
@@ -157,6 +155,16 @@ WHERE
 		
 	}
 	
-	
+	function getSearch()
+	{
+		$name	= $this->input->post('nama');
+	    
+		$sql="SELECT a.PNS_NIPBARU,a.PNS_PNSNAM, b.INS_NAMINS
+		FROM mirror.pupns a 
+		LEFT JOIN mirror.instansi b ON a.PNS_INSKER = b.INS_KODINS
+		WHERE a.PNS_PNSNAM LIKE '%$name%'";
+		$r = $this->db->query($sql);
+		return $r;
+	}
 	
 }

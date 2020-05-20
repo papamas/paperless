@@ -714,17 +714,17 @@ class Verifikator extends MY_Controller {
 				{	
 					$this->telegram->sendApiAction($value->telegram_id);
 					$text  = "<pre>Hello, <strong>".$value->first_name ." ".$value->last_name. "</strong>  Berkas kamu sudah selesai verifikasi dengan hasil berikut ini :";
-					$text .= "\n Tanggal :".date('d-m-Y H:i:s');
-					$text .= "\n Nomor Usul :".$row_usul->nomor_usul;
-					$text .= "\n Layanan :".$row_usul->layanan_nama;
-					$text .= "\n NIP :".$row_usul->nip;
-					$text .= "\n Nama PNS :".$row_usul->nama_pns;
-					$text .= "\n Tahapan :".$row_usul->tahapan_nama;
-					$text .= "\n Status Berkas :".$row_usul->usul_status;
-					$text .= "\n Keterangan :".$row_usul->usul_alasan;
+					$text .= "\n Tanggal:".date('d-m-Y H:i:s');
+					$text .= "\n Nomor Usul:".$row_usul->nomor_usul;
+					$text .= "\n Layanan:".$row_usul->layanan_nama;
+					$text .= "\n NIP:".$row_usul->nip;
+					$text .= "\n Nama PNS:".$row_usul->nama_pns;
+					$text .= "\n Tahapan:".$row_usul->tahapan_nama;
+					$text .= "\n Status Berkas:".$row_usul->usul_status;
+					$text .= "\n Keterangan:".$row_usul->usul_alasan;
 					$text .= "</pre>";
 					$this->telegram->sendApiMsg($value->telegram_id, $text , false, 'HTML');
-									
+								
 				}	
 			}
 		}
