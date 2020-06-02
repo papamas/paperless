@@ -1363,7 +1363,7 @@ class Entry extends MY_Controller {
 		}		
 		
 		$row						= $this->entry->getEntryOneTaspen($data)->row();
-        $spesimen					= $this->entry->getSpesimenTaspen()->row();		
+        //$spesimen					= $this->entry->getSpesimenTaspen()->row();		
 				
 		$this->load->library('PDF', array());	
 		$this->pdf->setPrintHeader(false);
@@ -1553,9 +1553,9 @@ EOD;
 		
 		$this->pdf->Text(255, 135, 'an.');
 		$this->pdf->Text(260, 135, 'KEPALA BADAN KEPEGAWAIAN NEGARA');
-		$this->pdf->writeHTMLCell(60,'',260,139,strtoupper($spesimen->jabatan),0,0,false,false,'J',true);
-		$this->pdf->Text(260, 170, $spesimen->nama_spesimen.(!empty($spesimen->glrblk) ? ','.$spesimen->glrblk : ''));
-		$this->pdf->Text(260, 174, 'NIP. '.$spesimen->nip);
+		$this->pdf->writeHTMLCell(60,'',260,139,strtoupper($row->jabatan_spesimen),0,0,false,false,'J',true);
+		$this->pdf->Text(260, 170, $row->nama_spesimen.(!empty($row->glrblk) ? ','.$row->glrblk : ''));
+		$this->pdf->Text(260, 174, 'NIP. '.$row->nip_spesimen);
 		
 	    $this->pdf->Text(170, 185, 'Tembusan, Keputusan ini disampaikan kepada :');
 		$this->pdf->Text(170, 190, '1. Kepala Kantor Cabang PT.TASPEN (PERSERO)/PT.ASABRI (PERSERO) di '.$row->nama_taspen);

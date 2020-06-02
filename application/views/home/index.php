@@ -51,6 +51,7 @@
 					<li>Pemberian Pertimbangan Teknis Mutasi/Pindah Instansi;</li>
 					<li>Pemberian Ijin penggunaan/pencatuman Gelar/peningkatan pendidikan;</li>
 					<li>Kartu Pegawai (KARPEG); </li>
+					<li>Kartu Suami/Kartu Istri; </li>
 					<li>Pengajuan dan penetapan surat keputusan pemberian hak Pensiun Janda/Duda dari Pensiuan PNS yang meninggal dunia dan yang dalam surat keputusan pensiun pegawai belum ditetapkan secara otomatis pensiun janda/dudanya; dan</li>
 					<li>Pengajuan dan pengesahan atau pencatatan pendaftaran  isteri (isteri-isteri)/suami atau anak dari Pensiunan PNS.</li>
 					</ul>
