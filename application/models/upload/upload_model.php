@@ -141,6 +141,23 @@ class Upload_model extends CI_Model {
 		return $data;
 	}	
 	
+	function isAdaNIP($string)
+	{
+	    $number = $this->_extract_numbers($string);
+		$cek  = 0;
+		foreach($number as $value){
+		    if (strlen($value) == 18){
+                $cek |= TRUE;
+            }
+            else
+            {
+			    $cek |= FALSE;
+            }		
+	    }   
+		
+		return boolval($cek);
+	}
+	
 	function _extract_numbers($string)
 	{
 	    preg_match_all('/([\d]+)/', $string, $match);

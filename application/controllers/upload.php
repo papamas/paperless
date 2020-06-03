@@ -67,7 +67,18 @@ class upload extends MY_Controller {
 
 		$this->load->library('upload', $config);	
 		
-        if(! $this->uploadFile->_is_arsip($_FILES['file']['name'])){
+		// validasi NIP
+		if(! $this->uploadFile->isAdaNIP($_FILES['file']['name']))
+		{	
+			$error = array('error' => 'Dokumen yang anda upload ini tidak terdapat NIP');
+			$this->output
+					->set_status_header(406)
+					->set_content_type('application/json', 'utf-8')
+					->set_output(json_encode($error));
+			return FALSE;	
+		}
+		
+	    if(! $this->uploadFile->_is_arsip($_FILES['file']['name'])){
             $error = array('error' => 'File ini tidak diperbolehkan untuk diupload');
 
 			$this->output
@@ -76,6 +87,8 @@ class upload extends MY_Controller {
 					->set_output(json_encode($error));
 			return FALSE;			
 		}			
+		
+		
 				
 		// Try cek file		
 		$cekFile	= $this->uploadFile->isAllowSize($_FILES['file']);
