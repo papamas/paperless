@@ -103,6 +103,12 @@ class upload extends MY_Controller {
 					->set_output(json_encode($error));
 			return FALSE;
 		}
+		
+		// load upload lib
+		$this->load->library('upload');
+        $this->upload->initialize($config);
+
+
 
 		if ( ! $this->upload->do_upload('file'))
 		{
