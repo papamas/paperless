@@ -65,6 +65,16 @@ class Photo extends MY_Controller {
 		}
 		
 
+		if(!$this->uploadFile->isAllowFormat($_FILES['file']['name']))
+		{	
+			$error = array('error' => 'File Format photo belum sesuai');
+			$this->output
+					->set_status_header(406)
+					->set_content_type('application/json', 'utf-8')
+					->set_output(json_encode($error));
+			return FALSE;		
+		}		
+		
 		$this->load->library('upload', $config);	
 		
 		if(! $this->uploadFile->_is_photo($_FILES['file']['name'])){

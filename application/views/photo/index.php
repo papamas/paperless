@@ -47,7 +47,8 @@
 	<script>	
 	$(document).ready(function () {
         Dropzone.options.upload = {
-			dictDefaultMessage: "Letakkan photo yang akan di upload disini"
+			dictDefaultMessage: "Letakkan photo yang akan di upload disini",
+			acceptedFiles: ".jpg"
 		};
 		
 	});	

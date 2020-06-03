@@ -79,6 +79,26 @@ class Photo_model extends CI_Model {
 		
 	}	
 	
+	function isAllowFormat($haystack)
+	{
+		$r  = FALSE;
+		
+		if( stripos( $haystack, "KARIS" ) !== false) {
+			$r = TRUE;
+		}	
+		
+		if( stripos( $haystack, "KARSU" ) !== false) {
+			$r = TRUE;
+		}
+
+		if( stripos( $haystack, "KARPEG" ) !== false) {
+			$r = TRUE;
+		}
+
+		return $r;	
+		
+	}	
+	
 	function _is_exist($data)
 	{  
 	    $r  = FALSE;		
