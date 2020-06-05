@@ -104,7 +104,9 @@ class Magenda extends CI_Model {
     public function mdetail_agenda($id){
 
     
-		$sql="SELECT a.* , b.layanan_grup, b.layanan_bidang, b.layanan_nama , c.INS_NAMINS instansi
+		$sql="SELECT a.* , b.layanan_grup,
+		b.layanan_bidang, b.layanan_nama , 
+		c.INS_NAMINS instansi
 		FROM agenda a
 		LEFT JOIN layanan b ON a.layanan_id = b.layanan_id
 		LEFT JOIN mirror.instansi c ON a.agenda_ins = c.INS_KODINS
@@ -241,14 +243,15 @@ class Magenda extends CI_Model {
 	//CEK NOMINATIF 2
 	public function mcek_nominatif2($layanan_id, $nip){
 
-		$query = $this->db->query("SELECT * FROM nominatif
-								   LEFT JOIN agenda ON nominatif.agenda_id = agenda.agenda_id
-								   WHERE nominatif.nip = '$nip' AND agenda.layanan_id = '$layanan_id'");
-		if(!$query){
-		  return $this->db->error();
-		}else{
-		  return $query->num_rows();
-		}
+		$query = $this->db->query("SELECT a.nip,
+								   b.layanan_id,b.agenda_nousul, 
+								   c.layanan_nama
+								   FROM nominatif a
+ 								   LEFT JOIN agenda b ON a.agenda_id = b.agenda_id
+								   LEFT JOIN layanan c ON b.layanan_id = c.layanan_id
+								   WHERE a.nip = '$nip' 
+								   AND b.layanan_id = '$layanan_id'");
+		return $query;
 
 	}
 

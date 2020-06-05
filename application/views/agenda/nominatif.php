@@ -57,6 +57,7 @@
 						<input type="hidden" class="form-control" value="<?php echo $detail_agenda->layanan_nama ?>" name="input_layanannama">
 						<input type="hidden" class="form-control" value="<?php echo $detail_agenda->layanan_grup ?>" name="input_layanangrup">
 						<input type="hidden" class="form-control" value="<?php echo $detail_agenda->kp_periode ?>" name="input_periodekp">
+						<input type="hidden" class="form-control" value="<?php echo $detail_agenda->agenda_nousul ?>" name="input_agenda_nousul">
 						<input type="text" class="form-control" name="input_nip" value="" maxlength="19" id="searchbox1" required>
 						<span class="input-group-btn">
 						  <button type="submit" class="btn btn-primary" type="button">Tambah</button>

@@ -369,8 +369,22 @@ class Agenda extends MY_Controller {
 		if($belum_selesai->num_rows() > 0)
 		{
 		    $row =  $belum_selesai->row();
-			$this->session->set_flashdata('gagal', "NIP masih dalam proses pada Sistem Male_o 1.9 dengan Nomor Usul :".$row->agenda_nousul." pada layanan ".$row->layanan_nama);
-			redirect('agenda/nominatif/'.$agenda_id);
+			// KARIS/KARSU/KARPEG boleh usul paralel yang lain tidak boleh
+			if($layanan_id == 9 || $layanan_id == 10 || $layanan_id == 11 )
+			{	
+				$adaSm = $this->magenda->mcek_nominatif2($layanan_id, $nip);
+				if($adaSm->num_rows() > 0)
+				{	
+					$rowadSm  = $adaSm->row();
+					$this->session->set_flashdata('gagal', "NIP masih dalam proses pada Sistem Male_o 1.9 dengan Nomor Usul :".$rowadSm->agenda_nousul." pada layanan ".$rowadSm->layanan_nama);
+					redirect('agenda/nominatif/'.$agenda_id);
+				}	
+			}
+			else
+			{
+				$this->session->set_flashdata('gagal', "NIP masih dalam proses pada Sistem Male_o 1.9 dengan Nomor Usul :".$row->agenda_nousul." pada layanan ".$row->layanan_nama);
+				redirect('agenda/nominatif/'.$agenda_id);
+			}
 		}			
 		
 		/* $cek_nominatif = $this->magenda->mcek_nominatif($agenda_id, $nip);
@@ -402,8 +416,25 @@ class Agenda extends MY_Controller {
 					   'nip' => $nip
 					 );
 
-		$this->magenda->mtambah_nominatif($data);
-		$this->session->set_flashdata('berhasil', "Nominatif berhasil ditambah");
+		$db_debug 			= $this->db->db_debug; 
+		$this->db->db_debug = FALSE; 
+		
+		if (!$this->magenda->mtambah_nominatif($data)) {
+			
+			$error = $this->db->_error_message(); 
+			
+			if(!empty($error))
+			{
+				$this->session->set_flashdata('gagal', $error);
+			}
+			else
+			{
+				$this->session->set_flashdata('berhasil', "Nominatif berhasil ditambah");
+			}
+			
+		}
+		
+		$this->db->db_debug = $db_debug; //restore setting	
 		redirect('agenda/nominatif/'.$agenda_id);
 
 	}
