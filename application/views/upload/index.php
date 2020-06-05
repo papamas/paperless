@@ -45,6 +45,7 @@
 									<th>Nama Dokumen</th>
 									<th>Format</th>
 									<th>Limit</th>
+									<th>File</th>
 									<th>Flag</th>
 									<th>Keterangan</th>													
 								</tr>
@@ -56,6 +57,7 @@
 									<td><?php echo $value->nama_dokumen?></td>
 									<td><?php echo $value->format?></td>
 									<td><?php echo ROUND($value->file_size/1024)."MB"?></td>
+									<td>pdf</td>
 									<td><?php echo ($value->flag == 1 ? "<span class='badge bg-red' data-tooltip='tooltip' title='Dokumen Wajib ada'>Dokumen_Utama</span>" :" " )?></td>
 									<td><?php echo $value->keterangan?></td>
 								</tr>

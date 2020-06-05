@@ -92,8 +92,8 @@
 						 <input type="hidden" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash();?>" style="display: none">
 						  <div class="box-body">
 							<div class="form-group">
-							  <label class="col-sm-2 col-md-2 col-xs-2">Instansi</label>
-							  <div class="col-sm-10 col-md-10 col-xs-10">
+							  <label class="col-md-2">Instansi</label>
+							  <div class="col-md-10">
 							    <select name="instansi" class="form-control select2">
 									<option value="">--</option>
 									<option value="9" <?php echo  set_select('instansi',9); ?>>TASPEN</option>
@@ -105,8 +105,8 @@
 							  </div>	
 							</div>
 							<div class="form-group">
-							  <label class="col-sm-2 col-md-2 col-xs-2">Pelayanan</label>
-							  <div class="col-sm-10 col-md-10 col-xs-10">
+							  <label class="col-md-2">Pelayanan</label>
+							  <div class="col-md-10">
 							    <select name="layanan" class="form-control">
 								    <option value="">--</option>
 									<?php if($layanan->num_rows() > 0):?>
@@ -118,33 +118,33 @@
 								<span class="help-block text-red"><?php echo form_error('layanan'); ?></span>
 							  </div>	
 							</div>
-							<div class="form-group row">
-								<label class="col-sm-2 col-md-2 col-xs-2 control-label">Periode ACC</label>
-								<div class="col-sm-4 col-md-4 col-xs-4 controls">
+							<div class="form-group">
+								<label class="col-md-2 control-label">Periode ACC</label>
+								<div class="col-md-4 controls">
 								  <div class="input-group">
 									<span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
 									<input type="text"  style="" name="reportrange" id="reportrange" class="form-control" value="<?php echo date("d/m/Y", strtotime( "-1 month" )).' - '.date( "d/m/Y")?>"/>  
 								  </div>
 								  <span class="help-block text-red"><?php echo form_error('reportrange'); ?></span>
 								</div>
-                                <div class="col-md-6 col-sm-6 col-xs-6">
-									<label class=" control-label col-md-2 col-sm-2 col-xs-2">Pemeriksa</label>									
-									<div class="col-md-10 col-sm-10 col-xs-10">
-										<select name="spesimen" class="form-control">
-											<option value="">--silahkan Pilih--</option>
-											<?php if($spesimen->num_rows() > 0):?>
-											<?php foreach($spesimen->result() as $value):?>
-											<option value="<?php echo $value->user_id?>" <?php echo  set_select('spesimen', $value->user_id); ?> ><?php echo $value->first_name.' '.$value->last_name;?></option>
-											<?php endforeach;?>
-											<?php endif;?>
-										</select>
-										<span class="help-block text-red"><?php echo form_error('spesimen'); ?></span>
-									</div>										
-								</div>									
+                                
+								<label class=" control-label col-md-2">Pemeriksa</label>									
+								<div class="col-md-10">
+									<select name="spesimen" class="form-control">
+										<option value="">--silahkan Pilih--</option>
+										<?php if($spesimen->num_rows() > 0):?>
+										<?php foreach($spesimen->result() as $value):?>
+										<option value="<?php echo $value->user_id?>" <?php echo  set_select('spesimen', $value->user_id); ?> ><?php echo $value->first_name.' '.$value->last_name;?></option>
+										<?php endforeach;?>
+										<?php endif;?>
+									</select>
+									<span class="help-block text-red"><?php echo form_error('spesimen'); ?></span>
+								</div>										
+																
 							</div>
 							<div class="form-group row">							   						 
-							    <label class=" control-label col-md-2 col-sm-2 col-xs-2">Filter</label>									
-								<div class="col-md-4 col-sm-4 col-xs-4">
+							    <label class=" control-label col-md-2">Filter</label>									
+								<div class="col-md-4">
 									<select name="searchby" class="form-control">
 										<option value="">--silahkan Pilih--</option>
 										<option value="1" <?php echo  set_select('searchby', '1'); ?> >NIP</option>
@@ -152,21 +152,21 @@
 									</select>
 									<span class="help-block text-red"><?php echo form_error('searchby'); ?></span>
 								</div>
-								<div class="col-md-6 col-sm-6 col-xs-6">									
+								<div class="col-md-6">									
 								    <input type="text" name="search" class="form-control" placeholder="Masukan data pencarian" value="<?php echo set_value('search'); ?>">
 									<span class="help-block text-red"><?php echo form_error('search'); ?></span>
 								</div>								
 							</div>			
 							<div class="form-group row">
-							    <label class="control-label col-md-2 col-sm-2 col-xs-2">Status:</label>
-								<div class="col-md-4 col-sm-10 col-xs-10">
+							    <label class="control-label col-md-2">Status:</label>
+								<div class="col-md-4">
 								    <input type="radio" value="1" name="status"  <?php echo  set_radio('status', 1);?>  />&nbsp;Sudah Entry
 									<input type="radio" value="2" name="status"  <?php echo  set_radio('status', 2);?> />&nbsp;Belum Entry
 									<input type="radio" value="3" name="status"  <?php echo  set_radio('status', 3);?> <?php echo (!$this->input->post('status') ? "checked" : "")?>  />&nbsp;Semua
 									<span class="help-block text-red"><?php echo form_error('status'); ?></span>
 								</div>
-								<label class="control-label col-md-2 col-sm-2 col-xs-2">Perintah:</label>
-								<div class="col-md-4 col-sm-10 col-xs-10">
+								<label class="control-label col-md-2">Perintah:</label>
+								<div class="col-md-4">
 									<input type="radio" value="1" name="perintah"  <?php echo  set_radio('perintah', 1);?> <?php echo (!$this->input->post('perintah') ? "checked" : "")?> />&nbsp;Tampil
 									<input type="radio" value="2" name="perintah"  <?php echo  set_radio('perintah', 2);?>/>&nbsp;Download									
 									<span class="help-block text-red"><?php echo form_error('perintah'); ?></span>

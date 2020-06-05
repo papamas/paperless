@@ -97,8 +97,8 @@
 							<input type="hidden" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash();?>" style="display: none">
 							
 							<div class="form-group">
-							  <label class="control-label col-md-2 col-sm-2 col-xs-2">Instansi</label>
-							  <div class="col-md-10 col-sm-10 col-xs-10">
+							  <label class="control-label col-md-2">Instansi</label>
+							  <div class="col-md-10">
 							    <select name="instansi" class="form-control select2">
                                     <option value="">--Silahkan Pilih--</option>
                                     <option value="9" <?php echo  set_select('instansi',9); ?>>TASPEN</option>									
@@ -111,9 +111,9 @@
 								<span class="help-block text-red"><?php echo form_error('instansi'); ?></span>
 							  </div>	
 							</div>
-							<div class="form-group row">							   						 
-							    <label class=" control-label col-md-2 col-sm-2 col-xs-2">Layanan</label>									
-								<div class="col-md-10 col-sm-10 col-xs-10">
+							<div class="form-group">							   						 
+							    <label class=" control-label col-md-2">Layanan</label>									
+								<div class="col-md-10">
 									<select name="layanan" class="form-control">
 										<option value="">--silahkan Pilih--</option>										
 										<?php if($layanan->num_rows() > 0):?>
@@ -128,11 +128,7 @@
 							</div>							
 							
 							<div class="box-footer">
-							    <div class="row">
-									<div class="col-md-8">
-										<button type="submit" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;Cari</button>
-									</div>									
-								</div>
+							    <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;Cari</button>
 							</div>
 							
 						   </div>						   

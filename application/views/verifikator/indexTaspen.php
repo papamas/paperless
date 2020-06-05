@@ -36,8 +36,8 @@
 						 <input type="hidden" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash();?>" style="display: none">
 						    <div class="box-body">
 								<div class="form-group">									
-									<label class="control-label col-md-2 col-sm-2 col-xs-2">Usul</label>
-									<div class="col-md-4 col-sm-4 col-xs-4">
+									<label class="control-label col-md-2">Usul</label>
+									<div class="col-md-4">
 										<input type="radio" value="1" name="usul"  <?php echo  set_radio('usul', 1, TRUE); ?> />&nbsp;INSTANSI DAERAH/PUSAT
 										<?php if($this->session->userdata('session_bidang') == 2):?>
 										<input type="radio" value="2" name="usul"  <?php echo  set_radio('usul', 2); ?>/>&nbsp;TASPEN									
@@ -45,8 +45,8 @@
 										<span class="help-block text-red"><?php echo form_error('usul'); ?></span>
 									</div>
 									
-									<label class="control-label col-md-3 col-sm-3 col-xs-3">Tampilkan hanya yang belum diverifikasi oleh:</label>
-									<div class="col-md-3 col-sm-3 col-xs-3">
+									<label class="control-label col-md-3">Tampilkan hanya yang belum diverifikasi oleh:</label>
+									<div class="col-md-3">
 										<select name="level" class="form-control">
 										    <option value="">--silahkan Pilih--</option>
 											<option value="1" <?php echo  set_select('level',1); ?>>Level 1</option>
@@ -56,8 +56,9 @@
 									</div>							
 								</div> 	
 								
-								<div class="form-group">								   						 
-									<div class="col-md-2 col-xs-4 col-sm-3">
+								<div class="form-group">
+                                    <label class="control-label col-md-2 visible-xs">Filter</label>								
+									<div class="col-md-2">
 										<select name="searchby" class="form-control">
 											<option value="">--silahkan Pilih--</option>
 											<option value="1" <?php echo  set_select('searchby',1); ?>>NIP</option>
@@ -67,12 +68,12 @@
 										</select>
 										<span class="help-block text-red"><?php echo form_error('searchby'); ?></span>
 									</div>	
-									<div class="col-md-9 col-xs-8 col-sm-9">									
+									<div class="col-md-9">									
 										<input type="text" name="search" class="form-control" placeholder="Masukan data pencarian" value="<?php echo set_value('search'); ?>">
 										<span class="help-block text-red"><?php echo form_error('search'); ?></span>
 									</div>
-									<div class="col-md-1 col-xs-1 col-sm-1">
-										<button type="submit" class="btn btn-default" type="button"><i class="fa fa-search" > Cari!</i></button>
+									<div class="col-md-1">
+										<button type="submit" class="btn btn-primary" type="button"><i class="fa fa-search" > Cari!</i></button>
 									</div>
 								</div>	
 						    </div><!-- /.box-body -->                        

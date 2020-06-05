@@ -97,8 +97,8 @@
 							<input type="hidden" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash();?>" style="display: none">
 							
 							<div class="form-group">
-							  <label class="control-label col-md-2 col-sm-2 col-xs-2">Instansi</label>
-							  <div class="col-md-10 col-sm-10 col-xs-10">
+							  <label class="control-label col-md-2">Instansi</label>
+							  <div class="col-md-10">
 							    <select name="instansi" class="form-control select2">
                                     <option value="">--Silahkan Pilih--</option>								
 									<?php if($instansi->num_rows() > 0):?>
@@ -110,9 +110,9 @@
 								<span class="help-block text-red"><?php echo form_error('instansi'); ?></span>
 							  </div>	
 							</div>
-							<div class="form-group row">							   						 
-							    <label class=" control-label col-md-2 col-sm-2 col-xs-2">Layanan</label>									
-								<div class="col-md-10 col-sm-10 col-xs-10">
+							<div class="form-group">							   						 
+							    <label class=" control-label col-md-2">Layanan</label>									
+								<div class="col-md-10">
 									<select name="layanan" class="form-control">
 										<option value="">--silahkan Pilih--</option>
 										<?php if($layanan->num_rows() > 0):?>
@@ -126,8 +126,8 @@
 															
 							</div>
                             <div class="form-group row">							   						 
-							    <label class=" control-label col-md-2 col-sm-2 col-xs-2">Golongan</label>									
-								<div class="col-md-10 col-sm-10 col-xs-10">
+							    <label class=" control-label col-md-2">Golongan</label>									
+								<div class="col-md-10">
 									<select name="golongan" class="form-control">
 										<option value="">--silahkan Pilih--</option>
 										<?php if($golongan->num_rows() > 0):?>
@@ -141,9 +141,9 @@
 															
 							</div>
 
-							<div class="form-group row">							   						 
-							    <label class=" control-label col-md-2 col-sm-2 col-xs-2">No. Usul</label>									
-								<div class="col-md-10 col-sm-10 col-xs-10">
+							<div class="form-group">							   						 
+							    <label class=" control-label col-md-2">No. Usul</label>									
+								<div class="col-md-10">
                                      <input type="text" name="nousul" class="form-control" placeholder="Masukan No. Usul" value="<?php echo set_value('nousul'); ?>">								
 									<span class="help-block text-red"><?php echo form_error('nousul'); ?></span>
 								</div>
@@ -277,8 +277,8 @@
 					<form id="nfrmKirim">
 					    <input type="hidden" name="<?php echo $this->security->get_csrf_token_name()?>" value="<?php echo $this->security->get_csrf_hash()?>" style="display: none">
 					    <div class="form-group row">							   						 
-							<label class=" control-label col-md-2 col-sm-2 col-xs-2">Penerima</label>									
-							<div class="col-md-10 col-sm-10 col-xs-10">
+							<label class=" control-label col-md-2">Penerima</label>									
+							<div class="col-md-10">
 								<select name="penerima" class="form-control" required>
 									<option value="">--silahkan Pilih--</option>
 									<?php if($penerima->num_rows() > 0):?>

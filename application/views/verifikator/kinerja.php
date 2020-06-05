@@ -52,8 +52,8 @@
 						 <input type="hidden" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash();?>" style="display: none">
 						    <div class="box-body">
 								<div class="form-group">
-								  <label class="col-sm-2 col-md-2 col-xs-2">Instansi</label>
-								  <div class="col-sm-10 col-md-10 col-xs-10">
+								  <label class="col-md-2">Instansi</label>
+								  <div class="col-md-10">
 									<select name="instansi" class="form-control select2">
 										<option value="">--</option>
 										<option value="9">TASPEN</option>
@@ -67,8 +67,8 @@
 								  </div>	
 								</div>
 								<div class="form-group">
-									<label class="col-sm-2 col-md-2 col-xs-2">Pelayanan</label>
-									<div class="col-sm-10 col-md-10 col-xs-10">
+									<label class="col-md-2">Pelayanan</label>
+									<div class="col-md-10">
 										<select name="layanan" class="form-control">
 											<option value="">--</option>
 											<?php if($layanan->num_rows() > 0):?>
@@ -81,9 +81,9 @@
 									</div>
 									
 								</div>
-								<div class="form-group row">
-									<label class="col-sm-2 col-md-2 col-xs-2 control-label">Periode Kinerja:</label>
-									<div class="col-sm-6 col-md-6 col-xs-6">
+								<div class="form-group">
+									<label class="col-md-2 control-label">Periode Kinerja:</label>
+									<div class="col-md-6">
 									  <div class="input-group">
 										<span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
 										<input type="text"  style="" name="reportrange" id="reportrange" class="form-control" value="<?php echo date("d/m/Y", strtotime( "-1 month" )).' - '.date( "d/m/Y")?>"/>  
@@ -91,18 +91,18 @@
 									  	<span class="help-block text-red"><?php echo form_error('reportrange'); ?></span>
 									</div>										
 								</div>
-								<div class="form-group row">
-									<label class="control-label col-sm-2 col-md-2 col-xs-2">Status:</label>
-									<div class="col-sm-6 col-md-6 col-xs-6">
+								<div class="form-group">
+									<label class="control-label col-md-2">Status</label>
+									<div class="col-md-6">
 										<input type="radio" value="ACC" name="status"   />&nbsp;ACC
 										<input type="radio" value="BTL" name="status"  />&nbsp;BTL
 										<input type="radio" value="TMS" name="status"  />&nbsp;TMS
 										<input type="radio" value="ALL" name="status"  checked />&nbsp;SEMUA
 									</div>	
 								</div> 	
-								<div class="form-group row">
-									<label class="col-sm-2 col-md-2 col-xs-2">Verifikator</label>
-									<div class="col-sm-5 col-md-5 col-xs-5">
+								<div class="form-group">
+									<label class="col-md-2">Pemeriksa</label>
+									<div class="col-md-5">
 										<select name="verifikator" class="form-control">										
 											<?php if($verifikator->num_rows() > 0):?>
 											<?php foreach($verifikator->result() as $value):?>
@@ -111,8 +111,8 @@
 											<?php endif;?>
 										</select>
 									</div>	
-									<label class="control-label col-md-1 col-xs-1 col-sm-1">Perintah:</label>
-									<div class="col-md-4 col-xs-4 col-sm-4">
+									<label class="control-label col-md-1">Perintah</label>
+									<div class="col-md-4">
 										<input type="radio" required value="1" name="perintah"  checked />&nbsp;Tampil
 										<input type="radio" required value="2" name="perintah"   />&nbsp;Download
 										

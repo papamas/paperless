@@ -59,22 +59,22 @@
 								<input type="hidden" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash();?>" style="display: none">
 								  <div class="box-body">
 									<div class="form-group">
-									  <label class="col-md-2 col-sm-2 col-xs-2">Nomor Usul Instansi</label>
-										<div class="col-sm-10 col-md-10 col-xs-10">
+									  <label class="col-md-2">Nomor Usul Instansi</label>
+										<div class="col-md-10">
 											<select name="nomorUsul" id="nomorUsul" class="form-control">
 												<option value="">--</option>										
 											</select>
 											<span class="help-block text-red"><?php echo form_error('nomorUsul'); ?></span>	
 										</div>							    						  
 									</div>							
-									<div class="form-group row">
-										<label class="control-label col-md-2 col-sm-2 col-xs-2">Nomor Pengeluaran</label>
-										<div class="col-md-2 col-xs-2 col-sm-2">
+									<div class="form-group">
+										<label class="control-label col-md-2">Nomor Pengeluaran</label>
+										<div class="col-md-2">
 											<input type="number"   name="nomorPengeluaran" class="form-control" value=""/>  					
 											<span class="help-block text-red"><?php echo form_error('nomorPengeluaran'); ?></span>	
 										</div>
-										<label class="control-label col-md-2 col-sm-2 col-xs-2">Pilihan Pengeluaran:</label>
-										<div class="col-md-2 col-sm-2 col-xs-2">
+										<label class="control-label col-md-2">Pilihan Pengeluaran</label>
+										<div class="col-md-2">
 											<select name="pilihanPengeluaran" class="form-control">
 												<option value="1">Semua</option>	
 												<option value="2">Yang Sudah Saja</option>
@@ -82,8 +82,8 @@
 											</select>
 											<span class="help-block text-red"><?php echo form_error('pilihanPengeluaran'); ?></span>
 										</div>
-										<label class="control-label col-md-2 col-sm-2 col-xs-2">Cetak Tanda Terima:</label>
-										<div class="col-md-2 col-sm-2 col-xs-2">
+										<label class="control-label col-md-2">Cetak Tanda Terima</label>
+										<div class="col-md-2">
 											<input type="radio" value="1" name="tandaTerima"  <?php echo  set_radio('tandaTerima', 1);?>  />&nbsp;Ya
 											<input type="radio" value="2" name="tandaTerima"  <?php echo  set_radio('tandaTerima', 2,true);?>  />&nbsp;Tidak
 											<span class="help-block text-red"><?php echo form_error('tandaTerima'); ?></span>
@@ -91,8 +91,8 @@
 										
 									</div>							
 									<div class="form-group">
-									  <label class="col-md-2 col-sm-2 col-xs-2">Spesimen Pengeluaran</label>
-										<div class="col-sm-10 col-md-10 col-xs-10">
+									  <label class="col-md-2">Spesimen Pengeluaran</label>
+										<div class="col-md-10">
 											<select name="spesimenPengeluaran" class="form-control">
 												<option value="">-Silahkan Pilih-</option>
 												<?php foreach($spesimen->result() as $value ):?>
@@ -102,18 +102,18 @@
 											<span class="help-block text-red"><?php echo form_error('spesimenPengeluaran'); ?></span>	
 										</div>							    						  
 									</div>
-									<div class="form-group row">
-										<label class="control-label col-md-2 col-sm-2 col-xs-2">Jabatan Satuan Kerja</label>
-										<div class="col-md-9 col-xs-9 col-sm-9">
+									<div class="form-group">
+										<label class="control-label col-md-2">Jabatan Satuan Kerja</label>
+										<div class="col-md-9">
 											<textarea  name="satker" class="form-control" ></textarea> 					
 										</div>
-										<div class="col-md-1 col-xs-1 col-sm-1">
+										<div class="col-md-1">
 											<input type="checkbox" class="checkbox" name="checkSatker" /> 
 										</div>
 									</div>
 									<div class="form-group row">
-										<label class="control-label col-md-2 col-sm-2 col-xs-2">Lokasi Satker</label>
-										<div class="col-md-10 col-xs-10 col-sm-10">
+										<label class="control-label col-md-2">Lokasi Satker</label>
+										<div class="col-md-10">
 											<input type="text"  name="lokasiSatker" class="form-control" value=""/>  					
 										</div>
 									</div>
@@ -129,30 +129,30 @@
 								<input type="hidden" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash();?>" style="display: none">
 								    <div class="box-body">
 										<div class="form-group">
-										  <label class="col-md-2 col-sm-2 col-xs-2">Nomor Usul Taspen</label>
-											<div class="col-sm-10 col-md-10 col-xs-10">
+										  <label class="col-md-2">Nomor Usul Taspen</label>
+											<div class="col-md-10">
 												<select name="usulTaspen" id="usulTaspen" class="form-control">
 													<option value="">--</option>										
 												</select>
 												<span class="help-block text-red"><?php echo form_error('usulTaspen'); ?></span>	
 											</div>							    						  
 										</div>	
-										<div class="form-group row">
-											<label class="control-label col-md-2 col-sm-2 col-xs-2">Nomor Pengeluaran</label>
-											<div class="col-md-4 col-xs-4 col-sm-4">
+										<div class="form-group">
+											<label class="control-label col-md-2">Nomor Pengeluaran</label>
+											<div class="col-md-4">
 												<input type="number"   name="nomorPengeluaranTaspen" class="form-control" value=""/>  					
 												<span class="help-block text-red"><?php echo form_error('nomorPengeluaranTaspen'); ?></span>	
 											</div>
-											<label class="control-label col-md-2 col-sm-2 col-xs-2">Cetak Tanda Terima:</label>
-											<div class="col-md-4 col-sm-4 col-xs-4">
+											<label class="control-label col-md-2">Cetak Tanda Terima</label>
+											<div class="col-md-4">
 												<input type="radio" value="1" name="tandaTerimaTaspen"  <?php echo  set_radio('tandaTerimaTaspen', 1);?>  />&nbsp;Ya
 												<input type="radio" value="2" name="tandaTerimaTaspen"  <?php echo  set_radio('tandaTerimaTaspen', 2,true);?>  />&nbsp;Tidak
 												<span class="help-block text-red"><?php echo form_error('tandaTerimaTaspen'); ?></span>
 											</div>
 										</div>
 										<div class="form-group">
-										    <label class="col-md-2 col-sm-2 col-xs-2">Spesimen Pengeluaran</label>
-											<div class="col-sm-10 col-md-10 col-xs-10">
+										    <label class="col-md-2">Spesimen Pengeluaran</label>
+											<div class="col-md-10">
 												<select name="spesimenPengeluaranTaspen" class="form-control">
 													<option value="">-Silahkan Pilih-</option>
 													<?php foreach($spesimen->result() as $value ):?>

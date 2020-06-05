@@ -89,16 +89,16 @@
 						  <div class="box-body">
 							<input type="hidden" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash();?>" style="display: none">
 							<div class="form-group row">
-							  	<label class="control-label col-md-2 col-sm-2 col-xs-2">Usul</label>
-								<div class="col-md-10 col-sm-10 col-xs-10">
+							  	<label class="control-label col-md-2">Usul</label>
+								<div class="col-md-10">
 									<input type="radio" value="1" name="usul"  <?php echo  set_radio('usul', '1', TRUE); ?> />&nbsp;INSTANSI DAERAH/PUSAT
 									<input type="radio" value="2" name="usul"  <?php echo  set_radio('usul', '2'); ?>/>&nbsp;TASPEN									
 								</div>	
 								<span class="help-block text-red"><?php echo form_error('usul'); ?></span>
 							</div> 
-							<div class="form-group row">							   						 
-							    <label class=" control-label col-md-2 col-sm-2 col-xs-2">Filter</label>									
-								<div class="col-md-4 col-sm-4 col-xs-4">
+							<div class="form-group">							   						 
+							    <label class="control-label col-md-2">Filter</label>									
+								<div class="col-md-4">
 									<select name="searchby" class="form-control">
 										<option value="">--silahkan Pilih--</option>
 										<option value="1" <?php echo  set_select('searchby', 1); ?>>NIP</option>										
@@ -109,7 +109,7 @@
 									</select>
 									<span class="help-block text-red"><?php echo form_error('searchby'); ?></span>
 								</div>
-								<div class="col-md-6 col-xs-6 col-sm-6">									
+								<div class="col-md-6">									
 								    <input type="text" name="search" class="form-control" placeholder="Masukan Kata Kunci pencarian" value="<?php echo set_value('search'); ?>">
 								    <span class="help-block text-red"><?php echo form_error('search'); ?></span>
 								</div>															

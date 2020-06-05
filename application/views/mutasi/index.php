@@ -52,8 +52,8 @@
 						<input type="hidden" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash();?>" style="display: none">
 						  <div class="box-body">
 							<div class="form-group">
-							  <label class="col-md-2 col-sm-2 col-xs-2">Instansi</label>
-							  <div class="col-sm-10 col-md-10 col-xs-10">
+							  <label class="col-md-2">Instansi</label>
+							  <div class="col-md-10">
 							    <select name="instansi" class="form-control select2">
 									<option value="">--</option>
 									<?php if($instansi->num_rows() > 0):?>
@@ -66,8 +66,8 @@
 							  </div>	
 							</div>
 							<div class="form-group">
-							  <label class="col-md-2 col-sm-2 col-xs-2">Pelayanan</label>
-							  <div class="col-sm-10 col-md-10 col-xs-10">
+							  <label class="col-md-2">Pelayanan</label>
+							  <div class="col-md-10">
 							    <select name="layanan" class="form-control ">
 								    <option value="">--</option>
 									<?php if($layanan->num_rows() > 0):?>
@@ -79,25 +79,25 @@
 								<span class="help-block text-red"><?php echo form_error('layanan'); ?></span>
 							  </div>	
 							</div>
-							<div class="form-group row">
-								<label class="col-md-2 col-sm-2 col-xs-2 control-label">Periode</label>
-								<div class="col-sm-10 col-md-5 col-xs-10 controls">
+							<div class="form-group">
+								<label class="col-md-2 control-label">Periode</label>
+								<div class="col-md-5 controls">
 								  <div class="input-group">
 									<span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
 									<input type="text"  style="" name="reportrange" id="reportrange" class="form-control" value="<?php echo date("d/m/Y", strtotime( "-1 month" )).' - '.date( "d/m/Y")?>"/>  
 								  </div>
 								</div>
 								<span class="help-block text-red"><?php echo form_error('reportrange'); ?></span>	
-								<label class="control-label col-md-1 col-sm-2 col-xs-2">By Date</label>
-								<div class="col-md-4 col-xs-10 col-sm-10">
+								<label class="control-label col-md-1">By Date</label>
+								<div class="col-md-4">
 								    <input type="radio" required value="3" name="bydate"  checked />&nbsp;Berkas Masuk
 									<input type="radio" required value="1" name="bydate"    />&nbsp;Verifikasi
 									<input type="radio" required value="2" name="bydate"  />&nbsp;Entry SAPK								
 								</div>
 							</div>
-							<div class="form-group row">
-								<label class="control-label col-md-2 col-sm-2 col-xs-2">Status</label>
-								<div class="col-md-4 col-sm-10 col-xs-10">
+							<div class="form-group">
+								<label class="control-label col-md-2">Status</label>
+								<div class="col-md-4">
 									<input type="radio" required value="ACC" name="status"   />&nbsp;ACC
 									<input type="radio" required value="BTL" name="status"  />&nbsp;BTL
 									<input type="radio" required value="TMS" name="status"  />&nbsp;TMS

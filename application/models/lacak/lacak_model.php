@@ -239,7 +239,6 @@ $sql";
 		END AS bg,
 		b.layanan_nama,
 		c.tahapan_nama,
-		d.PNS_NIPBARU nip_baru, d.PNS_PNSNIP nip_lama,
 		e.first_name kirim_by,
 		f.first_name usul_kirim_name,
 		g.first_name usul_lock_name,
@@ -248,7 +247,6 @@ $sql";
 		FROM $this->usul a
 		LEFT JOIN $this->tablelayanan b ON a.layanan_id = b.layanan_id	
 		LEFT JOIN $this->tabletahapan c ON c.tahapan_id = a.usul_tahapan_id
-		LEFT JOIN $this->tablepupns d ON (a.nip = d.PNS_NIPBARU OR a.nip = d.PNS_PNSNIP)
 		LEFT JOIN $this->tableuser e ON e.user_id = a.kirim_bkn_by
 		LEFT JOIN $this->tableuser f ON f.user_id = a.usul_kirim_by
 		LEFT JOIN $this->tableuser g ON g.user_id = a.usul_lock_by

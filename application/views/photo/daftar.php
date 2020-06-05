@@ -49,8 +49,8 @@
 							<input type="hidden" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash();?>" style="display: none">
 							
 							<div class="form-group">
-							  <label class="control-label col-md-2 col-sm-2 col-xs-2">Instansi</label>
-							  <div class="col-md-10 col-sm-10 col-xs-10">
+							  <label class="control-label col-md-2">Instansi</label>
+							  <div class="col-md-10">
 							    <select name="instansi" class="form-control select2">									
 									<?php if($instansi->num_rows() > 0):?>
 									<?php foreach($instansi->result() as $value):?>
@@ -62,22 +62,22 @@
 							  </div>	
 							</div>
 							<div class="form-group row">							   						 
-							    <label class=" control-label col-md-2 col-sm-2 col-xs-2">Filter</label>									
-								<div class="col-md-4 col-sm-4 col-xs-4">
+							    <label class=" control-label col-md-2">Filter</label>									
+								<div class="col-md-4">
 									<select name="searchby" class="form-control">
 										<option value="">--silahkan Pilih--</option>
 										<option value="1" <?php echo  set_select('searchby', '1'); ?> >NIP</option>											
 									</select>
 									<span class="help-block text-red"><?php echo form_error('searchby'); ?></span>
 								</div>
-								<div class="col-md-6 col-sm-6 col-xs-6">									
+								<div class="col-md-6">									
 								    <input type="text" name="search" class="form-control" placeholder="Masukan data pencarian" value="<?php echo set_value('search'); ?>">
 									<span class="help-block text-red"><?php echo form_error('search'); ?></span>
 								</div>								
 							</div>
 							<div class="form-group row">
-							  	<label class="control-label col-md-2 col-sm-2 col-xs-2">Perintah:</label>
-								<div class="col-md-10 col-sm-10 col-xs-10">
+							  	<label class="control-label col-md-2">Perintah</label>
+								<div class="col-md-10">
 									<input type="radio" required value="1" name="perintah"  checked />&nbsp;Tampil
 									<input type="radio" required value="2" name="perintah"  />&nbsp;Download									
 								</div>	
