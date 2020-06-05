@@ -224,7 +224,7 @@
 							    foreach($tabs->result() as $value){
 									$jenis_sk = $value->nama_dokumen;
 									
-								if( $jenis_sk === "SK_JABATAN" || $jenis_sk === "PAK" || $jenis_sk === "IJAZAH" || $jenis_sk === "SKP"  || $jenis_sk === "PPK" || $jenis_sk === "SK_KP"  || $jenis_sk === "SK_MUTASI" || $jenis_sk === "TRANSKRIP" ) {									
+								if( $jenis_sk === "SK_JABATAN" || $jenis_sk === "PAK" || $jenis_sk === "IJAZAH" || $jenis_sk === "SKP"  || $jenis_sk === "PPK" || $jenis_sk === "SK_KP"  || $jenis_sk === "SK_MUTASI" || $jenis_sk === "TRANSKRIP" || $jenis_sk === "STLUD" ) {									
 									echo '<li role="presentation" class="dropdown">
 										<a class="dropdown-toggle" data-toggle="dropdown" href="#">'.$value->nama_dokumen.'<b class="caret"></b></a>									
 										<ul class="dropdown-menu">.';	
@@ -288,6 +288,15 @@
 														break;
 														case 11:
 															$n = "I/a";
+														break;
+														case 1:
+															$n = "Tk.I";
+														break;
+														case 2:
+															$n = "Tk.II";
+														break;
+														case 3:
+															$n = "PI";
 														break;
 														default:
 															$n = $x[$i];									

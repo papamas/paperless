@@ -88,8 +88,16 @@ class upload extends MY_Controller {
 			return FALSE;			
 		}			
 		
-		
-				
+		if(!$this->uploadFile->isSesuaiFormat($_FILES['file']['name']))
+		{
+			$error = array('error' => 'File belum sesuai format, silahkan cek pada daftar tabel');
+
+			$this->output
+					->set_status_header(406)
+					->set_content_type('application/json', 'utf-8')
+					->set_output(json_encode($error));
+			return FALSE;
+		}		
 		// Try cek file		
 		$cekFile	= $this->uploadFile->isAllowSize($_FILES['file']);
 		$response   = $cekFile['response'];

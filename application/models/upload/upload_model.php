@@ -108,6 +108,25 @@ class Upload_model extends CI_Model {
 		return $r;
 	}
 	
+	function isSesuaiFormat($file)
+	{
+		$r = FALSE;
+		$raw_file  		= str_replace('.pdf', '', $file);
+		$format_file 	= explode("_",$raw_file);
+		
+		$sql="SELECT panjang FROM (SELECT *,locate(nama_dokumen,'$file') result from dokumen ) a
+ WHERE a.result = 1 AND a.aktif IS NOT NULL";
+		$row = $this->db->query($sql)->row();
+		if(count($format_file) === intval($row->panjang))
+		{
+		   $r = TRUE;
+		}
+		
+		return $r;
+		
+	}	
+		
+	
 	function isAllowSize($file)
 	{
 		$file_name  = $file['name'];

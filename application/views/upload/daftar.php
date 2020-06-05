@@ -219,6 +219,15 @@
 									case 11:
 										$n = "I/a";
 									break;
+									case 1:
+										$n = "Tk.I";
+									break;
+									case 2:
+										$n = "Tk.II";
+									break;
+									case 3:
+										$n = "PI";
+									break;
 									default:
 										$n = $value->minor_dok;									
 																				
@@ -266,7 +275,7 @@
 									break;
 									case 05:
 										$n = "Sekolah Dasar";
-									break;														
+									break;									
 									default:
 										$n = $value->minor_dok;									
 																				
