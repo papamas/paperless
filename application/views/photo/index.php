@@ -50,14 +50,14 @@
 							<tbody>	
 							   	<tr>
 									<td>1</td>
-									<td>Kartu Suami</td>
+									<td>Kartu Istri</td>
 									<td>KARIS_NIP atau NIP_KARIS</td>	
 									<th>jpg</th>
 									<td>Pas Foto KARIS berwarna atau hitam putih Ukuran 3x4</td>
 								</tr>
 								<tr>
 									<td>2</td>
-									<td>Kartu Istri</td>
+									<td>Kartu Suami</td>
 									<td>KARSU_NIP atau NIP_KARSU</td>	
 									<th>jpg</th>
 									<td>Pas Photo KARSU berwarna atau hitam putih Ukuran 3x4</td>
