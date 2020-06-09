@@ -397,13 +397,15 @@ class upload extends MY_Controller {
 	{
 		$instansi  = $this->myencrypt->decode($this->input->get('id'));
 		$file      = $this->myencrypt->decode($this->input->get('f'));
-				
+		$flok      = base_url().'uploads/'.$instansi.'/'.$file;
+						
 		header('Pragma:public');
 		header('Cache-Control:no-store, no-cache, must-revalidate');
 		header('Content-type:application/pdf');
 		header('Content-Disposition:inline; filename='.$file);                      
 		header('Expires:0'); 
-		readfile(base_url().'uploads/'.$instansi.'/'.$file);
+		ob_end_clean();
+		readfile($flok); 
 	}	
 }
 
