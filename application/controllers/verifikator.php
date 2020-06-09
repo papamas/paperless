@@ -172,6 +172,7 @@ class Verifikator extends MY_Controller {
 		header('Content-type:application/pdf');
 		header('Content-Disposition:inline; filename='.$file);                      
 		header('Expires:0'); 		
+		ob_end_clean();
 		readfile(base_url().'uploads/'.$instansi.'/'.$file);
 		
 	}	
@@ -522,12 +523,12 @@ class Verifikator extends MY_Controller {
 		$t         = $this->myencrypt->decode($this->input->get('t'));
 		
 		
-		ob_clean();
 		header('Pragma:public');
 		header('Cache-Control:no-store, no-cache, must-revalidate');
 		header('Content-type:'.$t);
 		header('Content-Disposition:inline; filename='.$file);                      
-		header('Expires:0'); 		
+		header('Expires:0'); 
+        ob_end_clean();		
 		readfile(base_url().'uploads/taspen/'.$file);
 		
 	}	
