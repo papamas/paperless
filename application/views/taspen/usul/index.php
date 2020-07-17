@@ -100,24 +100,22 @@
 							<input type="hidden" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash();?>" style="display: none">
 							<input type="hidden" name="usul_id" value="<?php echo set_value('usul_id'); ?>"/>
 							<div class="form-group row">	
-								<label class="control-label col-md-2 col-sm-2 col-xs-2">Nomor Usul</label>
-							    <div class="col-md-4 col-sm-4 col-xs-4">
+								<label class="control-label col-md-2">Nomor Usul</label>
+							    <div class="col-md-4">
 									<input type="text" name="nomor_usul" class="form-control" placeholder="Nomor Usul" value="<?php echo set_value('nomor_usul'); ?>">						
 									<span class="help-block text-red"><?php echo form_error('nomor_usul');?></span>
 								</div>
-								<label class="col-sm-2 col-md-2 col-xs-2 control-label">Tanggal</label>	
-								<div class="col-md-4 col-sm-4 col-xs-4">									
+								<label class="col-md-1 control-label">Tanggal</label>	
+								<div class="col-md-2">									
 									<div class='input-group date' >
 										<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-										<input id=''  pattern="^\d{1,2}\-\d{1,2}\-\d{4}$" type='text' name="tgl_usul" value="<?php echo (set_value('tgl_usul') ? set_value('tgl_usul') : date('d-m-Y'))?>" class="form-control datetimepicker" />									
+										<input type='text' name="tgl_usul" value="<?php echo (set_value('tgl_usul') ? set_value('tgl_usul') : date('d-m-Y'))?>" class="form-control datetimepicker" />									
 									</div>			
                                     <span class="help-block text-red"><?php echo form_error('tgl_usul');?></span>									
-								</div>	
-							</div>
-							
-							<div class="form-group row">
-							  	<label class=" control-label col-md-2 col-sm-2 col-xs-2">Pelayanan</label>									
-								<div class="col-md-4 col-sm-4 col-xs-4">
+								</div>
+								
+								<label class=" control-label col-md-1">Pelayanan</label>									
+								<div class="col-md-2">
 									<select name="layanan_id" class="form-control">
 										<option value="">--silahkan Pilih--</option>
 										<?php foreach($layanan->result() as $value):?>
@@ -126,38 +124,38 @@
 									</select>
 									<span class="help-block text-red"><?php echo form_error('layanan_id'); ?></span>
 								</div>
-								<label class="control-label col-md-2 col-sm-2 col-xs-2">Surat Pengantar</label>									
-								<div class="col-md-4 col-sm-4 col-xs-4">
+							</div>
+							
+							<div class="form-group row">							  
+								<label class="control-label col-md-2">Surat Pengantar</label>									
+								<div class="col-md-4">
 									<input type="file" name="file" class="form-control" />
 									<span class="help-block text-red"><?php echo (!empty($error) ? $error : '') ?></span>
-
+								</div>
+								<label class=" control-label col-md-2">Nama <span id="tlabel"></span></label>									
+								<div class="col-md-4">
+									<input type="text" name="nama_janda_duda" class="form-control" placeholder="Masukan Nama" value="<?php echo set_value('nama_janda_duda'); ?>">
+									<span class="help-block text-red"><?php echo form_error('nama_janda_duda'); ?></span>
 								</div>
 							</div> 	
 							
 							
-							<div class="form-group row">
-							  	<label class=" control-label col-md-2 col-sm-2 col-xs-2">Nama <span id="tlabel"></span></label>									
-								<div class="col-md-4 col-sm-4 col-xs-4">
-									<input type="text" name="nama_janda_duda" class="form-control" placeholder="Masukan Nama" value="<?php echo set_value('nama_janda_duda'); ?>">
-									<span class="help-block text-red"><?php echo form_error('nama_janda_duda'); ?></span>
-								</div>
-								
-								<label class=" control-label col-md-2 col-sm-2 col-xs-2">Nama PNS</label>									
-								<div class="col-md-4 col-sm-4 col-xs-4">
+							<div class="form-group row">							
+								<label class=" control-label col-md-2">Nama PNS</label>									
+								<div class="col-md-4">
 									<input type="text" name="nama_pns" class="form-control" placeholder="Masukan Nama PNS" value="<?php echo set_value('nama_pns'); ?>">
 									<span class="help-block text-red"><?php echo form_error('nama_pns'); ?></span>
 								</div>
-							</div>					
-							
-							<div class="form-group row">
-								<label class=" control-label col-md-2 col-sm-2 col-xs-2">NOPEN / No. Dosir</label>									
-								<div class="col-md-4 col-sm-4 col-xs-4">
+								<label class=" control-label col-md-2">NOPEN / No. Dosir</label>									
+								<div class="col-md-4">
 									<input type="text" name="nopen" class="form-control" placeholder="Masukan NOPEN / No. Dosir" value="<?php echo set_value('nopen'); ?>">
 									<span class="help-block text-red"><?php echo form_error('nopen'); ?></span>
 								</div>
-								
-							  	<label class=" control-label col-md-2 col-sm-2 col-xs-2">NIP / NRP / NVP</label>									
-								<div class="col-md-4 col-sm-4 col-xs-4">
+							</div>					
+							
+							<div class="form-group row">				
+							  	<label class=" control-label col-md-2">NIP / NRP / NVP</label>									
+								<div class="col-md-2">
 									<select name="nip" class="form-control select2" >
 										<option value="">--silahkan Pilih--</option>
 										<?php foreach($upload->result() as $value):?>
@@ -166,11 +164,9 @@
 									</select>
 									<span class="help-block text-red"><?php echo form_error('nip'); ?></span>
 								</div>
-							</div>
-							
-							<div class="form-group row">
-							  	<label class=" control-label col-md-2 col-sm-2 col-xs-2">Pangkat/Gol.Ruang</label>									
-								<div class="col-md-4 col-sm-4 col-xs-4">
+								
+								<label class=" control-label col-md-2">Pangkat/Gol.Ruang</label>									
+								<div class="col-md-2">
 									<select name="golongan" class="form-control">
 										<option value="">--silahkan Pilih--</option>
 										<?php foreach($golongan->result() as $value):?>
@@ -179,38 +175,28 @@
 									</select>
 									<span class="help-block text-red"><?php echo form_error('golongan'); ?></span>
 								</div>
-								<label class="control-label col-md-2 col-sm-2 col-xs-2">Jabatan</label>									
-								<div class="col-md-4 col-sm-4 col-xs-4">
+								<label class="control-label col-md-1">Jabatan</label>									
+								<div class="col-md-3">
 									<input type="text" name="jabatan" class="form-control" placeholder="Masukan Jabatan Terakhir" value="<?php echo set_value('jabatan'); ?>">
 									<span class="help-block text-red"><?php echo form_error('jabatan'); ?></span>
-
 								</div>
 							</div>
-
-							<div class="form-group row">
-							  	<label class="control-label col-md-2 col-sm-2 col-xs-2">Unit Kerja Terkahir</label>									
-								<div class="col-md-10 col-sm-10 col-xs-10">
-									<input type="text" name="unit_kerja" class="form-control" placeholder="Masukan Unit Kerja Terakhir" value="<?php echo set_value('unit_kerja'); ?>">
-									<span class="help-block text-red"><?php echo form_error('unit_kerja'); ?></span>
-								</div>
-								
-							</div>
-							
+													
 							<div class="form-group row">	
-                                <label class="col-sm-2 col-md-2 col-xs-2 control-label">Tanggal Perkawinan</label>	
-								<div class="col-md-4 col-sm-4 col-xs-4">									
+                                <label class="col-md-2 control-label">Tanggal Perkawinan</label>	
+								<div class="col-md-4">									
 									<div class='input-group date' >
 										<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-										<input id=''  pattern="^\d{1,2}\-\d{1,2}\-\d{4}$" type='text' name="tgl_perkawinan" value="<?php echo set_value('tgl_perkawinan');?>" class="form-control datetimepicker" />
+										<input type='text' name="tgl_perkawinan" value="<?php echo set_value('tgl_perkawinan');?>" class="form-control datetimepicker" />
 									</div>	
                                     <span class="help-block text-red"><?php echo form_error('tgl_perkawinan');?></span>								
 									
 								</div>							
-								<label class="col-sm-2 col-md-2 col-xs-2 control-label">Meninggal Dunia</label>	
-								<div class="col-md-4 col-sm-4 col-xs-4">									
+								<label class="col-md-2 control-label">Meninggal Dunia</label>	
+								<div class="col-md-4">									
 									<div class='input-group date' >
 										<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-										<input id=''  pattern="^\d{1,2}\-\d{1,2}\-\d{4}$" type='text' name="meninggal_dunia" value="<?php echo set_value('meninggal_dunia');?>" class="form-control datetimepicker" />
+										<input type='text' name="meninggal_dunia" value="<?php echo set_value('meninggal_dunia');?>" class="form-control datetimepicker" />
 									</div>
 									<span class="help-block text-red"><?php echo form_error('meninggal_dunia');?></span>								
 
@@ -218,26 +204,55 @@
 								
 							</div>
 							
-							<div class="form-group row">									
-								<label class="col-sm-2 col-md-2 col-xs-2 control-label">Gaji Pokok Terakhir</label>	
-								<div class="col-md-4 col-sm-4 col-xs-4">									
-									<input type="number" name="gaji_pokok_terakhir" class="form-control" placeholder="Masukan Gaji Pokok Terakhir" value="<?php echo set_value('gaji_pokok_terakhir'); ?>">
+							<div class="form-group row">	
+                                <label class="control-label col-md-2">Unit Kerja Terkahir</label>									
+								<div class="col-md-3">
+									<input type="text" name="unit_kerja" class="form-control" placeholder="Masukan Unit Kerja Terakhir" value="<?php echo set_value('unit_kerja'); ?>">
+									<span class="help-block text-red"><?php echo form_error('unit_kerja'); ?></span>
+								</div>							
+								<label class="col-md-1 control-label">Gaji</label>	
+								<div class="col-md-2">									
+									<input type="number" name="gaji_pokok_terakhir" class="form-control" placeholder="Gaji Pokok Terakhir" value="<?php echo set_value('gaji_pokok_terakhir'); ?>">
 									<span class="help-block text-red"><?php echo form_error('gaji_pokok_terakhir'); ?></span>						
 								</div>
-								<label class="col-sm-2 col-md-2 col-xs-2 control-label">Pensiun Pokok Terakhir</label>	
-								<div class="col-md-4 col-sm-4 col-xs-4">									
-									<input type="number" name="pensiun_pokok_terakhir" class="form-control" placeholder="Masukan Pensiun Pokok Terakhir" value="<?php echo set_value('pensiun_pokok_terakhir'); ?>">
+								<label class="col-md-1 control-label">Pensiun</label>	
+								<div class="col-md-3">									
+									<input type="number" name="pensiun_pokok_terakhir" class="form-control" placeholder="Pensiun Pokok Terakhir" value="<?php echo set_value('pensiun_pokok_terakhir'); ?>">
 									<span class="help-block text-red"><?php echo form_error('pensiun_pokok_terakhir'); ?></span>						
 								</div>
 							</div>
 							
 							<div class="form-group row">
-							  	<label class="control-label col-md-2 col-sm-2 col-xs-2">Alamat Ybs</label>									
-								<div class="col-md-10 col-sm-10 col-xs-10">
+							  	<label class="control-label col-md-2">Alamat Ybs</label>									
+								<div class="col-md-10">
 									<input type="text" name="alamat" class="form-control" placeholder="Masukan Alamat Ybs" value="<?php echo set_value('alamat'); ?>">
 									<span class="help-block text-red"><?php echo form_error('alamat'); ?></span>
 								</div>								
 							</div>
+							
+							<h3 class="page-header text-red">NAMA ANAK-ANAK KANDUNG</h3>															
+							<div class="table-responsive">
+								<table id="tb-anak"  class="table table-striped table-condensed">
+								<thead>
+									<tr>
+										<th>Aksi</th>
+										<th>Nama</th>
+										<th>Tgl Lahir</th>
+										<th>Nama Ayah/Ibu</th>	
+										<th>Keterangan</th>
+									</tr>								
+								</thead>   
+								<tbody>
+									<tr>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td></td>		
+									</tr>									
+								</tbody>
+								</table>
+							</div>				
 							
 							<div class="box-footer">
 								<button type="submit" class="btn btn-primary btn-block"><i class="fa fa-save"></i>&nbsp;Simpan Usul</button>
@@ -263,7 +278,7 @@
 							<table id="tb-usul"  class="table table-striped table-condensed">
 							<thead>
 								<tr>
-									<th style="width:95px;"></th>
+									<th style="width:150px;"></th>
 									<th>NOMOR</th>
 									<th>TGL USUL</th>
 									<th>NIP</th>
@@ -282,6 +297,8 @@
 										<?php 
 										echo'<a href="#edit" class=" btn btn-primary btn-xs" data-tooltip="tooltip"  title="Edit Usul" data-nomor="'.$value->nomor_usul.'" data-tgl="'.$value->tgl.'" data-layanan="'.$value->layanan_id.'" data-nama="'.$value->nama_pns.'" data-jd="'.$value->nama_janda_duda.'" data-nopen="'.$value->nopen.'" data-usul="'.$value->usul_id.'" data-nip="'.$value->nip.'" data-golongan="'.$value->golongan.'" data-jabatan="'.$value->jabatan.'" data-unit="'.$value->unit_kerja.'" data-perkawinan="'.$value->perkawinan.'" data-meninggal="'.$value->meninggal.'" data-gapok="'.$value->gaji_pokok_terakhir.'" data-penpok="'.$value->pensiun_pokok_terakhir.'" data-alamat="'.$value->alamat.'"><i class="fa fa-edit"></i></a>';
 										?>
+										<a href="#tampil" class="btn btn-success btn-flat btn-xs" data-usul="<?php echo $value->usul_id?>" data-tooltip="tooltip"  title="Klik disini untuk menampilkan data Anak Kandung"><i class="fa fa-refresh"></i></a>
+										<a href="#" class="btn btn-danger btn-flat btn-xs" data-toggle="modal" data-target="#anakModal" data-tooltip="tooltip"  title="Tambah data Anak Kandung" data-usul="<?php echo $value->usul_id?>"><i class="fa fa-child"></i></a>
 										<a href="#" class="btn bg-orange btn-flat btn-xs" data-tooltip="tooltip"  title="Lihat Kelengkapan Berkas" data-toggle="modal" data-target="#lihatModal" data-id="<?php echo '?n='.$this->myencrypt->encode($value->nip).'&l='.$this->myencrypt->encode($value->layanan_nama)?>"><i class="fa fa-search"></i></a>
 										<a href="#" class="btn btn-danger btn-flat btn-xs" data-tooltip="tooltip"  title="Kirim Usul BKN" data-toggle="modal" data-target="#kirimModal" data-nip="<?php echo $value->nip?>" data-usul="<?php echo $value->usul_id?>" data-layanan="<?php echo $value->layanan_id?>"><i class="fa fa-mail-forward"></i></a>
 										
@@ -374,6 +391,79 @@
 		</div>	
 	</div>
 	
+	<div id="anakModal" class="modal fade" role="dialog">
+          <div class="modal-dialog modal-lg">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"><span id="msg"></span></h4>
+                </div>
+                <div class="modal-body">
+                    <!-- Form -->
+                    <form method='post' action='' enctype="multipart/form-data" id="anakForm">
+					    <input type="hidden" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash();?>" style="display: none">
+                        <input class="form-control" type="hidden" value="" name="jd_dd_anak_id" />
+						<input class="form-control" type="hidden" value="" name="usul_id" />
+						<div class="form-group row">						    
+							<label class="col-md-2 control-label">Nama</label>							
+							<div class="col-md-4">
+								<input class="form-control" type="text" value="" name="nama" />	
+                            </div>
+							<label class="col-md-2 control-label">Tgl Lahir</label>
+							<div class="col-md-4">
+								<div class='input-group date' >
+									<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+									<input type='text' name="tgl_lahir" value="<?php echo (set_value('tgl_lahir') ? set_value('tgl_lahir') : date('d-m-Y'))?>" class="form-control datetimepicker" />
+								</div>
+							</div>
+						</div>
+						<div class="form-group row">						
+							<label class="col-md-2 control-label">Nama Ayah</label>
+							<div class="col-md-4">
+								<input class="form-control" type="text" value="" name="nama_ayah" />	
+                            </div>	
+							<label class="col-md-2 control-label">Nama Ibu</label>
+							<div class="col-md-4">
+								<input class="form-control" type="text" value="" name="nama_ibu" />	
+                            </div>	
+						</div>
+						
+						<div class="form-group row">						    
+							<label class="col-md-2 control-label">Keterangan</label>
+							<div class="col-md-4">
+								<input class="form-control" type="text" value="AK" name="keterangan" readonly />	
+                            </div>	
+						</div>
+						
+                    </form>
+                </div> 
+                <div class="modal-footer">
+				   <button type="button" class="btn btn-primary" id="nBtnAnak">Simpan</button>
+				</div>				
+            </div>
+        </div>
+    </div>
+	<div class="modal fade" id="hapusAnakModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+					<h4 class="modal-title" id="myModalLabel"><span id="msg"></span></h4>
+				</div>
+				<div class="modal-body">
+					<form id="nfrmHapusAnak">
+					  <input type="hidden" name="<?php echo $this->security->get_csrf_token_name()?>" value="<?php echo $this->security->get_csrf_hash()?>" style="display: none">
+					  <div class="form-group"> Yakin akan menghapus ?</div>
+                       <input type="hidden" name="jd_dd_anak_id"/>				   					   
+					</form>
+				 </div>
+				<div class="modal-footer">
+					<button type="button" class="btn bg-maroon" id="nBtnHapusAnak"><i class="fa fa-leaf"></i>&nbsp;OK Hapus !</button>
+				</div>
+			</div>
+		</div>	
+	</div>
 	<!--[ SPINNER MODAL ]-->
 	<div class="modal fade" id="spinner-modal">
 		<div class="modal-dialog modal-sm">
@@ -521,6 +611,106 @@
 			
 		});	
 		
+		$('#anakModal').on('show.bs.modal',function(e){
+		     $('#anakModal #msg').text('Penambahan Data Anak Kandung')
+			.removeClass( "text-green")
+		    .removeClass( "text-blue" ); 
+			
+			var id				=  $(e.relatedTarget).attr('data-id'),
+				nama    		=  $(e.relatedTarget).attr('data-nama'),
+				tgl_lahir       =  $(e.relatedTarget).attr('data-tgl_lahir'),				
+				nama_ibu     	=  $(e.relatedTarget).attr('data-ibu'),
+				nama_ayah     	=  $(e.relatedTarget).attr('data-ayah'),
+				usul_id		    =  $(e.relatedTarget).attr('data-usul');
+			
+			$('#anakModal input[name=jd_dd_anak_id]').val(id);
+			$('#anakModal input[name=nama]').val(nama);
+			$('#anakModal input[name=tgl_lahir]').val(tgl_lahir);			
+			$('#anakModal input[name=nama_ayah]').val(nama_ayah);
+			$('#anakModal input[name=nama_ibu]').val(nama_ibu);
+			$('#anakModal input[name=usul_id]').val(usul_id);
+			
+		});
+		
+		$("#nBtnAnak").on("click",function(e){
+			e.preventDefault();			
+			var data = $('#anakForm').serialize();
+					
+			$('#anakModal #msg').text('Saving Please Wait.....')
+                     .removeClass( "text-green")
+				     .addClass( "text-blue" );  
+			
+			$.ajax({
+				type: "POST",
+				url : "<?php echo site_url()?>/taspen/simpanTempAnakJd",
+				data: data,
+				dataType:'json',
+				success: function(e){
+					$('#anakModal #msg').text(e.pesan)
+                             .removeClass( "text-blue")
+							 .removeClass( "text-red")
+				             .addClass( "text-green" ); 
+					refreshTempAnak();		 
+				}, 
+				error : function(e){
+					$('#anakModal #msg').text(e.responseJSON.pesan)
+                             .removeClass( "text-blue")							 
+							 .removeClass( "text-green")
+				             .addClass( "text-red" ); 
+				}	
+		    });
+			return false;
+		});
+		
+		$('a[href="#tampil"]').on("click",function(e){
+			
+			var usul_id    =  $(this).attr('data-usul');
+			$('#anakModal input[name=usul_id]').val(usul_id);
+		    refreshTempAnak();
+		});	
+		
+		$('#hapusAnakModal').on('show.bs.modal',function(e){
+		     $('#hapusAnakModal #msg').text('Konfirmasi Delete Anak')
+			.removeClass( "text-green")
+		    .removeClass( "text-blue" ); 
+			
+			var id		=  $(e.relatedTarget).attr('data-id');			
+			$('#hapusAnakModal input[name=jd_dd_anak_id]').val(id);
+			
+		});
+		
+		$("#nBtnHapusAnak").on("click",function(e){
+			e.preventDefault();
+			var data = $('#nfrmHapusAnak').serialize();
+			
+			$('#hapusAnakModal #msg').text('Deleting Please Wait.....')
+                     .removeClass( "text-green")
+				     .addClass( "text-blue" );  
+			
+			$.ajax({
+				type: "POST",
+				url : "<?php echo site_url()?>/taspen/hapusTempAnakJd",
+				data: data,
+				success: function(){					
+					$('#hapusAnakModal #msg').text('Berhasil menghapus data....')
+						.removeClass( "text-blue")
+						.addClass( "text-green" );
+					refreshTempAnak();											 
+			    }, // akhir fungsi sukses
+		    });
+			return false;
+		});
+		
+		function refreshTempAnak(){						
+			$.ajax({   
+			    type: 'POST',   
+			    url: '<?php echo site_url()?>/taspen/getTempAnakJdAll',   
+			    data:  $('#anakForm').serialize(),
+			    success: function(res) {
+					$("#tb-anak").html(res);
+				},
+			});
+		}
 		
 		function refreshTable(){						
 			$.ajax({   

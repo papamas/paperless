@@ -129,7 +129,7 @@
 								</div>
                                 
 								<label class=" control-label col-md-2">Pemeriksa</label>									
-								<div class="col-md-10">
+								<div class="col-md-4">
 									<select name="spesimen" class="form-control">
 										<option value="">--silahkan Pilih--</option>
 										<?php if($spesimen->num_rows() > 0):?>
@@ -263,58 +263,58 @@
 						<input class="form-control" type="hidden" value="" name="layananId" />
 						
 						<div class="form-group row">
-							<label class="control-label col-md-2 col-sm-2 col-xs-2">Nomor Surat</label>
-							<div class="col-md-4 col-sm-4 col-xs-4">	
+							<label class="control-label col-md-2">Nomor Surat</label>
+							<div class="col-md-4">	
 								<input class="form-control" type="text" value="" name="persetujuan" />	
                             </div> 
-							<label class="control-label col-md-2 col-sm-2 col-xs-2">Tanggal</label>	
-							<div class="col-md-4 col-sm-4 col-xs-4">	
+							<label class="control-label col-md-2">Tanggal</label>	
+							<div class="col-md-4">	
 								<div class='input-group date'>
 									<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-									<input  pattern="^\d{1,2}\-\d{1,2}\-\d{4}$" type='text' required name="tanggal" value="<?php echo date('d-m-Y')?>" class="form-control datetimepicker" />
+									<input type='text' required name="tanggal" value="<?php echo date('d-m-Y')?>" class="form-control datetimepicker" />
 																	
 								</div>
 							</div>	
 						</div>	
 						<div class="form-group row">
-							<label class="control-label col-md-2 col-sm-2 col-xs-2">Pensiun Pokok</label>
-							<div class="col-md-4 col-sm-4 col-xs-4">	
+							<label class="control-label col-md-2">Pensiun Pokok</label>
+							<div class="col-md-4">	
 								<input class="form-control" type="text" value="" name="pensiun_pokok" />	
                             </div> 
-							<label class="control-label col-md-2 col-sm-2 col-xs-2">Pensiun TMT</label>	
-							<div class="col-md-4 col-sm-4 col-xs-4">	
+							<label class="control-label col-md-2">Pensiun TMT</label>	
+							<div class="col-md-4">	
 								<div class='input-group date'>
 									<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-									<input   pattern="^\d{1,2}\-\d{1,2}\-\d{4}$" type='text'  name="pensiun_tmt" value="<?php echo date('d-m-Y')?>" class="form-control datetimepicker" />
+									<input type='text'  name="pensiun_tmt" value="<?php echo date('d-m-Y')?>" class="form-control datetimepicker" />
 																	
 								</div>
 							</div>												
 						</div>
 						<div class="form-group row">
-							<label class="control-label col-md-2 col-sm-2 col-xs-2">Tanggal Menikah</label>
-							<div class="col-md-4 col-sm-4 col-xs-4">	
+							<label class="control-label col-md-2">Tanggal Menikah</label>
+							<div class="col-md-4">	
 								<div class='input-group date'>
 									<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-									<input   pattern="^\d{1,2}\-\d{1,2}\-\d{4}$" type='text'  name="tgl_menikah" value="<?php echo date('d-m-Y')?>" class="form-control datetimepicker" />
+									<input type='text'  name="tgl_menikah" value="<?php echo date('d-m-Y')?>" class="form-control datetimepicker" />
 																	
 								</div>
 							</div>	 
-							<label class="meninggal control-label col-md-2 col-sm-2 col-xs-2 ">Meninggal</label>	
-							<div class="meninggal col-md-4 col-sm-4 col-xs-4">	
+							<label class="meninggal control-label col-md-2">Meninggal</label>	
+							<div class="meninggal col-md-4">	
 								<div class='input-group date'>
 									<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-									<input   pattern="^\d{1,2}\-\d{1,2}\-\d{4}$" type='text'  name="tgl_meninggal" value="<?php echo date('d-m-Y')?>" class="form-control datetimepicker" />
+									<input type='text'  name="tgl_meninggal" value="<?php echo date('d-m-Y')?>" class="form-control datetimepicker" />
 																	
 								</div>
 							</div>												
 						</div>
 						<div class="form-group row">
-						   <label class="control-label col-md-2 col-sm-2 col-xs-2">Gaji Pokok</label>
-							<div class="col-md-4 col-sm-4 col-xs-4">	
+						   <label class="control-label col-md-2">Gaji Pokok</label>
+							<div class="col-md-4">	
 								<input class="form-control" type="text" value="" name="gaji_pokok_terakhir" />	
                             </div> 
-						    <label class="col-sm-2 col-md-2 col-xs-2">Kantor Taspen</label>
-						    <div class="col-sm-4 col-md-4 col-xs-4">
+						    <label class="control-label col-md-2">Kantor Taspen</label>
+						    <div class="col-md-4">
 							<select name="kantor" class="form-control">
 								<option value="">--</option>
 								<?php foreach($kantor->result() as $value):?>
@@ -326,8 +326,8 @@
 						</div>
 						
 						<div class="form-group row">
-							<label class=" control-label col-md-2 col-sm-2 col-xs-2">Spesimen</label>									
-							<div class="col-md-10 col-sm-10 col-xs-10">
+							<label class="control-label col-md-2">Spesimen</label>									
+							<div class="col-md-4">
 								<select name="spesimenTaspen" class="form-control">
 									<option value="">--silahkan Pilih--</option>
 									<?php if($spesimenTaspen->num_rows() > 0):?>
@@ -337,7 +337,16 @@
 									<?php endif;?>
 								</select>
 								<span class="help-block text-red"><?php echo form_error('spesimen'); ?></span>
-							</div>						
+							</div>
+							<label class="control-label col-md-2">Janda/Duda</label>									
+							<div class="col-md-4">
+								<select name="jandaDuda" class="form-control">
+									<option value="">--silahkan Pilih--</option>
+									<option value="2">Janda Almarhum</option>
+									<option value="1">Duda Almarhum</option>
+								</select>
+								<span class="help-block text-red"><?php echo form_error('spesimen'); ?></span>
+							</div>		
 						</div>	
 					</form>
 				</div>
@@ -464,6 +473,7 @@
 					$('#skModal input[name=gaji_pokok_terakhir]').val(r.entry[0].gaji_pokok_terakhir);
 					$('#skModal [name=spesimenTaspen]').val(r.entry[0].usul_spesimen);
 					$('#skModal input[name=layananId]').val(r.entry[0].layanan_id);
+					$('#skModal [name=jandaDuda]').val(r.entry[0].jd_dd_status);
 
 					if(r.entry[0].layanan_id == 15)
 					{	

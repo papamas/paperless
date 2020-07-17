@@ -501,30 +501,101 @@ class Taspen extends MY_Controller {
 		$data['upload']	   =  $this->usul->getUpload();
 		$data['usul']	   =  $this->usul->getUsul(1);
 		$data['golongan']  =  $this->usul->getGolongan();
+		$data['temp_anak'] =  $this->usul->getTempAnakJd(20);
 		$data['show'] 	   =  FALSE;
 		$this->load->view('taspen/usul/index',$data);
 	}	
 	
 	public function saveUsul()
 	{
-	    $this->form_validation->set_rules('usul_id', 'Usul Id', 'trim');
-		$this->form_validation->set_rules('nomor_usul', 'Nomor Usul', 'trim|required');	
-		$this->form_validation->set_rules('tgl_usul', 'Tanggal Usul', 'trim|required');
-		$this->form_validation->set_rules('layanan_id', 'Pelayanan', 'trim|required');
-		$this->form_validation->set_rules('nama_janda_duda', 'Nama Janda/Duda', 'required');
-		$this->form_validation->set_rules('nama_pns', 'Nama PNS', 'required');
-		$this->form_validation->set_rules('nopen', 'NOPEN / No. Dosir', 'required');
-		$this->form_validation->set_rules('nip', 'NIP / NRP / NVP', 'required');
-		$this->form_validation->set_rules('golongan', 'Pangkat/Golongan', 'required');
-		$this->form_validation->set_rules('jabatan', 'Jabatan', 'required');
-		$this->form_validation->set_rules('unit_kerja', 'Unit Kerja Terakhir', 'required');
-		$this->form_validation->set_rules('tgl_perkawinan', 'Tanggal Perkawinan', 'required');
-		$this->form_validation->set_rules('meninggal_dunia', 'Tanggal Meninggal Dunia', 'required');
-		$this->form_validation->set_rules('gaji_pokok_terakhir', 'Gaji Pokok Terakhir', 'required');
-		$this->form_validation->set_rules('pensiun_pokok_terakhir', 'Pensiun Pokok Terakhir', 'required');
-        $this->form_validation->set_rules('alamat', 'Alamat Ybs', 'required'); 
+		$rules = array(
+			array(
+				'field' => 'usul_id',
+				'label' => 'Usul Id',
+				'rules' => 'trim'
+			),		   
+		    array(
+				'field' => 'nomor_usul',
+				'label' => 'Nomor Usul',
+				'rules' => 'required'
+			),
+		    array(
+				'field' => 'tgl_usul',
+				'label' => 'Tanggal Usul',
+				'rules' => 'required'
+			),
+		    array(
+				'field' => 'layanan_id',
+				'label' => 'Pelayanan',
+				'rules' => 'trim|required'
+			),
+		    array(
+				'field' => 'nama_janda_duda',
+				'label' => 'Nama Janda/Duda',
+				'rules' => 'required'
+			),
+		    array(
+				'field' => 'nama_pns',
+				'label' => 'Nama PNS',
+				'rules' => 'required'
+			),
+		    array(
+				'field' => 'nopen',
+				'label' => 'NOPEN / No. Dosir',
+				'rules' => 'required'
+			),
+		    array(
+				'field' => 'nip',
+				'label' => 'NIP / NRP / NVP',
+				'rules' => 'required'
+			),
+		    array(
+				'field' => 'golongan',
+				'label' => 'Pangkat/Golongan',
+				'rules' => 'required'
+			),
+		    array(
+				'field' => 'jabatan',
+				'label' => 'Jabatan',
+				'rules' => 'required'
+			),
+			array(
+				'field' => 'unit_kerja',
+				'label' => 'Unit Kerja Terakhir',
+				'rules' => 'required'
+			),
+			array(
+				'field' => 'tgl_perkawinan',
+				'label' => 'Tanggal Perkawinan',
+				'rules' => 'required'
+			),
+			array(
+				'field' => 'alamat',
+				'label' => 'Alamat Ybs',
+				'rules' => 'required'
+			),
+			array(
+				'field' => 'pensiun_pokok_terakhir',
+				'label' => 'Pensiun Pokok Terakhir',
+				'rules' => 'required'
+			),
+			array(
+				'field' => 'gaji_pokok_terakhir',
+				'label' => 'Gaji Pokok Terakhir',
+				'rules' => 'required'
+			),
+			array(
+				'field' => 'meninggal_dunia',
+				'label' => 'Tanggal Meninggal Dunia',
+				'rules' => 'required'
+			)				
+		);
 		
-		
+	    $this->form_validation->set_rules($rules);
+		$this->form_validation->set_message('required', 'tidak boleh kosong');
+		$this->form_validation->set_error_delimiters('', '');
+
+
 		if($this->form_validation->run() == FALSE)
 		{
 			$data['pesan']	= 'Silahkan lengkapi Form terlebih dahulu';	
@@ -683,9 +754,7 @@ class Taspen extends MY_Controller {
 		$data['avatar']	   =  $this->auth->getAvatar();	
 		$data['layanan']   =  $this->usul->getLayananMutasi();
 		$data['upload']	   =  $this->usul->getUpload();
-		$data['usul']	   =  $this->usul->getUsul(2);
-		$data['temp_istri']=  $this->usul->getTempIstri(NULL);
-		$data['temp_anak'] =  $this->usul->getTempAnak(NULL);
+		$data['usul']	   =  $this->usul->getUsul(2);		
 		$data['show'] 	   =  FALSE;
 		$this->load->view('taspen/usul/mutasi_keluarga',$data);
 	}	
@@ -707,6 +776,9 @@ class Taspen extends MY_Controller {
 		$this->form_validation->set_rules('pensiun_pokok', 'Pensiun Pokok', 'required');
 		$this->form_validation->set_rules('pensiun_tmt', 'Pensiun TMT', 'required');
         $this->form_validation->set_rules('alamat', 'Alamat Ybs', 'required'); 
+		
+		$this->form_validation->set_message('required', 'tidak boleh kosong');
+		$this->form_validation->set_error_delimiters('', '');
 				
 		if($this->form_validation->run() == FALSE)
 		{
@@ -849,9 +921,7 @@ class Taspen extends MY_Controller {
 		$data['avatar']	   =  $this->auth->getAvatar();	
 		$data['layanan']   =  $this->usul->getLayananMutasi();
 		$data['upload']	   =  $this->usul->getUpload();
-		$data['usul']	   =  $this->usul->getUsul(2);
-		$data['temp_istri']=  $this->usul->getTempIstri(NULL);
-		$data['temp_anak'] =  $this->usul->getTempAnak(NULL);
+		$data['usul']	   =  $this->usul->getUsul(2);		
 		$data['show'] 	   = TRUE;
 		$this->load->view('taspen/usul/mutasi_keluarga',$data);
 	}	
@@ -1022,7 +1092,9 @@ class Taspen extends MY_Controller {
 			$html .='<tr>';
 			$html .='<td>';
             $html .='<a href="#edit" class="btn btn-primary btn-xs" data-tooltip="tooltip"  title="Edit Usul" data-nomor="'.$value->nomor_usul.'" data-tgl="'.$value->tgl.'" data-layanan="'.$value->layanan_id.'" data-nama="'.$value->nama_pns.'" data-jd="'.$value->nama_janda_duda.'" data-nopen="'.$value->nopen.'" data-usul="'.$value->usul_id.'" data-nip="'.$value->nip.'" data-golongan="'.$value->golongan.'" data-jabatan="'.$value->jabatan.'" data-unit="'.$value->unit_kerja.'" data-perkawinan="'.$value->perkawinan.'" data-meninggal="'.$value->meninggal.'" data-gapok="'.$value->gaji_pokok_terakhir.'" data-penpok="'.$value->pensiun_pokok_terakhir.'" data-alamat="'.$value->alamat.'"><i class="fa fa-edit"></i></a>';
-            $html .='&nbsp;<a href="#" class="btn bg-orange btn-flat btn-xs" data-tooltip="tooltip"  title="Lihat Kelengkapan Berkas" data-toggle="modal" data-target="#lihatModal" data-id="?n='.$this->myencrypt->encode($value->nip).'&l='.$this->myencrypt->encode($value->layanan_nama).'"><i class="fa fa-search"></i></a>';
+            $html .='&nbsp;<a href="#tampil" class="btn btn-success btn-flat btn-xs" data-usul="'.$value->usul_id.'" data-tooltip="tooltip"  title="Klik disini untuk menampilkan data Anak Kandung"><i class="fa fa-refresh"></i></a>';
+			$html .='&nbsp;<a href="#" class="btn btn-danger btn-flat btn-xs" data-toggle="modal" data-target="#anakModal" data-tooltip="tooltip"  title="Tambah data Anak Kandung" data-usul="'.$value->usul_id.'"><i class="fa fa-child"></i></a>';
+			$html .='&nbsp;<a href="#" class="btn bg-orange btn-flat btn-xs" data-tooltip="tooltip"  title="Lihat Kelengkapan Berkas" data-toggle="modal" data-target="#lihatModal" data-id="?n='.$this->myencrypt->encode($value->nip).'&l='.$this->myencrypt->encode($value->layanan_nama).'"><i class="fa fa-search"></i></a>';
 			$html .='&nbsp;<a href="#" class="btn btn-danger btn-flat btn-xs" data-tooltip="tooltip"  title="Kirim Usul BKN" data-toggle="modal" data-target="#kirimModal" data-nip="'.$value->nip.'" data-usul="'.$value->usul_id.'" data-layanan="'.$value->layanan_id.'" ><i class="fa fa-mail-forward"></i></a>';
 			$html .='</td>';
 			$html .='<td>'.$value->nomor_usul.'</td>';
@@ -1077,6 +1149,7 @@ class Taspen extends MY_Controller {
 			$html .='<tr>';
 			$html .='<td>';
             $html .='<a href="#edit" class="btn btn-primary btn-xs" data-tooltip="tooltip"  title="Edit Usul" data-nomor="'.$value->nomor_usul.'" data-tgl="'.$value->tgl.'" data-layanan="'.$value->layanan_id.'" data-nama="'.$value->nama_pns.'" data-jd="'.$value->nama_janda_duda.'" data-nopen="'.$value->nopen.'" data-usul="'.$value->usul_id.'" data-nip="'.$value->nip.'" data-tempat_lahir="'.$value->tempat_lahir.'" data-tgl_lahir="'.$value->atgl_lahir.'" data-nomor_skep="'.$value->nomor_skep.'" data-tgl_skep="'.$value->atgl_skep.'" data-penpok="'.$value->pensiun_pokok.'" data-pensiun_tmt="'.$value->apensiun_tmt.'" data-alamat="'.$value->alamat.'"><i class="fa fa-edit"></i></a>';
+			$html .='&nbsp;<a href="#tampil" class="btn btn-success btn-flat btn-xs" data-usul="'.$value->usul_id.'" data-tooltip="tooltip"  title="Klik disini untuk menampilkan data Istri dan Anak"><i class="fa fa-refresh"></i></a>';
 			$html .='&nbsp;<a href="#" class="btn bg-orange btn-flat btn-xs" data-tooltip="tooltip"  title="Lihat Kelengkapan Berkas" data-toggle="modal" data-target="#lihatModal" data-id="?n='.$this->myencrypt->encode($value->nip).'&l='.$this->myencrypt->encode($value->layanan_nama).'"><i class="fa fa-search"></i></a>';
 			$html .='&nbsp;<a href="#" class="btn btn-success btn-flat btn-xs" data-toggle="modal" data-target="#istriModal" data-tooltip="tooltip"  title="Tambah data Istri" data-usul="'.$value->usul_id.'"> <i class="fa fa-user-plus"></i></a>';
 			$html .='&nbsp;<a href="#" class="btn btn-primary btn-flat btn-xs" data-toggle="modal" data-target="#anakModal" data-tooltip="tooltip"  title="Tambah data Anak" data-usul="'.$value->usul_id.'"><i class="fa fa-child"></i></a>';
@@ -1379,7 +1452,7 @@ class Taspen extends MY_Controller {
 								<th>Tanggal Pendaftaran</th>
 								<th>Tanggal Cerai</th>
 								<th>Tanggal Wafat</th>	
-								<th>Alamat</th>
+								<th style="width:100px;">Alamat</th>
 							</tr>
 					</thead>';
 		$html .='<tbody>';	
@@ -1520,6 +1593,106 @@ class Taspen extends MY_Controller {
 			->set_output(json_encode($data));
 		
 	}
+	
+	public function simpanTempAnakJd()
+	{
+		$this->form_validation->set_rules('nama', 'Nama', 'required');
+		$this->form_validation->set_rules('tgl_lahir', 'Tanggal Lahir', 'required');		
+		$this->form_validation->set_rules('nama_ibu', 'nama_ibu', 'required');
+		$this->form_validation->set_rules('nama_ayah', 'nama_ayah', 'required');
+		$this->form_validation->set_rules('keterangan', 'keterangan', 'required');
+		
+	    $this->form_validation->set_message('required', '{field} tidak boleh kosong');
+
+		if($this->form_validation->run() == FALSE)
+		{
+			$data['pesan']	= "Silahkan Lengkapi Form";
+			$this->output
+				->set_status_header(406)
+				->set_content_type('application/json', 'utf-8')
+				->set_output(json_encode($data));
+			return FALSE;	
+		}
+		else
+		{	
+			$temp_id			 = $this->input->post('jd_dd_anak_id');
+			
+			if(!empty($temp_id))
+			{	
+				$result				 = $this->usul->updateTempAnakJd();
+			}
+			else
+			{
+				$result				 = $this->usul->simpanTempAnakJd();
+			}
+			
+			$response   		 =  $result['response'];
+			$data['pesan']       =  $result['pesan'];
+			
+			if($response != TRUE)
+			{
+				$this->output
+				->set_status_header(406)
+				->set_content_type('application/json', 'utf-8')
+				->set_output(json_encode($data));
+				return FALSE;	
+			}
+			else
+			{
+				$data['pesan']	= $result['pesan'];
+				$this->output
+						->set_status_header(200)
+						->set_content_type('application/json', 'utf-8')
+						->set_output(json_encode($data));
+			}
+		
+		}
+	}	
+	
+	public function hapusTempAnakJd()
+	{
+		$data['result']		= $this->usul->hapusTempAnakJd();
+				
+		$this->output
+			->set_status_header(200)
+			->set_content_type('application/json', 'utf-8')
+			->set_output(json_encode($data));
+		
+	}
+	
+	public function getTempAnakJdAll()
+	{
+		$id			= $this->input->post('usul_id');		
+		$usul 		= $this->usul->getTempAnakJd($id);
+
+     		
+		$html = '';
+		$html .='<table id="tb-anak" class="table table-striped table-condensed">
+						<thead>
+						    <th>Aksi</th>
+							<th>Nama</th>
+							<th>Tgl Lahir</th>
+							<th>Nama Ayah/Ibu</th>	
+							<th>Keterangan</th>
+					    </thead>';
+		$html .='<tbody>';	
+		foreach($usul->result() as $value)
+		{
+			$html .='<tr>';
+			$html .='<td>';
+			$html .='<a class="btn btn-primary btn-xs" data-tooltip="tooltip"  title="Edit Anak" data-toggle="modal" data-target="#anakModal" data-id="'.$value->jd_dd_anak_id.'" data-nama="'.$value->nama.'" data-tgl_lahir="'.$value->tgl_lahir.'" data-ibu="'.$value->nama_ibu.'" data-ayah="'.$value->nama_ayah.'" data-usul="'.$value->usul_id.'"><i class="fa fa-edit"></i></a>';
+			$html .='&nbsp;<a class="btn btn-danger btn-xs" data-tooltip="tooltip"  title="Hapus Anak" data-toggle="modal" data-target="#hapusAnakModal" data-id="'.$value->jd_dd_anak_id.'"><i class="fa fa-remove"></i></a>';
+			$html .='</td>';
+			$html .='<td>'.$value->nama.'</td>';			
+			$html .='<td>'.$value->tgl_lahir.'</td>';
+			$html .='<td>'.$value->nama_ayah.'/'.$value->nama_ibu.'</td>';
+			$html .='<td>'.$value->keterangan.'</td>';				
+            $html .='</tr>';
+		}
+		$html .='</tbody></table>';
+		echo $html;	
+	}	
+	
 	
 	public function getAlasan(){
 	

@@ -106,24 +106,21 @@
 							<input type="hidden" name="usul_id" value="<?php echo set_value('usul_id'); ?>"/>
 									
 							<div class="form-group row">	
-								<label class="control-label col-md-2 col-sm-2 col-xs-2">Nomor Usul</label>
-							    <div class="col-md-4 col-sm-4 col-xs-4">
+								<label class="control-label col-md-2">Nomor Usul</label>
+							    <div class="col-md-4">
 									<input type="text" name="nomor_usul" class="form-control" placeholder="Nomor Usul" value="<?php echo set_value('nomor_usul'); ?>">						
 									<span class="help-block text-red"><?php echo form_error('nomor_usul');?></span>
 								</div>
-								<label class="col-sm-2 col-md-2 col-xs-2 control-label">Tanggal</label>	
-								<div class="col-md-4 col-sm-4 col-xs-4">									
+								<label class="col-md-1 control-label">Tanggal</label>	
+								<div class="col-md-2">									
 									<div class='input-group date' >
 										<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-										<input id=''  pattern="^\d{1,2}\-\d{1,2}\-\d{4}$" type='text' name="tgl_usul" value="<?php echo (set_value('tgl_usul') ? set_value('tgl_usul') : date('d-m-Y'))?>" class="form-control datetimepicker" />
+										<input type='text' name="tgl_usul" value="<?php echo (set_value('tgl_usul') ? set_value('tgl_usul') : date('d-m-Y'))?>" class="form-control datetimepicker" />
 									</div>
 									<span class="help-block text-red"><?php echo form_error('tgl_usul');?></span>
-								</div>	
-							</div>
-							
-							<div class="form-group row">
-							  	<label class=" control-label col-md-2 col-sm-2 col-xs-2">Pelayanan</label>									
-								<div class="col-md-4 col-sm-4 col-xs-4">
+								</div>
+								<label class=" control-label col-md-1">Pelayanan</label>									
+								<div class="col-md-2">
 									<select name="layanan_id" class="form-control">
 										<option value="">--silahkan Pilih--</option>
 										<?php foreach($layanan->result() as $value):?>
@@ -132,69 +129,67 @@
 									</select>
 									<span class="help-block text-red"><?php echo form_error('layanan_id'); ?></span>
 								</div>
-								<label class="control-label col-md-2 col-sm-2 col-xs-2">Surat Pengantar</label>									
-								<div class="col-md-4 col-sm-4 col-xs-4">
+							</div>
+							
+							<div class="form-group row">							  
+								<label class="control-label col-md-2">Surat Pengantar</label>									
+								<div class="col-md-3">
 									<input type="file" name="file" class="form-control" />
 									<span class="help-block text-red"><?php echo (!empty($error) ? $error : '') ?></span>
-
 								</div>
-							</div> 	
-							
-							
-							<div class="form-group row">					
-								<label class=" control-label col-md-2 col-sm-2 col-xs-2">Nama PNS</label>									
-								<div class="col-md-4 col-sm-4 col-xs-4">
+								<label class="control-label col-md-1">Nama PNS</label>									
+								<div class="col-md-3">
 									<input type="text" name="nama_pns" class="form-control" placeholder="Masukan Nama PNS" value="<?php echo set_value('nama_pns'); ?>">
 									<span class="help-block text-red"><?php echo form_error('nama_pns'); ?></span>
 								</div>
-								<label class=" control-label col-md-2 col-sm-2 col-xs-2">Nama Kecil <span id="tlabel"></span></label>									
-								<div class="col-md-4 col-sm-4 col-xs-4">
+								<label class=" control-label col-md-1">Nama Kecil <span id="tlabel"></span></label>									
+								<div class="col-md-2">
 									<input type="text" name="nama_kecil" class="form-control" placeholder="Masukan Nama Kecil" value="<?php echo set_value('nama_kecil'); ?>">
 									<span class="help-block text-red"><?php echo form_error('nama_kecil'); ?></span>
 								</div>
-							</div>	
-
+							</div> 	
+							
 							<div class="form-group row">	
-								<label class="control-label col-md-2 col-sm-2 col-xs-2">Tempat Lahir</label>
-							    <div class="col-md-4 col-sm-4 col-xs-4">
+								<label class="control-label col-md-2">Tempat Lahir</label>
+							    <div class="col-md-4">
 									<input type="text" name="tempat_lahir" class="form-control" placeholder="Masukan Tempat Lahir" value="<?php echo set_value('tempat_lahir'); ?>">						
 									<span class="help-block text-red"><?php echo form_error('tempat_lahir');?></span>
 								</div>
-								<label class="col-sm-2 col-md-2 col-xs-2 control-label">Tanggal Lahir</label>	
-								<div class="col-md-4 col-sm-4 col-xs-4">									
+								<label class="col-md-2 control-label">Tanggal Lahir</label>	
+								<div class="col-md-4">									
 									<div class='input-group date' >
 										<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-										<input id=''  pattern="^\d{1,2}\-\d{1,2}\-\d{4}$" type='text' name="tgl_lahir" value="<?php echo set_value('tgl_lahir');?>" class="form-control datetimepicker" />							
+										<input type='text' name="tgl_lahir" value="<?php echo set_value('tgl_lahir');?>" class="form-control datetimepicker" />							
 									</div>	
 									<span class="help-block text-red"><?php echo form_error('tgl_lahir');?></span>	
 								</div>	
 							</div>	
 							
 							<div class="form-group row">	
-								<label class="control-label col-md-2 col-sm-2 col-xs-2">No.Surat Keputusan Pensiun</label>
-							    <div class="col-md-4 col-sm-4 col-xs-4">
+								<label class="control-label col-md-2">No.Surat Keputusan Pensiun</label>
+							    <div class="col-md-4">
 									<input type="text" name="nomor_skep" class="form-control" placeholder="Masukan Nomor Surat Keputusan Pensiun" value="<?php echo set_value('nomor_skep'); ?>">						
 									<span class="help-block text-red"><?php echo form_error('nomor_skep');?></span>
 								</div>
-								<label class="col-sm-2 col-md-2 col-xs-2 control-label">Tanggal Surat Keputusan</label>	
-								<div class="col-md-4 col-sm-4 col-xs-4">									
+								<label class="col-md-2 control-label">Tanggal Surat Keputusan</label>	
+								<div class="col-md-4">									
 									<div class='input-group date' >
 										<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-										<input id=''  pattern="^\d{1,2}\-\d{1,2}\-\d{4}$" type='text' name="tgl_skep" value="<?php echo set_value('tgl_skep');?>" class="form-control datetimepicker" />
+										<input type='text' name="tgl_skep" value="<?php echo set_value('tgl_skep');?>" class="form-control datetimepicker" />
 									</div>			
 									<span class="help-block text-red"><?php echo form_error('tgl_skep');?></span>
 								</div>	
 							</div>
 							
 							<div class="form-group row">
-								<label class=" control-label col-md-2 col-sm-2 col-xs-2">NOPEN / No. Dosir</label>									
-								<div class="col-md-4 col-sm-4 col-xs-4">
+								<label class=" control-label col-md-2">NOPEN / No. Dosir</label>									
+								<div class="col-md-4">
 									<input type="text" name="nopen" class="form-control" placeholder="Masukan NOPEN / No. Dosir" value="<?php echo set_value('nopen'); ?>">
 									<span class="help-block text-red"><?php echo form_error('nopen'); ?></span>
 								</div>
 								
-							  	<label class=" control-label col-md-2 col-sm-2 col-xs-2">NIP / NRP / NVP</label>									
-								<div class="col-md-4 col-sm-4 col-xs-4">
+							  	<label class=" control-label col-md-2">NIP / NRP / NVP</label>									
+								<div class="col-md-4">
 									<select name="nip" class="form-control select2" >
 										<option value="">--silahkan Pilih--</option>
 										<?php foreach($upload->result() as $value):?>
@@ -206,31 +201,31 @@
 							</div>
 														
 							<div class="form-group row">	
-								<label class="col-sm-2 col-md-2 col-xs-2 control-label">Pensiun Pokok</label>	
-								<div class="col-md-4 col-sm-4 col-xs-4">									
+								<label class="col-md-2 control-label">Pensiun Pokok</label>	
+								<div class="col-md-4">									
 									<input type="number" name="pensiun_pokok" class="form-control" placeholder="Masukan Pensiun Pokok" value="<?php echo set_value('pensiun_pokok'); ?>">
 									<span class="help-block text-red"><?php echo form_error('pensiun_pokok'); ?></span>						
 								</div>
 								
-								<label class="col-sm-2 col-md-2 col-xs-2 control-label">Pensiun TMT</label>	
-								<div class="col-md-4 col-sm-4 col-xs-4">									
+								<label class="col-md-2 control-label">Pensiun TMT</label>	
+								<div class="col-md-4">									
 									<div class='input-group date' >
 										<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-										<input id=''  pattern="^\d{1,2}\-\d{1,2}\-\d{4}$" type='text' name="pensiun_tmt" value="<?php echo set_value('pensiun_tmt');?>" class="form-control datetimepicker" />
+										<input type='text' name="pensiun_tmt" value="<?php echo set_value('pensiun_tmt');?>" class="form-control datetimepicker" />
 									</div>
 									<span class="help-block text-red"><?php echo form_error('pensiun_tmt');?></span>
 								</div>	
 							</div>
 							
 							<div class="form-group row">
-							  	<label class="control-label col-md-2 col-sm-2 col-xs-2">Alamat Ybs</label>									
-								<div class="col-md-10 col-sm-10 col-xs-10">
+							  	<label class="control-label col-md-2">Alamat Ybs</label>									
+								<div class="col-md-10">
 									<input type="text" name="alamat" class="form-control" placeholder="Masukan Alamat Ybs" value="<?php echo set_value('alamat'); ?>">
 									<span class="help-block text-red"><?php echo form_error('alamat'); ?></span>
 								</div>								
 							</div>
 							
-							<h3 class="page-header">ISTRI(2)SUAMI</h3>	
+							<h3 class="page-header text-red">ISTRI(2)SUAMI</h3>	
 							<span class="help-block text-red"><?php echo form_error('nama_istri[]');?></span>
 							<span class="help-block text-red"><?php echo form_error('nama_kecil_istri[]');?></span>
 							<span class="help-block text-red"><?php echo form_error('tempat_lahir_istri[]');?></span>
@@ -254,32 +249,23 @@
 									</tr>
 								</thead>  
 								
-								<tbody>
-								    <?php if($temp_istri->num_rows() > 0):?>
-									<?php foreach($temp_istri->result()  as $value ):?>
+								<tbody>								 
 									<tr>
-										<td>
-										<?php 
-										echo '<a class="btn btn-primary btn-xs" data-tooltip="tooltip"  title="Edit Istri" data-toggle="modal" data-target="#istriModal" data-id="'.$value->mutasi_id.'" data-nama="'.$value->nama.'" data-nama_kecil="'.$value->nama_kecil.'" data-tempat_lahir="'.$value->tempat_lahir.'" data-tgl_lahir="'.$value->tgl_lahir.'" data-tgl_nikah="'.$value->tgl_nikah.'" data-tgl_pendaftaran="'.$value->tgl_pendaftaran.'" data-tgl_cerai="'.$value->tgl_cerai.'" data-tgl_wafat="'.$value->tgl_wafat.'" data-alamat="'.$value->alamat.'" data-usul="'.$value->usul_id.'"><i class="fa fa-edit"></i></a>';
-										echo '&nbsp;<a class="btn btn-danger btn-xs" data-tooltip="tooltip"  title="Hapus Istri" data-toggle="modal" data-target="#hapusModal" data-id="'.$value->mutasi_id.'"><i class="fa fa-remove"></i></a>';
-										?>
-										</td>
-										<td><?php echo $value->nama?></td>
-										<td><?php echo $value->nama_kecil?></td>
-										<td><?php echo $value->tempat_lahir.'/'.$value->tgl_lahir?></td>
-										<td><?php echo $value->tgl_nikah?></td>
-										<td><?php echo $value->tgl_pendaftaran?></td>
-										<td><?php echo $value->tgl_cerai?></td>
-										<td><?php echo $value->tgl_wafat?></td>
-										<td><?php echo $value->alamat?></td>
-									</tr>
-									<?php endforeach;?>
-									<?php endif;?>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td></td>
+									</tr>									
 								</tbody>
 								</table>
 							</div>	
 							
-							<h3 class="page-header">NAMA ANAK(2)KANDUNG</h3>															
+							<h3 class="page-header text-red">NAMA ANAK(2)KANDUNG</h3>															
 							<div class="table-responsive">
 								<table id="tb-anak"  class="table table-striped table-condensed">
 								<thead>
@@ -296,25 +282,16 @@
 										<th>Meninggal Tgl</th>
 									</tr>									
 								</thead>   
-								<tbody>
-									<?php if($temp_anak->num_rows() > 0):?>
-									<?php foreach($temp_anak->result()  as $value ):?>
+								<tbody>								
 									<tr>
-										<td>
-										<?php 
-										echo '<a class="btn btn-primary btn-xs" data-tooltip="tooltip"  title="Edit Anak" data-toggle="modal" data-target="#anakModal" data-id="'.$value->mutasi_id.'" data-nama="'.$value->nama.'" data-sex="'.$value->sex.'" data-tgl_lahir="'.$value->tgl_lahir.'" data-tgl_cerai="'.$value->cerai_tgl.'" data-tgl_wafat="'.$value->meninggal_tgl.'" data-nama_ibu_ayah="'.$value->nama_ibu_ayah.'" data-usul="'.$value->usul_id.'"><i class="fa fa-edit"></i></a>';
-										echo '&nbsp;<a class="btn btn-danger btn-xs" data-tooltip="tooltip"  title="Hapus Anak" data-toggle="modal" data-target="#hapusAnakModal" data-id="'.$value->mutasi_id.'"><i class="fa fa-remove"></i></a>';
-										?>
-										</td>
-										<td><?php echo $value->nama?></td>
-										<td><?php echo $value->sex?></td>
-										<td><?php echo $value->tgl_lahir?></td>
-										<td><?php echo $value->nama_ibu_ayah?></td>										
-										<td><?php echo $value->cerai_tgl?></td>
-										<td><?php echo $value->meninggal_tgl?></td>
-									</tr>
-									<?php endforeach;?>
-									<?php endif;?>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td></td>										
+										<td></td>
+										<td></td>
+									</tr>									
 								</tbody>
 								</table>
 							</div>								
@@ -343,7 +320,7 @@
 							<table id="tb-usul"  class="table table-striped table-condensed">
 							<thead>
 								<tr>
-									<th style="width:150px;"></th>
+									<th style="width:175px;"></th>
 									<th>NOMOR</th>
 									<th>TGL USUL</th>
 									<th>NIP</th>
@@ -363,6 +340,7 @@
 										<?php 
 										echo'<a href="#edit" class="btn btn-primary btn-xs" data-tooltip="tooltip"  title="Edit Usul" data-nomor="'.$value->nomor_usul.'" data-tgl="'.$value->tgl.'" data-layanan="'.$value->layanan_id.'" data-nama="'.$value->nama_pns.'" data-nama_kecil="'.$value->nama_kecil.'" data-nopen="'.$value->nopen.'" data-usul="'.$value->usul_id.'" data-nip="'.$value->nip.'" data-tempat_lahir="'.$value->tempat_lahir.'" data-tgl_lahir="'.$value->atgl_lahir.'" data-nomor_skep="'.$value->nomor_skep.'" data-tgl_skep="'.$value->atgl_skep.'" data-penpok="'.$value->pensiun_pokok.'" data-pensiun_tmt="'.$value->apensiun_tmt.'" data-alamat="'.$value->alamat.'"><i class="fa fa-edit"></i></a>';
 										?>
+										<a href="#tampil" class="btn btn-success btn-flat btn-xs" data-usul="<?php echo $value->usul_id?>" data-tooltip="tooltip"  title="Klik disini untuk menampilkan data Istri dan Anak"><i class="fa fa-refresh"></i></a>
 										<a href="#" class="btn bg-orange btn-flat btn-xs" data-tooltip="tooltip"  title="Lihat Kelengkapan Berkas" data-toggle="modal" data-target="#lihatModal" data-id="<?php echo '?n='.$this->myencrypt->encode($value->nip).'&l='.$this->myencrypt->encode($value->layanan_nama)?>"><i class="fa fa-search"></i></a>
 										<a href="#" class="btn btn-success btn-flat btn-xs" data-toggle="modal" data-target="#istriModal" data-tooltip="tooltip"  title="Tambah data Istri" data-usul="<?php echo $value->usul_id?>"> <i class="fa fa-user-plus"></i></a>
 									    <a href="#" class="btn btn-primary btn-flat btn-xs" data-toggle="modal" data-target="#anakModal" data-tooltip="tooltip"  title="Tambah data Anak" data-usul="<?php echo $value->usul_id?>"><i class="fa fa-child"></i></a>
@@ -378,8 +356,7 @@
 										<?php 
 										if(!empty($value->file_pengantar))
 										{
-											$file = $value->file_pengantar;
-											
+											$file = $value->file_pengantar;											
 											echo '<span data-toggle="tooltip" data-original-title="Ada File Pengantar">
 											<i class="fa fa-file-pdf-o" data-toggle="modal" data-target="#showFile" data-id="?t='.$this->myencrypt->encode("application/pdf").'&f='.$this->myencrypt->encode($file).'" style="color:red;"></i></span>';
 										}
@@ -390,9 +367,9 @@
 										}
 										?>
 									</td>
-									<td><?php echo $value->jumlah_istri ?></td>
-									<td><?php echo $value->jumlah_anak ?></td>
-									<td><?php echo $value->updated_date ?></td>
+									<td><?php echo $value->jumlah_istri?></td>
+									<td><?php echo $value->jumlah_anak?></td>
+									<td><?php echo $value->updated_date?></td>
 								</tr>
 								<?php endforeach;?>
 								<?php endif;?>
@@ -473,63 +450,63 @@
                         <input class="form-control" type="hidden" value="" name="temp_mutasi_id" />
 						<input class="form-control" type="hidden" value="" name="usul_id" />
 						<div class="form-group row">						    
-							<label class="col-sm-2 col-md-2 col-xs-2 control-label">Nama</label>							
-							<div class="col-sm-4 col-md-4 col-xs-4">
+							<label class="col-md-2 control-label">Nama</label>							
+							<div class="col-md-4">
 								<input class="form-control" type="text" value="" name="nama" />	
                             </div>
-							<label class="col-sm-2 col-md-2 col-xs-2 control-label">Nama Kecil</label>
-							<div class="col-sm-4 col-md-4 col-xs-4">
+							<label class="col-md-2 control-label">Nama Kecil</label>
+							<div class="col-md-4">
 								<input class="form-control" type="text" value="" name="nama_kecil" />	
                             </div>
 						</div>
 						<div class="form-group row">						    
-							<label class="col-sm-2 col-md-2 col-xs-2 control-label">Tempat Lahir</label>
-							<div class="col-sm-4 col-md-4 col-xs-4">
+							<label class="col-md-2 control-label">Tempat Lahir</label>
+							<div class="col-md-4">
 								<input class="form-control" type="text" value="" name="tempat_lahir" />	
                             </div>
-							<label class="col-sm-2 col-md-2 col-xs-2 control-label">Tgl Lahir</label>
-							<div class="col-sm-4 col-md-4 col-xs-4">
+							<label class="col-md-2 control-label">Tgl Lahir</label>
+							<div class="col-md-4">
 								<div class='input-group date' >
 									<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-									<input pattern="^\d{1,2}\-\d{1,2}\-\d{4}$" type='text' name="tgl_lahir" value="<?php echo (set_value('tgl_lahir') ? set_value('tgl_lahir') : date('d-m-Y'))?>" class="form-control datetimepicker" />
+									<input type='text' name="tgl_lahir" value="<?php echo (set_value('tgl_lahir') ? set_value('tgl_lahir') : date('d-m-Y'))?>" class="form-control datetimepicker" />
 								</div>
 							</div>
 						</div>
 						<div class="form-group row">						    
-							<label class="col-sm-2 col-md-2 col-xs-2 control-label">Tgl Nikah</label>
-							<div class="col-sm-4 col-md-4 col-xs-4">
+							<label class="col-md-2 control-label">Tgl Nikah</label>
+							<div class="col-md-4">
 								<div class='input-group date' >
 									<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-									<input pattern="^\d{1,2}\-\d{1,2}\-\d{4}$" type='text' name="tgl_nikah" value="<?php echo (set_value('tgl_nikah') ? set_value('tgl_nikah') : date('d-m-Y'))?>" class="form-control datetimepicker" />
+									<input type='text' name="tgl_nikah" value="<?php echo (set_value('tgl_nikah') ? set_value('tgl_nikah') : date('d-m-Y'))?>" class="form-control datetimepicker" />
 								</div>									
                             </div>
-							<label class="col-sm-2 col-md-2 col-xs-2 control-label">Tgl Pendaftaran</label>
-							<div class="col-sm-4 col-md-4 col-xs-4">
+							<label class="col-md-2 control-label">Tgl Pendaftaran</label>
+							<div class="col-md-4">
 								<div class='input-group date' >
 									<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-									<input pattern="^\d{1,2}\-\d{1,2}\-\d{4}$" type='text' name="tgl_pendaftaran" value="<?php echo (set_value('tgl_pendaftaran') ? set_value('tgl_pendaftaran') : date('d-m-Y'))?>" class="form-control datetimepicker" />
+									<input type='text' name="tgl_pendaftaran" value="<?php echo (set_value('tgl_pendaftaran') ? set_value('tgl_pendaftaran') : date('d-m-Y'))?>" class="form-control datetimepicker" />
 								</div>								
                             </div>
 						</div>
 						<div class="form-group row">						    
-							<label class="col-sm-2 col-md-2 col-xs-2 control-label">Tgl Cerai</label>
-							<div class="col-sm-4 col-md-4 col-xs-4">
+							<label class="col-md-2 control-label">Tgl Cerai</label>
+							<div class="col-md-4">
 								<div class='input-group date' >
 									<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-									<input pattern="^\d{1,2}\-\d{1,2}\-\d{4}$" type='text' name="tgl_cerai" value="" class="form-control datetimepicker" />
+									<input type='text' name="tgl_cerai" value="" class="form-control datetimepicker" />
 								</div>								
                             </div>
-							<label class="col-sm-2 col-md-2 col-xs-2 control-label">Tgl Wafat</label>
-							<div class="col-sm-4 col-md-4 col-xs-4">
+							<label class="col-md-2 control-label">Tgl Wafat</label>
+							<div class="col-md-4">
 								<div class='input-group date' >
 									<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-									<input pattern="^\d{1,2}\-\d{1,2}\-\d{4}$" type='text' name="tgl_wafat" value="" class="form-control datetimepicker" />
+									<input type='text' name="tgl_wafat" value="" class="form-control datetimepicker" />
 								</div>							
                             </div>
 						</div>
 						<div class="form-group row">						    
-							<label class="col-sm-2 col-md-2 col-xs-2 control-label">Alamat</label>
-							<div class="col-sm-10 col-md-10 col-xs-10">
+							<label class="col-md-2 control-label">Alamat</label>
+							<div class="col-md-10">
 								<input class="form-control" type="text" value="" name="alamat" />	
                             </div>							
 						</div>
@@ -578,12 +555,12 @@
                         <input class="form-control" type="hidden" value="" name="temp_mutasi_id" />
 						<input class="form-control" type="hidden" value="" name="usul_id" />
 						<div class="form-group row">						    
-							<label class="col-sm-2 col-md-2 col-xs-2 control-label">Nama</label>							
-							<div class="col-sm-4 col-md-4 col-xs-4">
+							<label class="col-md-2 control-label">Nama</label>							
+							<div class="col-md-4">
 								<input class="form-control" type="text" value="" name="nama" />	
                             </div>
-							<label class="col-sm-2 col-md-2 col-xs-2 control-label">Sex</label>
-							<div class="col-sm-4 col-md-4 col-xs-4">
+							<label class="col-md-2 control-label">Sex</label>
+							<div class="col-md-4">
 								<select name="sex" class="form-control">
 									<option value="">--silahkan Pilih--</option>
 									<option value="LK">Laki-Laki</option>
@@ -592,32 +569,32 @@
                             </div>
 						</div>
 						<div class="form-group row">						    
-							<label class="col-sm-2 col-md-2 col-xs-2 control-label">Tgl Lahir</label>
-							<div class="col-sm-4 col-md-4 col-xs-4">
+							<label class="col-md-2 control-label">Tgl Lahir</label>
+							<div class="col-md-4">
 								<div class='input-group date' >
 									<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-									<input pattern="^\d{1,2}\-\d{1,2}\-\d{4}$" type='text' name="tgl_lahir" value="<?php echo (set_value('tgl_lahir') ? set_value('tgl_lahir') : date('d-m-Y'))?>" class="form-control datetimepicker" />
+									<input type='text' name="tgl_lahir" value="<?php echo (set_value('tgl_lahir') ? set_value('tgl_lahir') : date('d-m-Y'))?>" class="form-control datetimepicker" />
 								</div>
 							</div>
-							<label class="col-sm-2 col-md-2 col-xs-2 control-label">Nama Ibu/Ayah</label>
-							<div class="col-sm-4 col-md-4 col-xs-4">
+							<label class="col-md-2 control-label">Nama Ibu/Ayah</label>
+							<div class="col-md-4">
 								<input class="form-control" type="text" value="" name="nama_ibu_ayah" />	
                             </div>	
 						</div>
 						
 						<div class="form-group row">						    
-							<label class="col-sm-2 col-md-2 col-xs-2 control-label">Tgl Cerai</label>
-							<div class="col-sm-4 col-md-4 col-xs-4">
+							<label class="col-md-2 control-label">Tgl Cerai</label>
+							<div class="col-md-4">
 								<div class='input-group date' >
 									<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-									<input pattern="^\d{1,2}\-\d{1,2}\-\d{4}$" type='text' name="tgl_cerai" value="" class="form-control datetimepicker" />
+									<input type='text' name="tgl_cerai" value="" class="form-control datetimepicker" />
 								</div>								
                             </div>
-							<label class="col-sm-2 col-md-2 col-xs-2 control-label">Tgl Wafat</label>
-							<div class="col-sm-4 col-md-4 col-xs-4">
+							<label class="col-md-2 control-label">Tgl Wafat</label>
+							<div class="col-md-4">
 								<div class='input-group date' >
 									<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-									<input pattern="^\d{1,2}\-\d{1,2}\-\d{4}$" type='text' name="tgl_wafat" value="" class="form-control datetimepicker" />
+									<input type='text' name="tgl_wafat" value="" class="form-control datetimepicker" />
 								</div>							
                             </div>
 						</div>
@@ -978,7 +955,15 @@
 			return false;
 		});
 		
-				
+		$('a[href="#tampil"]').on("click",function(e){
+			
+			var usul_id    =  $(this).attr('data-usul');
+			$('#anakModal input[name=usul_id]').val(usul_id);
+			$('#istriModal input[name=usul_id]').val(usul_id);
+		    refreshTempAnak();
+			refreshTempIstri();
+		});	
+		
 		function refreshTable(){						
 			$.ajax({   
 			    type: 'POST',   

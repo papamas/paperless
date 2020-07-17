@@ -457,4 +457,86 @@ class Usul_model extends CI_Model {
 		return $this->db->delete($this->tempanak);
 	
 	}	
+	
+	public function getTempAnakJd($id)
+	{
+		$sql=" SELECT jd_dd_anak_id, nama,nama_ibu,nama_ayah,keterangan,usul_id,
+		DATE_FORMAT(tgl_lahir,'%d-%m-%Y') tgl_lahir	
+		from jd_dd_anak  WHERE usul_id='$id' " ;			
+		return $this->db->query($sql);
+	}	
+	
+	public function simpanTempAnakJd()
+	{
+		$data['nama']				= $this->input->post('nama');
+		$data['tgl_lahir']			= date('Y-m-d',strtotime($this->input->post('tgl_lahir')));
+		$data['nama_ayah']		    = $this->input->post('nama_ayah');
+		$data['nama_ibu']		    = $this->input->post('nama_ibu');
+		$data['usul_id']			= $this->input->post('usul_id');
+		$data['keterangan']			= $this->input->post('keterangan');
+		
+		$db_debug 			= $this->db->db_debug; 
+		$this->db->db_debug = FALSE; 	
+		if (!$this->db->insert('jd_dd_anak', $data))
+		{
+			$error = $this->db->_error_message();
+			if(!empty($error))
+			{
+                $data['pesan']		= $error;   
+				$data['response'] 	= FALSE;
+			}
+            	
+        }
+		else
+		{
+			$data['pesan']		= "Data Anak Berhasil Tersimpan";
+			$data['response']	= TRUE;
+		}	
+        $this->db->db_debug = $db_debug; //restore setting	
+
+        return $data;		
+	}
+
+	public function updateTempAnakJd()
+	{
+		$data['nama']				= $this->input->post('nama');
+		$data['tgl_lahir']			= date('Y-m-d',strtotime($this->input->post('tgl_lahir')));
+		$data['nama_ayah']		    = $this->input->post('nama_ayah');
+		$data['nama_ibu']		    = $this->input->post('nama_ibu');
+		$data['usul_id']			= $this->input->post('usul_id');
+		$data['keterangan']			= $this->input->post('keterangan');
+		
+		$temp_id			 		= $this->input->post('jd_dd_anak_id');
+		
+		$db_debug 			= $this->db->db_debug; 
+		$this->db->db_debug = FALSE; 	
+		
+		$this->db->where('jd_dd_anak_id',$temp_id);
+		if (!$this->db->update('jd_dd_anak', $data))
+		{
+			$error = $this->db->_error_message();
+			if(!empty($error))
+			{
+                $data['pesan']		= $error;   
+				$data['response'] 	= FALSE;
+			}
+            	
+        }
+		else
+		{
+			$data['pesan']		= "Data Anak Berhasil Terupdate";
+			$data['response']	= TRUE;
+		}	
+        $this->db->db_debug = $db_debug; //restore setting	
+
+        return $data;		
+	}
+
+	public function hapusTempAnakJd()
+	{
+		$id			  = $this->input->post('jd_dd_anak_id');
+	   	$this->db->where('jd_dd_anak_id', $id);		
+		return $this->db->delete('jd_dd_anak');
+	
+	}	
 }

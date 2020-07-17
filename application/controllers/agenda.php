@@ -269,10 +269,12 @@ class Agenda extends MY_Controller {
 	public function hapus($agenda_id, $dokumen){
 
 		$instansi			= $this->session->userdata['session_instansi'];
-		$target_dir  		= './agenda/'.$instansi;
+		$file  				= './agenda/'.$instansi."/".$dokumen;
 		
-		unlink($target_dir."/".$dokumen);
-
+		if (unlink($file)) {
+			echo "The file has been deleted";
+		}
+					
 		$this->magenda->mhapus_agenda($agenda_id);
 		$this->session->set_flashdata('berhasil', "Agenda dihapus");
 		redirect('agenda');

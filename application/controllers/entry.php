@@ -730,6 +730,7 @@ class Entry extends MY_Controller {
 		$data['tgl_menikah']			= $this->input->post('tgl_menikah');
 		$data['gaji_pokok_terakhir']	= $this->input->post('gaji_pokok_terakhir');
 		$data['usul_spesimen']	        = $this->input->post('spesimenTaspen');
+		$data['jd_dd_status']	        = $this->input->post('jandaDuda');
 		
 		$this->form_validation->set_rules('persetujuan', 'Persetujuan', 'required');
 		$this->form_validation->set_rules('tanggal', 'Tanggal', 'required');
@@ -1350,11 +1351,20 @@ class Entry extends MY_Controller {
 	function _cetakSK($data)
 	{
 		$layanan             		= $data['layanan'];
+		$result						= $this->entry->getEntryOneTaspen($data);
+		$row						= $result->row();
 		
 		switch($layanan){			
 			case 16:
 				$name   = 'Janda/Duda';
-				$lname  = 'JD.ALM';
+				if($row->jd_dd_status == 1)
+				{
+					$lname  = 'DD.ALM';
+				}
+				else
+				{
+					$lname  = 'JD.ALM';
+				}
 			break;
 			case 17:
 				$name  = 'Yatim';	
@@ -1362,8 +1372,8 @@ class Entry extends MY_Controller {
 			break;
 		}		
 		
-		$row						= $this->entry->getEntryOneTaspen($data)->row();
-        //$spesimen					= $this->entry->getSpesimenTaspen()->row();		
+		
+      
 				
 		$this->load->library('PDF', array());	
 		$this->pdf->setPrintHeader(false);
@@ -1490,24 +1500,40 @@ EOD;
 		$text1='Mencatat bahwa anak penerima pensiun tersebut di atas pada akhir bulan terdiri dari:';
 		$this->pdf->writeHTMLCell(165,'',41,170,$text1,0,0,false,false,'J',true);
 		
-		$tbl = <<<EOD
-<table width="42%" cellspacing="0" cellpadding="1" border="1">
+		$tbl ='<table width="42%" cellspacing="0" cellpadding="1" border="1">
     <tr>
         <th width="25px;" align="center">NO</th>
-        <th width="200px;" align="center"> NAMA</th>
+        <th width="152px;" align="center"> NAMA</th>
         <th align="center"> TGL LAHIR</th>
-		<th align="center"> NAMA<br/> AYAH/IBU</th>
+		<th align="center"  width="125px;"> NAMA<br/> AYAH/IBU</th>
 		<th align="center"> KETERANGAN</th>
-    </tr> 
-	<tr >
-        <td height="65px;"></td>
-        <td height="65px;"></td>
-        <td height="65px;"></td>
-		<td height="65px;"></td>
-		<td height="65px;"></td>
-    </tr>
-</table>
-EOD;
+    </tr>';
+	
+	if(!empty($row->nama_anak))
+	{	
+		$no =1;
+		foreach($result->result() as $value){	
+			$tbl .='<tr>
+				<td align="center"> '.$no.'</td>
+				<td> '.$value->nama_anak.'</td>
+				<td align="center"> '.$value->tgl_lahir_anak.'</td>
+				<td align="center"> '.$value->nama_ayah.'/'.$value->nama_ibu.'</td>
+				<td align="center"> '.$value->keterangan.'</td>
+			</tr>';
+			$no++;
+		}
+	}
+	else
+	{
+		$tbl .='<tr>
+			<td height="65px;"></td>
+			<td height="65px;"></td>
+			<td height="65px;"></td>
+			<td height="65px;"></td>
+			<td height="65px;"></td>
+		</tr>';
+	}
+    $tbl .='</table>';
 		$this->pdf->SetXY(5, 175);
 		$this->pdf->writeHTML($tbl, true, false, false, false, '');
 		

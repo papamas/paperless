@@ -1225,11 +1225,21 @@ class Verifikator extends MY_Controller {
 	function _cetakSK($data)
 	{
 		$layanan             		= $data['layanan'];
+		$result						= $this->verifikator->getEntryOneTaspen($data);
+		$row						= $result->row();
 		
 		switch($layanan){			
 			case 16:
 				$name   = 'Janda/Duda';
-				$lname  = 'JD.ALM';
+				
+				if($row->jd_dd_status == 1)
+				{
+					$lname  = 'DD.ALM';
+				}
+				else
+				{
+					$lname  = 'JD.ALM';
+				}
 			break;
 			case 17:
 				$name  = 'Yatim';	
@@ -1237,7 +1247,7 @@ class Verifikator extends MY_Controller {
 			break;
 		}		
 		
-		$row						= $this->verifikator->getEntryOneTaspen($data)->row();
+		
        	
 	   	$this->load->library('PDF', array());	
 		$this->pdf->setPrintHeader(false);
@@ -1364,24 +1374,41 @@ EOD;
 		$text1='Mencatat bahwa anak penerima pensiun tersebut di atas pada akhir bulan terdiri dari:';
 		$this->pdf->writeHTMLCell(165,'',41,170,$text1,0,0,false,false,'J',true);
 		
-		$tbl = <<<EOD
-<table width="42%" cellspacing="0" cellpadding="1" border="1">
+		$tbl ='<table width="42%" cellspacing="0" cellpadding="1" border="1">
     <tr>
         <th width="25px;" align="center">NO</th>
-        <th width="200px;" align="center"> NAMA</th>
+        <th width="152px;" align="center"> NAMA</th>
         <th align="center"> TGL LAHIR</th>
-		<th align="center"> NAMA<br/> AYAH/IBU</th>
+		<th align="center"  width="125px;"> NAMA<br/> AYAH/IBU</th>
 		<th align="center"> KETERANGAN</th>
-    </tr> 
-	<tr >
-        <td height="65px;"></td>
-        <td height="65px;"></td>
-        <td height="65px;"></td>
-		<td height="65px;"></td>
-		<td height="65px;"></td>
-    </tr>
-</table>
-EOD;
+    </tr>';
+	
+	if(!empty($row->nama_anak))
+	{	
+		$no =1;
+		foreach($result->result() as $value){	
+			$tbl .='<tr>
+				<td align="center"> '.$no.'</td>
+				<td> '.$value->nama_anak.'</td>
+				<td align="center"> '.$value->tgl_lahir_anak.'</td>
+				<td align="center"> '.$value->nama_ayah.'/'.$value->nama_ibu.'</td>
+				<td align="center"> '.$value->keterangan.'</td>
+			</tr>';
+			$no++;
+		}
+	}
+	else
+	{
+		$tbl .='<tr>
+			<td height="65px;"></td>
+			<td height="65px;"></td>
+			<td height="65px;"></td>
+			<td height="65px;"></td>
+			<td height="65px;"></td>
+		</tr>';
+	}
+    $tbl .='</table>';
+
 		$this->pdf->SetXY(5, 175);
 		$this->pdf->writeHTML($tbl, true, false, false, false, '');
 		
@@ -1475,7 +1502,335 @@ EOD;
 		$this->pdf->Output('DraftSKJDYM.pdf', 'D');
     }
 
+    public function getAnakJdAll()
+	{
+		$id			= $this->input->get('usul_id');		
+		$usul 		= $this->verifikator->getAnakJd($id);	
+       	$html = '';
+		$html .='<table id="tb-anak" class="table table-striped table-condensed">
+						<thead>
+						    <tr>
+								<th><a href="#" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#anakModalJd" data-usul="'.$id.'" data-id="" data-tooltip="tooltip" title="Tambah Data Anak"> <i class="fa fa-plus"></i> Data Anak</a>
+								</th>
+							</tr>
+						    <tr>
+								<th>Aksi</th>
+								<th>Nama</th>
+								<th>Tgl Lahir</th>
+								<th>Nama Ayah/Ibu</th>	
+								<th>Keterangan</th>
+							</tr>	
+					    </thead>';
+		$html .='<tbody>';	
+		foreach($usul->result() as $value)
+		{
+			$html .='<tr>';
+			$html .='<td>';
+			$html .='<a class="btn btn-primary btn-xs" data-tooltip="tooltip"  title="Edit Anak" data-toggle="modal" data-target="#anakModalJd" data-id="'.$value->jd_dd_anak_id.'" data-nama="'.$value->nama.'" data-tgl_lahir="'.$value->tgl_lahir.'" data-ibu="'.$value->nama_ibu.'" data-ayah="'.$value->nama_ayah.'" data-usul="'.$value->usul_id.'"><i class="fa fa-edit"></i></a>';
+			$html .='&nbsp;<a class="btn btn-danger btn-xs" data-tooltip="tooltip"  title="Hapus Anak" data-toggle="modal" data-target="#hapusAnakModalJd" data-id="'.$value->jd_dd_anak_id.'"><i class="fa fa-remove"></i></a>';
+			$html .='</td>';
+			$html .='<td>'.$value->nama.'</td>';			
+			$html .='<td>'.$value->tgl_lahir.'</td>';
+			$html .='<td>'.$value->nama_ayah.'/'.$value->nama_ibu.'</td>';
+			$html .='<td>'.$value->keterangan.'</td>';				
+            $html .='</tr>';
+		}
+		$html .='</tbody></table>';
+		echo $html;	
+	}
 
+    public function getAnakAll()
+	{
+		$id			= $this->input->get('usul_id');		
+		$usul 		= $this->verifikator->getAnak($id);
+		
+		$html = '';
+		$html .='<table id="tb-anak" class="table table-striped table-condensed">
+						<thead>
+						    <tr>
+								<th><a href="#" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#anakModal" data-usul="'.$id.'" data-id="" data-tooltip="tooltip" title="Tambah Data Anak"> <i class="fa fa-plus"></i> Data Anak</a>
+								</th>
+							</tr>
+						    <tr>
+								<th rowspan="2" style="width:100px;">Aksi</th>
+								<th rowspan="2">Nama</th>
+								<th rowspan="2">LK/PR</th>
+								<th rowspan="2">Tgl Lahir</th>
+								<th colspan="3">Keterangan Tentang Ibu/Ayah </th>								
+							</tr>
+							<tr>									
+								<th>Nama</th>
+								<th>Cerai Tgl</th>
+								<th>Meninggal Tgl</th>
+							</tr>
+					</thead>';
+		$html .='<tbody>';	
+		foreach($usul->result() as $value)
+		{
+			$html .='<tr>';
+			$html .='<td>';
+			$html .='<a class="btn btn-primary btn-xs" data-tooltip="tooltip"  title="Edit Anak" data-toggle="modal" data-target="#anakModal" data-id="'.$value->mutasi_id.'" data-nama="'.$value->nama.'" data-sex="'.$value->sex.'" data-tgl_lahir="'.$value->tgl_lahir.'" data-tgl_cerai="'.$value->cerai_tgl.'" data-tgl_wafat="'.$value->meninggal_tgl.'" data-nama_ibu_ayah="'.$value->nama_ibu_ayah.'" data-usul="'.$value->usul_id.'"><i class="fa fa-edit"></i></a>';
+			$html .='&nbsp;<a class="btn btn-danger btn-xs" data-tooltip="tooltip"  title="Hapus Anak" data-toggle="modal" data-target="#hapusAnakModal" data-id="'.$value->mutasi_id.'"><i class="fa fa-remove"></i></a>';
+			$html .='</td>';
+			$html .='<td>'.$value->nama.'</td>';
+			$html .='<td>'.$value->sex.'</td>';
+			$html .='<td>'.$value->tgl_lahir.'</td>';
+			$html .='<td>'.$value->nama_ibu_ayah.'</td>';
+			$html .='<td>'.$value->cerai_tgl.'</td>';
+			$html .='<td>'.$value->meninggal_tgl.'</td>';			
+            $html .='</tr>';
+		}
+		$html .='</tbody></table>';
+		echo $html;	
+	}	
+		
+	
+	public function getIstriAll()
+	{
+		$id			= $this->input->get('usul_id');
+		$usul 		= $this->verifikator->getIstri($id);		
+		$html = '';
+		$html .='<table id="tb-istri" class="table table-striped table-condensed">
+						<thead>
+						    <tr>
+								<th><a href="#" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#istriModal" data-usul="'.$id.'" data-id="" data-tooltip="tooltip" title="Tambah Data Istri/Suami"> <i class="fa fa-plus"></i> Data Istri/Suami</a>
+								</th>
+							</tr>
+							<tr>
+								<th style="width:100px;">Aksi</th>
+								<th>Nama</th>
+								<th>Nama Kecil</th>
+								<th>Tempat/Tgl Lahir</th>
+								<th>Tanggl Nikah</th>
+								<th>Tanggal Pendaftaran</th>
+								<th>Tanggal Cerai</th>
+								<th>Tanggal Wafat</th>	
+								<th style="width:100px;">Alamat</th>
+							</tr>
+					</thead>';
+		$html .='<tbody>';	
+		foreach($usul->result() as $value)
+		{
+			$html .='<tr>';
+			$html .='<td>';
+			$html .='<a class="btn btn-primary btn-xs" data-tooltip="tooltip"  title="Edit Istri" data-toggle="modal" data-target="#istriModal" data-id="'.$value->mutasi_id.'" data-nama="'.$value->nama.'" data-nama_kecil="'.$value->nama_kecil.'" data-tempat_lahir="'.$value->tempat_lahir.'" data-tgl_lahir="'.$value->tgl_lahir.'" data-tgl_nikah="'.$value->tgl_nikah.'" data-tgl_pendaftaran="'.$value->tgl_pendaftaran.'" data-tgl_cerai="'.$value->tgl_cerai.'" data-tgl_wafat="'.$value->tgl_wafat.'" data-alamat="'.$value->alamat.'" data-usul="'.$value->usul_id.'"><i class="fa fa-edit"></i></a>';
+			$html .='&nbsp;<a class="btn btn-danger btn-xs" data-tooltip="tooltip"  title="Hapus Istri" data-toggle="modal" data-target="#hapusIstriModal" data-id="'.$value->mutasi_id.'"><i class="fa fa-remove"></i></a>';
+			$html .='</td>';
+			$html .='<td>'.$value->nama.'</td>';
+			$html .='<td>'.$value->nama_kecil.'</td>';
+		    $html .='<td>'.$value->tempat_lahir.'/'.$value->tgl_lahir.'</td>';
+			$html .='<td>'.$value->tgl_nikah.'</td>';
+			$html .='<td>'.$value->tgl_pendaftaran.'</td>';
+			$html .='<td>'.$value->tgl_cerai.'</td>';
+			$html .='<td>'.$value->tgl_wafat.'</td>';
+			$html .='<td>'.$value->alamat.'</td>';
+            $html .='</tr>';
+		}
+		$html .='</tbody></table>';
+		echo $html;	
+	}	
+	
+	
+	public function simpanAnakJd()
+	{
+		$this->form_validation->set_rules('nama', 'Nama', 'required');
+		$this->form_validation->set_rules('tgl_lahir', 'Tanggal Lahir', 'required');		
+		$this->form_validation->set_rules('nama_ibu', 'nama_ibu', 'required');
+		$this->form_validation->set_rules('nama_ayah', 'nama_ayah', 'required');
+		$this->form_validation->set_rules('keterangan', 'keterangan', 'required');
+		
+	    $this->form_validation->set_message('required', '{field} tidak boleh kosong');
+
+		if($this->form_validation->run() == FALSE)
+		{
+			$data['pesan']	= "Silahkan Lengkapi Form";
+			$this->output
+				->set_status_header(406)
+				->set_content_type('application/json', 'utf-8')
+				->set_output(json_encode($data));
+			return FALSE;	
+		}
+		else
+		{	
+			$temp_id			 = $this->input->post('jd_dd_anak_id');
+			
+			if(!empty($temp_id))
+			{	
+				$result				 = $this->verifikator->updateAnakJd();
+			}
+			else
+			{
+				$result				 = $this->verifikator->simpanAnakJd();
+			}
+			
+			
+			
+			$response   		 =  $result['response'];
+			$data['pesan']       =  $result['pesan'];
+			
+			if($response != TRUE)
+			{
+				$this->output
+				->set_status_header(406)
+				->set_content_type('application/json', 'utf-8')
+				->set_output(json_encode($data));
+				return FALSE;	
+			}
+			else
+			{
+				$data['pesan']	= $result['pesan'];
+				$this->output
+						->set_status_header(200)
+						->set_content_type('application/json', 'utf-8')
+						->set_output(json_encode($data));
+			}		
+		}
+	}
+
+	public function hapusAnakJd()
+	{
+		$data['result']		= $this->verifikator->hapusAnakJd();
+				
+		$this->output
+			->set_status_header(200)
+			->set_content_type('application/json', 'utf-8')
+			->set_output(json_encode($data));
+		
+	}	
+	
+	public function simpanAnak()
+	{
+		$this->form_validation->set_rules('nama', 'Nama', 'required');
+		$this->form_validation->set_rules('sex', 'Sex', 'required');
+		$this->form_validation->set_rules('tgl_lahir', 'Tanggal Lahir', 'required');
+		$this->form_validation->set_rules('tgl_cerai', 'Tanggal Cerai', 'trim');
+		$this->form_validation->set_rules('tgl_wafat', 'Tanggal Wafat', 'trim');
+		$this->form_validation->set_rules('nama_ibu_ayah', 'nama_ibu_ayah', 'required');
+		
+		if($this->form_validation->run() == FALSE)
+		{
+			$data['pesan']	= "Silahkan Lengkapi Form";
+			$this->output
+				->set_status_header(406)
+				->set_content_type('application/json', 'utf-8')
+				->set_output(json_encode($data));
+			return FALSE;	
+		}
+		else
+		{	
+			$temp_id			 = $this->input->post('temp_mutasi_id');
+			
+			if(!empty($temp_id))
+			{	
+				$result				 = $this->verifikator->updateAnak();
+			}
+			else
+			{
+				$result				 = $this->verifikator->simpanAnak();
+			}
+			
+						
+			$response   		 =  $result['response'];
+			$data['pesan']       =  $result['pesan'];
+			
+			if($response != TRUE)
+			{
+				$this->output
+				->set_status_header(406)
+				->set_content_type('application/json', 'utf-8')
+				->set_output(json_encode($data));
+				return FALSE;	
+			}
+			else
+			{
+				$data['pesan']	= $result['pesan'];
+				$this->output
+						->set_status_header(200)
+						->set_content_type('application/json', 'utf-8')
+						->set_output(json_encode($data));
+			}
+		
+		}
+	}
+
+    public function hapusAnak()
+	{
+		$data['result']		= $this->verifikator->hapusAnak();
+				
+		$this->output
+			->set_status_header(200)
+			->set_content_type('application/json', 'utf-8')
+			->set_output(json_encode($data));
+		
+	}
+	
+	public function simpanIstri()
+	{
+		$this->form_validation->set_rules('nama', 'Nama', 'required');
+		$this->form_validation->set_rules('nama_kecil', 'Nama Kecil', 'required');
+		$this->form_validation->set_rules('tempat_lahir', 'Tempat Lahir', 'required');
+		$this->form_validation->set_rules('tgl_lahir', 'Tanggal Lahir', 'required');
+		$this->form_validation->set_rules('tgl_nikah', 'Tanggal Menikah', 'required');
+		$this->form_validation->set_rules('tgl_cerai', 'Tanggal Cerai', 'trim');
+		$this->form_validation->set_rules('tgl_wafat', 'Tanggal Wafat', 'trim');
+		$this->form_validation->set_rules('alamat', 'Alamat', 'required');
+		
+		if($this->form_validation->run() == FALSE)
+		{
+			$data['pesan']	= "Silahkan Lengkapi Form";
+			$this->output
+				->set_status_header(406)
+				->set_content_type('application/json', 'utf-8')
+				->set_output(json_encode($data));
+			return FALSE;	
+		}
+		else
+		{	
+			$temp_id			 = $this->input->post('temp_mutasi_id');
+			
+			if(!empty($temp_id))
+			{	
+				$result				 = $this->verifikator->updateIstri();
+			}
+			else
+			{
+				$result				 = $this->verifikator->simpanIstri();
+			}
+			
+			
+			$response   		 =  $result['response'];
+			$data['pesan']       =  $result['pesan'];
+			
+			if($response != TRUE)
+			{
+				$this->output
+				->set_status_header(406)
+				->set_content_type('application/json', 'utf-8')
+				->set_output(json_encode($data));
+				return FALSE;	
+			}
+			else
+			{
+				$data['pesan']	= $result['pesan'];
+				$this->output
+						->set_status_header(200)
+						->set_content_type('application/json', 'utf-8')
+						->set_output(json_encode($data));
+			}
+		
+		}
+	}	
+	
+	public function hapusIstri()
+	{
+		$data['result']		= $this->verifikator->hapusIstri();
+				
+		$this->output
+			->set_status_header(200)
+			->set_content_type('application/json', 'utf-8')
+			->set_output(json_encode($data));
+		
+	}
 }
 
 /* End of file welcome.php */

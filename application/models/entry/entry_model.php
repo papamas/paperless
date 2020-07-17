@@ -373,7 +373,7 @@ ORDER  by e.PNS_PNSNAM ASC
 	public function getSpesimen()
 	{
 		$bidang  = $this->session->userdata('session_bidang');
-		$sql="SELECT * FROM $this->tableuser WHERE id_bidang='$bidang' AND id_instansi='4011' ";	
+		$sql="SELECT * FROM $this->tableuser WHERE id_bidang='$bidang' AND id_instansi='4011' and active='1' ";	
 		return $this->db->query($sql);
 		
 	}	
@@ -535,7 +535,12 @@ ORDER  by e.PNS_PNSNAM ASC
 		i.first_name usul_entry_name,
 		j.GOl_PKTNAM,j.GOL_GOLNAM,
 		k.nama_taspen,
-		l.nip nip_spesimen, l.jabatan jabatan_spesimen
+		l.nip nip_spesimen, l.jabatan jabatan_spesimen,
+		m.nama nama_anak,
+		m.nama_ayah,
+		m.nama_ibu,
+		formatTanggal(m.tgl_lahir) tgl_lahir_anak,
+		m.keterangan
 		FROM $this->usul a
 		LEFT JOIN $this->tablelayanan b ON a.layanan_id = b.layanan_id	
 		LEFT JOIN $this->tabletahapan c ON c.tahapan_id = a.usul_tahapan_id
@@ -547,6 +552,7 @@ ORDER  by e.PNS_PNSNAM ASC
 		LEFT JOIN $this->tablegolru j ON j.GOL_KODGOL = a.golongan
 		LEFT JOIN $this->kantorTaspen k ON k.id_taspen = a.kantor_taspen
 		LEFT JOIN $this->spesimenTaspen l ON l.nip = a.usul_spesimen
+		LEFT JOIN jd_dd_anak m ON m.usul_id = a.usul_id
 		WHERE a.nip='$nip' AND a.usul_id='$usul' ) a
 		LEFT JOIN $this->tablepupns b ON a.nip_spesimen = b.PNS_NIPBARU";
 		
@@ -568,6 +574,8 @@ ORDER  by e.PNS_PNSNAM ASC
 		$tgl_menikah		= date('Y-m-d',strtotime($data['tgl_menikah']));
 		$gaji_pokok			= $data['gaji_pokok_terakhir'];
 		$usul_spesimen		= $data['usul_spesimen'];
+		$jd_dd_status       = $data['jd_dd_status'];
+		
 		
 		$set['usul_no_persetujuan']    	=   strtoupper($nomor); 
 		$set['usul_tgl_persetujuan']   	=   $tanggal; 
@@ -580,6 +588,7 @@ ORDER  by e.PNS_PNSNAM ASC
 		$set['tgl_perkawinan']			=   $tgl_menikah;
 		$set['gaji_pokok_terakhir']		=   $gaji_pokok;
 		$set['usul_spesimen']		    =   $usul_spesimen;
+		$set['jd_dd_status']		    =   $jd_dd_status;
 		
 		$this->db->where('usul_id',$usul_id);
 		$this->db->where('nip',$nip);
