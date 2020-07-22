@@ -212,9 +212,10 @@ class Agenda extends MY_Controller {
 		//Data Dokumen
 		if($_FILES['input_dokumen']['name'] != NULL){
 
-			  //Hapus Gambar Sebelumnya
+			  
 			  if($this->input->post('input_dokumen_sblm') != NULL ){
-				unlink($target_dir.'/'.$this->input->post('input_dokumen_sblm'));
+				// remove old file
+                @unlink($_SERVER['DOCUMENT_ROOT']."/agenda/".$instansi."/".$this->input->post('input_dokumen_sblm'));	
 			  }
 
 			 

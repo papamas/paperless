@@ -592,4 +592,85 @@ class Berkas extends MY_Controller {
 			}
 		}
 	}	
+	
+	
+	public function updatePengantar()
+	{
+		
+		$instansi						= $this->input->post('agenda_ins');
+				
+		$target_dir						='./agenda/'.$instansi;	
+
+        if (!is_dir($target_dir)) {
+			mkdir($target_dir, 0777, TRUE);
+		}
+			
+		$config['upload_path']          = $target_dir;
+		$config['allowed_types']        = 'pdf';
+		$config['max_size']             = 3024;
+		$config['encrypt_name']			= TRUE;	
+				
+		$this->load->library('upload', $config);
+		
+		if (! $this->upload->do_upload('file'))
+		{
+			$error = array('error' => strip_tags($this->upload->display_errors()));
+
+			$this->output
+					->set_status_header(406)
+					->set_content_type('application/json', 'utf-8')
+					->set_output(json_encode($error));
+			
+		}
+		else
+		{
+			$upload 		          		= $this->upload->data();	
+           	//Nama File
+			$dataUpdate['agenda_dokumen'] 	= $upload['file_name'];			
+			
+			$db_debug 			= $this->db->db_debug; 
+		    $this->db->db_debug = FALSE; 
+	       
+            // cek file old
+			$filePengantar		= $this->berkas->getFilePengantar()->row();
+
+            // remove old file
+            @unlink($_SERVER['DOCUMENT_ROOT']."/agenda/".$instansi."/".$filePengantar->agenda_dokumen);			
+			$result		          			= $this->berkas->updatePengantar($dataUpdate);
+				
+			
+			if(!$result['response'])
+			{
+				$data['response'] 	= $result['response'];
+				$data['pesan']		= 'Sukses Update File Surat Pengantar';
+				$error = $this->db->_error_message();
+				if(!empty($error))
+				{
+					$data['pesan']		= $error;   
+				}
+				
+				$this->output
+					->set_status_header(200)
+					->set_content_type('application/json', 'utf-8')
+					->set_output(json_encode($data)); 
+			}
+			else
+			{
+				
+				$data['pesan']		= 'Gagal Update File Surat Pengantar';
+				$data['response']	= TRUE;
+				
+				$this->output
+					->set_status_header(406)
+					->set_content_type('application/json', 'utf-8')
+					->set_output(json_encode($data));
+
+			}			
+			
+			 $this->db->db_debug = $db_debug; //restore setting				
+                
+		}
+		
+	}	
+	
 }

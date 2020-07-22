@@ -175,7 +175,8 @@
 									if($value->nomi_status == 'BTL')
 									{
 										$link='&nbsp;<a href="#" class="btn bg-maroon btn-flat btn-xs" data-tooltip="tooltip"  title="Kirim Ulang Berkas BTL ini" data-toggle="modal" data-target="#kirimModal" data-nip="'.$this->myencrypt->encode($value->nip).'" data-agenda="'.$this->myencrypt->encode($value->agenda_id).'" data-btl="'.$this->myencrypt->encode($value->btl_from).'" ><i class="fa fa-mail-forward"></i></a>';	
-									    $link2='<a href="#" class="btn bg-orange btn-xs" data-tooltip="tooltip"  title="Cek Keterangan Alasan BTL" data-toggle="modal" data-target="#cekModal" data-id="?n='.$this->myencrypt->encode($value->nip).'&a='.$this->myencrypt->encode($value->agenda_id).'">'.$value->nomi_status.'</a>';
+									    $link.='&nbsp;<button class="btn btn-success btn-xs" data-tooltip="tooltip"  title="Update Surat Pengatar" data-toggle="modal" data-target="#updatePengantarModal" data-layanan="'.$value->layanan_id.'" data-agenda="'.$value->agenda_id.'" data-instansi="'.$value->agenda_ins.'" data-nip="'.$value->nip.'" data-gol="'.$value->golongan.'"><i class="fa fa-upload"></i></button>';
+										$link2='<a href="#" class="btn bg-orange btn-xs" data-tooltip="tooltip"  title="Cek Keterangan Alasan BTL" data-toggle="modal" data-target="#cekModal" data-id="?n='.$this->myencrypt->encode($value->nip).'&a='.$this->myencrypt->encode($value->agenda_id).'">'.$value->nomi_status.'</a>';
 									}
 									else
 									{
@@ -185,7 +186,7 @@
   									
 								?>
 								<tr>
-									<td style="width:100px;">
+									<td style="width:125px;">
 									<a href="#" class="btn bg-orange btn-flat btn-xs" data-tooltip="tooltip"  title="Lihat Kelengkapan Berkas" data-toggle="modal" data-target="#lihatModal" data-id="<?php echo '?n='.$this->myencrypt->encode($value->nip).'&l='.$this->myencrypt->encode($value->layanan_nama)?>"><i class="fa fa-search"></i></a>
 									<?php 
 									echo '<button class="btn btn-danger btn-xs" data-tooltip="tooltip"  title="Upload Surat Keputusan" data-toggle="modal" data-target="#uploadModal" data-layanan="'.$value->layanan_id.'" data-agenda="'.$value->agenda_id.'" data-instansi="'.$value->agenda_ins.'" data-nip="'.$value->nip.'" data-gol="'.$value->golongan.'"><i class="fa fa-upload"></i></button>';
@@ -356,6 +357,31 @@
 		</div>
 	</div>	
 	
+	<div id="updatePengantarModal" class="modal fade" role="dialog">
+          <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"><span id="msg"></span></h4>
+                </div>
+                <div class="modal-body">
+                    <!-- Form -->
+                    <form method='post' action='' enctype="multipart/form-data" id="fileUpdatePengantarForm">
+					    <input class="form-control" type="hidden" value="" name="agenda_ins" />
+						<input class="form-control" type="hidden" value="" name="agenda_id" />
+						<input class="form-control" type="hidden" value="" name="agenda_nip" />
+						<input class="form-control" type="hidden" value="" name="agenda_layanan" />
+						<input class="form-control" type="hidden" value="" name="agenda_golongan" />
+						<input type="hidden" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash();?>" style="display: none">
+                        Select file : <input type='file' name='file' id='file' class='form-control' ><br>
+                        <input type='button' class='btn btn-info' value='Update File Surat Pengatar' id='btnUpdatePengatar'>
+                    </form>
+                </div>                
+            </div>
+        </div>
+    </div>
+	
 	<!--[ SPINNER MODAL ]-->
 	<div class="modal fade" id="spinner-modal">
 		<div class="modal-dialog modal-sm">
@@ -498,6 +524,57 @@
 						 .removeClass( "text-green")
 						 .addClass( "text-red" ); 
 					refreshTable();	 
+				}	
+            });
+        });
+		
+		
+		$('#updatePengantarModal').on('show.bs.modal',function(e){
+			
+			$('#updatePengantarModal #msg').text('Update File Surat Pengatar')
+                     .removeClass( "text-green")
+					 .removeClass( "text-red")
+				     .removeClass( "text-blue" ); 
+		   
+			var nip   		=  $(e.relatedTarget).attr('data-nip');
+			var instansi    =  $(e.relatedTarget).attr('data-instansi');
+			var agenda   	=  $(e.relatedTarget).attr('data-agenda');
+			var layanan   	=  $(e.relatedTarget).attr('data-layanan');
+			var golongan   	=  $(e.relatedTarget).attr('data-gol');
+			
+			$("input[name=agenda_nip]").val(nip);
+			$("input[name=agenda_ins]").val(instansi);
+			$("input[name=agenda_id]").val(agenda);
+			$("input[name=agenda_layanan]").val(layanan);
+			$("input[name=agenda_golongan]").val(golongan);
+		});
+		
+		$('#btnUpdatePengatar').click(function(){
+			var form = $('#fileUpdatePengantarForm')[0];
+			// Create an FormData object 
+			var data = new FormData(form);
+			
+			// AJAX request
+			$.ajax({
+				url: '<?php  echo site_url()?>/berkas/updatePengantar',
+				type: 'post',
+				data: data,
+				contentType: false,
+				processData: false,
+				cache:false,
+				success: function(e){                        
+					$('#updatePengantarModal #msg').text(e.pesan)
+						 .removeClass( "text-blue")
+						 .removeClass( "text-red")
+						 .addClass( "text-green" );
+					
+				},
+				error : function(e){
+					$('#updatePengantarModal #msg').text(e.responseJSON.error)
+						 .removeClass( "text-blue")							 
+						 .removeClass( "text-green")
+						 .addClass( "text-red" ); 
+					
 				}	
             });
         });

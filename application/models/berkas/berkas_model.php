@@ -298,4 +298,25 @@ GROUP BY a.nip,b.layanan_id,a.agenda_id
 		$this->db->where_in('user_tipe', $txt);
 		return $this->db->get('app_user');		
 	}	
+	
+	
+	function getFilePengantar()
+	{
+		
+		$agenda							= $this->input->post('agenda_id');
+		$this->db->select('agenda_dokumen');
+		$this->db->where('agenda_id',$agenda);
+		return $this->db->get('agenda');
+
+	}
+	
+	function updatePengantar($data)
+	{
+		
+		$instansi						= $this->input->post('agenda_ins');
+		$agenda							= $this->input->post('agenda_id');
+		$this->db->where('agenda_id',$agenda);
+		return $this->db->update('agenda',$data);
+
+	}
 }
