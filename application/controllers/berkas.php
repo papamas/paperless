@@ -151,15 +151,18 @@ class Berkas extends MY_Controller {
 	
 	public function getKelengkapan()	{
 		
-		$nip         = $this->myencrypt->decode($this->input->get('n'));
-		$berkas      = $this->berkas->getUploadDokumen($nip);
-		$layanan     = $this->myencrypt->decode($this->input->get('l'));
+		$nip         		 = $this->myencrypt->decode($this->input->get('n'));
+		$berkas      		 = $this->berkas->getUploadDokumen($nip);
+		$layanan    		 = $this->myencrypt->decode($this->input->get('l'));
+		$agenda_dokumen      = $this->myencrypt->decode($this->input->get('d'));
+		$agenda_instansi     = $this->myencrypt->decode($this->input->get('i'));
 		
 		$html = '';
 		$html .='<table class="table table-bordered table-striped table-condensed">
 						<thead>
 						    <tr>
-							<td colspan="4">LAYANAN USUL '.$layanan.'</td>
+							<td colspan="2">LAYANAN USUL '.$layanan.'</td>
+							<td colspan="2"><button class="btn bg-maroon btn-flat btn-xs" data-tooltip="tooltip"  title="Lihat Surat Pengantar" data-toggle="modal" data-target="#lihatSuratPengantarModal" data-id="?id='.$this->myencrypt->encode($agenda_instansi).'&f='.$this->myencrypt->encode($agenda_dokumen).'"><i class="fa fa-search"></i></button></td>
 							</tr>
 							<tr>
 								<th>ADA</th>
@@ -297,9 +300,26 @@ class Berkas extends MY_Controller {
 		header('Cache-Control:no-store, no-cache, must-revalidate');
 		header('Content-type:application/pdf');
 		header('Content-Disposition:inline; filename='.$file);                      
-		header('Expires:0'); 
+		header('Expires:0');
+        ob_end_clean();				
 		readfile(base_url().'uploads/'.$instansi.'/'.$file);
 	}	
+	
+	public function getInlinePengantar()
+	{
+		$instansi  = $this->myencrypt->decode($this->input->get('id'));
+		$file      = $this->myencrypt->decode($this->input->get('f'));
+						
+		header('Pragma:public');
+		header('Cache-Control:no-store, no-cache, must-revalidate');
+		header('Content-type:application/pdf');
+		header('Content-Disposition:inline; filename='.$file);                      
+		header('Expires:0'); 
+		 ob_end_clean();		
+		readfile(base_url().'agenda/'.$instansi.'/'.$file);
+	}	
+	
+	
 	
 	
 	public function kirim()
@@ -477,7 +497,7 @@ class Berkas extends MY_Controller {
 		$html .='<table id="tb-entry" class="table table-striped table-condensed">
 						<thead>
 							<tr>
-								<th style="width:100px;"></th>	
+								<th style="width:125px;"></th>	
 								<th>NOUSUL</th>									
 								<th style="width:16%">NIP</th>
 								<th>NAMA</th>
@@ -496,6 +516,7 @@ class Berkas extends MY_Controller {
 			if($value->nomi_status == 'BTL')
 			{
 				$link='&nbsp;<a href="#" class="btn bg-maroon btn-flat btn-xs" data-tooltip="tooltip"  title="Kirim Ulang Berkas BTL ini" data-toggle="modal" data-target="#kirimModal" data-nip="'.$this->myencrypt->encode($value->nip).'" data-agenda="'.$this->myencrypt->encode($value->agenda_id).'" data-btl="'.$this->myencrypt->encode($value->btl_from).'" ><i class="fa fa-mail-forward"></i></a>';	
+				$link.='&nbsp;<button class="btn btn-success btn-xs" data-tooltip="tooltip"  title="Update Surat Pengatar" data-toggle="modal" data-target="#updatePengantarModal" data-layanan="'.$value->layanan_id.'" data-agenda="'.$value->agenda_id.'" data-instansi="'.$value->agenda_ins.'" data-nip="'.$value->nip.'" data-gol="'.$value->golongan.'"><i class="fa fa-upload"></i></button>';
 				$link2='<a href="#" class="btn bg-orange btn-xs" data-tooltip="tooltip"  title="Cek Keterangan Alasan BTL" data-toggle="modal" data-target="#cekModal" data-id="?n='.$this->myencrypt->encode($value->nip).'&a='.$this->myencrypt->encode($value->agenda_id).'">'.$value->nomi_status.'</a>';
 			}
 			else
@@ -505,7 +526,7 @@ class Berkas extends MY_Controller {
 			}
 			
 			$html .='<tr><td>';
-			$html .='<a href="#" class="btn bg-orange btn-flat btn-xs" data-tooltip="tooltip"  title="Lihat Kelengkapan Berkas" data-toggle="modal" data-target="#lihatModal" data-id="?n='.$this->myencrypt->encode($value->nip).'&l='.$this->myencrypt->encode($value->layanan_nama).'"><i class="fa fa-search"></i></a>';			
+			$html .='<a href="#" class="btn bg-orange btn-flat btn-xs" data-tooltip="tooltip"  title="Lihat Kelengkapan Berkas" data-toggle="modal" data-target="#lihatModal" data-id="?n='.$this->myencrypt->encode($value->nip).'&l='.$this->myencrypt->encode($value->layanan_nama).'&d='.$this->myencrypt->encode($value->agenda_dokumen).'&i='.$this->myencrypt->encode($value->agenda_ins).'"><i class="fa fa-search"></i></a>';			
 			$html.= '&nbsp;<button class="btn btn-danger btn-xs" data-tooltip="tooltip"  title="upload Surat Keputusan" data-toggle="modal" data-target="#uploadModal" data-layanan="'.$value->layanan_id.'" data-agenda="'.$value->agenda_id.'" data-instansi="'.$value->agenda_ins.'" data-nip="'.$value->nip.'"><i class="fa fa-upload"></i></button>';
 			$html .= $link;
 			$html .='</td>';						

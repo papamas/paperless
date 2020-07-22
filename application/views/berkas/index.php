@@ -187,7 +187,7 @@
 								?>
 								<tr>
 									<td style="width:125px;">
-									<a href="#" class="btn bg-orange btn-flat btn-xs" data-tooltip="tooltip"  title="Lihat Kelengkapan Berkas" data-toggle="modal" data-target="#lihatModal" data-id="<?php echo '?n='.$this->myencrypt->encode($value->nip).'&l='.$this->myencrypt->encode($value->layanan_nama)?>"><i class="fa fa-search"></i></a>
+									<a href="#" class="btn bg-orange btn-flat btn-xs" data-tooltip="tooltip"  title="Lihat Kelengkapan Berkas" data-toggle="modal" data-target="#lihatModal" data-id="<?php echo '?n='.$this->myencrypt->encode($value->nip).'&l='.$this->myencrypt->encode($value->layanan_nama).'&d='.$this->myencrypt->encode($value->agenda_dokumen).'&i='.$this->myencrypt->encode($value->agenda_ins)?>"><i class="fa fa-search"></i></a>
 									<?php 
 									echo '<button class="btn btn-danger btn-xs" data-tooltip="tooltip"  title="Upload Surat Keputusan" data-toggle="modal" data-target="#uploadModal" data-layanan="'.$value->layanan_id.'" data-agenda="'.$value->agenda_id.'" data-instansi="'.$value->agenda_ins.'" data-nip="'.$value->nip.'" data-gol="'.$value->golongan.'"><i class="fa fa-upload"></i></button>';
 									echo $link;
@@ -316,6 +316,22 @@
 		  </div>
 		</div>
 	</div>	
+	
+	<div class="modal" id="lihatSuratPengantarModal" tabindex="-1" role="dialog" aria-hidden="true">
+	    <div class="modal-dialog  md-dialog modal-lg">
+		  <div class="modal-content md-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title" >File Surat Pengantar</h4>
+				</div>	
+				<div class="modal-body md-body">
+					<iframe  id="frameSuratPengantar" width="100%" height="100%" frameborder="0" ></iframe>	
+					
+				</div>
+		  </div>
+		</div>
+	</div>	
+	
 	
 	<div id="uploadModal" class="modal fade" role="dialog">
           <div class="modal-dialog">
@@ -567,7 +583,7 @@
 						 .removeClass( "text-blue")
 						 .removeClass( "text-red")
 						 .addClass( "text-green" );
-					
+					refreshTable();
 				},
 				error : function(e){
 					$('#updatePengantarModal #msg').text(e.responseJSON.error)
@@ -579,6 +595,12 @@
             });
         });
 		
+		$('#lihatSuratPengantarModal').on('show.bs.modal',function(e) {    		 
+			var id=  $(e.relatedTarget).attr('data-id');
+			var iframe = $('#frameSuratPengantar');
+			iframe.attr('src', '<?php echo site_url()?>'+'/berkas/getInlinePengantar/'+id);
+					
+	    });
 		
 		function refreshTable(){						
 			$.ajax({   
