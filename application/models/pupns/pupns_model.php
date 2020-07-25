@@ -61,7 +61,7 @@ class Pupns_model extends CI_Model {
 		p.gunrum PNS_GUNRUM, o.alamat PNS_ALAMAT, O.KODE_POS PNS_KODPOS, p.unor_id PNS_UNOR, O.AGAMA_ID PNS_KODAGA,
 		O.JENIS_ID_DOKUMEN_ID PNS_JENDOK, O.NOMOR_ID_DOCUMENT PNS_NOMDOK,P.STATUS_CPNS_PNS PNS_STCPNS, O.EMAIL PNS_EMAIL,
 		O.NOMOR_HP PNS_NOMHP, O.NOMOR_TELPON PNS_NOMTEL, P.KARTU_PEGAWAI PNS_KARPEG,p.latihan_struktural_nama PNS_LATSTR,
-		p.sk_konv_nomor SK_KONV_NOMOR, p.sk_konv_tanggal SK_KONV_TANGGAL, p.sk_konv_urut SK_KONV_URUT, 
+		p.sk_konv_nomor SK_KONV_NOMOR, TO_CHAR(p.sk_konv_tanggal,'YYYY-MM-DD') SK_KONV_TANGGAL, p.sk_konv_urut SK_KONV_URUT, 
 		sk.kanreg_id PNS_KANREG, o.id ORANG_ID  
         FROM KANREG0.PNS p
 		inner join KANREG0.ORANG o on O.ID = P.ID

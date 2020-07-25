@@ -119,6 +119,7 @@ class Verifikator extends MY_Controller {
 		$data['tabs']  	  = $this->verifikator->getAllTab($data['nip']);
 		$data['dokumen']  = $this->verifikator->getAllDokumen($data['nip']);
 		$data['usul']	  = $this->verifikator->getVerifyUsul($data);
+		$data['pnsDataOracle'] = $this->verifikator->getPnsdataOracle($data['nip']);
 		
 		if(!$this->allow)
 		{
@@ -176,6 +177,25 @@ class Verifikator extends MY_Controller {
 		readfile(base_url().'uploads/'.$instansi.'/'.$file);
 		
 	}	
+	
+	
+	public function getFilePengantar()
+	{
+		$instansi  = $this->myencrypt->decode($this->input->get('id'));
+		$file      = $this->myencrypt->decode($this->input->get('f'));
+		$p         = $this->myencrypt->decode($this->input->get('p'));
+		
+		
+		header('Pragma:public');
+		header('Cache-Control:no-store, no-cache, must-revalidate');
+		header('Content-type:application/pdf');
+		header('Content-Disposition:inline; filename='.$file);                      
+		header('Expires:0'); 		
+		ob_end_clean();
+		readfile(base_url().'agenda/'.$instansi.'/'.$file);
+		
+	}	
+	
 	
 	
 	public function getKelengkapan()	{

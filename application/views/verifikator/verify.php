@@ -198,15 +198,24 @@
 					
 					if($usul->num_rows() > 0){
 					    $row = $usul->row();
-				        echo '<embed src="'.site_url().'/verifikator/getFile/?id='.$this->myencrypt->encode($row->agenda_ins).'&f='.$this->myencrypt->encode($row->main_upload_dokumen).'" type="application/pdf" width="100%" height="100%">';					
-                    }
+						// jika layanan KARPEG main dokumen dari pengantar
+						if($row->layanan_id == 9 || $row->layanan_id == 10 || $row->layanan_id == 11)
+						{
+							echo '<embed src="'.site_url().'/verifikator/getFilePengantar/?id='.$this->myencrypt->encode($row->agenda_ins).'&f='.$this->myencrypt->encode($row->agenda_dokumen).'" type="application/pdf" width="100%" height="100%">';					
+
+                        }
+						else
+						{
+							echo '<embed src="'.site_url().'/verifikator/getFile/?id='.$this->myencrypt->encode($row->agenda_ins).'&f='.$this->myencrypt->encode($row->main_upload_dokumen).'" type="application/pdf" width="100%" height="100%">';					
+                        }
+					}
 					else
 					{
 					   
 							echo '<div class="box box-warning">
 									<div class="callout callout-warning">
 									<h4>Warning!</h4>
-								<p>Oops ! Maaf berkas yang anda tidak ditemukan.</p>
+								<p>Oops ! Maaf berkas tidak ditemukan.</p>
 								</div></div>';
 							
 					}
@@ -221,6 +230,7 @@
 							if($tabs->num_rows() > 0)
 							{
 							    echo '<ul class="nav nav-pills">';
+								echo '<li class=""><a href="#pnsData" data-toggle="tab">CPNS/PNS</a></li>';
 							    foreach($tabs->result() as $value){
 									$jenis_sk = $value->nama_dokumen;
 									
@@ -372,6 +382,41 @@
 							?>
 
                             <div class="tab-content">
+							    <div class="tab-pane fade p-0 h-md-100 " id="pnsData">
+								   <div class="box box-widget">
+									<!-- Add the bg color to the header using any of the bg-* classes -->
+									<?php $rowPnsDataOracle = $pnsDataOracle->row();?>
+										 <div class="box-footer">
+											<ul class="nav nav-stacked">
+											<li>Nama<span class="pull-right"><?php echo (!empty($rowPnsDataOracle->GELAR_DEPAN) ? $rowPnsDataOracle->GELAR_DEPAN : '').' '.$rowPnsDataOracle->NAMA.''.(!empty($rowPnsDataOracle->GELAR_BLK) ? ','.$rowPnsDataOracle->GELAR_BLK : '')?></span></li>
+											<li>NIP<span class="pull-right"><?php echo $rowPnsDataOracle->NIP_BARU?></span></li>
+											<li>Status Kedudukan Hukum<span class="pull-right"><?php echo $rowPnsDataOracle->NAMA_KEDUDUKAN_HUKUM?></span></li>
+											<li>Status Kepegawaian<span class="pull-right"><?php echo ($rowPnsDataOracle->STATUS_CPNS_PNS == 'P' ? 'PNS' : 'CPNS')?></span></li>
+											<li>TMT CPNS<span class="pull-right"><?php echo $rowPnsDataOracle->TMT_CPNS?></span></li>
+											<li>Nomor SK CPNS<span class="pull-right"><?php echo $rowPnsDataOracle->NOMOR_SK_CPNS?></span></li>
+											<li>Tanggal SK CPNS<span class="pull-right"><?php echo $rowPnsDataOracle->TGL_SK_CPNS?></span></li>
+											<li>Nomor Urut SK CPNS<span class="pull-right"><?php echo $rowPnsDataOracle->NOM_URUT_SK_CPNS?></span></li>
+											<li>Pejabat yang mengangkat CPNS<span class="pull-right"><?php echo $rowPnsDataOracle->SPESIMEN_PEJABAT_CPNS?></span></li>
+											<li>TMT PNS<span class="pull-right"><?php echo $rowPnsDataOracle->TMT_PNS?></span></li>
+											<li>Nomor SK PNS<span class="pull-right"><?php echo $rowPnsDataOracle->NOMOR_SK_PNS?></span></li>
+											<li>Tanggal SK PNS<span class="pull-right"><?php echo $rowPnsDataOracle->TGL_SK_PNS?></span></li>
+											<li>Nomor Urut SK PNS<span class="pull-right"><?php echo $rowPnsDataOracle->NOM_URUT_SK_PNS?></span></li>
+											<li>Nomor STTPL <span class="pull-right"><?php echo $rowPnsDataOracle->NOMOR_STTPL?></span></li>
+											<li>Tanggal STTPL <span class="pull-right"><?php echo $rowPnsDataOracle->TGL_STTPL?></span></li>
+											<li>Nomor Dokter PNS <span class="pull-right"><?php echo $rowPnsDataOracle->NOMOR_DOKTER_PNS?></span></li>
+											<li>Tanggal Dokter PNS <span class="pull-right"><?php echo $rowPnsDataOracle->TANGGAL_DOKTER_PNS?></span></li>					
+											<li>Nomor SPMT <span class="pull-right"><?php echo $rowPnsDataOracle->NOMOR_SPMT?></span></li>
+											<li>Tanggal SPMT <span class="pull-right"><?php echo $rowPnsDataOracle->TGL_TUGAS?></span></li>
+                                            <li>Unit Organisasi<span class="pull-right"><?php echo $rowPnsDataOracle->NAMA_UNOR?></span></li>
+											<li>Instansi Induk<span class="pull-right"><?php echo $rowPnsDataOracle->NAMA_INSTANSI_INDUK?></span></li>											
+											<li>Satuan Kerja Induk<span class="pull-right"><?php echo $rowPnsDataOracle->NAMA_SATUAN_KERJA_INDUK?></span></li>											
+											<li>Instansi Kerja<span class="pull-right"><?php echo $rowPnsDataOracle->NAMA_INSTANSI_KERJA?></span></li>						
+											<li>Satuan Kerja<span class="pull-right"><?php echo $rowPnsDataOracle->NAMA_SATUAN_KERJA?></span></li>						
+
+										  </ul>
+										</div>
+									</div>		
+                                </div>   
 							    <?php if($dokumen->num_rows() > 0):?>
 								<?php foreach($dokumen->result() as $value):?>
                                 <div class="tab-pane fade p-0 h-md-100 " id="<?php echo $this->myencrypt->encode($value->raw_name)?>">
