@@ -522,6 +522,8 @@ class Agenda extends MY_Controller {
 		$agenda_jumlah 			= $this->input->post('input_agendajumlah');
 		$layananGroup 			= $this->input->post('layananGrup');
 		$periodeKP				= $this->input->post('periodeKP');
+		$layanan_id 			= $this->input->post('layananId');
+		
 		$bulan_sekarang 		= date("m");
 		$tanggal_sekarang 		= date("d");
 		
@@ -541,26 +543,34 @@ class Agenda extends MY_Controller {
 		  redirect('agenda/nominatif/'.$agenda_id);
 		}
 		
-		// cek by nip apakah ada dokumen usul	
-		$cek  = TRUE;
-		$nip  = array();
-		
-		$result    = $this->magenda->cekDokumen($agenda_id);
-		for($i=0;$i < count($result);$i++)
+		// jika layanan KARPEG main dokumen dari pengantar
+		if($layanan_id == 9 || $layanan_id == 10 || $layanan_id == 11)
 		{
-			// jika salah satu tidak ada dokumen batalkan seluruhnya
-			$cek &= $result[$i]['response'];
-			if($result[$i]['response'] == FALSE)
+            // abaikan periksa dokumen usul
+        }
+        else
+        {		
+			// cek by nip apakah ada dokumen usul	
+			$cek  = TRUE;
+			$nip  = array();
+			
+			$result    = $this->magenda->cekDokumen($agenda_id);
+			for($i=0;$i < count($result);$i++)
+			{
+				// jika salah satu tidak ada dokumen batalkan seluruhnya
+				$cek &= $result[$i]['response'];
+				if($result[$i]['response'] == FALSE)
+				{	
+					$nip[]  = $result[$i]['nip'];	
+				}	
+			}
+			
+			if(!boolval($cek))
 			{	
-			    $nip[]  = $result[$i]['nip'];	
-			}	
-		}
-		
-		if(!boolval($cek))
-		{	
-			$p  = implode(",",$nip);
-			$this->session->set_flashdata('gagal', "Gagal Kirim, NIP ".$p." tidak ada dokumen usul");
-			redirect('agenda/nominatif/'.$agenda_id);
+				$p  = implode(",",$nip);
+				$this->session->set_flashdata('gagal', "Gagal Kirim, NIP ".$p." tidak ada dokumen usul");
+				redirect('agenda/nominatif/'.$agenda_id);
+			}
 		}
 		
 		$this->db->trans_begin();

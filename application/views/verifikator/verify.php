@@ -143,13 +143,20 @@
 				<a href="#" id="about">'.$row->layanan_nama.'-'.$row->agenda_nousul.'<br/> Tahap : '.$row->tahapan_nama.'</a>  
 			</div>';
 		}			
-		
-		
-        if(empty($row->main_upload_dokumen)){
-			echo '<div id="mySidenav" class="sidenav">
-				<a href="#" id="info">Tidak ada Dokumen Usul</a>  
-			</div>';
-		}			
+		// jika layanan KARPEG main dokumen dari pengantar
+		if($row->layanan_id == 9 || $row->layanan_id == 10 || $row->layanan_id == 11)
+		{
+			// abaikan main upload
+		}
+		else
+		{
+			
+			if(empty($row->main_upload_dokumen)){
+				echo '<div id="mySidenav" class="sidenav">
+					<a href="#" id="info">Tidak ada Dokumen Usul</a>  
+				</div>';
+			}	
+		}	
 	}	
     ?>
 	<!-- Content Wrapper. Contains page content -->

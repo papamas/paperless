@@ -135,6 +135,7 @@
 							</div>	
 							<div class="box-footer">
 								<?php echo form_open_multipart('agenda/kirim_usul');?>
+								 <input type="hidden" class="form-control" value="<?php echo $detail_agenda->layanan_id ?>" name="layananId">
 								 <input type="hidden" class="form-control" value="<?php echo $detail_agenda->agenda_id ?>" name="input_agendaid">
 								 <input type="hidden" class="form-control" value="<?php echo $detail_agenda->agenda_jumlah ?>" name="input_agendajumlah">
 								 <input type="hidden" class="form-control" value="<?php echo $periodeKP?>" name="periodeKP">
