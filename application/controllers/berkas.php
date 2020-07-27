@@ -324,9 +324,10 @@ class Berkas extends MY_Controller {
 	
 	public function kirim()
 	{
-		$data['nip']     = $this->myencrypt->decode($this->input->post('nip'));
-		$data['agenda']  = $this->myencrypt->decode($this->input->post('agenda'));
-		$data['btlFrom'] = $this->myencrypt->decode($this->input->post('btlFrom'));
+		$data['nip']     	 = $this->myencrypt->decode($this->input->post('nip'));
+		$data['agenda']  	 = $this->myencrypt->decode($this->input->post('agenda'));
+		$data['btlFrom'] 	 = $this->myencrypt->decode($this->input->post('btlFrom'));
+		$data['nomiVerifby'] = $this->myencrypt->decode($this->input->post('nomiVerifby'));
 		
 		$this->db->trans_begin();
 		
@@ -579,10 +580,11 @@ class Berkas extends MY_Controller {
 		$agenda_id      = $data['agenda'];
 		$nip			= $data['nip'];
 		$btlFrom        = $data['btlFrom'];
-		
+		$nomiVerifby    = $data['nomiVerifby'];
+				
 		$row_agenda	    =  $this->berkas->getAgenda_byid($agenda_id,$nip)->row();
-		$TelegramAkun   =  $this->berkas->getTelegramAkun_bybidang($row_agenda->layanan_bidang,$btlFrom);
-		
+		//$TelegramAkun   =  $this->berkas->getTelegramAkun_bybidang($row_agenda->layanan_bidang,$btlFrom);
+		$TelegramAkun   =  $this->berkas->getTelegramAkun_byNomiVerifby($nomiVerifby);
 		if($btlFrom  == 3)
 		{
 			$txt 	= 'TU';

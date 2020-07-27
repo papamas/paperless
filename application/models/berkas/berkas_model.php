@@ -299,6 +299,14 @@ GROUP BY a.nip,b.layanan_id,a.agenda_id
 		return $this->db->get('app_user');		
 	}	
 	
+	function getTelegramAkun_byNomiVerifby($id)
+	{	
+		$this->db->select('first_name,last_name,telegram_id');
+		$this->db->where('active', 1);
+		$this->db->where('user_id', $id);
+		return $this->db->get($this->tableuser);		
+	}	
+	
 	
 	function getFilePengantar()
 	{

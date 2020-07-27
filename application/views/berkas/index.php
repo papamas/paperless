@@ -174,7 +174,7 @@
 									$link2 ='';
 									if($value->nomi_status == 'BTL')
 									{
-										$link='&nbsp;<a href="#" class="btn bg-maroon btn-flat btn-xs" data-tooltip="tooltip"  title="Kirim Ulang Berkas BTL ini" data-toggle="modal" data-target="#kirimModal" data-nip="'.$this->myencrypt->encode($value->nip).'" data-agenda="'.$this->myencrypt->encode($value->agenda_id).'" data-btl="'.$this->myencrypt->encode($value->btl_from).'" ><i class="fa fa-mail-forward"></i></a>';	
+										$link='&nbsp;<a href="#" class="btn bg-maroon btn-flat btn-xs" data-tooltip="tooltip"  title="Kirim Ulang Berkas BTL ini" data-toggle="modal" data-target="#kirimModal" data-nip="'.$this->myencrypt->encode($value->nip).'" data-agenda="'.$this->myencrypt->encode($value->agenda_id).'" data-btl="'.$this->myencrypt->encode($value->btl_from).'" data-verifby="'.$this->myencrypt->encode($value->nomi_verifby).'" ><i class="fa fa-mail-forward"></i></a>';	
 									    $link.='&nbsp;<button class="btn btn-success btn-xs" data-tooltip="tooltip"  title="Update Surat Pengatar" data-toggle="modal" data-target="#updatePengantarModal" data-layanan="'.$value->layanan_id.'" data-agenda="'.$value->agenda_id.'" data-instansi="'.$value->agenda_ins.'" data-nip="'.$value->nip.'" data-gol="'.$value->golongan.'"><i class="fa fa-upload"></i></button>';
 										$link2='<a href="#" class="btn bg-orange btn-xs" data-tooltip="tooltip"  title="Cek Keterangan Alasan BTL" data-toggle="modal" data-target="#cekModal" data-id="?n='.$this->myencrypt->encode($value->nip).'&a='.$this->myencrypt->encode($value->agenda_id).'">'.$value->nomi_status.'</a>';
 									}
@@ -266,6 +266,7 @@
                         <input type="hidden" name="nip"/>	
 					    <input type="hidden" name="agenda"/>
 						<input type="hidden" name="btlFrom"/>
+						<input type="hidden" name="nomiVerifby"/>
 					</form>
 				 </div>
 				<div class="modal-footer">
@@ -429,11 +430,13 @@
 			
 			var nip		=  $(e.relatedTarget).attr('data-nip'),
 				btlFrom	=  $(e.relatedTarget).attr('data-btl'),
-				agenda  =  $(e.relatedTarget).attr('data-agenda');
+				agenda  =  $(e.relatedTarget).attr('data-agenda')
+				verifby =  $(e.relatedTarget).attr('data-verifby');
 			
 			$('#kirimModal input[name=nip]').val(nip);
 			$('#kirimModal input[name=agenda]').val(agenda);
 			$('#kirimModal input[name=btlFrom]').val(btlFrom);
+			$('#kirimModal input[name=nomiVerifby]').val(verifby);
 		
 		});
 		
