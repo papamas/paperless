@@ -224,7 +224,7 @@ class Ap3k_model extends CI_Model {
 			{	
 				// Jika Layanan KARPEG
 				case 11:
-					$uap3k['kd_karpeg'] 	= NULL;
+					
 					$uap3k['nip']           = $dataKanreg0->NIP_BARU;
 					$uap3k['kd_pengantar']  = $kdPengantar;
 					
@@ -247,7 +247,7 @@ class Ap3k_model extends CI_Model {
 					$adaUsul 				= $this->cekUsulKarpeg($dataKanreg0->NIP_BARU);
 					if(!$adaUsul)
 					{	
-						$result 		=  $this->updateUsulKarpeg($ap3k);				
+						$result 		=  $this->updateUsulKarpeg($uap3k);				
 					}
 					else
 					{				
