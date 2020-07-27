@@ -496,11 +496,9 @@
 			{
 				// jika layanan pindah instansi sembunyikan konfirmasi berkas finish
 				$hidden = "hidden";	
-				// jika layanan id peningkatan peningkatan finish dieselon 3
-				if($layanan_id == 14)
-				{
-				    $check  =" checked ";  
-				}		
+				// jika layanan id peningkatan peningkatan dan pindah instansi  finish hanya sampai eselon 3
+				$check  =" checked ";  
+						
 			}
 			else
 			{	

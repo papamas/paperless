@@ -20,7 +20,6 @@ class Verifikator_model extends CI_Model {
     function __construct()
     {
         parent::__construct();
-		$this->oracle   = $this->load->database('oracle', TRUE);
 	}
 	
 	public function getAllTab($nip)
@@ -397,7 +396,7 @@ GROUP BY a.nip,b.layanan_id,a.agenda_id";
 		
 		$tipe    				      = $this->session->userdata('session_user_tipe');
 		
-		// jika layanan pindah instansi hanya eeselon 2 spesimen
+		// jika layanan pindah instansi hanya eselon 2 spesimen
 		// eselon 4 dan 3 hanya periksa , kalau PG eselon 4 periksa 
 		// eselon 3 ttd surat
 		if($layanan_id == 13 || $layanan_id == 14)
@@ -1446,6 +1445,8 @@ where f.usul_status='BELUM' AND  f.usul_id='$usul_id' ";
 	
 	function getPnsdataOracle($nip)
 	{
+		$this->oracle   = $this->load->database('oracle', TRUE);
+				
 		$sql="SELECT a.*, b.NAMA_UNOR, b.NAMA_JABATAN, c.NAMA NAMA_INSTANSI_KERJA, d.NAMA NAMA_INSTANSI_INDUK,
 e.NAMA NAMA_SATUAN_KERJA_INDUK, f.NAMA NAMA_SATUAN_KERJA,g.NAMA NAMA_KEDUDUKAN_HUKUM
 FROM (select a.ID,a.KABUPATEN_ID,a.NAMA,a.GELAR_DEPAN,a.GELAR_BLK,TO_CHAR(a.TGL_LHR,'DD-MM-YYYY') TGL_LHR,
