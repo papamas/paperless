@@ -167,14 +167,15 @@
 			<?php 
 			$row 	 = $usul->row();
 			$tipe    = $this->session->userdata('session_user_tipe');
-			if(!empty($row->main_upload_dokumen)){
+			if($row->layanan_id == 9 || $row->layanan_id == 10 || $row->layanan_id == 11)
+			{
 				if($row->locked_by == $this->session->userdata('user_id'))
 				{
-                    $target = '#kerjaModal';
+					$target = '#kerjaModal';
 				}
 				else
 				{
-                    // jika tipe 2 = kabid , tipe 3 kanreg
+					// jika tipe 2 = kabid , tipe 3 kanreg
 					// tetap bisa verifikasi walau sudah terkunci
 					if($tipe  == 2 || $tipe == 3)
 					{	
@@ -186,16 +187,50 @@
 					}						
 				}
 				echo '<div class="zoom">
-					<a class="zoom-fab zoom-btn-large" id="zoomBtn"><i class="fa fa-bars"></i></a>
-					<ul class="zoom-menu">
-					  <li><a class="hidden zoom-fab zoom-btn-sm zoom-btn-feedback scale-transition scale-out" data-tooltip="tooltip" data-placement="top" title="'.$row->tahapan_nama.'"><i class="fa fa-bell"></i></a></li>
-					  <li><a id="kerja" class="zoom-fab zoom-btn-sm zoom-btn-person scale-transition scale-out" data-toggle="modal" data-target="'.($row->nomi_locked == '1' ? $target : '#kerjaModal').'" data-tooltip="tooltip" data-placement="top" title="'.($row->nomi_locked == '1' ? 'Berkas telah di kunci oleh '.$row->lock_name :  'Kerjakan berkas Layanan '.$row->layanan_nama.' atas nama '.$row->nama).'"><i id="fa-user" class="fa fa-user"></i></a></li>
-					  <li><a id="verifikasi" class="hidden zoom-fab zoom-btn-sm zoom-btn-doc scale-transition scale-out" data-toggle="modal" data-target="#verifikasiModal" data-tooltip="tooltip" data-placement="top" title="" data-original-title="Hasil Verifikasi berkas ASN atas nama '.$row->nama.'"><i class="fa fa-book"></i></a></li>
-					  <li><a class="hidden zoom-fab zoom-btn-sm zoom-btn-tangram scale-transition scale-out"><i class="fa fa-dashboard"></i></a></li>
-					  <li><a class="hidden zoom-fab zoom-btn-sm zoom-btn-report scale-transition scale-out"><i class="fa fa-edit"></i></a></li>
-					  
-					</ul>				
-				</div>';	
+						<a class="zoom-fab zoom-btn-large" id="zoomBtn"><i class="fa fa-bars"></i></a>
+						<ul class="zoom-menu">
+						  <li><a class="hidden zoom-fab zoom-btn-sm zoom-btn-feedback scale-transition scale-out" data-tooltip="tooltip" data-placement="top" title="'.$row->tahapan_nama.'"><i class="fa fa-bell"></i></a></li>
+						  <li><a id="kerja" class="zoom-fab zoom-btn-sm zoom-btn-person scale-transition scale-out" data-toggle="modal" data-target="'.($row->nomi_locked == '1' ? $target : '#kerjaModal').'" data-tooltip="tooltip" data-placement="top" title="'.($row->nomi_locked == '1' ? 'Berkas telah di kunci oleh '.$row->lock_name :  'Kerjakan berkas Layanan '.$row->layanan_nama.' atas nama '.$row->nama).'"><i id="fa-user" class="fa fa-user"></i></a></li>
+						  <li><a id="verifikasi" class="hidden zoom-fab zoom-btn-sm zoom-btn-doc scale-transition scale-out" data-toggle="modal" data-target="#verifikasiModal" data-tooltip="tooltip" data-placement="top" title="" data-original-title="Hasil Verifikasi berkas ASN atas nama '.$row->nama.'"><i class="fa fa-book"></i></a></li>
+						  <li><a class="hidden zoom-fab zoom-btn-sm zoom-btn-tangram scale-transition scale-out"><i class="fa fa-dashboard"></i></a></li>
+						  <li><a class="hidden zoom-fab zoom-btn-sm zoom-btn-report scale-transition scale-out"><i class="fa fa-edit"></i></a></li>
+						  
+						</ul>				
+					</div>';	
+			}
+			else
+			{		
+			
+				if(!empty($row->main_upload_dokumen)){
+					if($row->locked_by == $this->session->userdata('user_id'))
+					{
+						$target = '#kerjaModal';
+					}
+					else
+					{
+						// jika tipe 2 = kabid , tipe 3 kanreg
+						// tetap bisa verifikasi walau sudah terkunci
+						if($tipe  == 2 || $tipe == 3)
+						{	
+							$target = '#kerjaModal';
+						}
+						else
+						{
+							$target = '#';
+						}						
+					}
+					echo '<div class="zoom">
+						<a class="zoom-fab zoom-btn-large" id="zoomBtn"><i class="fa fa-bars"></i></a>
+						<ul class="zoom-menu">
+						  <li><a class="hidden zoom-fab zoom-btn-sm zoom-btn-feedback scale-transition scale-out" data-tooltip="tooltip" data-placement="top" title="'.$row->tahapan_nama.'"><i class="fa fa-bell"></i></a></li>
+						  <li><a id="kerja" class="zoom-fab zoom-btn-sm zoom-btn-person scale-transition scale-out" data-toggle="modal" data-target="'.($row->nomi_locked == '1' ? $target : '#kerjaModal').'" data-tooltip="tooltip" data-placement="top" title="'.($row->nomi_locked == '1' ? 'Berkas telah di kunci oleh '.$row->lock_name :  'Kerjakan berkas Layanan '.$row->layanan_nama.' atas nama '.$row->nama).'"><i id="fa-user" class="fa fa-user"></i></a></li>
+						  <li><a id="verifikasi" class="hidden zoom-fab zoom-btn-sm zoom-btn-doc scale-transition scale-out" data-toggle="modal" data-target="#verifikasiModal" data-tooltip="tooltip" data-placement="top" title="" data-original-title="Hasil Verifikasi berkas ASN atas nama '.$row->nama.'"><i class="fa fa-book"></i></a></li>
+						  <li><a class="hidden zoom-fab zoom-btn-sm zoom-btn-tangram scale-transition scale-out"><i class="fa fa-dashboard"></i></a></li>
+						  <li><a class="hidden zoom-fab zoom-btn-sm zoom-btn-report scale-transition scale-out"><i class="fa fa-edit"></i></a></li>
+						  
+						</ul>				
+					</div>';	
+				}
 			}	
 			?>
 			<?php endif;?>
