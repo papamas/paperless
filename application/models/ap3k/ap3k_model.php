@@ -186,7 +186,9 @@ class Ap3k_model extends CI_Model {
 		// get nominatif maleo
 		$sql ="SELECT a.agenda_id,a.agenda_ins,a.layanan_id, b.nip 
 		FROM agenda a 
-		LEFT JOIN nominatif b ON a.agenda_id = b.agenda_id WHERE a.agenda_id='$id' ";
+		LEFT JOIN nominatif b ON a.agenda_id = b.agenda_id
+		LEFT JOIN mirror.pupns c ON b.nip  = c.PNS_NIPBARU
+		WHERE a.agenda_id='$id' ORDER BY c.PNS_PNSNAM ASC";
 		$nominatif   = $this->db->query($sql);	
 		
 		// dapatkan data di KANREG 0 berdasarkan NIP
