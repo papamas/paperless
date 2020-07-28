@@ -24,7 +24,6 @@ class Laporan_model extends CI_Model {
     function __construct()
     {
         parent::__construct();
-		$this->load->database();
 	}
 	
 	
@@ -474,4 +473,91 @@ $sql_order ";
 		WHERE a.nip='$nip' ";
 	    return $this->db->query($sql)->row();
 	}		
+	
+	/* pengeluaran Mutasi */
+	
+	function getLastNumberPengeluaranMutasi()
+	{
+		$layanan_id		= $this->input->get('q');
+		
+		$sql ="SELECT (SELECT MAX(nomor_pengeluaran)+1 FROM pengeluaran_mutasi) nomor,
+		REPLACE(REPLACE(REPLACE(
+     REPLACE(format_surat,'bln',toRoman(MONTH(NOW()))),'tahun',YEAR(NOW())),
+     'jenis_layanan',(SELECT layanan_nama FROM layanan WHERE layanan_id='$layanan_id')),'nomor_surat',(SELECT MAX(nomor_pengeluaran)+1 FROM pengeluaran_mutasi)) nomor_surat
+FROM format_surat
+WHERE layanan_id='$layanan_id'";
+		return $this->db->query($sql);	
+	}	
+	
+	public function getAgendaMutasi()
+	{
+		$id   		= $this->input->get('q');	 
+		 
+		$sql="SELECT a.agenda_id ,a.layanan_id,a.agenda_nousul		
+		FROM $this->tableagenda a
+		WHERE a.agenda_nousul LIKE '$id%' ";
+	    return $this->db->query($sql);
+	}	
+	
+	function getPengeluaranMutasi()
+	{
+		$id		= $this->input->post('agendaId');
+		
+		$sql="SELECT a.*,b.PNS_PNSNAM, DATE_FORMAT(b.PNS_TGLLHRDT,'%d-%m-%Y') PNS_TGLLHR
+		FROM (SELECT a.*,b.nip, c.nama_jabatan, c.nama_daerah,lokasi_daerah,
+		d.layanan_label,formatTanggal(NOW()) sekarang
+		FROM agenda a
+		LEFT JOIN nominatif b ON a.agenda_id = b.agenda_id
+		LEFT JOIN jabatan c ON c.id_instansi = a.agenda_ins 
+		LEFT JOIN layanan d ON d.layanan_id = a.layanan_id
+		WHERE a.agenda_id='$id' AND b.nomi_status='ACC' ) a
+		LEFT JOIN mirror.pupns b ON a.nip = b.PNS_NIPBARU
+		";
+		return $this->db->query($sql);	
+	}	
+	
+	function insertPengeluaranMutasi()
+	{
+		$data['nomor_pengeluaran']			= $this->input->post('nomor');
+		$this->db->insert('pengeluaran_mutasi',$data);
+	}
+
+    function getRealisasiAp3k($nip)
+    {
+        $this->ap3k  = $this->load->database('ap3k',TRUE);
+		
+		$id		= $this->input->post('layananId');
+		$nomor  = NULL;
+		
+		switch($id){
+			case '9':
+			    $this->ap3k->where('nip',$nip);
+				$query  = $this->ap3k->get('karis');
+				if($query->num_rows() > 0)
+				{
+					$row   = $query->row();
+					$nomor = $row->no_karis_baru;
+				}		
+			break;
+			case '10':
+				$this->ap3k->where('nip',$nip);
+				$query  = $this->ap3k->get('karsu');
+				if($query->num_rows() > 0)
+				{
+					$row   = $query->row();
+					$nomor = $row->no_karsu_baru;
+				}	
+			break;
+			default:
+				$this->ap3k->where('nip',$nip);
+				$query  = $this->ap3k->get('karpeg');
+				if($query->num_rows() > 0)
+				{
+					$row   = $query->row();
+					$nomor = $row->no_karpeg_baru;
+				}	
+		}	
+		
+		return $nomor;
+    }	
 }

@@ -245,7 +245,7 @@
 					return {
 						results: $.map(data, function(obj) {
 							return { 
-							id: obj.agenda_id, 
+							id: obj.layanan_id, 
 							text:  obj.agenda_nousul 
 							};
 						})
