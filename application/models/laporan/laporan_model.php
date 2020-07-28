@@ -24,6 +24,7 @@ class Laporan_model extends CI_Model {
     function __construct()
     {
         parent::__construct();
+		 $this->ap3k  = $this->load->database('ap3k',TRUE);
 	}
 	
 	
@@ -524,7 +525,7 @@ WHERE layanan_id='$layanan_id'";
 
     function getRealisasiAp3k($nip)
     {
-        $this->ap3k  = $this->load->database('ap3k',TRUE);
+       
 		
 		$id		= $this->input->post('layananId');
 		$nomor  = NULL;
