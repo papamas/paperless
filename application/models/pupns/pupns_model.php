@@ -31,7 +31,7 @@ class Pupns_model extends CI_Model {
 		$nip 		= $this->input->post('nip');	
 		$psnOracle  = $this->getPnsDataOracle($nip)->row_array();
 		
-		$this->db->where('PNS_NIPBARU');
+		$this->db->where('PNS_NIPBARU',$nip);
 		return $this->db->update('mirror.pupns',$psnOracle);
 	}	
 	

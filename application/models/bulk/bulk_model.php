@@ -57,7 +57,9 @@ class Bulk_model extends CI_Model {
 		LEFT JOIN $this->tableinstansi d ON a.agenda_ins = d.INS_KODINS
         LEFT JOIN $this->pupns e ON b.nip = e.PNS_NIPBARU
 		LEFT JOIN $this->table f ON  (b.nip = f.nip AND f.layanan_id = a.layanan_id)
-		WHERE b.nomi_status='ACC'  $sql_instansi $sql_layanan  $sql
+		WHERE 1=1
+		-- b.nomi_status='ACC' 
+		$sql_instansi $sql_layanan  $sql
     	ORDER BY e.PNS_PNSNAM ASC";
 		//var_dump($sql);exit;
 		

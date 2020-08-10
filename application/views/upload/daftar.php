@@ -105,7 +105,11 @@
 							<div class="form-group">
 							  <label class="control-label col-md-2">Instansi</label>
 							  <div class="col-md-10">
-							    <select name="instansi" class="form-control select2">									
+							    <select name="instansi" class="form-control select2">
+									<option value="">--</option>
+									<?php if($this->session->userdata('session_instansi') == '4011'):?>
+									<option value="9" <?php echo set_select('instansi', '9')?>>TASPEN</option>
+									<?php endif;?>
 									<?php if($instansi->num_rows() > 0):?>
 									<?php foreach($instansi->result() as $value):?>
 									<option value="<?php echo $value->INS_KODINS?>" <?php echo set_select('instansi', $value->INS_KODINS)?>><?php echo $value->INS_NAMINS?></option>
@@ -337,6 +341,7 @@
 	$(document).ready(function () {
 	    
 		$(".select2").select2({
+			placeholder:'--silahkan Pilih--',
 			width: '100%'
 		});	
 		

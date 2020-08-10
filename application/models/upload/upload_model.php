@@ -260,4 +260,38 @@ class Upload_model extends CI_Model {
 		return $this->db->query($sql);
 	}	
 	
+	/*TASPEN*/
+	public function getDaftarTaspen($data)
+	{
+	   	$searchby		= $data['searchby'];
+		$search			= $data['search'];
+			
+		if($searchby   == 1)
+		{
+			$sql_nip  = " AND a.nip='$search'";
+		}
+		else
+		{
+			$sql_nip  = " ";
+		}
+		
+		
+		
+		$sql=" SELECT a.*, 
+		b.nama_dokumen,b.keterangan,
+		c.first_name upload_name,
+		d.nama_pns
+		FROM upload_dokumen_taspen a
+		LEFT JOIN dokumen_taspen  b ON a.id_dokumen = b.id_dokumen		
+		LEFT JOIN app_user c ON a.upload_by = c.user_id
+		LEFT JOIN usul_taspen d ON a.nip = d.nip
+		WHERE 1=1 $sql_nip  
+		GROUP BY a.id_dokumen
+		ORDER BY b.keterangan ASC";	
+		
+				
+		return $this->db->query($sql);
+		
+	}	
+	
 }

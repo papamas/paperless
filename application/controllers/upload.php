@@ -204,8 +204,17 @@ class upload extends MY_Controller {
 		}
         else
         {			
+			if($this->input->post('instansi') == 9)
+			{
+              
+			   $q				  = $this->uploadFile->getDaftarTaspen($daftar);
+			   
+            }
+			else
+			{	
+				$q				  = $this->uploadFile->getDaftar($daftar);
+			}
 			
-			$q				  = $this->uploadFile->getDaftar($daftar);
 			if($perintah == 1) {
 				
 				$data['menu']    		=  $this->menu->build_menu();
@@ -222,7 +231,17 @@ class upload extends MY_Controller {
 					$this->load->view('403/index',$data);
 					return;
 				}
-				$this->load->view('upload/daftar',$data);
+				
+				if($this->input->post('instansi') == 9)
+				{
+				  
+				   $this->load->view('taspen/upload/daftar',$data);
+				}
+				else
+				{	
+					$this->load->view('upload/daftar',$data);
+				}
+				
 			}
 			else
 			{
