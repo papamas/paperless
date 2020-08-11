@@ -97,7 +97,19 @@ class upload extends MY_Controller {
 					->set_content_type('application/json', 'utf-8')
 					->set_output(json_encode($error));
 			return FALSE;
+		}
+
+		if(!$this->uploadFile->isMinorValid($_FILES['file']['name']))
+		{
+			$error = array('error' => 'File KODE atau TAHUN salah');
+
+			$this->output
+					->set_status_header(406)
+					->set_content_type('application/json', 'utf-8')
+					->set_output(json_encode($error));
+			return FALSE;
 		}		
+		
 		// Try cek file		
 		$cekFile	= $this->uploadFile->isAllowSize($_FILES['file']);
 		$response   = $cekFile['response'];

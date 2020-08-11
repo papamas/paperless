@@ -108,6 +108,25 @@ class Upload_model extends CI_Model {
 		return $r;
 	}
 	
+	function isMinorValid($file)
+	{
+		$raw_file  		= str_replace('.pdf', '', $file);
+		$format_file 	= explode("_",$raw_file);
+		$arr1			= array('KODE','TAHUN');
+		
+		$r = FALSE;
+		
+		$result = array_intersect($format_file,$arr1);
+		if(count($result) == 0)
+		{
+			$r = TRUE;
+		}
+		
+		return $r;
+	}	
+	
+	
+	
 	function isSesuaiFormat($file)
 	{
 		$r = FALSE;
