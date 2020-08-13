@@ -588,7 +588,7 @@ ORDER  by e.PNS_PNSNAM ASC
 		$set['tgl_perkawinan']			=   $tgl_menikah;
 		$set['gaji_pokok_terakhir']		=   $gaji_pokok;
 		$set['usul_spesimen']		    =   $usul_spesimen;
-		$set['jd_dd_status']		    =   $jd_dd_status;
+		$set['jd_dd_status']		    =   (!empty($jd_dd_status) ? $jd_dd_status : NULL);
 		
 		$this->db->where('usul_id',$usul_id);
 		$this->db->where('nip',$nip);

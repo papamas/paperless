@@ -222,7 +222,7 @@ class Magenda extends CI_Model {
 		FROM nominatif a 
 		LEFT JOIN agenda b ON a.agenda_id = b.agenda_id
 		LEFT JOIN layanan c ON b.layanan_id = c.layanan_id
-		WHERE a.nomi_status IN ('BELUM', 'BTL')
+		WHERE a.nomi_status IN ('BELUM')
 		AND a.nip='$nip' ";
 		return $this->db->query($sql);
 	}	
