@@ -266,6 +266,9 @@ class Taspen extends MY_Controller {
 				case 19:
 					$name  = 'SK_YP_'.$nip;				
 				break;
+				case 20:
+					$name  = 'FORMULIR_MUTASI_KELUARGA_'.$nip;				
+				break;
 			}
 			
 			
