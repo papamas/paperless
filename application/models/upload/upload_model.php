@@ -222,6 +222,15 @@ class Upload_model extends CI_Model {
 		
 	}	
 	
+	function hapusFile()
+	{
+		$instansi  = $this->myencrypt->decode($this->input->post('instansi'));
+		$file      = $this->myencrypt->decode($this->input->post('file'));
+		
+		$sql ="DELETE FROM upload_dokumen WHERE id_instansi='$instansi' AND orig_name='$file'  ";
+		return $this->db->query($sql);	
+	}	
+	
 	public function getDaftar($data)
 	{
 	    $instansi 		= $data['instansi'];

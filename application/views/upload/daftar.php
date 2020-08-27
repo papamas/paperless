@@ -11,29 +11,29 @@
 	<style>
     /*Bootstrap modal size iframe*/
 	@media (max-width: 1280px){
-		.modal-dialog  {
+		.md-dialog  {
 			height:630px;
 			width:800px;
 		}
-		.modal-body {
+		.md-body {
 			height: 500px;	
 		}
 	}
 	@media screen and (min-width:1281px) and (max-width:1600px){
-		.modal-dialog  {
+		.md-dialog  {
 			height:700px;
 			width:1000px;
 		}
-		.modal-body {
+		.md-body {
 			height: 550px;	
 		}
 	}
 	@media screen and (min-width:1601px) and (max-width:1920px){
-		.modal-dialog  {
+		.md-dialog  {
 			height:830px;
 			width:1200px;
 		}
-		.modal-body {
+		.md-body {
 			height: 700px;	
 		}
 	}
@@ -51,7 +51,7 @@
 		vertical-align: middle;
 		pointer-events:none;
 	}
-	.modal-content {
+	.md-content {
 		/* Bootstrap sets the size of the modal in the modal-dialog class, we need to inherit it */
 		width:inherit;
 		height:inherit;
@@ -98,7 +98,7 @@
 						  <h3 class="box-title">Daftar Dokumen</h3>
 						</div><!-- /.box-header -->
 						<!-- form start -->
-						<form class="form-horizontal" role="form" method="post" action="<?php echo site_url()?>/upload/getDaftar">
+						<form name="frmDaftar" class="form-horizontal" role="form" method="post" action="<?php echo site_url()?>/upload/getDaftar">
 						  <div class="box-body">
 							<input type="hidden" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash();?>" style="display: none">
 							
@@ -151,9 +151,10 @@
 						<hr/>
 						<?php if($show):?>
 						<div class="table-responsive">
-						<table class="table table-striped">
+						<table id="tb-daftar" class="table table-striped">
 						<thead>
 							<tr>
+								<th></th>
 								<th>SK</th>
 								<th>INSTANSI</th>
 								<th>NIP</th>
@@ -289,7 +290,9 @@
 							
 							?>
 							<tr>
-								<td><button class="btn btn-primary btn-xs" data-tooltip="tooltip"  title="Lihat SK" data-toggle="modal" data-target="#skModal" data-id="?id=<?php echo $this->myencrypt->encode($value->id_instansi)?>&f=<?php echo $this->myencrypt->encode($value->orig_name)?>"><i class="fa fa-search"></i></button> <?php echo $value->nama_dokumen?> <?php echo $n?></td>
+								<td><button class="btn btn-primary btn-xs" data-tooltip="tooltip"  title="Lihat SK" data-toggle="modal" data-target="#skModal" data-id="?id=<?php echo $this->myencrypt->encode($value->id_instansi)?>&f=<?php echo $this->myencrypt->encode($value->orig_name)?>"><i class="fa fa-search"></i></button>&nbsp;
+								<button class="btn btn-danger btn-xs" data-tooltip="tooltip"  title="Delete SK" data-toggle="modal" data-target="#dskModal" data-instansi="<?php echo $this->myencrypt->encode($value->id_instansi)?>" data-file="<?php echo $this->myencrypt->encode($value->orig_name)?>"><i class="fa fa-remove"></i></button></td> 
+								<td><?php echo $value->nama_dokumen?> <?php echo $n?></td>
 								<td><?php echo $value->instansi?></td>
 								<td><?php echo $value->nip?></td>
 								<td><?php echo $value->nama?></td>
@@ -312,13 +315,13 @@
         </section><!-- /.content -->	
 
         <div class="modal fade" id="skModal" tabindex="-1" role="dialog" aria-hidden="true">
-		   <div class="modal-dialog modal-lg">
-			  <div class="modal-content">
+		   <div class="modal-dialog modal-lg md-dialog">
+			  <div class="modal-content md-content">
 				    <div class="modal-header">
 					    <button type="button" class="close" data-dismiss="modal">&times;</button>
 					    <h4 class="modal-title" >File Dokumen Instansi</h4>
 				    </div>	
-				    <div class="modal-body">
+				    <div class="modal-body md-body">
 				        <div class="embed-responsive z-depth-1-half" style="height:100%">
 							<iframe   id="frame" width="100%" height="100%" frameborder="0" ></iframe>	
 						</div>
@@ -330,7 +333,29 @@
       </div><!-- /.content-wrapper -->     
     </div><!-- ./wrapper -->
 
-	
+	<div class="modal fade" id="dskModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+					
+					<h4 class="modal-title" id="myModalLabel"><span id="msg"></span></h4>
+				</div>
+				<div class="modal-body">
+				    
+					<form id="nfrmdsk">
+					    <input type="hidden" name="<?php echo $this->security->get_csrf_token_name()?>" value="<?php echo $this->security->get_csrf_hash()?>" style="display: none">
+						<p>Anda Yakin akan menghapus dokumen SK ini ?</p>					   	
+                        <input type="hidden" name="instansi"/>	
+					    <input type="hidden" name="file"/>					   
+					</form>
+				 </div>
+				<div class="modal-footer">
+					<button type="button" class="btn bg-maroon" id="nBtnHapus">OK Hapus !</button>
+				</div>
+			</div>
+		</div>	
+	</div>
 	
 	<script src="<?php echo base_url()?>assets/plugins/jQuery/jQuery-2.1.4.min.js"></script>    
     <script src="<?php echo base_url()?>assets/bootstrap/js/bootstrap.min.js"></script> 
@@ -352,6 +377,61 @@
 			var iframe = $('#frame');
 			iframe.attr('src', '<?php echo site_url()?>'+'/upload/getInline/'+id);			
 	    });
+		
+		
+		
+		$('#dskModal').on('show.bs.modal',function(e){
+		     $('#dskModal #msg').text('Konfirmasi Hapus SK')
+			.removeClass( "text-green")
+			.removeClass( "text-danger")
+		    .removeClass( "text-blue" ); 
+			
+			var instansi		=  $(e.relatedTarget).attr('data-instansi');
+			var file 		    =  $(e.relatedTarget).attr('data-file');
+			
+			$('#dskModal input[name=instansi]').val(instansi);
+			$('#dskModal input[name=file]').val(file);
+		});
+		
+		$("#nBtnHapus").on("click",function(e){
+			e.preventDefault();
+			var data = $('#nfrmdsk').serialize();
+			
+			$('#dskModal #msg').text('Updating Please Wait.....')
+                     .removeClass( "text-green")
+				     .addClass( "text-blue" );  
+			
+			$.ajax({
+				type: "POST",
+				url : "<?php echo site_url()?>/upload/hapus",
+				data: data,
+				success: function(r){					
+					$('#dskModal #msg').text(r.pesan)
+						.removeClass( "text-blue")
+						.addClass( "text-green" );
+					refreshTable();				
+			    }, // akhir fungsi sukses
+				error : function(r) {
+					$('#dskModal #msg').text(r.responseJSON.pesan)
+						.removeClass( "text-blue")
+						.removeClass( "text-green")
+						.addClass( "text-danger" );
+				}			
+		    });
+			return false;
+		});
+		
+		function refreshTable(){						
+			$.ajax({   
+			    type: 'POST',   
+			    url: '<?php echo site_url()?>/upload/getDaftarAll',   
+			    data: $('form[name=frmDaftar]').serialize(),
+			    success: function(res) {
+					$("#tb-daftar").html(res);
+					
+				},
+			});
+		}
 	});	
    </script>
 	</body>

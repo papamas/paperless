@@ -438,6 +438,196 @@ class upload extends MY_Controller {
 		ob_end_clean();
 		readfile($flok); 
 	}	
+	
+	public function hapus()
+	{
+		$instansi  = $this->myencrypt->decode($this->input->post('instansi'));
+		$file      = $this->myencrypt->decode($this->input->post('file'));
+		
+		if(@unlink($_SERVER['DOCUMENT_ROOT']."/uploads/".$instansi."/".$file) && $this->uploadFile->hapusFile())
+		{
+			$result['response']  = FALSE;
+			$result['pesan'] 	 = 'File dokumen berhasil dihapus';
+			$this->output
+				->set_status_header(200)
+				->set_content_type('application/json', 'utf-8')
+				->set_output(json_encode($result));	
+		}
+		else
+		{
+			$result['response']  = FALSE;
+			$result['pesan'] 	 = 'File dokumen Gagal dihapus';
+			$this->output
+				->set_status_header(400)
+				->set_content_type('application/json', 'utf-8')
+				->set_output(json_encode($result));	
+		}		
+	}	
+	
+	
+	public function getDaftarAll()
+	{
+		$daftar			  = $this->input->post();
+		
+		if($this->input->post('instansi') == 9)
+		{
+		    $q	= $this->uploadFile->getDaftarTaspen($daftar);		   
+		}
+		else
+		{	
+			$q	= $this->uploadFile->getDaftar($daftar);
+		}
+		
+		$html = '';
+		$html .='<table id="tb-daftar" class="table table-striped table-condensed">
+						<thead>
+						    <tr>
+								<th></th>
+								<th>SK</th>
+								<th>INSTANSI</th>
+								<th>NIP</th>
+								<th>NAMA</th>
+								<th>UPLOAD</th>
+								<th>UPDATE</th>	
+                                <th>BY</th>									
+						    </tr>
+					</thead>';
+		foreach($q->result() as $value)
+		{
+			$jenis_sk     = $value->nama_dokumen;
+			if($jenis_sk != "IJAZAH" && $jenis_sk != "TRANSKRIP" && $jenis_sk != "IBEL" && $jenis_sk != "MOU") 
+			{
+				switch($value->minor_dok){
+					case 45:
+						$n = "IV/e";
+					break;
+					case 44:
+						$n = "IV/d";
+					break;
+					case 43:
+						$n = "IV/c";
+					break;
+					case 42:
+						$n = "IV/b";
+					break;
+					case 41:
+						$n = "IV/a";
+					break;
+					case 34:
+						$n = "III/d";
+					break;
+					case 33:
+						$n = "III/c";
+					break;
+					case 32:
+						$n = "III/b";
+					break;
+					case 31:
+						$n = "III/a";
+					break;
+					case 24:
+						$n = "II/d";
+					break;
+					case 23:
+						$n = "II/c";
+					break;
+					case 22:
+						$n = "II/b";
+					break;
+					case 21:
+						$n = "II/a";
+					break;
+					case 14:
+						$n = "I/d";
+					break;
+					case 13:
+						$n = "I/c";
+					break;
+					case 12:
+						$n = "I/b";
+					break;
+					case 11:
+						$n = "I/a";
+					break;
+					case 1:
+						$n = "Tk.I";
+					break;
+					case 2:
+						$n = "Tk.II";
+					break;
+					case 3:
+						$n = "PI";
+					break;
+					default:
+						$n = $value->minor_dok;									
+																
+				}	
+			}
+			else
+			{
+				
+				switch($value->minor_dok){
+					case 50:
+						$n = "S-3/Doktor";
+					break;
+					case 45:
+						$n = "S-2";
+					break;
+					case 40:
+						$n = "S-1/Sarjana";
+					break;
+					case 35:
+						$n = "Diploma IV";
+					break;
+					case 30:
+						$n = "Diploma III/Sarjana Muda";
+					break;
+					case 25:
+						$n = "Diploma II";
+					break;
+					case 20:
+						$n = "Diploma I";
+					break;
+					case 18:
+						$n = "SLTA Keguruan";
+					break;
+					case 17:
+						$n = "SLTA Kejuruan";
+					break;
+					case 15:
+						$n = "SLTA";
+					break;
+					case 12:
+						$n = "SLTP Kejuruan";
+					break;
+					case 10:
+						$n = "SLTP";
+					break;
+					case 05:
+						$n = "Sekolah Dasar";
+					break;									
+					default:
+						$n = $value->minor_dok;									
+																
+				}				
+			}
+			
+			$html .='<tr>
+				<td><button class="btn btn-primary btn-xs" data-tooltip="tooltip"  title="Lihat SK" data-toggle="modal" data-target="#skModal" data-id="?id='.$this->myencrypt->encode($value->id_instansi).'&f='.$this->myencrypt->encode($value->orig_name).'"><i class="fa fa-search"></i></button>&nbsp;
+				<button class="btn btn-danger btn-xs" data-tooltip="tooltip"  title="Delete SK" data-toggle="modal" data-target="#dskModal" data-instansi="'.$this->myencrypt->encode($value->id_instansi).'" data-file="'.$this->myencrypt->encode($value->orig_name).'"><i class="fa fa-remove"></i></button></td> 
+				<td>'.$value->nama_dokumen.$n.'</td>
+				<td>'.$value->instansi.'</td>
+				<td>'.$value->nip.'</td>
+				<td>'.$value->nama.'</td>
+				<td>'.$value->created_date.'</td>	
+				<td>'.$value->update_date.'</td>	
+				<td>'.$value->name.'</td>
+			</tr>';	
+		}
+		
+        echo $html;		
+		
+	}
 }
 
 /* End of file welcome.php */
