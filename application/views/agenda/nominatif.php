@@ -137,7 +137,8 @@
 								<?php echo form_open_multipart('agenda/kirim_usul');?>
 								 <input type="hidden" class="form-control" value="<?php echo $detail_agenda->agenda_id ?>" name="input_agendaid">
 								 <input type="hidden" class="form-control" value="<?php echo $detail_agenda->agenda_jumlah ?>" name="input_agendajumlah">
-								 <input type="hidden" class="form-control" value="<?php echo $detail_agenda->kp_periode ?>" name="input_periodekp">
+								 <input type="hidden" class="form-control" value="<?php echo $periodeKP?>" name="periodeKP">
+								 <input type="hidden" class="form-control" value="<?php echo $detail_agenda->layanan_grup ?>" name="layananGrup">
 								   <?php if($detail_agenda->agenda_status == 'dibuat'){?>
 									<button type="submit" class="btn btn-block btn-primary btn-flat" name="button"><b>KIRIM USUL </b><i class="fa fa-angle-double-right"></i></button>
 								   <?php } ?>						

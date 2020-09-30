@@ -121,6 +121,7 @@ class Magenda extends CI_Model {
 
 	}
 
+	
  
     //UBAH AGENDA
     function mubah_agenda($data, $cond){

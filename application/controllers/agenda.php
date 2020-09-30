@@ -191,7 +191,7 @@ class Agenda extends MY_Controller {
 
 		
 		//Cek Batas KP
-		if($layanan_grup == 'KP'){
+		/* if($layanan_grup == 'KP'){
 		  if($tanggal_sekarang <= $batas_kp){
 			$kp_periode = $this->magenda->mcek_bataskp()->periode_id;
 		  }else{
@@ -201,7 +201,7 @@ class Agenda extends MY_Controller {
 		}else{
 		  $kp_periode = NULL;
 		}
-
+        */
 		$data = array(
 					   'agenda_nousul' 			=> trim($no_usul),
 					   'layanan_id' 			=> $layanan_id,
@@ -291,6 +291,30 @@ class Agenda extends MY_Controller {
 		$data['jabatan']  		=  $this->auth->getJabatan();
 		$data['member']	  		=  $this->auth->getCreated();
 		$data['avatar']	  		=  $this->auth->getAvatar();
+		$bulan_sekarang 		= date("m");
+		
+		switch ($bulan_sekarang){
+			case '04':
+				$data['periodeKP']  = 'April';
+			break;
+			case '05':
+				$data['periodeKP']  = 'April';
+			break;
+			case '06':
+				$data['periodeKP']  = 'April';
+			break;
+			case '10':
+				$data['periodeKP']  = 'Oktober';
+			break;
+			case '11':
+				$data['periodeKP']  = 'Oktober';
+			break;
+			case '12':
+				$data['periodeKP']  = 'Oktober';
+			break;
+			default:
+				$data['periodeKP']  = NULL;
+		}	
 		
 		$data['detail_agenda']  = $this->magenda->mdetail_agenda($agenda_id);
 		$data['list_nominatif'] = $this->magenda->mlist_nominatif($agenda_id);
@@ -314,6 +338,8 @@ class Agenda extends MY_Controller {
 			$this->load->view('403/index',$data);
 			return;
 		}
+		
+		
 		$this->load->view('agenda/nominatif', $data);		
 
 	}
@@ -346,6 +372,8 @@ class Agenda extends MY_Controller {
 
 	}
 
+	
+	
 	//FUNGSI TAMBAH NOMINATIF
 	public function ftambah_nominatif(){
 
@@ -450,16 +478,63 @@ class Agenda extends MY_Controller {
 		$this->session->set_flashdata('berhasil', "Nominatif dihapus");
 		redirect('agenda/nominatif/'.$agenda_id);
 	}
+	
+	function tgl_indo($waktu)
+	{
+		$hari_array = array(
+			'Minggu',
+			'Senin',
+			'Selasa',
+			'Rabu',
+			'Kamis',
+			'Jumat',
+			'Sabtu'
+		);
+		
+		$hr = date('w', strtotime($waktu));
+		$hari = $hari_array[$hr];
+		$tanggal = date('j', strtotime($waktu));
+		$bulan_array = array(
+			1 => 'Januari',
+			2 => 'Februari',
+			3 => 'Maret',
+			4 => 'April',
+			5 => 'Mei',
+			6 => 'Juni',
+			7 => 'Juli',
+			8 => 'Agustus',
+			9 => 'September',
+			10 => 'Oktober',
+			11 => 'November',
+			12 => 'Desember',
+		);
+		$bl = date('n', strtotime($waktu));
+		$bulan = $bulan_array[$bl];
+		$tahun = date('Y', strtotime($waktu));
+		$jam = date( 'H:i:s', strtotime($waktu));
+		return "$bulan $tahun";
+	}
 
 	//KIRIM USUL
 	public function kirim_usul(){
 
 		$agenda_id 				= $this->input->post('input_agendaid');
 		$agenda_jumlah 			= $this->input->post('input_agendajumlah');
-		$kp_periode 			= $this->input->post('input_periodekp');
-		$tanggal_sekarang 		= date("Y-m-d");
-
-
+		$layananGroup 			= $this->input->post('layananGrup');
+		$periodeKP				= $this->input->post('periodeKP');
+		$bulan_sekarang 		= date("m");
+		$tanggal_sekarang 		= date("d");
+		
+		if($layananGroup == 'KP')
+		{   
+	        // cek apakah ini bulan-bulan yang diperbolehkan KP
+			if(!in_array($bulan_sekarang,array('01','02','03','07','08','09')))
+			{
+				$this->session->set_flashdata('gagal', "Pengiriman usul KP Periode ".$periodeKP. " sudah ditutup, Anda tidak diperbolehkan usul KP pada Bulan ini ".$this->tgl_indo(date('Y-m-d')));
+		        redirect('agenda/nominatif/'.$agenda_id);			
+			}			 
+		}
+		
 		$jumlahnom = $this->magenda->mhitung_nominatif($agenda_id);
 		if($agenda_jumlah != $jumlahnom){
 		  $this->session->set_flashdata('gagal', "Gagal Kirim, Jumlah Nominatif belum sesuai");
