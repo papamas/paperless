@@ -80,7 +80,7 @@ LEFT JOIN $this->tablegolru f ON e.PNS_GOLRU = f.GOL_KODGOL
 WHERE c.layanan_bidang='$bidang' 
 AND b.nomi_status='BELUM' 
 AND a.agenda_status='dikirim'
-AND b.tahapan_id='2' 
+AND (b.tahapan_id='2'  OR  b.tahapan_id='3')
 $sql_instansi  $sql_layanan  $sql_golongan   $sql_nousul ";
 		
 		$query 		= $this->db->query($q);

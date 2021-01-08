@@ -149,6 +149,7 @@ class Verifikator extends MY_Controller {
 		$data['tabs']  	  = $this->verifikator->getAllTab($data['nip']);
 		$data['dokumen']  = $this->verifikator->getAllDokumen($data['nip']);
 		$data['usul']	  = $this->verifikator->getVerifyUsul($data);
+		$data['pnsDataOracle'] = $this->verifikator->getPnsdataOracle($data['nip']);
 		
 		if(!$this->allow)
 		{

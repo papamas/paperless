@@ -172,11 +172,11 @@
 								<?php
 									$link  ='';
 									$link2 ='';
-									if($value->nomi_status == 'BTL')
+									if($value->nomi_status == 'BTL' || $value->nomi_status == 'TMS')
 									{
 										$link='&nbsp;<a href="#" class="btn bg-maroon btn-flat btn-xs" data-tooltip="tooltip"  title="Kirim Ulang Berkas BTL ini" data-toggle="modal" data-target="#kirimModal" data-nip="'.$this->myencrypt->encode($value->nip).'" data-agenda="'.$this->myencrypt->encode($value->agenda_id).'" data-btl="'.$this->myencrypt->encode($value->btl_from).'" data-verifby="'.$this->myencrypt->encode($value->nomi_verifby).'" ><i class="fa fa-mail-forward"></i></a>';	
 									    $link.='&nbsp;<button class="btn btn-success btn-xs" data-tooltip="tooltip"  title="Update Surat Pengatar" data-toggle="modal" data-target="#updatePengantarModal" data-layanan="'.$value->layanan_id.'" data-agenda="'.$value->agenda_id.'" data-instansi="'.$value->agenda_ins.'" data-nip="'.$value->nip.'" data-gol="'.$value->golongan.'"><i class="fa fa-upload"></i></button>';
-										$link2='<a href="#" class="btn bg-orange btn-xs" data-tooltip="tooltip"  title="Cek Keterangan Alasan BTL" data-toggle="modal" data-target="#cekModal" data-id="?n='.$this->myencrypt->encode($value->nip).'&a='.$this->myencrypt->encode($value->agenda_id).'">'.$value->nomi_status.'</a>';
+										$link2='<a href="#" class="btn '.$value->bg.' btn-xs" data-tooltip="tooltip"  title="Cek Keterangan Alasan BTL" data-toggle="modal" data-target="#cekModal" data-id="?n='.$this->myencrypt->encode($value->nip).'&a='.$this->myencrypt->encode($value->agenda_id).'">'.$value->nomi_status.'</a>';
 									}
 									else
 									{

@@ -8,7 +8,7 @@
  */
 class Telegram {
 
-    var $token  = 'XXXX:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
+    var $token  = '1084269408:AAHIX0dyay5S5xHk0Eq5YCHy-JsGoHfOevU';
 	var $method;
 	var $url     = 'https://api.telegram.org/bot';
 	var $offset  = 0;
@@ -106,7 +106,7 @@ class Telegram {
 		];
 		
 		$context = stream_context_create($options);
-		$result = file_get_contents($url, false, $context);
+		$result = @file_get_contents($url, false, $context);
 		return $result;
 	}
 	

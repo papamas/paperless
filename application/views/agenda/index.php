@@ -60,7 +60,7 @@
 								  <td><?php echo $agenda->layanan_nama; ?></td>
 								  <td>
 									<a href="<?php echo site_url("agenda/ubah/$agenda->agenda_id") ?>" type="button" class="btn btn-warning btn-flat"><i class="fa fa-edit"></i>&nbsp;Edit</a>
-									<a onclick="confirmation(event)" href="<?php echo site_url("agenda/hapus/$agenda->agenda_id/$agenda->agenda_dokumen")?>" type="button" class="btn btn-danger btn-flat"><i class="fa fa-trash"></i>&nbsp;Hapus</a>
+									<a onclick="confirmation(event)" href="<?php echo site_url("agenda/hapus/$agenda->agenda_id")?>" type="button" class="btn btn-danger btn-flat"><i class="fa fa-trash"></i>&nbsp;Hapus</a>
 									<a href="<?php echo site_url("agenda/nominatif/$agenda->agenda_id")?>" type="button" class="btn btn-primary btn-flat"><i class="fa fa-edit"></i>&nbsp; Input Nominatif</a>
 								  </td>
 								</tr>
