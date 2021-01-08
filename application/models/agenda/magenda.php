@@ -412,8 +412,8 @@ class Magenda extends CI_Model {
 		$this->db->where('active', 1);
 		$this->db->where('user_tipe', 'TU');
 		return $this->db->get('app_user');		
-	}
-
+	}	
+	
 	function getAgendaById($id)
 	{
 		$this->db->where('agenda_id',$id);

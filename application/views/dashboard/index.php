@@ -84,6 +84,7 @@
 				  <td class="col-md-1"><strong>IN</strong></td>
 				  <td class="col-md-1"><strong>ACC</strong></td>
 				  <td class="col-md-1"><strong>BTL</strong></td>
+				  <td class="col-md-1"><strong>BLM</strong></td>
 				  <td class="col-md-1"><strong>TMS</strong></td>
 				  <td class="col-md-1"><strong>UPDATE</strong></td>				 
 				</tr>			
@@ -101,6 +102,7 @@
 					  <td class="col-md-1 center-block"><span class="label bg-maroon"><?php echo $value->JUMLAH?></span></td>
 					  <td class="col-md-1 center-block"><span class="label label-success"><?php echo $value->ACC?></span></td>
 					  <td class="col-md-1 center-block"><span class="label label-warning"><?php echo $value->BTL?></span></td>
+					  <td class="col-md-1 center-block"><span class="label label-info"><?php echo $value->BELUM?></span></td>
 					  <td class="col-md-1 center-block"><span class="label label-danger"><?php echo $value->TMS?></span></td>
 					  <td class="col-md-1 center-block"><span class="label label-info"><?php echo $value->update_date?></span></td>
 					 
@@ -126,8 +128,6 @@
 		
 		$('.marquee')
 		.bind('finished', function () {
-			//code you want to execute before after each animation loop
-			console.log('finished');
 			$.ajax({
 				dataType: 'html',
 				async: true,

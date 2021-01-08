@@ -49,6 +49,7 @@ class Dashboard extends CI_Controller {
 			$html .='<td class="col-md-1 center-block"><span class="label bg-maroon">'.$value->JUMLAH.'</span></td>';
 			$html .='<td class="col-md-1 center-block"><span class="label label-success">'.$value->ACC.'</span></td>';
 			$html .='<td class="col-md-1 center-block"><span class="label label-warning">'.$value->BTL.'</span></td>';
+			$html .='<td class="col-md-1 center-block"><span class="label label-info">'.$value->BELUM.'</span></td>';
 			$html .='<td class="col-md-1 center-block"><span class="label label-danger">'.$value->TMS.'</span></td>';
 			$html .='<td class="col-md-1 center-block"><span class="label label-info">'.$value->update_date.'</span></td>';
 			$html .='</tr>';

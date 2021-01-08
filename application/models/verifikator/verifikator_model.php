@@ -840,7 +840,9 @@ GROUP BY a.layanan_id,a.usul_id
 LEFT JOIN layanan g ON f.layanan_id = g.layanan_id
 LEFT JOIN tahapan h ON f.usul_tahapan_id = h.tahapan_id
 LEFT JOIN app_user i ON i.user_id = f.usul_lock_by    
-WHERE f.usul_status='BELUM' $sql ";	
+WHERE f.usul_status='BELUM'
+AND f.usul_tahapan_id IN ('4','5','6','7','8','9','10','11')
+$sql";	
 		$query 		= $this->db->query($q);
 		return      $query;			
 	}
@@ -911,7 +913,9 @@ GROUP BY a.layanan_id,a.usul_id
 LEFT JOIN layanan g ON f.layanan_id = g.layanan_id
 LEFT JOIN tahapan h ON f.usul_tahapan_id = h.tahapan_id
 LEFT JOIN app_user i ON i.user_id = f.usul_lock_by
-where f.usul_status='BELUM' AND  f.usul_id='$usul_id' ";  
+where f.usul_status='BELUM' 
+AND f.usul_tahapan_id IN ('4','5','6','7','8','9','10','11')
+AND  f.usul_id='$usul_id' ";  
         //var_dump($q);exit;
 		$query 		= $this->db->query($q);
         return      $query;		

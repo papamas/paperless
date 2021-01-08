@@ -56,7 +56,7 @@ class upload extends MY_Controller {
 		$target_dir						='./uploads/'.$instansi;		
 		$config['upload_path']          = $target_dir;
 		$config['allowed_types']        = 'pdf';
-		$config['max_size']             = 4096;
+		$config['max_size']             = 5120;
 		$config['encrypt_name']			= FALSE;	
 		$config['overwrite']			= TRUE;	
 		$config['detect_mime']			= TRUE;

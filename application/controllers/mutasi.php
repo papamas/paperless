@@ -259,7 +259,7 @@ class Mutasi extends MY_Controller {
 
 			foreach($pengeluaran->result() as $value)
 			{
-				$ap3k    	= $this->laporan->getRealisasiAp3k($value->nip);
+				$ap3k    	= '';//$this->laporan->getRealisasiAp3k($value->nip);
 				
 				$this->pdf->SetXY(15,$starty);					
 				$this->pdf->MultiCell($w[0], 7, $y,1, 'C', 1, 2, 5,$starty, true, 1, true, true, 0);

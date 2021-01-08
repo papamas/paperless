@@ -19,7 +19,7 @@ class Ap3k extends MY_Controller {
 	 * @see http://codeigniter.com/user_guide/general/urls.html
 	 */
 	 
-	var $menu_id    = 42;
+	var $menu_id    = 40;
 	var $allow 		= FALSE;
  
 	 

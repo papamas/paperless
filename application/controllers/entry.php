@@ -218,7 +218,7 @@ class Entry extends MY_Controller {
 		$data['persetujuan']		= $this->input->post('persetujuan');
 		$data['tanggal']			= $this->input->post('tanggal');
 		
-		$this->form_validation->set_rules('persetujuan', 'Persetujuan', 'trim|required');
+		$this->form_validation->set_rules('persetujuan', 'Persetujuan', 'required');
 		$this->form_validation->set_rules('tanggal', 'Tanggal', 'required');
 		
 		if($this->form_validation->run() == FALSE)
@@ -276,7 +276,7 @@ class Entry extends MY_Controller {
 		$data['lokasi_kampus']		= $this->input->post('lokasi_kampus');
 		$data['nama_gelar']			= $this->input->post('nama_gelar');
 		
-		$this->form_validation->set_rules('persetujuan', 'Persetujuan', 'trim|required');
+		$this->form_validation->set_rules('persetujuan', 'Persetujuan', 'required');
 		$this->form_validation->set_rules('tanggal', 'Tanggal', 'required');
 		$this->form_validation->set_rules('kode_ijazah', 'Kode Ijazah', 'required');
 		$this->form_validation->set_rules('nomor_ijazah', 'Nomor Ijazah', 'required');

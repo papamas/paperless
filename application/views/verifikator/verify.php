@@ -427,7 +427,7 @@
 							    <div class="tab-pane fade p-0 h-md-100 " id="pnsData">
 								   <div class="box box-widget">
 									<!-- Add the bg color to the header using any of the bg-* classes -->
-									<?php/*  if(1==0): */?>
+									<?php   if(1==0):  ?>
 									<?php $rowPnsDataOracle = $pnsDataOracle->row();?>
 										 <div class="box-footer">
 											<ul class="nav nav-stacked">
@@ -458,7 +458,7 @@
 
 										  </ul>
 										</div>
-									<?php /* endif; */?>	
+									<?php endif; ?>	
 									</div>		
                                 </div>   
 							    <?php if($dokumen->num_rows() > 0):?>

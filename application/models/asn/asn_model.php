@@ -91,9 +91,11 @@ FROM
         LEFT JOIN
     mirror.jabfun k ON a.PNS_JABFUN = k.JBF_KODJAB
 		LEFT JOIN
-    mirror.unor l ON a.PNS_UNOR = l.UNOR_ID
-		LEFT join
-    mirror.unor m ON l.DIATASAN_ID = m.UNOR_ID			
+    mirror.unor l ON (a.PNS_UNOR = l.UNOR_ID
+      
+    )
+    LEFT join
+    mirror.unor m ON (l.DIATASAN_ID = m.UNOR_ID) 
 WHERE
     a.PNS_NIPBARU='$search'";
 		$r = $this->db->query($sql);
