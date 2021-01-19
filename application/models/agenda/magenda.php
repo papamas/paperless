@@ -290,7 +290,7 @@ class Magenda extends CI_Model {
 	//TAMBAH NOMINATIF
 	public function mtambah_nominatif($data){
 
-      $this->db->insert('nominatif', $data);
+      return $this->db->insert('nominatif', $data);
 
 	}
 
@@ -298,14 +298,14 @@ class Magenda extends CI_Model {
 	//HAPUS NOMINATIF
 	public function mhapus_nominatif($nip, $agenda_id){
 
-		$this->db->delete('nominatif', array('agenda_id' => $agenda_id, 'nip' => $nip ));
+		return $this->db->delete('nominatif', array('agenda_id' => $agenda_id, 'nip' => $nip ));
 
 	}
 
 	//INPUT NOMINATIF EXCEL
 	public function minput_nominatif($data_excel){
 
-		$this->db->insert_batch('nominatif', $data_excel);
+		return $this->db->insert_batch('nominatif', $data_excel);
 
 	}
 
@@ -339,7 +339,7 @@ class Magenda extends CI_Model {
        
 	    $this->db->set('agenda_status','dikirim');
 		$this->db->where('agenda_id',$agenda_id);
-	    $this->db->update('agenda');
+	    return $this->db->update('agenda');
     }
 
     //KIRIM USUL (UPDATE DATA NOMINATIF)
@@ -347,7 +347,7 @@ class Magenda extends CI_Model {
 
 		$this->db->set('tahapan_id',2);
 		$this->db->where('agenda_id',$agenda_id);
-	    $this->db->update('nominatif');
+	    return $this->db->update('nominatif');
 		
 	}
 	
@@ -418,6 +418,112 @@ class Magenda extends CI_Model {
 	{
 		$this->db->where('agenda_id',$id);
 		return $this->db->get('agenda');	
+	}	
+	
+	function addPMK($nip,$agenda_id)
+	{	
+		
+		$sql="SELECT DATE(a.PNS_TMTCPN) mulai_pegawai, DATE(NOW()) sampai_pegawai,
+year(NOW()) - year(a.PNS_TMTCPN) tahun_pegawai,
+month(NOW()) - month(a.PNS_TMTCPN) bulan_pegawai,
+		a.PNS_NIPBARU nip, a.PNS_PNSNAM nama, a.PNS_GLRDPN dpn, 
+a.PNS_GLRBLK blk, a.tempat_lahir,DATE(a.PNS_TGLLHRDT) tanggal_lahir,
+b.GAJI_POKOK old_gaji_pokok,
+DATE(a.PNS_TMTGOL) old_tmt_gaji,
+c.PERSETUJUAN_TEKNIS_NOMOR nomor_persetujuan, DATE(c.PERSETUJUAN_TEKNIS_TANGGAL) tanggal_persetujuan,
+a.status, a.pangkat, a.golongan , a.old_masa_kerja_tahun,a.old_masa_kerja_bulan
+FROM (SELECT a.*, SUBSTRING_INDEX(b.JPG_JPGNAM,' ',2) status,
+c.GOL_GOLNAM golongan , c.GOL_PKTNAM pangkat,
+year(a.PNS_TMTGOL)-year(a.PNS_TMTCPN) old_masa_kerja_tahun,
+month(a.PNS_TMTGOL)-month(a.PNS_TMTCPN) old_masa_kerja_bulan,
+d.LOK_LOKNAM tempat_lahir
+FROM mirror.pupns a
+LEFT JOIN mirror.jenpeg b ON a.PNS_JENPEG = b.JPG_JPGKOD  
+LEFT JOIN mirror.golru c ON a.PNS_GOLRU = c.GOL_KODGOL
+LEFT JOIN mirror.lokker d ON d.LOK_LOKKOD = a.PNS_TEMLHR
+WHERE a.PNS_NIPBARU='$nip' ) a
+LEFT JOIN mirror.gaji_pokok b ON (b.MKG <= a.old_masa_kerja_tahun AND b.GOLONGAN_ID = a.PNS_GOLRU AND b.TAHUN_BUAT='2019')
+LEFT JOIN mirror.pupns_pengadaan_info c ON a.PNS_NIPBARU = c.NIP LIMIT 1 ";	
+		$row                            = $this->db->query($sql)->row();
+		
+		
+		$data['agenda_id']				= $agenda_id;
+		$data['nip']				    = $nip;
+		$data['old_masa_kerja_tahun']	= $row->old_masa_kerja_tahun;
+		$data['old_masa_kerja_bulan']	= $row->old_masa_kerja_bulan;
+		$data['old_gaji_pokok']			= $row->old_gaji_pokok;
+		$data['old_tmt_gaji']	        = $row->old_tmt_gaji;
+		$data['nomor_persetujuan']		= $row->nomor_persetujuan;
+		$data['tanggal_persetujuan']	= $row->tanggal_persetujuan;
+		$data['tempat_lahir']			= $row->tempat_lahir;	
+		$data['tanggal_lahir']			= $row->tanggal_lahir;
+		$data['status']					= $row->status;
+		$data['pangkat']				= $row->pangkat;
+		$data['golongan']				= $row->golongan;
+		$data['mulai_pegawai']			= $row->mulai_pegawai;
+		$data['sampai_pegawai']			= $row->sampai_pegawai;
+		$data['tahun_pegawai']			= $row->tahun_pegawai;
+		$data['bulan_pegawai']			= $row->bulan_pegawai;
+		
+		$querySpesimen                  = $this->getSpesimenInstansi();
+		
+		if($querySpesimen->num_rows() > 0)
+		{
+			$r                              = $querySpesimen->row();
+			$data['lokasi_ttd']			    = $r->lokasi_spesimen;
+			$data['jabatan_ttd']			= $r->jabatan_spesimen;
+			$data['nama_ttd']				= $r->nama_spesimen;
+			$data['pangkat_ttd']			= $r->pangkat_spesimen;
+			$data['nip_ttd']				= $r->nip_spesimen;
+		}		
+		
+		$db_debug 			= $this->db->db_debug; 
+		$this->db->db_debug = FALSE; 
+		
+		if (!$this->db->insert('usul_pmk', $data))
+		{
+			$error = $this->db->_error_message();
+			if(!empty($error))
+			{
+				$data['pesan']		= $error;   
+				$data['response'] 	= FALSE;
+			}
+				
+		}
+		else
+		{
+			$data['pesan']		= "Data Berhasil Tersimpan";
+			$data['response']	= TRUE;
+		}	
+		
+		$this->db->db_debug = $db_debug; //restore setting			
+		
+		
+		return $data;
+
+	}	
+	
+	
+	function getSpesimenInstansi()
+	{
+		
+		$instansi   = $this->session->userdata('session_instansi');
+		$area       = substr($instansi,0,2);
+		
+		if($area  == '70' || $area  == '71' || $area  == '79')
+		{
+			$sql_area   = " AND instansi_spesimen='$instansi'";	
+		}	
+		else
+		{
+			$area 		= $this->session->userdata('area');
+			$sql_area   = " AND instansi_spesimen='$instansi' AND area_spesimen='$area' ";	
+		}	
+		
+		$sql="SELECT a.* FROM spesimen_instansi a
+		WHERE 1=1 $sql_area ";
+		return $this->db->query($sql);
+		
 	}	
 
 }

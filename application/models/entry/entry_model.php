@@ -139,7 +139,7 @@ class Entry_model extends CI_Model {
 		b.upload_persetujuan,b.upload_sk,b.file_persetujuan_raw_name,b.file_sk_raw_name,	
 		c.layanan_nama,
 		d.INS_NAMINS instansi ,
-		e.PNS_PNSNAM nama,e.PNS_GOLRU golongan,
+		e.PNS_PNSNAM nama,e.PNS_GOLRU golru,
 		f.tahapan_nama,
 		g.first_name work_name,
 		h.first_name lock_name,

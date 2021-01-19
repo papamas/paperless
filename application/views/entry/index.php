@@ -197,6 +197,7 @@
 						</thead>   
 						<tbody>
 							<?php if($usul->num_rows() > 0):?>
+							
 							<?php  foreach($usul->result() as $value):?>
 							<tr>
 								<td>
@@ -206,8 +207,8 @@
 									{  
 										echo '&nbsp;<a href="#dPhoto" class="btn btn-danger btn-xs" data-tooltip="tooltip"  title="Unduh Photo" id="?id='.$this->myencrypt->encode($value->id_instansi).'&f='.$this->myencrypt->encode($value->orig_name).'&n='.$this->myencrypt->encode($value->nip).'"><i class="fa fa-search"></i></a>';
 									}
-									
-                                    if($layanan === "14")
+																				
+                                    if($layanan === "14" )
 									{  
 										echo '<button class="btn btn-primary btn-xs" data-tooltip="tooltip"  title="Input Persetujuan" data-toggle="modal" data-target="#skModalPG" data-agenda="'.$this->myencrypt->encode($value->agenda_id).'" data-nip="'.$this->myencrypt->encode($value->nip).'"><i class="fa fa-edit"></i></button>';
 										echo '&nbsp;<a href="#cetakSurat" class="btn btn-danger btn-xs cetak" data-tooltip="tooltip"  title="Cetak Surat Peningkatan Pendidikan" id="?a='.$this->myencrypt->encode($value->agenda_id).'&n='.$this->myencrypt->encode($value->nip).'"><i class="fa fa-print"></i></a>';
@@ -217,8 +218,13 @@
 										echo '&nbsp;<button class="btn btn-primary btn-xs" data-tooltip="tooltip"  title="Input Persetujuan" data-toggle="modal" data-target="#skModal"   data-agenda="'.$this->myencrypt->encode($value->agenda_id).'" data-nip="'.$this->myencrypt->encode($value->nip).'"><i class="fa fa-edit"></i></button>';
 								
 									}
+									
+									if($layanan === "19" )
+									{  
+										echo '&nbsp;<a href="#cetakNotaPMK" class="btn btn-success btn-xs cetak" data-tooltip="tooltip"  title="Cetak Nota Persetujuan PMK" id="?a='.$this->myencrypt->encode($value->agenda_id).'&n='.$this->myencrypt->encode($value->nip).'"><i class="fa fa-print"></i></a>';
+									}
 
-									echo '&nbsp;<button class="btn btn-danger btn-xs" data-tooltip="tooltip"  title="Upload Persetujuan" data-toggle="modal" data-target="#uploadModal" data-layanan="'.$value->layanan_id.'" data-agenda="'.$value->agenda_id.'" data-instansi="'.$value->agenda_ins.'" data-nip="'.$value->nip.'" data-gol="'.$value->golongan.'"><i class="fa fa-upload"></i></button>';
+									echo '&nbsp;<button class="btn btn-danger btn-xs" data-tooltip="tooltip"  title="Upload Persetujuan" data-toggle="modal" data-target="#uploadModal" data-layanan="'.$value->layanan_id.'" data-agenda="'.$value->agenda_id.'" data-instansi="'.$value->agenda_ins.'" data-nip="'.$value->nip.'" data-gol="'.$value->golru.'"><i class="fa fa-upload"></i></button>';
 																			
 																	
 								?>
@@ -605,6 +611,11 @@
 		$('.table-responsive').on("click",'a[href="#cetakSurat"]',function(e){
 			var id= this.id;
 		    document.location  = "<?php echo site_url()?>/entry/cetakSurat/"+id;
+		}); 
+		
+		$('.table-responsive').on("click",'a[href="#cetakNotaPMK"]',function(e){
+			var id= this.id;
+		    document.location  = "<?php echo site_url()?>/pmk/cetakAccPmk/"+id;
 		}); 
 		
 		$('#uploadModal').on('show.bs.modal',function(e){

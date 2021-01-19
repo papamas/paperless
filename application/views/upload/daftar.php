@@ -170,7 +170,8 @@
 							<?php 
 							$jenis_sk     = $value->nama_dokumen;
 														
-							if($jenis_sk != "IJAZAH" && $jenis_sk != "TRANSKRIP" && $jenis_sk != "IBEL" && $jenis_sk != "MOU") 
+							if($jenis_sk != "IJAZAH" && $jenis_sk != "TRANSKRIP" && 
+							$jenis_sk != "IBEL" && $jenis_sk != "MOU") 
 							{
 								switch($value->minor_dok){
 									case 45:

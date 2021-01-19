@@ -448,7 +448,10 @@ class Agenda extends MY_Controller {
 		$db_debug 			= $this->db->db_debug; 
 		$this->db->db_debug = FALSE; 
 		
-		if (!$this->magenda->mtambah_nominatif($data)) {
+		$this->db->trans_start();
+		
+		if (!$this->magenda->mtambah_nominatif($data)) 
+		{
 			
 			$error = $this->db->_error_message(); 
 			
@@ -458,10 +461,19 @@ class Agenda extends MY_Controller {
 			}
 			else
 			{
-				$this->session->set_flashdata('berhasil', "Nominatif berhasil ditambah");
-			}
-			
+				$this->session->set_flashdata('berhasil', "Nominatif berhasil ditambah");	
+				
+			}			
 		}
+		
+		// add usul pmk
+		if($layanan_id == 19)
+		{	
+			$this->magenda->addPMK($nip,$agenda_id);					
+		}			
+		
+		$this->db->trans_complete();
+
 		
 		$this->db->db_debug = $db_debug; //restore setting	
 		redirect('agenda/nominatif/'.$agenda_id);
@@ -615,6 +627,7 @@ class Agenda extends MY_Controller {
 		readfile(base_url().'format/FormatNominatif.xls');
 	}	
 	
+		
 	/* Kirim Notifikasi Telegram ke BKN per bidang layanan*/
 	
 	function send_to_Telegram($agenda_id,$agenda_jumlah)
