@@ -404,6 +404,11 @@ class Entry extends MY_Controller {
 					
 						}	
 						
+						if($layanan === "19" )
+						{  
+							$html .='&nbsp;<a href="#cetakNotaPMK" class="btn btn-success btn-xs cetak" data-tooltip="tooltip"  title="Cetak Nota Persetujuan PMK" id="?a='.$this->myencrypt->encode($value->agenda_id).'&n='.$this->myencrypt->encode($value->nip).'"><i class="fa fa-print"></i></a>';
+						}
+						
 						$html .='&nbsp;<button class="btn btn-danger btn-xs" data-tooltip="tooltip"  title="upload persetujuan" data-toggle="modal" data-target="#uploadModal" data-layanan="'.$value->layanan_id.'" data-agenda="'.$value->agenda_id.'" data-instansi="'.$value->agenda_ins.'" data-nip="'.$value->nip.'"><i class="fa fa-upload"></i></button>';
 						
 			$html .='</td>
@@ -569,13 +574,13 @@ class Entry extends MY_Controller {
 		
 		switch($layanan){
 			case 1:
-				$name  = 'NPKP_'.$nip.'_'.$gol;				
+				$name  = 'PERTEK_KP_'.$nip.'_'.$gol;				
 			break;
 			case 2:
-				$name  = 'NPKP_'.$nip.'_'.$gol;					
+				$name  = 'PERTEK_KP_'.$nip.'_'.$gol;					
 			break;
 			case 3:
-				$name  = 'NPKP_'.$nip.'_'.$gol;			
+				$name  = 'PERTEK_KP_'.$nip.'_'.$gol;			
 			break;			
 			case 4:
 				$name  = 'PERTEK_PENSIUN_'.$nip;				
@@ -602,13 +607,19 @@ class Entry extends MY_Controller {
 				$name  = 'KARPEG_'.$nip;				
 			break;
 			case 12:
-				$name  = 'NPKP_'.$nip;			
+				$name  = 'PERTEK_KP_'.$nip.'_'.$gol;		
 			break;
 			case 13:
 				$name  = 'SK_MUTASI'.$nip;			
 			break;
 			case 14:
 				$name  = 'SK_PG_'.$nip;;			
+			break;
+			case 18:
+				$name  = 'PERTEK_PENSIUN_'.$nip;			
+			break;
+			case 19:
+				$name  = 'PERTEK_PMK_'.$nip;;			
 			break;
 		}	
 									

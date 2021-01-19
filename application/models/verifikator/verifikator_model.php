@@ -819,7 +819,8 @@ order by e.PNS_PNSNAM ASC";
                 $sql = " AND f.nip = '999999999' ";		
 		}	
 		
-		$q  ="SELECT f.*,
+		$q  ="SELECT a.* FROM 
+( SELECT f.*,
 		g.layanan_nama, 
 		h.tahapan_nama,
 		i.first_name usul_lock_name
@@ -842,7 +843,8 @@ LEFT JOIN tahapan h ON f.usul_tahapan_id = h.tahapan_id
 LEFT JOIN app_user i ON i.user_id = f.usul_lock_by    
 WHERE f.usul_status='BELUM'
 AND f.usul_tahapan_id IN ('4','5','6','7','8','9','10','11')
-$sql";	
+$sql ) a
+INNER JOIN user_layanan_role  b ON (a.layanan_id=b.layanan_id AND  b.id_instansi =9 AND b.user_id='$user_id')";	
 		$query 		= $this->db->query($q);
 		return      $query;			
 	}
@@ -1474,5 +1476,111 @@ LEFT JOIN KANREG0.KEDUDUKAN_HUKUM g ON a.KEDUDUKAN_HUKUM_ID = g.ID";
         return $this->oracle->query($sql);
 		
 	}	
+	
+	function getUsul($agenda,$nip)
+	{
+		$sql=" SELECT a.*,
+		DATE_FORMAT(old_tmt_gaji,'%d-%m-%Y') old_tmt_gaji,	
+		DATE_FORMAT(tanggal_persetujuan,'%d-%m-%Y') tanggal_persetujuan,
+		DATE_FORMAT(baru_tmt_gaji,'%d-%m-%Y') baru_tmt_gaji,
+		DATE_FORMAT(mulai_pegawai,'%d-%m-%Y') mulai_pegawai,
+		DATE_FORMAT(sampai_pegawai,'%d-%m-%Y') sampai_pegawai,
+		DATE_FORMAT(mulai_honor,'%d-%m-%Y') mulai_honor,
+		DATE_FORMAT(sampai_honor,'%d-%m-%Y') sampai_honor,
+		DATE_FORMAT(tanggal_ijazah1,'%d-%m-%Y') tanggal_ijazah1,
+		DATE_FORMAT(tanggal_ijazah2,'%d-%m-%Y') tanggal_ijazah2,
+		DATE_FORMAT(tanggal_ijazah3,'%d-%m-%Y') tanggal_ijazah3,
+		DATE_FORMAT(tanggal_ijazah4,'%d-%m-%Y') tanggal_ijazah4,
+		DATE_FORMAT(tanggal_ijazah5,'%d-%m-%Y') tanggal_ijazah5,
+		DATE_FORMAT(acc_tmt_gaji,'%d-%m-%Y') acc_tmt_gaji
+		FROM  usul_pmk a 
+		WHERE a.agenda_id='$agenda' AND a.nip='$nip'  " ;			
+		return $this->db->query($sql);
+		
+	}	
+	
+	function saveAccPmk()
+	{
+		$data['agenda_id']				= $this->input->post('agendaId');
+		$data['nip']				    = $this->input->post('nip');
+		$data['old_masa_kerja_tahun']	= $this->input->post('oldTahun');
+		$data['old_masa_kerja_bulan']	= $this->input->post('oldBulan');
+		$data['old_gaji_pokok']			= $this->input->post('oldGaji');
+		$data['old_tmt_gaji']	        = date('Y-m-d',strtotime($this->input->post('oldTmtGaji')));
+		$data['nomor_persetujuan']		= $this->input->post('nomorPersetujuan');
+		$data['tanggal_persetujuan']	= date('Y-m-d',strtotime($this->input->post('tanggalPersetujuan')));
+		$data['baru_masa_kerja_tahun']	= $this->input->post('baruTahun');
+		$data['baru_masa_kerja_bulan']	= $this->input->post('baruBulan');
+		$data['baru_gaji_pokok']		= $this->input->post('baruGaji');
+		$data['baru_tmt_gaji']			= date('Y-m-d',strtotime($this->input->post('baruTmtGaji')));
+		$data['mulai_honor']			= date('Y-m-d',strtotime($this->input->post('mulaiHonor')));
+		$data['sampai_honor']			= date('Y-m-d',strtotime($this->input->post('sampaiHonor')));
+		$data['tahun_honor']			= $this->input->post('tahunHonor');
+		$data['bulan_honor']			= $this->input->post('bulanHonor');
+		$data['mulai_pegawai']			= date('Y-m-d',strtotime($this->input->post('mulaiPegawai')));
+		$data['sampai_pegawai']			= date('Y-m-d',strtotime($this->input->post('sampaiPegawai')));
+		$data['tahun_pegawai']			= $this->input->post('tahunPegawai');
+		$data['bulan_pegawai']			= $this->input->post('bulanPegawai');
+		$data['salinan_sah']			= $this->input->post('salinanSah');
+		$data['sk_pangkat']				= $this->input->post('skPangkat');
+		$data['tempat_lahir']			= $this->input->post('tempatLahir');
+		
+		$data['tingkat1']			    = $this->input->post('tingkat1');
+		$data['nomor_ijazah1']			= $this->input->post('nomorIjazah1');
+		$data['tanggal_ijazah1']	    = date('Y-m-d',strtotime($this->input->post('tanggalIjazah1')));
+		
+		$data['tingkat2']			    = $this->input->post('tingkat2');
+		$data['nomor_ijazah2']			= $this->input->post('nomorIjazah2');
+		$data['tanggal_ijazah2']	    = date('Y-m-d',strtotime($this->input->post('tanggalIjazah2')));
+		
+		$data['tingkat3']			    = $this->input->post('tingkat3');
+		$data['nomor_ijazah3']			= $this->input->post('nomorIjazah3');
+		$data['tanggal_ijazah3']	    = date('Y-m-d',strtotime($this->input->post('tanggalIjazah3')));
+		
+		$data['tingkat4']			    = $this->input->post('tingkat4');
+		$data['nomor_ijazah4']			= $this->input->post('nomorIjazah4');
+		$data['tanggal_ijazah4']	    = date('Y-m-d',strtotime($this->input->post('tanggalIjazah4')));
+		
+		$data['tingkat5']			    = ($this->input->post('tingkat5') ? $this->input->post('tingkat5') : NULL) ;
+		$data['nomor_ijazah5']			= $this->input->post('nomorIjazah5');
+		$data['tanggal_ijazah5']	    = ($this->input->post('tanggalIjazah5') ? date('Y-m-d',strtotime($this->input->post('tanggalIjazah5'))) : NULL );
+		
+		$data['acc_masa_kerja_tahun']	= $this->input->post('baruTahunAcc');
+		$data['acc_masa_kerja_bulan']	= $this->input->post('baruBulanAcc');
+		$data['acc_gaji_pokok']			= $this->input->post('baruGajiAcc');
+		$data['acc_tmt_gaji']			= date('Y-m-d',strtotime($this->input->post('baruTmtGajiAcc')));
+		
+		$data['dinilai_tahun_honor']			= $this->input->post('dinilaiTahunHonor');
+		$data['dinilai_bulan_honor']			= $this->input->post('dinilaiBulanHonor');
+		$data['dinilai_tahun_pegawai']			= $this->input->post('dinilaiTahunPegawai');
+		$data['dinilai_bulan_pegawai']			= $this->input->post('dinilaiBulanPegawai');
+		
+		$data['keterangan']						= $this->input->post('keterangan');
+		
+		$db_debug 			= $this->db->db_debug; 
+		$this->db->db_debug = FALSE; 
+		
+		$this->db->where('nip',$this->input->post('nip'));
+		$this->db->where('agenda_id',$this->input->post('agendaId'));		
+		if (!$this->db->update('usul_pmk', $data))
+		{
+			$error = $this->db->_error_message();
+			if(!empty($error))
+			{
+                $data['pesan']		= $error;   
+				$data['response'] 	= FALSE;
+			}
+            	
+        }
+		else
+		{
+			$data['pesan']		= "Data Berhasil Tersimpan";
+			$data['response']	= TRUE;
+		}	
+		
+		$this->db->db_debug = $db_debug; //restore setting			
+		
+		return $data;
+	}		
 	
 }

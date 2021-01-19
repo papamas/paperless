@@ -20,7 +20,9 @@ class Profile extends MY_Controller {
 	{
 		
 		
-		$data['message']     = '';
+		$data['msg1']     	 = '';
+		$data['msg2']     	 = '';
+		$data['msg3']     	 = '';
 		$data['name']        =  $this->auth->getName();
         $data['jabatan']     =  $this->auth->getJabatan();
 		$data['member']	     =  $this->auth->getCreated();
@@ -30,8 +32,11 @@ class Profile extends MY_Controller {
 		$data['tab_setting']     	 = 'active';
 		$data['tab_change_password'] = '';
 		$data['tab_activity']        = '';
-		$data['menu']     =  $this->menu->build_menu();
-		$data['instansi']  = $this->profile->getInstansi();
+		$data['tab_spesimen']        = '';
+		$data['menu']         = $this->menu->build_menu();
+		$data['instansi']     = $this->profile->getInstansi();
+		$data['spesimen']     = $this->profile->getSpesimen();
+		
 		$this->load->view('profile/vprofile',$data);
 	}
 	
@@ -49,40 +54,50 @@ class Profile extends MY_Controller {
     public function setting()
     {    
 		
-		$first_name    = $this->input->post('first_name');
-		$last_name     = $this->input->post('last_name');
-		$email         = $this->input->post('email');
-		$gender        = $this->input->post('gender');
-		$jabatan       = $this->input->post('jabatan');
-		$unit_kerja    = $this->input->post('unit_kerja');
-		$id_instansi   = $this->input->post('instansi');
+		$this->form_validation->set_rules('first_name', 'first_name', 'required');
+		$this->form_validation->set_rules('last_name', 'last_name', 'required');
+		$this->form_validation->set_rules('email', 'email', 'required');
+		$this->form_validation->set_rules('gender', 'gender', 'required');
+		$this->form_validation->set_rules('jabatan', 'jabatan', 'required');
+		$this->form_validation->set_rules('unit_kerja', 'unit_kerja', 'required');
+		$this->form_validation->set_rules('instansi', 'instansi', 'required');
+		$this->form_validation->set_rules('area', 'area', 'required');
+
+		
+		$this->form_validation->set_error_delimiters('<span class="text-red">', '</span>');
 		
 		
-		
-		$data = array(
-		   'first_name'       => $first_name ,
-		   'last_name'        => $last_name ,
-		   'email'            => $email,
-		   'gender'           => $gender,
-		   'jabatan'          => $jabatan,
-		   'id_bidang'        => $this->session->userdata('session_bidang'),	
-		   'id_instansi'      => $this->session->userdata('session_instansi'),
-		);
-		
-		
-		
-		if($this->input->post())
+		if($this->form_validation->run() == FALSE)
 		{
-		   $this->profile->setProfile($data); 
-		   $data['message']     = ' <p><h4 class="text-green">Setting Profile save successfully...</h4><p>';
+			$data['msg1']  ='<p><h4 class="text-red">Lengkapai Form</h4><p>';
 		}
 		else
 		{
-			 $data['message']     = '';
-        }	
+			$first_name    = $this->input->post('first_name');
+			$last_name     = $this->input->post('last_name');
+			$email         = $this->input->post('email');
+			$gender        = $this->input->post('gender');
+			$jabatan       = $this->input->post('jabatan');
+			$unit_kerja    = $this->input->post('unit_kerja');
+			$id_instansi   = $this->input->post('instansi');
+			$area   	   = $this->input->post('area');
+			
 		
-		
-		
+			$data = array(
+			   'first_name'       => $first_name ,
+			   'last_name'        => $last_name ,
+			   'email'            => $email,
+			   'gender'           => $gender,
+			   'jabatan'          => $jabatan,
+			   'area'             => $area,
+			   'id_bidang'        => $unit_kerja,	
+			   'id_instansi'      => $this->session->userdata('session_instansi'),
+			);
+			
+			$this->profile->setProfile($data); 
+			$data['msg1']     	 = ' <p><h4 class="text-green">Setting Profile save successfully...</h4><p>';
+		}			
+				
 		$data['name']        =  $this->auth->getName();
 		$data['jabatan']     =  $this->auth->getJabatan();
 		$data['member']	     =  $this->auth->getCreated();
@@ -92,8 +107,13 @@ class Profile extends MY_Controller {
 		$data['tab_setting']     	 = 'active';
 		$data['tab_change_password'] = '';
 		$data['tab_activity']        = '';
-		$data['menu']     =  $this->menu->build_menu();
-		$data['instansi']  = $this->profile->getInstansi();
+		$data['tab_spesimen']        = '';
+		
+		$data['msg2']     	 = '';
+		$data['msg3']     	 = '';
+		$data['menu']     	  =  $this->menu->build_menu();
+		$data['instansi']     = $this->profile->getInstansi();
+		$data['spesimen']     = $this->profile->getSpesimen();
 		$this->load->view('profile/vprofile',$data); 
     }
 
@@ -114,12 +134,12 @@ class Profile extends MY_Controller {
 		
 		if($this->form_validation->run() == FALSE)
 		{
-			$data['message']     = '';
+			$data['msg2']     = '<p><h4 class="text-red">Lengkapai Form</h4><p>';
 		}
 		else
 		{
 		    $this->profile->setPassword($newPassword);
-			$data['message']     = ' <p><h4 class="text-green">Change Password save successfully...</h4><p>';
+			$data['msg2']     	 = ' <p><h4 class="text-green">Change Password save successfully...</h4><p>';
 		}
 
         
@@ -132,8 +152,12 @@ class Profile extends MY_Controller {
 		$data['tab_setting']     	 = '';
 		$data['tab_change_password'] = 'active';
 		$data['tab_activity']        = '';
-		$data['menu']     =  $this->menu->build_menu();
-		$data['instansi']  = $this->profile->getInstansi();
+		$data['tab_spesimen']        = '';
+		$data['msg1']     	 = '';		
+		$data['msg3']     	 = '';
+		$data['menu']         =  $this->menu->build_menu();
+		$data['instansi']     = $this->profile->getInstansi();
+		$data['spesimen']     = $this->profile->getSpesimen();
 		$this->load->view('profile/vprofile',$data);  		
     }
 
@@ -151,5 +175,50 @@ class Profile extends MY_Controller {
 		{
 			return TRUE;
 		}
+	}	
+	
+	public function setSpesimen()
+    {
+		$this->form_validation->set_rules('lokasiSpesimen', 'lokasiSpesimen', 'required');
+		$this->form_validation->set_rules('jabatanSpesimen', 'jabatanSpesimen', 'required');
+		$this->form_validation->set_rules('namaSpesimen', 'namaSpesimen', 'required');
+		$this->form_validation->set_rules('pangkatSpesimen', 'pangkatSpesimen', 'required');
+		$this->form_validation->set_rules('nipSpesimen', 'nipSpesimen', 'required');
+		$this->form_validation->set_rules('instansiSpesimen', 'instansiSpesimen', 'required');
+		$this->form_validation->set_rules('areaSpesimen', 'areaSpesimen', 'required');
+		
+		$this->form_validation->set_error_delimiters('<span class="text-red">', '</span>');
+		
+		
+		
+		
+		if($this->form_validation->run() == FALSE)
+		{
+			
+			$data['msg3']     	 = ' <p><h4 class="text-red">Lengkapai Form</h4><p>';
+		}
+		else
+		{
+		    $this->profile->setSpesimen();
+			$data['msg3']     	 = ' <p><h4 class="text-green">Spesimen berhasil tersimpan</h4><p>';
+		}
+		
+		$data['name']                =  $this->auth->getName();
+		$data['jabatan']             =  $this->auth->getJabatan();
+		$data['member']	             =  $this->auth->getCreated();
+		$data['avatar']	             =  $this->auth->getAvatar();
+		$data['profile']             =  $this->_getProfile();
+		$data['unit_kerja']  		 =  $this->_getUnitKerja();
+		$data['tab_setting']     	 = '';
+		$data['tab_change_password'] = '';
+		$data['tab_activity']        = '';
+		$data['tab_spesimen']        = 'active';
+		$data['msg1']     	 		 = '';		
+		$data['msg2']     	 		 = '';
+		$data['menu']     			 = $this->menu->build_menu();
+		$data['instansi']  			 = $this->profile->getInstansi();
+		$data['spesimen']     = $this->profile->getSpesimen();
+		$this->load->view('profile/vprofile',$data);	
+		
 	}	
 }

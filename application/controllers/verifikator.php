@@ -505,7 +505,104 @@ class Verifikator extends MY_Controller {
 			echo $html;
 		} 	
 	}
+	
+	public function getUsul()
+	{
+		$agenda     = $this->input->get('agendaId');
+		$nip        = $this->input->get('nip');
+		
+		$result     = $this->verifikator->getUsul($agenda,$nip);
+		echo json_encode($result->row());
+	}	
 
+    public function saveAccPmk()
+	{
+		$this->form_validation->set_rules('agendaId', 'agendaId', 'required');
+		$this->form_validation->set_rules('nip', 'nip', 'required');
+		$this->form_validation->set_rules('oldTahun', 'oldTahun', 'required|is_natural');
+		$this->form_validation->set_rules('oldBulan', 'oldBulan', 'required|is_natural');
+		$this->form_validation->set_rules('oldGaji', 'oldGaji', 'required|is_natural');
+		$this->form_validation->set_rules('oldTmtGaji', 'oldTmtGaji', 'required');
+		$this->form_validation->set_rules('nomorPersetujuan', 'nomorPersetujuan', 'required');
+		$this->form_validation->set_rules('tanggalPersetujuan', 'tanggalPersetujuan', 'required');
+		$this->form_validation->set_rules('baruTahun', 'baruTahun', 'required|is_natural');
+		$this->form_validation->set_rules('baruBulan', 'baruBulan', 'required|is_natural');
+		$this->form_validation->set_rules('baruGaji', 'baruGaji', 'required|is_natural');
+		$this->form_validation->set_rules('baruTmtGaji', 'baruTmtGaji', 'required');
+		$this->form_validation->set_rules('mulaiHonor', 'mulaiHonor', 'required');
+		$this->form_validation->set_rules('sampaiHonor', 'sampaiHonor', 'required');
+		$this->form_validation->set_rules('tahunHonor', 'tahunHonor', 'required|is_natural');
+		$this->form_validation->set_rules('bulanHonor', 'bulanHonor', 'required|is_natural');
+		$this->form_validation->set_rules('mulaiPegawai', 'mulaiPegawai', 'required');
+		$this->form_validation->set_rules('sampaiPegawai', 'sampaiPegawai', 'required');
+		$this->form_validation->set_rules('tahunPegawai', 'tahunPegawai', 'required|is_natural');
+		$this->form_validation->set_rules('bulanPegawai', 'bulanPegawai', 'required|is_natural');
+		$this->form_validation->set_rules('salinanSah', 'salinanSah', 'required');
+		$this->form_validation->set_rules('skPangkat', 'skPangkat', 'required');
+		$this->form_validation->set_rules('tempatLahir', 'tempatLahir', 'required');
+		
+		$this->form_validation->set_rules('tingkat1', 'tingkat1', 'required');
+		$this->form_validation->set_rules('nomorIjazah1', 'nomorIjazah1', 'required');
+		$this->form_validation->set_rules('tanggalIjazah1', 'tanggalIjazah1', 'required');
+		
+		$this->form_validation->set_rules('tingkat2', 'tingkat2', 'required');
+		$this->form_validation->set_rules('nomorIjazah2', 'nomorIjazah2', 'required');
+		$this->form_validation->set_rules('tanggalIjazah2', 'tanggalIjazah2', 'required');
+		
+		$this->form_validation->set_rules('tingkat3', 'tingkat3', 'required');
+		$this->form_validation->set_rules('nomorIjazah3', 'nomorIjazah3', 'required');
+		$this->form_validation->set_rules('tanggalIjazah3', 'tanggalIjazah3', 'required');
+		
+		$this->form_validation->set_rules('tingkat4', 'tingkat4', 'required');
+		$this->form_validation->set_rules('nomorIjazah4', 'nomorIjazah4', 'required');
+		$this->form_validation->set_rules('tanggalIjazah4', 'tanggalIjazah4', 'required');
+		
+		
+		$this->form_validation->set_rules('baruTahunAcc', 'baruTahunAcc', 'required|is_natural');
+		$this->form_validation->set_rules('baruBulanAcc', 'baruBulanAcc', 'required|is_natural');
+		$this->form_validation->set_rules('baruGajiAcc', 'baruGajiAcc', 'required|is_natural');
+		$this->form_validation->set_rules('baruTmtGajiAcc', 'baruTmtGajiAcc', 'required');
+				
+		$this->form_validation->set_rules('dinilaiTahunHonor', 'dinilaiTahunHonor', 'required|is_natural');
+		$this->form_validation->set_rules('dinilaiBulanHonor', 'dinilaiBulanHonor', 'required|is_natural');
+		$this->form_validation->set_rules('dinilaiTahunPegawai', 'dinilaiTahunPegawai', 'required|is_natural');
+		$this->form_validation->set_rules('dinilaiBulanPegawai', 'dinilaiBulanPegawai', 'required|is_natural');
+		
+		
+		if($this->form_validation->run() == FALSE)
+		{
+			$data['pesan']	= "Lengkapi/Perbaiki Form";
+			$this->output
+				->set_status_header(406)
+				->set_content_type('application/json', 'utf-8')
+				->set_output(json_encode($data));
+			return FALSE;	
+		}	
+		else
+		{
+			$result     = $this->verifikator->saveAccPmk();
+			
+			$data['pesan']		= $result['pesan'];
+			$data['response']	= $result['response'];
+			
+			if($result['response'])
+			{
+			
+				$this->output
+						->set_status_header(200)
+						->set_content_type('application/json', 'utf-8')
+						->set_output(json_encode($data));
+			}
+			else
+			{
+				$this->output
+					->set_status_header(406)
+					->set_content_type('application/json', 'utf-8')
+					->set_output(json_encode($data));
+					return FALSE;	
+			}		
+		}
+	}	
 
     /*TASPEN*/
     public function verifyGetTaspen()
