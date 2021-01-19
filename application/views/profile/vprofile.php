@@ -103,14 +103,88 @@
                 <ul class="nav nav-tabs">
                   <li class="<?php echo $tab_setting?>" ><a href="#settings" data-toggle="tab">Settings</a></li>
 				  <li class="<?php echo $tab_change_password?>" ><a href="#change-password" data-toggle="tab">Change Password</a></li>
-				  <li class="<?php echo $tab_activity?> " ><a href="#activity" data-toggle="tab">Activity</a></li>                  
+				  <li class="<?php echo $tab_activity?> " ><a href="#activity" data-toggle="tab">Activity</a></li> 
+				  <li class="<?php echo $tab_spesimen?> "><a href="#tab_4" data-toggle="tab">Spesimen</a></li>  	
                 </ul>
                 <div class="tab-content">
                   <div class="tab-pane" id="activity">
                     <p class="text-info">Under Development</p>
                   </div><!-- /.tab-pane -->
+				  <div class="<?php echo $tab_spesimen?> tab-pane"  id="tab_4">
+				    <?php echo $msg3?>
+					<form class="form-horizontal" method="post" action="<?php echo site_url()?>/profile/setSpesimen/">
+						<?php	$row  = $spesimen->row();?>
+						<input type="hidden" name="aksi" value="<?php echo ($spesimen->num_rows() > 0 ? 2 : 1)?>"/>
+						<input type="hidden" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash();?>" style="display: none">
+						<div class="form-group">
+							<label class="col-sm-2 control-label">Lokasi</label>
+							<div class="col-sm-10">
+							  <input type="text" name="lokasiSpesimen" class="form-control"   value="<?php echo  (!empty(set_value('lokasiSpesimen')) ? set_value('lokasiSpesimen') : @$row->lokasi_spesimen)?>" required />
+							  <p class="help-block"><?php echo form_error('lokasiSpesimen'); ?></p>
+							</div>
+                        </div>
+						<div class="form-group">
+							<label class="col-sm-2 control-label">Jabatan</label>
+							<div class="col-sm-10">
+							  <input type="text" name="jabatanSpesimen" class="form-control"  value="<?php echo (!empty(set_value('jabatanSpesimen')) ? set_value('jabatanSpesimen') : @$row->jabatan_spesimen)?>" required />
+							  <p class="help-block"><?php echo form_error('jabatanSpesimen'); ?></p>
+							</div>
+                        </div>
+						<div class="form-group">
+							<label class="col-sm-2 control-label">Nama</label>
+							<div class="col-sm-10">
+							  <input type="text" name="namaSpesimen" class="form-control"  value="<?php echo (!empty(set_value('namaSpesimen')) ? set_value('namaSpesimen') : @$row->nama_spesimen)?>" required />
+							  <p class="help-block"><?php echo form_error('namaSpesimen'); ?></p>
+							</div>
+                        </div>
+						<div class="form-group">
+							<label class="col-sm-2 control-label">Pangkat</label>
+							<div class="col-sm-4">
+							  <input type="text" name="pangkatSpesimen" class="form-control"  value="<?php echo (!empty(set_value('pangkatSpesimen')) ? set_value('pangkatSpesimen') : @$row->pangkat_spesimen)?>" required />
+							  <p class="help-block"><?php echo form_error('pangkatSpesimen'); ?></p>
+							</div>
+							<label class="col-sm-1 control-label">NIP</label>
+							<div class="col-sm-5">
+							  <input type="text" name="nipSpesimen" class="form-control"  value="<?php echo (!empty(set_value('nipSpesimen')) ? set_value('nipSpesimen') : @$row->nip_spesimen)?>" required />
+							  <p class="help-block"><?php echo form_error('nipSpesimen'); ?></p>
+							</div>
+                        </div>
+						<div class="form-group">
+							<label class="col-sm-2 control-label">Instansi</label>
+							<div class="col-sm-10">
+								<select name="instansiSpesimen" class="form-control">
+									<?php if($instansi->num_rows() > 0):?>
+									<?php foreach($instansi->result() as $value):?>
+									<option value="<?php echo $value->INS_KODINS?>" 
+									<?php echo ($value->INS_KODINS == @$row->instansi_spesimen ? 'selected' : '');?>><?php echo $value->INS_NAMINS?></option>
+									<?php endforeach;?>
+									<?php endif;?>
+								</select>
+							  <p class="help-block"><?php echo form_error('instansiSpesimen'); ?></p>
+							</div>
+                        </div>
+						<div class="form-group">
+							<label class="col-sm-2 control-label">Area</label>
+							<div class="col-sm-10">
+								<select class="form-control" name="areaSpesimen">
+									<option value="">--pilih--</option>
+									<option value="70" <?php echo (70 == @$row->area_spesimen ? 'selected' : '') ?> >Sulawesi Utara</option>
+									<option value="71" <?php echo (71 == @$row->area_spesimen ? 'selected' : '') ?> >Gorontalo</option>
+									<option value="79" <?php echo (79 == @$row->area_spesimen ? 'selected' : '' )?>>Maluku Utara</option>
+								</select>
+							  <p class="help-block"><?php echo form_error('areaSpesimen'); ?></p>
+							</div>
+                        </div>
+						<div class="form-group">
+							<div class="col-sm-offset-2 col-sm-9">
+							  <button type="submit" class="btn btn-danger">Simpan Spesimen</button>
+							</div>
+						</div>
+					</form>
+                  </div><!-- /.tab-pane -->
+				  
 				  <div class="<?php echo $tab_change_password?> tab-pane" id="change-password">
-                    <?php echo $message?>
+                    <?php echo $msg2?>
 					
 					<form class="form-horizontal" method="post" action="<?php echo site_url()?>/profile/changePassword/">
 					  <input type="hidden" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash();?>" style="display: none">
@@ -144,7 +218,7 @@
                   </div><!-- /.tab-pane -->
 
                   <div class="<?php echo $tab_setting?> tab-pane" id="settings">
-				     <?php echo $message?>
+				     <?php echo $msg1?>
                     <form class="form-horizontal" method="post" action="<?php echo site_url()?>/profile/setting/">
 					  <input type="hidden" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash();?>" style="display: none">
 					  <div class="form-group">
@@ -187,30 +261,27 @@
 					  
 						<div class="form-group">
 							  <label class="col-sm-2">Instansi</label>
-							  <div class="col-sm-10">
-							    <?php if($this->session->userdata('user_id') === 1):?>
-								<select name="instansi" class="form-control">
+							  <div class="col-sm-10">							   
+								<select name="instansi" class="form-control hidden">
 									<?php if($instansi->num_rows() > 0):?>
 									<?php foreach($instansi->result() as $value):?>
 									<option value="<?php echo $value->INS_KODINS?>" <?php if($value->INS_KODINS == $profile->id_instansi) echo 'selected';?>><?php echo $value->INS_NAMINS?></option>
 									<?php endforeach;?>
 									<?php endif;?>
 								</select>
-								<?php endif;?>
+								
 								 <input type="text" class="form-control" value="<?php echo $profile->instansi?>">
 							  </div>	
-							</div>
+						</div>
                       <div class="form-group">
-						  <label class="col-sm-2 control-label">Unit Kerja</label>
+						  <label class="col-sm-2 control-label">Layanan</label>
 						  <div class="col-sm-10">				    
-							 <?php if($this->session->userdata('user_id') === 1):?>
-							 <select class="form-control" name="unit_kerja" required style="width:100%">								
+							<select class="form-control" name="unit_kerja" required style="width:100%">								
 							<?php foreach($unit_kerja->result() as $value):?>
-							<option value="<?php echo $value->id_unit?>" <?php if($value->id_unit == $profile->id_bidang) echo 'selected';?>><?php echo $value->nama_unit?></option>
+							<option value="<?php echo $value->id_bidang?>" <?php if($value->id_bidang == $profile->id_bidang) echo 'selected';?>><?php echo $value->nama_unit?></option>
 							<?php endforeach;?>
 							</select>
-							<?php endif;?>
-							<input type="text" class="form-control" value="<?php echo $profile->nama_unit?>">
+							<input type="text" class="form-control hidden" value="<?php echo $profile->nama_unit?>">
 						  </div>
 					  </div>
 					  <div class="form-group">
@@ -219,6 +290,18 @@
                           <input type="text" name="jabatan" class="form-control" value="<?php echo $profile->jabatan?>" required />
                         </div>
                       </div>
+					  <div class="form-group">
+							<label class="col-sm-2 control-label">Area</label>
+							<div class="col-sm-10">
+								<select class="form-control" name="area">
+									<option value="">--pilih--</option>
+									<option value="70" <?php echo (70 == @$profile->area ? 'selected' : '') ?> >Sulawesi Utara</option>
+									<option value="71" <?php echo (71 == @$profile->area ? 'selected' : '') ?> >Gorontalo</option>
+									<option value="79" <?php echo (79 == @$profile->area ? 'selected' : '' )?>>Maluku Utara</option>
+								</select>
+							  <p class="help-block"><?php echo form_error('area'); ?></p>
+							</div>
+                        </div>
                       <div class="form-group">
                         <div class="col-sm-offset-2 col-sm-10">
                           <button type="submit" class="btn btn-primary">Submit</button>

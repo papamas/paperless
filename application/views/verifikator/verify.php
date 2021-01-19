@@ -3,7 +3,9 @@
  <head>
     <?php echo $this->load->view('vheader');?>
 	<link rel="stylesheet" href="<?php echo base_url()?>assets/dist/css/tree.css">   
-	<link rel="stylesheet" href="<?php echo base_url()?>assets/dist/css/custom.css">   
+	<link rel="stylesheet" href="<?php echo base_url()?>assets/dist/css/custom.css">  
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>assets/plugins/datepicker/bootstrap-datetimepicker.min.css" />
+	
   </head> 
 	
 	<style>
@@ -166,6 +168,7 @@
 		    <?php if($usul->num_rows() > 0) :?>
 			<?php 
 			$row 	 = $usul->row();
+			
 			$tipe    = $this->session->userdata('session_user_tipe');
 			if($row->layanan_id == 9 || $row->layanan_id == 10 || $row->layanan_id == 11)
 			{
@@ -192,8 +195,8 @@
 						  <li><a class="hidden zoom-fab zoom-btn-sm zoom-btn-feedback scale-transition scale-out" data-tooltip="tooltip" data-placement="top" title="'.$row->tahapan_nama.'"><i class="fa fa-bell"></i></a></li>
 						  <li><a id="kerja" class="zoom-fab zoom-btn-sm zoom-btn-person scale-transition scale-out" data-toggle="modal" data-target="'.($row->nomi_locked == '1' ? $target : '#kerjaModal').'" data-tooltip="tooltip" data-placement="top" title="'.($row->nomi_locked == '1' ? 'Berkas telah di kunci oleh '.$row->lock_name :  'Kerjakan berkas Layanan '.$row->layanan_nama.' atas nama '.$row->nama).'"><i id="fa-user" class="fa fa-user"></i></a></li>
 						  <li><a id="verifikasi" class="hidden zoom-fab zoom-btn-sm zoom-btn-doc scale-transition scale-out" data-toggle="modal" data-target="#verifikasiModal" data-tooltip="tooltip" data-placement="top" title="" data-original-title="Hasil Verifikasi berkas ASN atas nama '.$row->nama.'"><i class="fa fa-book"></i></a></li>
-						  <li><a class="hidden zoom-fab zoom-btn-sm zoom-btn-tangram scale-transition scale-out"><i class="fa fa-dashboard"></i></a></li>
-						  <li><a class="hidden zoom-fab zoom-btn-sm zoom-btn-report scale-transition scale-out"><i class="fa fa-edit"></i></a></li>
+						  <li><a class="zoom-fab zoom-btn-sm zoom-btn-report scale-transition scale-out"><i class="fa fa-edit"></i></a></li>
+						  
 						  
 						</ul>				
 					</div>';	
@@ -225,8 +228,9 @@
 						  <li><a class="hidden zoom-fab zoom-btn-sm zoom-btn-feedback scale-transition scale-out" data-tooltip="tooltip" data-placement="top" title="'.$row->tahapan_nama.'"><i class="fa fa-bell"></i></a></li>
 						  <li><a id="kerja" class="zoom-fab zoom-btn-sm zoom-btn-person scale-transition scale-out" data-toggle="modal" data-target="'.($row->nomi_locked == '1' ? $target : '#kerjaModal').'" data-tooltip="tooltip" data-placement="top" title="'.($row->nomi_locked == '1' ? 'Berkas telah di kunci oleh '.$row->lock_name :  'Kerjakan berkas Layanan '.$row->layanan_nama.' atas nama '.$row->nama).'"><i id="fa-user" class="fa fa-user"></i></a></li>
 						  <li><a id="verifikasi" class="hidden zoom-fab zoom-btn-sm zoom-btn-doc scale-transition scale-out" data-toggle="modal" data-target="#verifikasiModal" data-tooltip="tooltip" data-placement="top" title="" data-original-title="Hasil Verifikasi berkas ASN atas nama '.$row->nama.'"><i class="fa fa-book"></i></a></li>
+						  <li><a id="epmk" data-toggle="modal" data-agenda="'.$row->agenda_id.'" data-nip="'.$row->nip.'" data-target="#epmkModal" data-tooltip="tooltip" data-placement="top" data-original-title="Lihat Nota Usul PMK" class="hidden zoom-fab zoom-btn-sm zoom-btn-report scale-transition scale-out"><i class="fa fa-edit"></i></a></li>
 						  <li><a class="hidden zoom-fab zoom-btn-sm zoom-btn-tangram scale-transition scale-out"><i class="fa fa-dashboard"></i></a></li>
-						  <li><a class="hidden zoom-fab zoom-btn-sm zoom-btn-report scale-transition scale-out"><i class="fa fa-edit"></i></a></li>
+						  
 						  
 						</ul>				
 					</div>';	
@@ -276,7 +280,7 @@
 							    foreach($tabs->result() as $value){
 									$jenis_sk = $value->nama_dokumen;
 									
-								if( $jenis_sk === "SK_JABATAN" || $jenis_sk === "PAK" || $jenis_sk === "IJAZAH" || $jenis_sk === "SKP"  || $jenis_sk === "PPK" || $jenis_sk === "SK_KP"  || $jenis_sk === "SK_MUTASI" || $jenis_sk === "TRANSKRIP" || $jenis_sk === "STLUD" ) {									
+								if( $jenis_sk === "SK_JABATAN" || $jenis_sk === "PAK" || $jenis_sk === "IJAZAH" || $jenis_sk === "SKP"  || $jenis_sk === "PPK" || $jenis_sk === "SK_KP"  || $jenis_sk === "SK_MUTASI" || $jenis_sk === "TRANSKRIP" || $jenis_sk === "STLUD" || $jenis_sk === "HONOR" ) {									
 									echo '<li role="presentation" class="dropdown">
 										<a class="dropdown-toggle" data-toggle="dropdown" href="#">'.$value->nama_dokumen.'<b class="caret"></b></a>									
 										<ul class="dropdown-menu">.';	
@@ -603,6 +607,332 @@
 		</div>';
 	}
 	?>
+	
+	<div class="modal fade" id="epmkModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+					<h4 class="modal-title"><span id="msg"></span></h4>
+				</div>
+				<div class="modal-body">
+					<form id="efrmPmk">
+						<input class="form-control" type="hidden" name="<?php echo $this->security->get_csrf_token_name()?>" value="<?php echo $this->security->get_csrf_hash()?>">
+		                <input class="form-control" type="hidden" value="" name="nip" />
+						<input class="form-control" type="hidden" value="" name="agendaId" />
+
+						
+						 <!-- Custom Tabs -->
+						  <div class="nav-tabs-custom">
+							<ul class="nav nav-tabs">
+							  <li class="active"><a href="#tab_1" data-toggle="tab">Utama</a></li>
+							  <li><a href="#tab_2" data-toggle="tab">Perhitungan</a></li>
+							  <li><a href="#tab_3" data-toggle="tab">Ijazah</a></li>
+							  <li><a href="#tab_4" data-toggle="tab">Salinan Bukti-Bukti</a></li>
+							  <li><a href="#tab_5" data-toggle="tab">SK Pangkat</a></li>
+							</ul>
+							<div class="tab-content">
+							  <div class="tab-pane active" id="tab_1">
+								<table class="table table-bordered ">
+									<tr>
+										<td colspan="2">Tempat Lahir</td>
+										<td colspan="4"><input class="form-control" type="text" placeholder="Tempat Lahir" name="tempatLahir"></td>
+									</tr>
+									<tr>
+										<td rowspan="4" width="5px">LAMA</td>
+										<td width="300px">1. MASA KERJA GOL</td>
+										<td colspan="2">						
+										<input class="form-control" type="text" placeholder="Tahun" name="oldTahun">
+										</td>
+										<td colspan="2">						
+										<input class="form-control " type="text" placeholder="Bulan" name="oldBulan"></td>
+									</tr>
+									<tr>
+										<td>2. GAJI POKOK</td>
+										<td colspan="4"><input class="form-control" type="text" placeholder="Gaji Pokok" name="oldGaji"></td>
+									</tr>
+									<tr>
+										<td>3. SEJAK</td>
+										<td colspan="4">
+											<div class='input-group date'><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+												<input id="tmtGaji" class="form-control" type="text" placeholder="TMT Gaji" name="oldTmtGaji">
+											</div>	
+										</td>
+									</tr>
+									<tr>
+										<td>4. PERSETUJUAN BKN</td>
+										<td colspan="2"><input class="form-control" type="text" placeholder="Nomor Persetujuan" name="nomorPersetujuan"></td>
+										<td colspan="2">
+											<div class='input-group date'><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+											<input id='tmtAg' class="form-control" type="text" placeholder="Tanggal Persetujuan" name="tanggalPersetujuan">
+											</div>
+										</td>		
+									</tr>
+									<tr>
+										<td rowspan="3"  width="20px" align="center">BARU</td>
+										<td>1. MASA KERJA GOL</td>
+										<td><input readonly class="form-control" type="text" placeholder="Tahun" name="baruTahun"></td>
+										<td><input class="form-control" type="text" placeholder="Tahun ACC" name="baruTahunAcc"></td>
+										<td><input readonly class="form-control" type="text" placeholder="Bulan" name="baruBulan"></td>
+										<td><input class="form-control" type="text" placeholder="Bulan ACC" name="baruBulanAcc"></td>
+									</tr>
+									<tr>
+										<td>2. GAJI POKOK</td>
+										<td colspan="2"><input readonly class="form-control" type="text" placeholder="Gaji Pokok" name="baruGaji"></td>
+										<td colspan="2"><input class="form-control" type="text" placeholder="Gaji Pokok ACC" name="baruGajiAcc"></td>
+										
+									</tr>
+									<tr>
+										<td>BERLAKU TERHITUNG MULAI TANGGAL</td>
+										<td colspan="2">
+											<div class='input-group date'><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+											<input id="baruTmt" readonly class="form-control" type="text" placeholder="TMT" name="baruTmtGaji">
+											</div>
+										</td>
+										<td colspan="2">
+											<div class='input-group date'><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+											<input id="baruTmtAcc" class="form-control" type="text" placeholder="TMT ACC" name="baruTmtGajiAcc">
+											</div>
+										</td>										
+									</tr>
+								</table>	
+							  </div>
+							  <!-- /.tab-pane -->
+							  <div class="tab-pane" id="tab_2">
+								<table class="table table-bordered ">
+									<tr>
+										<td rowspan="3"  width="20px" align="center">LAMA</td>
+										<td width="150px" rowspan="2" align="center"> PENGALAMAN KERJA</td>
+										<td width="160px" align="center" rowspan="2" colspan="2">MULAI DAN SAMPAI DENGAN TGL. BL. TH</td>
+										<td  align="center" colspan="2" width="60px">JUMLAH</td>
+										<td  align="center" width="10px">DINILAI</td>
+										<td  align="center" colspan="2" width="60px">JUMLAH</td>
+									</tr>
+									<tr>
+										<td  align="center">TH</td>
+										<td  align="center">BL</td>
+										<td  align="center"></td>
+										<td  align="center">TH</td>
+										<td  align="center">BL</td>
+									</tr>
+									<tr>
+										<td width="160px"  align="center"> DIANGKAT SEBAGAI HONORER</td>
+										<td width="160px" align="center">
+										  <div class='input-group date'><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+										  <input id="mulaiHonor" class="form-control" type="text" placeholder="MULAI" name="mulaiHonor"></div>
+										</td>  
+										<td width="160px">
+											 <div class='input-group date'><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+										   <input class="form-control" type="text" placeholder="SAMPAI" id="sampaiHonor" name="sampaiHonor"></div>
+										</td>
+										<td align="center">
+										   <input readonly class="form-control" type="text" placeholder="TH" name="tahunHonor">
+										</td>
+										<td align="center">
+										   <input readonly class="form-control" type="text" placeholder="BL" name="bulanHonor">
+										</td>
+										<td></td>
+										<td align="center">
+										   <input class="form-control" type="text" placeholder="TH" name="dinilaiTahunHonor">
+										</td>
+										<td align="center">
+										   <input class="form-control" type="text" placeholder="BL" name="dinilaiBulanHonor">
+										</td>
+										
+									</tr>
+									<tr>
+										<td rowspan="3"  width="20px" align="center">BARU</td>
+										<td width="150px" rowspan="3" align="center"> DIANGKAT SEBAGAI CALON PEGAWAI</td>
+										<td  align="center" rowspan="3"> 
+										   <div class='input-group date'><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>	
+										   <input class="form-control" type="text" placeholder="MULAI" id="mulaiPegawai" name="mulaiPegawai"></div>
+										</td>  
+										<td rowspan="3">
+											<div class='input-group date'><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+										   <input class="form-control" type="text" placeholder="SAMPAI" id="sampaiPegawai" name="sampaiPegawai"></div>
+										</td>
+										<td  rowspan="3" align="center" >
+										  <input readonly class="form-control" type="text" placeholder="TH" name="tahunPegawai">
+										</td>
+										<td  rowspan="3" align="center" >
+										   <input readonly class="form-control" type="text" placeholder="BL" name="bulanPegawai">
+										</td>
+										<td></td>
+										<td  rowspan="3" align="center" >
+										  <input class="form-control" type="text" placeholder="TH" name="dinilaiTahunPegawai">
+										</td>
+										<td  rowspan="3" align="center" >
+										   <input class="form-control" type="text" placeholder="BL" name="dinilaiBulanPegawai">
+										</td>
+										
+									</tr>
+									<tr></tr>
+									<tr></tr>
+									<tr>
+										<td width="20px" align="center">KET</td>
+										<td width="150px" colspan="8"> <input class="form-control" type="text" placeholder="KETERANGAN" name="keterangan"></td>
+									</tr>
+									
+									
+								</table>	
+							  </div>
+							  <!-- /.tab-pane -->
+							  <div class="tab-pane" id="tab_3">
+								<table class="table table-bordered ">
+									<tr>
+									   <td>A.</td>
+									   <td colspan="3">STTB/Ijazah/Diploma/Akta</td>
+									</tr>
+									<tr>
+									   <td>1.</td>
+									   <td> 
+										  <select class="form-control" name="tingkat1">
+											<option value="">--pilih--</option>
+											<option value="S3">S3</option>
+											<option value="S2">S2</option>
+											<option value="S1">S1</option>
+											<option value="D4">D4</option>
+											<option value="D3">D3</option>
+											<option value="D2">D2</option>
+											<option value="D1">D1</option>
+											<option value="SMA">SMA</option>
+											<option value="SMP">SMP</option>
+											<option value="SD">SD</option>
+										  </select>
+									   </td>
+									   <td> <input class="form-control" type="text" placeholder="Nomor Ijazah" name="nomorIjazah1"></td>
+									   <td> 
+											<div class='input-group date'><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+												<input id="tanggalIjazah1" class="form-control" type="text" placeholder="Tanggal Ijazah" name="tanggalIjazah1">
+											</div>
+										</td>
+									</tr>
+									<tr>
+									   <td>2.</td>
+									   <td> 
+										  <select class="form-control" name="tingkat2">
+											<option value="">--pilih--</option>
+											<option value="S3">S3</option>
+											<option value="S2">S2</option>
+											<option value="S1">S1</option>
+											<option value="D4">D4</option>
+											<option value="D3">D3</option>
+											<option value="D2">D2</option>
+											<option value="D1">D1</option>
+											<option value="SMA">SMA</option>
+											<option value="SMP">SMP</option>
+											<option value="SD">SD</option>
+										  </select>
+									   </td>
+									   <td> <input class="form-control" type="text" placeholder="Nomor Ijazah" name="nomorIjazah2"></td>
+									   <td> 
+										<div class='input-group date'><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+										<input id="tanggalIjazah2" class="form-control" type="text" placeholder="Tanggal Ijazah" name="tanggalIjazah2"></td>
+										</div>
+									</tr>
+									<tr>
+									   <td>3.</td>
+									   <td> 
+										  <select class="form-control" name="tingkat3">
+											<option value="">--pilih--</option>
+											<option value="S3">S3</option>
+											<option value="S2">S2</option>
+											<option value="S1">S1</option>
+											<option value="D4">D4</option>
+											<option value="D3">D3</option>
+											<option value="D2">D2</option>
+											<option value="D1">D1</option>
+											<option value="SMA">SMA</option>
+											<option value="SMP">SMP</option>
+											<option value="SD">SD</option>
+										  </select>
+									   </td>
+									   <td> <input class="form-control" type="text" placeholder="Nomor Ijazah" name="nomorIjazah3"></td>
+									   <td>  <div class='input-group date'><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span><input class="form-control" id="tanggalIjazah3" type="text" placeholder="Tanggal Ijazah" name="tanggalIjazah3"></div></td>
+									</tr>
+									<tr>
+									   <td>4.</td>
+									   <td> 
+										  <select class="form-control" name="tingkat4">
+											<option value="">--pilih--</option>
+											<option value="S3">S3</option>
+											<option value="S2">S2</option>
+											<option value="S1">S1</option>
+											<option value="D4">D4</option>
+											<option value="D3">D3</option>
+											<option value="D2">D2</option>
+											<option value="D1">D1</option>
+											<option value="SMA">SMA</option>
+											<option value="SMP">SMP</option>
+											<option value="SD">SD</option>
+										  </select>
+									   </td>
+									   <td> <input class="form-control" type="text" placeholder="Nomor Ijazah" name="nomorIjazah4"></td>
+									   <td>  <div class='input-group date'><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span><input class="form-control" id="tanggalIjazah4" type="text" placeholder="Tanggal Ijazah" name="tanggalIjazah4"></div></td>
+									</tr>
+									<tr>
+									   <td>5.</td>
+									   <td> 
+										  <select class="form-control" name="tingkat5">
+											<option value="">--pilih--</option>
+											<option value="S3">S3</option>
+											<option value="S2">S2</option>
+											<option value="S1">S1</option>
+											<option value="D4">D4</option>
+											<option value="D3">D3</option>
+											<option value="D2">D2</option>
+											<option value="D1">D1</option>
+											<option value="SMA">SMA</option>
+											<option value="SMP">SMP</option>
+											<option value="SD">SD</option>
+										  </select>
+									   </td>
+									   <td> <input class="form-control" type="text" placeholder="Nomor Ijazah" name="nomorIjazah5"></td>
+									   <td>  <div class='input-group date'><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span><input id="tanggalIjazah5" class="form-control" type="text" placeholder="Tanggal Ijazah" name="tanggalIjazah5"></div></td>
+									</tr>
+								</table>	
+							  </div>
+								<div class="tab-pane" id="tab_4">
+								   <table class="table table-bordered ">
+										<tr>
+										   <td>C.</td>
+										   <td>Salinan Sah dan bukti-bukti pengalaman kerja</td>
+										</tr>
+										<tr>
+										   <td></td>
+										   <td>
+											 <textarea class="form-control" placeholder="Salinan sah bukti-bukti" name="salinanSah"></textarea>
+										   </td>
+										</tr>
+								   </table>
+								</div>
+								<div class="tab-pane" id="tab_5">
+									<table class="table table-bordered ">
+										<tr>
+										   <td>D.</td>
+										   <td>Surat Keputusan</td>
+										</tr>
+										<tr>
+										   <td></td>
+										   <td>
+											 <textarea class="form-control" placeholder="Surat Keputusan Kenaikan Pangkat" name="skPangkat"></textarea>
+										   </td>
+										</tr>
+								   </table>
+								</div>
+								 <!-- /.tab-pane -->							 	
+							</div>
+							<!-- /.tab-content -->
+						  </div>
+						  <!-- nav-tabs-custom -->
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn bg-maroon" id="nBtnAccPmk">Simpan</button>
+				</div>
+			</div>
+		</div>	
+	</div>
+    	
 	<!--[ SPINNER MODAL ]-->
 	<div class="modal fade" id="spinner-modal">
 		<div class="modal-dialog modal-sm">
@@ -616,9 +946,83 @@
 	</div>
 	<script src="<?php echo base_url()?>assets/plugins/jQuery/jQuery-2.1.4.min.js"></script>    
     <script src="<?php echo base_url()?>assets/bootstrap/js/bootstrap.min.js"></script> 
-    <script src="<?php echo base_url()?>assets/dist/js/app.min.js"></script>	
+    <script src="<?php echo base_url()?>assets/dist/js/app.min.js"></script>
+    <script src="<?php echo base_url()?>assets/plugins/daterange/moment-with-locales.js"></script>	
+	<script src="<?php echo base_url()?>assets/plugins/datepicker/bootstrap-datetimepicker.min.js"></script>	
 	<script>	
 	$(document).ready(function () {
+		
+		$("#nBtnAccPmk").on("click",function(e){
+			e.preventDefault();			
+			var data = $('#efrmPmk').serialize();
+					
+			$('#epmkModal #msg').text('Saving Please Wait.....')
+                     .removeClass( "text-green")
+				     .addClass( "text-blue" );  
+			
+			$.ajax({
+				type: "POST",
+				url : "<?php echo site_url()?>/verifikator/saveAccPmk",
+				data: data,
+				dataType:'json',
+				success: function(e){
+					$('#epmkModal #msg').text(e.pesan)
+                             .removeClass( "text-blue")
+							 .removeClass( "text-red")
+				             .addClass( "text-green" ); 
+							 
+				}, 
+				error : function(e){
+					$('#epmkModal #msg').text(e.responseJSON.pesan)
+                             .removeClass( "text-blue")							 
+							 .removeClass( "text-green")
+				             .addClass( "text-red" ); 
+				}	
+		    });
+			return false;
+		});
+		
+		$('#sampaiPegawai').datetimepicker({
+		   sideBySide: true,
+		   locale: 'id',
+		   format:'DD-MM-YYYY',
+		});
+		
+		$('#mulaiPegawai').datetimepicker({
+		   sideBySide: true,
+		   locale: 'id',
+		   format:'DD-MM-YYYY',
+		});
+		
+		$('#sampaiHonor').datetimepicker({
+		   sideBySide: true,
+		   locale: 'id',
+		   format:'DD-MM-YYYY',
+		});
+		
+		$('#mulaiHonor').datetimepicker({
+		   sideBySide: true,
+		   locale: 'id',
+		   format:'DD-MM-YYYY',
+		});
+		
+		$('#baruTmtAcc').datetimepicker({
+		   sideBySide: true,
+		   locale: 'id',
+		   format:'DD-MM-YYYY',
+		});
+		
+		$('#tmtGaji').datetimepicker({
+		   sideBySide: true,
+		   locale: 'id',
+		   format:'DD-MM-YYYY',
+		});
+		
+		$('#tmtAg').datetimepicker({
+		   sideBySide: true,
+		   locale: 'id',
+		   format:'DD-MM-YYYY',
+		});
         
 		$("input[name=nip]").on('keyup', function (e) {
 			event.preventDefault();			
@@ -626,6 +1030,81 @@
 				
 				console.log($("input[name=nip]").val());
 			}
+		});
+		
+		$('#epmkModal').on('show.bs.modal',function(e){
+			
+			var agenda=  $(e.relatedTarget).attr('data-agenda');
+			var nip   =  $(e.relatedTarget).attr('data-nip');
+			
+		    $('#epmkModal #msg').text('Nota Usul PMK') 
+			.removeClass( "text-green")
+		    .removeClass( "text-blue" ); 			
+			
+			$("input[name=agendaId]").val(agenda);
+			$("input[name=nip]").val(nip);
+			
+			$.ajax({
+				type: "GET",
+				url : "<?php echo site_url()?>/verifikator/getUsul",
+				data: {agendaId:agenda,nip:nip},
+				dataType:'json',
+				success: function(r){
+					$('#epmkModal input[name=tempatLahir]').val(r.tempat_lahir);	
+					$('#epmkModal input[name=oldTahun]').val(r.old_masa_kerja_tahun);	
+                    $('#epmkModal input[name=oldBulan]').val(r.old_masa_kerja_bulan);
+					$('#epmkModal input[name=oldGaji]').val(r.old_gaji_pokok);
+					$('#epmkModal input[name=oldTmtGaji]').val(r.old_tmt_gaji);
+					$('#epmkModal input[name=nomorPersetujuan]').val(r.nomor_persetujuan);
+					$('#epmkModal input[name=tanggalPersetujuan]').val(r.tanggal_persetujuan);
+					$('#epmkModal input[name=baruTahun]').val(r.baru_masa_kerja_tahun);
+					$('#epmkModal input[name=baruBulan]').val(r.baru_masa_kerja_bulan);
+					$('#epmkModal input[name=baruGaji]').val(r.baru_gaji_pokok);
+					$('#epmkModal input[name=baruTmtGaji]').val(r.baru_tmt_gaji);
+					$('#epmkModal input[name=mulaiHonor]').val(r.mulai_honor);
+					$('#epmkModal input[name=sampaiHonor]').val(r.sampai_honor);
+					$('#epmkModal input[name=tahunHonor]').val(r.tahun_honor);
+					$('#epmkModal input[name=bulanHonor]').val(r.bulan_honor);
+					$('#epmkModal input[name=mulaiPegawai]').val(r.mulai_pegawai);
+					$('#epmkModal input[name=sampaiPegawai]').val(r.sampai_pegawai);
+					$('#epmkModal input[name=tahunPegawai]').val(r.tahun_pegawai);
+					$('#epmkModal input[name=bulanPegawai]').val(r.bulan_pegawai);
+					$('#epmkModal [name=salinanSah]').val(r.salinan_sah);
+					$('#epmkModal [name=skPangkat]').val(r.sk_pangkat);
+					
+					$('#epmkModal [name=tingkat1]').val(r.tingkat1);
+					$('#epmkModal input[name=nomorIjazah1]').val(r.nomor_ijazah1);
+					$('#epmkModal input[name=tanggalIjazah1]').val(r.tanggal_ijazah1);
+					
+					$('#epmkModal [name=tingkat2]').val(r.tingkat2);
+					$('#epmkModal input[name=nomorIjazah2]').val(r.nomor_ijazah2);
+					$('#epmkModal input[name=tanggalIjazah2]').val(r.tanggal_ijazah2);
+					
+					$('#epmkModal [name=tingkat3]').val(r.tingkat3);
+					$('#epmkModal input[name=nomorIjazah3]').val(r.nomor_ijazah3);
+					$('#epmkModal input[name=tanggalIjazah3]').val(r.tanggal_ijazah3);
+					
+					$('#epmkModal [name=tingkat4]').val(r.tingkat4);
+					$('#epmkModal input[name=nomorIjazah4]').val(r.nomor_ijazah4);
+					$('#epmkModal input[name=tanggalIjazah4]').val(r.tanggal_ijazah4);
+					
+					$('#epmkModal [name=tingkat5]').val(r.tingkat5);
+					$('#epmkModal input[name=nomorIjazah5]').val(r.nomor_ijazah5);
+					$('#epmkModal input[name=tanggalIjazah5]').val(r.tanggal_ijazah5);
+					
+					$('#epmkModal input[name=baruTahunAcc]').val(r.acc_masa_kerja_tahun);
+					$('#epmkModal input[name=baruBulanAcc]').val(r.acc_masa_kerja_bulan);
+					$('#epmkModal input[name=baruGajiAcc]').val(r.acc_gaji_pokok);
+					$('#epmkModal input[name=baruTmtGajiAcc]').val(r.acc_tmt_gaji);
+					
+					$('#epmkModal input[name=dinilaiTahunHonor]').val(r.dinilai_tahun_honor);
+					$('#epmkModal input[name=dinilaiBulanHonor]').val(r.dinilai_bulan_honor);
+					$('#epmkModal input[name=dinilaiTahunPegawai]').val(r.dinilai_tahun_pegawai);
+					$('#epmkModal input[name=dinilaiBulanPegawai]').val(r.dinilai_bulan_pegawai);
+					
+					$('#epmkModal input[name=keterangan]').val(r.keterangan);
+				},
+			});	
 		});
 		
 		
@@ -659,6 +1138,7 @@
 							 
 					div.removeClass('hidden').addClass("visible"); 		
 					berkas.removeClass('hidden').addClass("visible"); 
+					$("#epmk").removeClass('hidden').addClass("visible"); 
 					kerja.removeClass('fa fa-user').addClass("fa fa-lock"); 
 					
 				}, // akhir fungsi sukses
@@ -675,6 +1155,7 @@
 		$('#verifikasiModal').on('show.bs.modal',function(event){
 			$("#nBtn").show();
 		});	
+		
 		$('#verifikasiModal').on('show.bs.modal',function(event){
 		    $('#verifikasiModal #msg').text('Hasil Verifikasi Berkas') 
 			.removeClass( "text-green")
