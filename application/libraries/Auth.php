@@ -148,6 +148,7 @@ class Auth {
 			'session_bidang'				=> $data->id_bidang,
 			'session_user_tipe'				=> $data->user_tipe,
 			'gender'						=> $data->gender,
+			'area'							=> $data->area,
 			'logged_in'					    => TRUE
 		);
 		
