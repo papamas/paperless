@@ -82,8 +82,18 @@
 							<input type="radio" value="P" name="sex"  <?php echo  set_radio('sex', 'P');?>/> Female
 							<span class="help-block text-red"><?php echo form_error('sex'); ?></span>
 						</div>
-                    </div>
-					
+                    
+						<label class="col-md-1 col-sm-1 control-label">Area</label>
+						<div class="col-md-5 col-sm-5">
+							<select class="form-control" name="area">
+								<option value="">--pilih--</option>
+								<option value="70" <?php echo set_select('area', 70); ?> >Sulawesi Utara</option>
+								<option value="71" <?php echo set_select('area', 71); ?> >Gorontalo</option>
+								<option value="79" <?php echo set_select('area', 79); ?>>Maluku Utara</option>
+							</select>
+							<span class="help-block text-red"><?php echo form_error('area'); ?></span>
+						</div>	
+					</div>
 					
 					<div class="post text-yellow">Login Information :</div> 
 						<div class="form-group row">

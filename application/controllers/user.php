@@ -43,6 +43,7 @@ class User extends MY_Controller {
 		$this->form_validation->set_rules('active', 'Active', 'required');
 		$this->form_validation->set_rules('email', 'Email', 'required|valid_email');
 		$this->form_validation->set_rules('usertipe', 'User Tipe', 'required');
+		$this->form_validation->set_rules('area', 'Area', 'required');
 		
 		if($this->form_validation->run() == FALSE)
 		{
