@@ -148,17 +148,24 @@ class Pmk extends MY_Controller {
 		$this->pdf->SetAutoPageBreak(false, PDF_MARGIN_BOTTOM);
 		$this->pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 		
+		
 		$this->pdf->SetFont('freeSerif', '', 12);		
 		$this->pdf->AddPage('P', 'A4');
+		
+		$garuda = base_url() . 'assets/dist/img/garuda.png';
+		$this->pdf->Image($garuda, 5, 8, 23, '', 'PNG', '', 'T', false, 145, 'C', false, false, 0, false, false, false);
+		
+		
 		$this->pdf->Text(145,10, 'PENINJAUAN MASA KERJA');
 		
 		
+		
 		$this->pdf->SetFont('freeSerif', '', 14);		
-		$this->pdf->writeHTMLCell(0,125,2,25,'USUL PENINJAUAN MASA KERJA',0,0,false,true,'C',true);
-		$this->pdf->writeHTMLCell(0,125,2,30,'NOMOR :'.$row->agenda_nousul,0,0,false,true,'C',true);
+		$this->pdf->writeHTMLCell(0,125,2,40,'USUL PENINJAUAN MASA KERJA',0,0,false,true,'C',true);
+		$this->pdf->writeHTMLCell(0,125,2,45,'NOMOR :'.$row->agenda_nousul,0,0,false,true,'C',true);
 
 		$this->pdf->SetFont('freeSerif', '', 12);
-		$this->pdf->Text(5,45, 'INSTANSI : '.$row->INS_NAMINS);
+		$this->pdf->Text(5,55, 'INSTANSI : '.$row->INS_NAMINS);
 		
 		$this->pdf->SetFont('freeSerif', '', 11);
 		$html = '
@@ -307,28 +314,20 @@ class Pmk extends MY_Controller {
 		<td align="center">'.($row->bulan_honor+$row->bulan_pegawai).'</td>
 		<td align="center"></td>
     </tr>
-	<tr style="">
-		<td colspan="3"> CATATAN BKN</td>
-		<td colspan="6"> WILAYAH PEMBAYARAN</td>		
-    </tr>
-	<tr style="">
-		<td colspan="3"> PERSETUJUAN BKN NO.</td>
-		<td colspan="6"> USUL NOMOR</td>
-		
-    </tr>
+	
 </table>';
 
 	// Print text using writeHTMLCell()
-	$this->pdf->writeHTMLCell(0, 125, 5, 50, $html, 0, 0, false, true, 'L', true);
+	$this->pdf->writeHTMLCell(0, 125, 5, 60, $html, 0, 0, false, true, 'L', true);
 	
 	
-	$this->pdf->writeHTMLCell(0,125,130,205,$row->lokasi_ttd.','.$row->tanggal_ttd,0,0,false,true,'L',true);
+	$this->pdf->writeHTMLCell(0,125,120,200,$row->lokasi_ttd.','.$row->tanggal_ttd,0,0,false,true,'L',true);
 
-	$this->pdf->writeHTMLCell(0,125,130,215,$row->jabatan_ttd,0,0,false,true,'C',true);
+	$this->pdf->writeHTMLCell(0,125,120,207,$row->jabatan_ttd,0,0,false,true,'C',true);
 	
-	$this->pdf->writeHTMLCell(0,125,130,235,'<u>'.$row->nama_ttd.'<u>',0,0,false,true,'C',true);
-	$this->pdf->writeHTMLCell(0,125,130,239,$row->pangkat_ttd,0,0,false,true,'C',true);
-	$this->pdf->writeHTMLCell(0,125,130,242,'NIP.'.$row->nip_ttd,0,0,false,true,'C',true);
+	$this->pdf->writeHTMLCell(0,125,120,236,'<u>'.$row->nama_ttd.'<u>',0,0,false,true,'C',true);
+	$this->pdf->writeHTMLCell(0,125,120,240,$row->pangkat_ttd,0,0,false,true,'C',true);
+	$this->pdf->writeHTMLCell(0,125,120,244,'NIP.'.$row->nip_ttd,0,0,false,true,'C',true);
 
 	// set style for barcode
 	$style = array(
@@ -365,27 +364,31 @@ class Pmk extends MY_Controller {
 		$this->pdf->SetAutoPageBreak(false, PDF_MARGIN_BOTTOM);
 		$this->pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 		
-		$this->pdf->SetFont('freeSerif', '', 12);		
+		$this->pdf->SetFont('freeSerif', '', 10);		
 		$this->pdf->AddPage('P', 'A4');
 		
-		$this->pdf->Text(5,5,  'Nomor Usul');
-		$this->pdf->Text(50,5, ': '.$row->agenda_nousul);
-		$this->pdf->Text(5,10,  'Tanggal Agenda');
-		$this->pdf->Text(50,10, ': '.$row->agenda_tgl);
-		$this->pdf->Text(5,15, 'Tanggal Kirim BKN');
-		$this->pdf->Text(50,15, ': '.$row->diterima);
+		$garuda = base_url() . 'assets/dist/img/garuda.png';
+		$this->pdf->Image($garuda, 5, 8, 23, '', 'PNG', '', 'T', false, 145, 'C', false, false, 0, false, false, false);
 		
+		$this->pdf->Text(5,5,  'Nomor Usul');
+		$this->pdf->Text(40,5, ': '.$row->agenda_nousul);
+		$this->pdf->Text(5,10,  'Tanggal Agenda');
+		$this->pdf->Text(40,10, ': '.$row->agenda_tgl);
+		$this->pdf->Text(5,15, 'Tanggal Kirim BKN');
+		$this->pdf->Text(40,15, ': '.$row->diterima);
+		
+		$this->pdf->SetFont('freeSerif', '', 12);		
 		$this->pdf->Text(145,10, 'PENINJAUAN MASA KERJA');
 		
 		
 		$this->pdf->SetFont('freeSerif', '', 14);		
-		$this->pdf->writeHTMLCell(0,125,2,25,'NOTA PERSETUJUAN TEKNIS',0,0,false,true,'C',true);
-		$this->pdf->writeHTMLCell(0,125,2,30,'KEPALA KANTOR REGIONAL XI BADAN KEPEGAWAIAN NEGARA',0,0,false,true,'C',true);
-		$this->pdf->writeHTMLCell(0,125,2,35,'TENTANG',0,0,false,true,'C',true);
-		$this->pdf->writeHTMLCell(0,125,2,40,'PENINJAUAN MASA KERJA PEGAWAI NEGERI SIPIL',0,0,false,true,'C',true);
+		$this->pdf->writeHTMLCell(0,125,2,35,'NOTA PERSETUJUAN TEKNIS',0,0,false,true,'C',true);
+		$this->pdf->writeHTMLCell(0,125,2,40,'KEPALA KANTOR REGIONAL XI BADAN KEPEGAWAIAN NEGARA',0,0,false,true,'C',true);
+		$this->pdf->writeHTMLCell(0,125,2,45,'TENTANG',0,0,false,true,'C',true);
+		$this->pdf->writeHTMLCell(0,125,2,50,'PENINJAUAN MASA KERJA PEGAWAI NEGERI SIPIL',0,0,false,true,'C',true);
 
 		$this->pdf->SetFont('freeSerif', '', 12);
-		$this->pdf->Text(5,55, 'INSTANSI : '.$row->INS_NAMINS);
+		$this->pdf->Text(5,65, 'INSTANSI : '.$row->INS_NAMINS);
 		
 		$this->pdf->SetFont('freeSerif', '', 11);
 		$html = '
@@ -539,7 +542,7 @@ class Pmk extends MY_Controller {
 </table>';
 
 	// Print text using writeHTMLCell()
-	$this->pdf->writeHTMLCell(0, 125, 5, 60, $html, 0, 0, false, true, 'L', true);
+	$this->pdf->writeHTMLCell(0, 125, 5, 70, $html, 0, 0, false, true, 'L', true);
 	
 	$this->pdf->SetFont('freeSerif', '', 14);
 	$this->pdf->writeHTMLCell(0,125,90,210,'Nomor '.$row->nomi_persetujuan,0,0,false,true,'L',true);
@@ -566,7 +569,7 @@ class Pmk extends MY_Controller {
 	$code  = 'Persetujuan PMK Nomor '.$row->nomi_persetujuan.' '.$row->PNS_PNSNAM.' NIP.'.$row->nip;
 	
 	$this->pdf->write2DBarcode($code, 'QRCODE', 15, 220, 35, 35, $style, 'N');
-	$this->pdf->Output('NPPMK_'.$row->nip.'.pdf', 'D');
+	$this->pdf->Output('PERTEK_PMK_'.$row->nip.'.pdf', 'D');
 	
 	}	
 	

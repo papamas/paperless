@@ -253,7 +253,8 @@ ORDER  by e.PNS_PNSNAM ASC
 		e.nama_ijazah,		
 		f.GOl_PKTNAM pangkat, f.GOL_GOLNAM nama_golongan,
 		g.jabatan,
-		h.PNS_PNSNAM nama_spesimen,h.PNS_GLRBLK gelar_spesimen,h.PNS_NIPBARU nip_spesimen
+		h.PNS_PNSNAM nama_spesimen,h.PNS_GLRBLK gelar_spesimen,h.PNS_NIPBARU nip_spesimen,
+		i.instansi_id1,i.instansi_id2,i.nomor,i.tahun,i.nomor_pmk
 		FROM $this->tablenom  a 
 		LEFT JOIN $this->tablepupns b ON a.nip = b.PNS_NIPBARU
 		LEFT JOIN $this->tableagenda c ON c.agenda_id = a.agenda_id
@@ -262,6 +263,7 @@ ORDER  by e.PNS_PNSNAM ASC
 		LEFT JOIN $this->tablegolru f ON b.PNS_GOLRU = f.GOL_KODGOL
 		LEFT JOIN $this->tableuser g ON g.user_id = a.nomi_verifby
 		LEFT JOIN $this->tablepupns h ON g.nip = h.PNS_NIPBARU
+		LEFT JOIN paperless.nomor_pmk i ON (i.agenda_id = a.agenda_id AND i.nip = a.nip) 
 		WHERE a.agenda_id='$agenda' AND a.nip='$nip' ";
 		
 		$query 	=   $this->db->query($sql);
@@ -370,12 +372,126 @@ ORDER  by e.PNS_PNSNAM ASC
 
 	}
 	
-	public function getSpesimen()
+	function getSpesimen()
 	{
 		$bidang  = $this->session->userdata('session_bidang');
 		$sql="SELECT * FROM $this->tableuser WHERE id_bidang='$bidang' AND id_instansi='4011' and active='1' ";	
 		return $this->db->query($sql);
 		
+	}
+	
+	function cekNomorPmk($agenda,$nip)
+	{
+	    $this->db->where('agenda_id',$agenda);
+		$this->db->where('nip',$nip);
+		return $this->db->get('nomor_pmk');	
+	}	
+	
+		
+	function getLastNomorPmk($instansi)
+	{
+		$sql="SELECT a.* FROM 
+		paperless.nomor_pmk  a
+		WHERE a.instansi_id1='$instansi' AND a.tahun=year(NOW())
+		ORDER BY nomor DESC
+		LIMIT 1";	
+		$last  =  $this->db->query($sql);
+		if($last->num_rows() > 0)
+		{
+			$row    = $last->row();
+			$nomor  = $row->nomor+1;
+		}
+		else
+		{
+			$nomor  = 1;
+		}		
+		
+		return $nomor;
+
+	}		
+	
+	function getInstansi2($instansi)
+	{
+		$sql="SELECT a.* FROM 
+		mirror.instansi a
+		WHERE INS_KODINS='$instansi' ";	
+		$row   	= $this->db->query($sql)->row(); 
+		return  $row->INS_KODE;
+	}		
+	
+	function insertNomorPmk($d)
+	{
+		$data['instansi_id1']     = $d['instansi1'];
+		$data['instansi_id2']     = $d['instansi2'];
+		$data['agenda_id']        = $d['agenda'];
+		$data['nip']              = $d['nip'];
+		$data['nomor']            = $d['nomor'];
+		$data['tahun']            = $d['tahun'];
+		$data['nomor_pmk']        = $d['nomor_pmk'];
+		
+		
+		$db_debug 			= $this->db->db_debug; 
+		$this->db->db_debug = FALSE; 
+			
+		if (!$this->db->insert('nomor_pmk', $data))
+		{
+			$error = $this->db->_error_message();
+			if(!empty($error))
+			{
+                $data['pesan']		= $error;   
+				$data['response'] 	= FALSE;
+			}
+            	
+        }
+		else
+		{
+			$data['pesan']		= "Berhasil Insert nomor";
+			$data['response']	= TRUE;
+			
+			//$this->updateNominatif($data);
+		}	
+        $this->db->db_debug = $db_debug; //restore setting	
+
+        return $data;			
+	}	
+	
+	public function simpanNomorPmk($data)
+	{
+		// selesai proses cetak
+		$agenda	    		= $data['agenda'];
+		$nip				= $data['nip'];
+		$nomor				= $data['persetujuan'];
+		
+		$set['nomi_persetujuan']    	=   strtoupper($nomor); 
+		
+		
+		$db_debug 			= $this->db->db_debug; 
+		$this->db->db_debug = FALSE; 
+		
+		$this->db->where('agenda_id',$agenda);
+		$this->db->where('nip',$nip);
+		$this->db->set($set);
+		$this->db->set('tanggal_persetujuan','NOW()',FALSE);
+		if (!$this->db->update($this->tablenom))
+		{
+			$error = $this->db->_error_message();
+			if(!empty($error))
+			{
+                $data['pesan']		= $error;   
+				$data['response'] 	= FALSE;
+			}
+            	
+        }
+		else
+		{
+			$data['pesan']		= "Berhasil simpan nomor persetujuan ke nominatif";
+			$data['response']	= TRUE;
+			
+		}	
+        $this->db->db_debug = $db_debug; //restore setting	
+
+        return $data;			
+	   
 	}	
 	
 	/*TASPEN*/
