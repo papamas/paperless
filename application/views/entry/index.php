@@ -196,8 +196,7 @@
 							</tr>
 						</thead>   
 						<tbody>
-							<?php if($usul->num_rows() > 0):?>
-							
+						  	<?php if($usul->num_rows() > 0):?>
 							<?php  foreach($usul->result() as $value):?>
 							<tr>
 								<td>
@@ -215,7 +214,7 @@
 									}
 									else
 									{
-										echo '&nbsp;<button class="btn btn-primary btn-xs" data-tooltip="tooltip"  title="Input Persetujuan" data-toggle="modal" data-target="#skModal"   data-agenda="'.$this->myencrypt->encode($value->agenda_id).'" data-nip="'.$this->myencrypt->encode($value->nip).'"><i class="fa fa-edit"></i></button>';
+										echo '&nbsp;<button class="btn btn-primary btn-xs" data-tooltip="tooltip"  title="Input Persetujuan" data-toggle="modal" data-target="#skModal"   data-agenda="'.$this->myencrypt->encode($value->agenda_id).'" data-nip="'.$this->myencrypt->encode($value->nip).'" data-instansi="'.$this->myencrypt->encode($value->agenda_ins).'" data-layanan="'.$this->myencrypt->encode($value->layanan_id).'"><i class="fa fa-edit"></i></button>';
 								
 									}
 									
@@ -304,7 +303,7 @@
 							<label class="control-label">Tanggal</label>																
 							<div class='input-group date'>
 								<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-								<input  id='datetimepicker' pattern="^\d{1,2}\-\d{1,2}\-\d{4}$" type='text' required name="tanggal" value="<?php echo date('d-m-Y')?>" class="form-control" />
+								<input  id='datetimepicker' type='text' required name="tanggal" value="" class="form-control" />
 																
 							</div>											
 						</div>
@@ -485,8 +484,10 @@
 		});
 		
 		$('#skModal').on('show.bs.modal',function(e){
-		    var agenda=  $(e.relatedTarget).attr('data-agenda');
-			var nip   =  $(e.relatedTarget).attr('data-nip');
+		    var agenda		=  $(e.relatedTarget).attr('data-agenda');
+			var nip   		=  $(e.relatedTarget).attr('data-nip');
+			var instansi    =  $(e.relatedTarget).attr('data-instansi');
+			var layanan     =  $(e.relatedTarget).attr('data-layanan');
 			
 			$('#skModal #msg').text('Input Realisasi Persetujuan')
                      .removeClass( "text-green")
@@ -497,10 +498,11 @@
 			$("input[name=agenda]").val(agenda);
 			$("input[name=nip]").val(nip);
 			
+			
 			$.ajax({
 				type: "GET",
 				url : "<?php echo site_url()?>/entry/simpanTahapan",
-				data: {agenda:agenda,nip:nip},
+				data: {agenda:agenda,nip:nip,instansi:instansi,layanan: layanan},
 				dataType:'json',
 				success: function(r){
 					$('#skModal input[name=persetujuan]').val(r.entry[0].nomi_persetujuan);	

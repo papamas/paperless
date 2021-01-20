@@ -331,6 +331,43 @@ class Entry extends MY_Controller {
 	{
 		$data['agenda'] 			= $this->myencrypt->decode($this->input->get('agenda'));
 		$data['nip']       			= $this->myencrypt->decode($this->input->get('nip'));
+		$instansi					= $this->myencrypt->decode($this->input->get('instansi'));
+		$layanan					= $this->myencrypt->decode($this->input->get('layanan'));
+		
+		
+		$this->db->trans_start();
+		
+		if($layanan == 19)
+		{	
+		
+			$last	                    = $this->entry->getLastNomorPmk($instansi);
+			$instansi2					= $this->entry->getInstansi2($instansi);
+			$cek 					    = $this->entry->cekNomorPmk($data['agenda'],$data['nip']);
+			
+			$d['instansi1']        = $instansi;
+			$d['instansi2']		   = $instansi2;
+			$d['agenda']           = $data['agenda'];
+			$d['nip']              = $data['nip'];
+			$d['nomor']            = $last;
+			$d['tahun']            = date('Y');
+			$d['nomor_pmk']        = $instansi2.substr("0000000{$last}",-7);
+			
+			if($cek->num_rows()  == 0)
+			{			
+				$insert                		= $this->entry->insertNomorPmk($d);
+				$data['insert']        		= $insert;
+				$data['persetujuan']   		= 'LH-'.$instansi2.substr("0000000{$last}",-7);
+				$data['insert_nominatif']   = $this->entry->simpanNomorPmk($data);
+				
+			}
+			else
+			{
+				$rowcek                     = $cek->row();
+				$data['persetujuan']   		= 'LH-'.$instansi2.substr("0000000{$rowcek->nomor}",-7);
+				$data['update_nominatif']   = $this->entry->simpanNomorPmk($data);
+			}		
+			
+		}	
 		
 		$db_debug 			= $this->db->db_debug; 
 		$this->db->db_debug = FALSE; 
@@ -351,8 +388,9 @@ class Entry extends MY_Controller {
 		{
 			$entry			= $this->entry->getEntryOne($data);
 			
-			$data['pesan']	= "update tahapan proses cetak";
-			$data['entry']  = $entry->result();
+			$data['pesan']		= "update tahapan proses cetak";
+			$data['layanan']	= $layanan;
+			$data['entry']      = $entry->result();
 			$this->output
 					->set_status_header(200)
 					->set_content_type('application/json', 'utf-8')
@@ -360,7 +398,7 @@ class Entry extends MY_Controller {
 		}
 
 		$this->db->db_debug = $db_debug; //restore setting
-	
+		$this->db->trans_complete();
 	}	
 	
 	public function getEntryAll()
