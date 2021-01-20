@@ -75,6 +75,7 @@ class Users_model extends CI_Model
 		$data['user_tipe']		 = $this->input->post('usertipe');
 		$data['gender']	 		 = $this->input->post('sex');
 		$data['active']	 		 = ($this->input->post('active') == 1 ? 1 : NULL);
+		$data['area']         = $this->input->post('area');
 		
 		$db_debug 			= $this->db->db_debug; 
 		$this->db->db_debug = FALSE; 

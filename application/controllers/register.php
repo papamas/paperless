@@ -30,6 +30,7 @@ class Register extends CI_Controller {
 		$this->form_validation->set_rules('username', 'Username', 'required');
 		$this->form_validation->set_rules('password', 'Password', 'required');
 		$this->form_validation->set_rules('email', 'Email', 'required|valid_email');
+		$this->form_validation->set_rules('area', 'Area', 'required');
 		
 		$set['first_name']   = $this->input->post('fname');
 		$set['last_name']    = $this->input->post('lname');
@@ -43,6 +44,7 @@ class Register extends CI_Controller {
 		$set['last_ip']      = $this->input->ip_address();
 		$set['email']        = $this->input->post('email');
 		$set['user_tipe']    = 'instansi';
+		$set['area']         = $this->input->post('area');
 		
 		if($this->form_validation->run() == FALSE)
 		{

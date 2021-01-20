@@ -22,7 +22,7 @@ class Telegram_model extends CI_Model {
 	
 	function _get_user_temp_by_nip($nip)
 	{
-		$this->db->select('username,password,email,first_name,last_name,nip,id_bidang,jabatan,id_instansi,gender,user_tipe');
+		$this->db->select('username,password,email,first_name,last_name,nip,id_bidang,jabatan,id_instansi,gender,user_tipe,area');
 		$this->db->where('nip',$nip);
 		return $this->db->get($this->user_temp);		
 	}	
@@ -430,6 +430,78 @@ class Telegram_model extends CI_Model {
 
         return $this->db->insert_batch($this->menu_role, $data);
 	}	
+	
+	
+	function ApproveMember2($data,$pesan)
+	{
+		$telegram_id		= $data['from']['id'];
+		$nip				= trim($pesan[1]);		
+		
+		$db_debug 			= $this->db->db_debug; 
+		$this->db->db_debug = TRUE; 			
+		
+		$this->db->trans_begin();
+		
+		if($this->isAdmin($telegram_id))
+		{
+			$user_temp  = $this->_get_user_temp_by_nip($nip);
+						
+			if($user_temp->num_rows() > 0)
+			{
+				$this->db->insert_batch($this->table_user, $user_temp->result_array());
+				$last_id 			= $this->db->insert_id();	
+				$this->insert_menuKasubag($last_id);
+				$this->delete_usertemp_by_nip($nip);
+				
+				if ($this->db->trans_status() === FALSE)
+				{
+					$data['pesan']		= " Failed Approve User";
+					$data['response'] 	= FALSE;					
+					$this->db->trans_rollback();			
+				}
+				else
+				{
+					$data['response']	= TRUE;
+					$data['pesan']		= " Approve User dengan NIP ".$nip." telah Berhasil dengan <strong>UID : ".$last_id."</strong>, Silahkan lakukan aktifasi";		
+					$this->db->trans_commit();
+				}
+			}
+			else
+			{
+				$data['pesan']		= " Tidak Ada Member yang memerlukan Approve";   
+			    $data['response'] 	= FALSE;
+			}
+        }	
+		else
+		{
+			$data['pesan']		= " Hanya Administrator yang diizinkan mengakses menu APPROVE member";   
+			$data['response'] 	= FALSE;
+		}
+		
+		$this->db->db_debug = $db_debug; //restore setting				
+		return $data;
+	}	
+	
+	function insert_menuKasubag($id)
+	{
+		$data = array(
+			array(
+					'menu_id' => 3,
+					'user_id' => $id,             
+			),
+			array(
+					'menu_id' => 8,
+					'user_id' => $id,				   
+			),
+			array(
+					'menu_id' => 9,
+					'user_id' => $id,				   
+			)
+		);
+
+        return $this->db->insert_batch($this->menu_role, $data);
+	}	
+	
 	
 	function isAdmin($telegram_id)
 	{

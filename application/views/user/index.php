@@ -139,7 +139,21 @@
 									<input type="radio"  value="2" name="active" <?php echo  set_radio('active', '2');?> />&nbsp;Tidak
 									<span class="help-block text-red"><?php echo form_error('active'); ?></span>
 								</div>						  
-							</div>							
+							</div>
+
+							<div class="form-group">
+								<label class="col-md-2 control-label">Area</label>
+								<div class="col-md-4">
+									<select class="form-control" name="area">
+										<option value="">--pilih--</option>
+										<option value="70" <?php echo set_select('area', 70); ?> >Sulawesi Utara</option>
+										<option value="71" <?php echo set_select('area', 71); ?> >Gorontalo</option>
+										<option value="79" <?php echo set_select('area', 79); ?>>Maluku Utara</option>
+									</select>
+									<span class="help-block text-red"><?php echo form_error('area'); ?></span>
+								</div>							
+							</div>
+					
 						</div><!-- /.box-body -->
 
 						<div class="box-footer">
@@ -229,7 +243,7 @@
 												<td><?php echo $value->nama_unit?></td>
 												<td style="width:100px;">
 										        <a href="#" class="btn btn-warning btn-flat btn-xs" data-tooltip="tooltip"  title="Reset Password" data-toggle="modal" data-target="#resetModal" data-nip="<?php echo $value->nip?>" data-id="<?php echo $value->user_id?>" ><i class="fa fa-refresh"></i></a>
-												<a href="#" class="edit btn-primary btn-flat btn-xs" data-tooltip="tooltip"  title="Edit" data-toggle="modal" data-target="#editModal" data-nip="<?php echo $value->nip?>" data-id="<?php echo $value->user_id?>" data-email="<?php echo $value->email?>" data-active="<?php echo $value->active?>" data-fname="<?php echo $value->first_name?>" data-lname="<?php echo $value->last_name?>" data-sex="<?php echo $value->gender?>" data-jabatan="<?php echo $value->jabatan?>" data-instansi="<?php echo $value->id_instansi?>" data-usertipe="<?php echo $value->user_tipe?>" data-bidang="<?php echo $value->id_bidang?>" data-username="<?php echo $value->username?>"><i class="fa fa-pencil"></i></a>
+												<a href="#" class="edit btn-primary btn-flat btn-xs" data-tooltip="tooltip"  title="Edit" data-toggle="modal" data-target="#editModal" data-nip="<?php echo $value->nip?>" data-id="<?php echo $value->user_id?>" data-email="<?php echo $value->email?>" data-active="<?php echo $value->active?>" data-fname="<?php echo $value->first_name?>" data-lname="<?php echo $value->last_name?>" data-sex="<?php echo $value->gender?>" data-jabatan="<?php echo $value->jabatan?>" data-instansi="<?php echo $value->id_instansi?>" data-usertipe="<?php echo $value->user_tipe?>" data-bidang="<?php echo $value->id_bidang?>" data-username="<?php echo $value->username?>" data-area="<?php echo $value->area?>"><i class="fa fa-pencil"></i></a>
 												<a href="#" class="btn btn-danger btn-flat btn-xs" data-tooltip="tooltip"  title="Drop" data-toggle="modal" data-target="#dropModal" data-nip="<?php echo $value->nip?>" data-id="<?php echo $value->user_id?>" ><i class="fa fa-trash-o"></i></a>
 
 												</td>
@@ -523,6 +537,7 @@
 				active       =  $(this).attr('data-active'),
 				username     =  $(this).attr('data-username'),
 			    user_id      =  $(this).attr('data-id');
+				area         =  $(this).attr('data-area');
 				
             $("input[name=nip]").val(nip);	
 			$("input[name=user_id]").val(user_id);
@@ -536,6 +551,7 @@
 			$("[name=instansi]").val(instansi);			
 			$("input[name=active][value='"+active+"']").prop("checked",true);
 			$("input[name=sex][value='"+sex+"']").prop("checked",true);
+			$("[name=area]").val(area);
 					
 		});	
 		
