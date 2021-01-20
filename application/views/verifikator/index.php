@@ -146,7 +146,8 @@
 									<td><?php echo $value->layanan_nama?></td>
 									<td>
 									<?php 
-									if($value->layanan_id == 9 || $value->layanan_id == 10 || $value->layanan_id == 11)
+									// jika layanan KARIS/KARSU/KARPEG/PEREMAJAAN DATA main dokumen dari pengantar
+									if($value->layanan_id == 9 || $value->layanan_id == 10 || $value->layanan_id == 11 || $value->layanan_id == 20)
 									{
 										echo '<i data-tooltip="tooltip" data-toggle="modal" data-target="#berkasAdaModal" data-id="?id='.$this->myencrypt->encode($value->upload_dokumen).'" title="Ada Nota Usul" class="fa fa-check" style="color:green"></i>';
 									}
@@ -161,7 +162,7 @@
 									<td>
 									<?php echo ($value->nomi_locked == "1" ? '<a href="#" class="btn btn-warning btn-xs" data-tooltip="tooltip" data-toggle="modal" data-target="'.( $value->locked_by === $this->session->userdata('user_id') ? '#bukalockModal' : '#').'" title="Terkunci oleh '.$value->lock_name.'" data-id="'.$value->agenda_id.'" data-nip="'.$value->nip.'"><i class="fa fa-lock"></i></a>' : '')?>
 									<?php 
-									if($value->layanan_id == 9 || $value->layanan_id == 10 || $value->layanan_id == 11)
+									if($value->layanan_id == 9 || $value->layanan_id == 10 || $value->layanan_id == 11 || $value->layanan_id == 20)
 									{	
 										echo '<a href="#nVerify" class="btn btn-primary btn-xs" data-tooltip="tooltip" title="Verifikasi Berkas" id="?n='.$this->myencrypt->encode($value->nip).'&i='.$this->myencrypt->encode($value->agenda_id).'&p='.$this->myencrypt->encode($value->layanan_id).'&t='.$this->myencrypt->encode($value->tahapan_id).'"><i class="fa fa-file-o"></i></a>';							
 									}

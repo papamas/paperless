@@ -145,8 +145,8 @@
 				<a href="#" id="about">'.$row->layanan_nama.'-'.$row->agenda_nousul.'<br/> Tahap : '.$row->tahapan_nama.'</a>  
 			</div>';
 		}			
-		// jika layanan KARPEG main dokumen dari pengantar
-		if($row->layanan_id == 9 || $row->layanan_id == 10 || $row->layanan_id == 11)
+		// jika layanan KARIS/KARSU/KARPEG/PEREMAJAAN DATA main dokumen dari pengantar
+		if($row->layanan_id == 9 || $row->layanan_id == 10 || $row->layanan_id == 11 || $row->layanan_id == 20)
 		{
 			// abaikan main upload
 		}
@@ -168,9 +168,9 @@
 		    <?php if($usul->num_rows() > 0) :?>
 			<?php 
 			$row 	 = $usul->row();
-			
+					
 			$tipe    = $this->session->userdata('session_user_tipe');
-			if($row->layanan_id == 9 || $row->layanan_id == 10 || $row->layanan_id == 11)
+			if($row->layanan_id == 9 || $row->layanan_id == 10 || $row->layanan_id == 11 || $row->layanan_id == 20)
 			{
 				if($row->locked_by == $this->session->userdata('user_id'))
 				{
@@ -195,7 +195,7 @@
 						  <li><a class="hidden zoom-fab zoom-btn-sm zoom-btn-feedback scale-transition scale-out" data-tooltip="tooltip" data-placement="top" title="'.$row->tahapan_nama.'"><i class="fa fa-bell"></i></a></li>
 						  <li><a id="kerja" class="zoom-fab zoom-btn-sm zoom-btn-person scale-transition scale-out" data-toggle="modal" data-target="'.($row->nomi_locked == '1' ? $target : '#kerjaModal').'" data-tooltip="tooltip" data-placement="top" title="'.($row->nomi_locked == '1' ? 'Berkas telah di kunci oleh '.$row->lock_name :  'Kerjakan berkas Layanan '.$row->layanan_nama.' atas nama '.$row->nama).'"><i id="fa-user" class="fa fa-user"></i></a></li>
 						  <li><a id="verifikasi" class="hidden zoom-fab zoom-btn-sm zoom-btn-doc scale-transition scale-out" data-toggle="modal" data-target="#verifikasiModal" data-tooltip="tooltip" data-placement="top" title="" data-original-title="Hasil Verifikasi berkas ASN atas nama '.$row->nama.'"><i class="fa fa-book"></i></a></li>
-						  <li><a class="zoom-fab zoom-btn-sm zoom-btn-report scale-transition scale-out"><i class="fa fa-edit"></i></a></li>
+						  <li><a class="hidden zoom-fab zoom-btn-sm zoom-btn-report scale-transition scale-out"><i class="fa fa-edit"></i></a></li>
 						  
 						  
 						</ul>				
@@ -203,7 +203,7 @@
 			}
 			else
 			{		
-			
+				
 				if(!empty($row->main_upload_dokumen)){
 					if($row->locked_by == $this->session->userdata('user_id'))
 					{
@@ -222,18 +222,26 @@
 							$target = '#';
 						}						
 					}
-					echo '<div class="zoom">
+					
+					
+					$zoom ='<div class="zoom">
 						<a class="zoom-fab zoom-btn-large" id="zoomBtn"><i class="fa fa-bars"></i></a>
 						<ul class="zoom-menu">
 						  <li><a class="hidden zoom-fab zoom-btn-sm zoom-btn-feedback scale-transition scale-out" data-tooltip="tooltip" data-placement="top" title="'.$row->tahapan_nama.'"><i class="fa fa-bell"></i></a></li>
 						  <li><a id="kerja" class="zoom-fab zoom-btn-sm zoom-btn-person scale-transition scale-out" data-toggle="modal" data-target="'.($row->nomi_locked == '1' ? $target : '#kerjaModal').'" data-tooltip="tooltip" data-placement="top" title="'.($row->nomi_locked == '1' ? 'Berkas telah di kunci oleh '.$row->lock_name :  'Kerjakan berkas Layanan '.$row->layanan_nama.' atas nama '.$row->nama).'"><i id="fa-user" class="fa fa-user"></i></a></li>
-						  <li><a id="verifikasi" class="hidden zoom-fab zoom-btn-sm zoom-btn-doc scale-transition scale-out" data-toggle="modal" data-target="#verifikasiModal" data-tooltip="tooltip" data-placement="top" title="" data-original-title="Hasil Verifikasi berkas ASN atas nama '.$row->nama.'"><i class="fa fa-book"></i></a></li>
-						  <li><a id="epmk" data-toggle="modal" data-agenda="'.$row->agenda_id.'" data-nip="'.$row->nip.'" data-target="#epmkModal" data-tooltip="tooltip" data-placement="top" data-original-title="Lihat Nota Usul PMK" class="hidden zoom-fab zoom-btn-sm zoom-btn-report scale-transition scale-out"><i class="fa fa-edit"></i></a></li>
-						  <li><a class="hidden zoom-fab zoom-btn-sm zoom-btn-tangram scale-transition scale-out"><i class="fa fa-dashboard"></i></a></li>
+						  <li><a id="verifikasi" class="hidden zoom-fab zoom-btn-sm zoom-btn-doc scale-transition scale-out" data-toggle="modal" data-target="#verifikasiModal" data-tooltip="tooltip" data-placement="top" title="" data-original-title="Hasil Verifikasi berkas ASN atas nama '.$row->nama.'"><i class="fa fa-book"></i></a></li>';
 						  
+							if($row->layanan_id == 19)
+							{  
+								$zoom .='<li><a id="epmk" data-toggle="modal" data-agenda="'.$row->agenda_id.'" data-nip="'.$row->nip.'" data-target="#epmkModal" data-tooltip="tooltip" data-placement="top" data-original-title="Lihat Nota Usul PMK" class="hidden zoom-fab zoom-btn-sm zoom-btn-report scale-transition scale-out"><i class="fa fa-edit"></i></a></li>';
+						    }
+							
+						  $zoom .='<li><a class="hidden zoom-fab zoom-btn-sm zoom-btn-tangram scale-transition scale-out"><i class="fa fa-dashboard"></i></a></li>';			  
 						  
-						</ul>				
+						$zoom .='</ul>				
 					</div>';	
+					
+					echo $zoom;
 				}
 			}	
 			?>
@@ -245,7 +253,7 @@
 					if($usul->num_rows() > 0){
 					    $row = $usul->row();
 						// jika layanan KARPEG main dokumen dari pengantar
-						if($row->layanan_id == 9 || $row->layanan_id == 10 || $row->layanan_id == 11)
+						if($row->layanan_id == 9 || $row->layanan_id == 10 || $row->layanan_id == 11 || $row->layanan_id == 20)
 						{
 							echo '<embed src="'.site_url().'/verifikator/getFilePengantar/?id='.$this->myencrypt->encode($row->agenda_ins).'&f='.$this->myencrypt->encode($row->agenda_dokumen).'" type="application/pdf" width="100%" height="100%">';					
 
@@ -1122,6 +1130,7 @@
 			var div = $("#verifikasi");
 			var berkas = $("#berkas");
 			var kerja = $("#kerja #fa-user");
+		    var pmk = $("#epmk");
 			
 			$('#kerjaModal #msg').text('Updating Please Wait.....')
                      .removeClass( "text-green")
@@ -1138,7 +1147,7 @@
 							 
 					div.removeClass('hidden').addClass("visible"); 		
 					berkas.removeClass('hidden').addClass("visible"); 
-					$("#epmk").removeClass('hidden').addClass("visible"); 
+					pmk.removeClass('hidden').addClass("visible"); 
 					kerja.removeClass('fa fa-user').addClass("fa fa-lock"); 
 					
 				}, // akhir fungsi sukses
