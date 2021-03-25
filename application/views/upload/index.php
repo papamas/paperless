@@ -84,6 +84,7 @@
 	<script>	
 	$(document).ready(function () {
         Dropzone.options.upload = {
+			addRemoveLinks : true,
 			dictDefaultMessage: "Letakkan file dokumen kepegawaian yang akan di upload disini",
 		    acceptedFiles: ".pdf"
 		};
