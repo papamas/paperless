@@ -146,7 +146,7 @@
 			</div>';
 		}			
 		// jika layanan KARIS/KARSU/KARPEG/PEREMAJAAN DATA main dokumen dari pengantar
-		if($row->layanan_id == 9 || $row->layanan_id == 10 || $row->layanan_id == 11 || $row->layanan_id == 20)
+		if($row->layanan_id == 9 || $row->layanan_id == 10 || $row->layanan_id == 11 || $row->layanan_id == 14 || $row->layanan_id == 20)
 		{
 			// abaikan main upload
 		}
@@ -170,7 +170,7 @@
 			$row 	 = $usul->row();
 					
 			$tipe    = $this->session->userdata('session_user_tipe');
-			if($row->layanan_id == 9 || $row->layanan_id == 10 || $row->layanan_id == 11 || $row->layanan_id == 20)
+			if($row->layanan_id == 9 || $row->layanan_id == 10 || $row->layanan_id == 11 || $row->layanan_id == 14 || $row->layanan_id == 20)
 			{
 				if($row->locked_by == $this->session->userdata('user_id'))
 				{
@@ -252,8 +252,8 @@
 					
 					if($usul->num_rows() > 0){
 					    $row = $usul->row();
-						// jika layanan KARPEG main dokumen dari pengantar
-						if($row->layanan_id == 9 || $row->layanan_id == 10 || $row->layanan_id == 11 || $row->layanan_id == 20)
+						// jika layanan KARPEG/KARIS/KARSU/PENCATUMAN GELAR main dokumen dari pengantar
+						if($row->layanan_id == 9 || $row->layanan_id == 10 || $row->layanan_id == 11  || $row->layanan_id == 14 || $row->layanan_id == 20)
 						{
 							echo '<embed src="'.site_url().'/verifikator/getFilePengantar/?id='.$this->myencrypt->encode($row->agenda_ins).'&f='.$this->myencrypt->encode($row->agenda_dokumen).'" type="application/pdf" width="100%" height="100%">';					
 

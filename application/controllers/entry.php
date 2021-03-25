@@ -514,7 +514,7 @@ class Entry extends MY_Controller {
 		$this->pdf->AddPage('P', 'A4');
 		$this->pdf->Text(10, 50, 'Nomor');
 		$this->pdf->Text(40, 50, ':');
-		$this->pdf->Text(45, 50, $row->nomi_persetujuan);
+		$this->pdf->Text(45, 50, trim($row->nomi_persetujuan));
 		
 		$this->pdf->Text(150, 50, 'Manado, '.$row->tanggal_acc);
 		

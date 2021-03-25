@@ -158,7 +158,7 @@ class upload extends MY_Controller {
 					$result['updated']  = $this->uploadFile->updateFile($result);
 					$result['error'] 	= 'File dokumen kepegawaian sudah ada, overwrite file';
 					$this->output
-						->set_status_header(406)
+						->set_status_header(200)
 						->set_content_type('application/json', 'utf-8')
 						->set_output(json_encode($result));
 

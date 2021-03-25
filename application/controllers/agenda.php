@@ -553,8 +553,8 @@ class Agenda extends MY_Controller {
 		  redirect('agenda/nominatif/'.$agenda_id);
 		}
 		
-		// jika layanan KARIS/KARSU/KARPEG/PEREMAJAAN DATA main dokumen dari pengantar
-		if($layanan_id == 9 || $layanan_id == 10 || $layanan_id == 11 || $layanan_id == 20)
+		// jika layanan KARIS/KARSU/KARPEG/PENCANTUMAN GELAR/PEREMAJAAN DATA main dokumen dari pengantar
+		if($layanan_id == 9 || $layanan_id == 10 || $layanan_id == 11 || $layanan_id == 14  || $layanan_id == 20)
 		{
             // abaikan periksa dokumen usul
         }

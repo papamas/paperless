@@ -90,7 +90,7 @@ class Turunstatus_model extends CI_Model {
 		
 		if($status == 'BTL')
 		{
-			if($this->session->userdata('session_user_tipe') == 'TU')
+			if($tahapan == 3 || $tahapan == 2 )
 			{	
 				$this->db->set('btl_from',3);
 				$this->db->set('btl_tu_date','NOW()',FALSE);
