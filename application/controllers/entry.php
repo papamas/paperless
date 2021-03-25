@@ -780,6 +780,7 @@ class Entry extends MY_Controller {
 		$data['gaji_pokok_terakhir']	= $this->input->post('gaji_pokok_terakhir');
 		$data['usul_spesimen']	        = $this->input->post('spesimenTaspen');
 		$data['jd_dd_status']	        = $this->input->post('jandaDuda');
+		$data['persetujuan_status']	    = $this->input->post('persetujuanStatus');
 		
 		$this->form_validation->set_rules('persetujuan', 'Persetujuan', 'required');
 		$this->form_validation->set_rules('tanggal', 'Tanggal', 'required');
@@ -1353,21 +1354,30 @@ class Entry extends MY_Controller {
 		$this->pdf->writeHTMLCell(70,'',140,75,$text1,0,0,false,false,'J',true);
 		
 		$this->pdf->Text(25, 100, '1.');
-		$text1='Menunjuk Surat dari Ka. PT. Taspen (persero) Cabang '.$row->nama_taspen.'  Nomor '.$row->nomor_usul.' Perihal permohonan Saudara Tanggal '.$row->atgl_usul.' untuk mengesahkan/mencatat mutasi keluarga, bersama ini kami kirimkan kembali Formulir Model A/II/Pens, tentang pendataran Isteri/Suami/Anak sebagai yang berhak menerima pensiun Janda/Duda yang telah disahkan/dicatat.';
+		$text1='Menunjuk Surat dari Ka. PT. Taspen (persero) Cabang '.$row->nama_taspen.'  Nomor '.$row->nomor_usul.' Perihal permohonan Saudara Tanggal '.$row->atgl_usul.' untuk '.($row->persetujuan_status == 1 ? 'mengesahkan' : 'mencatat').' mutasi keluarga, bersama ini kami kirimkan kembali Formulir Model A/II/Pens, tentang pendataran Isteri/Suami/Anak sebagai yang berhak menerima pensiun Janda/Duda yang telah '.($row->persetujuan_status == 1 ? 'disahkan' : 'dicatat');
+		
 		$this->pdf->writeHTMLCell(175,'',30,100,$text1,0,0,false,false,'J',true);
 		
 		$this->pdf->Text(25, 125, '2.');
 		$text1='Mengingat bahwa bukti pendaftaran tersebut sangat penting sebagai kelengkapan permohonan pensiun Janda/Duda sebagai Isteri/Suami/Anak/Saudara, kami harapkan agar formulir tersebut disimpan dengan baik.';
 		$this->pdf->writeHTMLCell(175,'',30,125,$text1,0,0,false,false,'J',true);
 		
-		$this->pdf->Text(25, 145, '3.');
-		$text1='Perlu kami jelaskan bahwa pendaftaran yang saudara lakukan telah melebihi batas waktu 1 (satu) tahun setelah terjadinya perkawinan tersebut sebagaimana ditetapkan dalam pasal 19 ayat 6 Undang-Undang Nomor 11 Tahun 1969, maka pendaftaran tersebut hanya kami catat, tetapi tidak disahkan.';
-		$this->pdf->writeHTMLCell(175,'',30,145,$text1,0,0,false,false,'J',true);
-		
-		$this->pdf->Text(25, 165, '4.');
-		$text1='Demikian untuk dipergunakan sebagaimana mestinya.';
-		$this->pdf->writeHTMLCell(175,'',30,165,$text1,0,0,false,false,'J',true);
-		
+		if($row->persetujuan_status == 1)
+		{	
+			$this->pdf->Text(25, 145, '3.');
+			$text1='Perlu kami jelaskan bahwa pendaftaran yang saudara lakukan telah melebihi batas waktu 1 (satu) tahun setelah terjadinya perkawinan tersebut sebagaimana ditetapkan dalam pasal 19 ayat 6 Undang-Undang Nomor 11 Tahun 1969, maka pendaftaran tersebut hanya kami catat, tetapi tidak disahkan.';
+			$this->pdf->writeHTMLCell(175,'',30,145,$text1,0,0,false,false,'J',true);
+			
+			$this->pdf->Text(25, 165, '4.');
+			$text1='Demikian untuk dipergunakan sebagaimana mestinya.';
+			$this->pdf->writeHTMLCell(175,'',30,165,$text1,0,0,false,false,'J',true);
+		}
+		else
+		{
+			$this->pdf->Text(25, 145, '3.');
+			$text1='Demikian untuk dipergunakan sebagaimana mestinya.';
+			$this->pdf->writeHTMLCell(175,'',30,145,$text1,0,0,false,false,'J',true);
+		}		
 		
 		// set style for barcode
 		$style = array(
