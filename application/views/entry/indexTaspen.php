@@ -348,6 +348,18 @@
 								<span class="help-block text-red"><?php echo form_error('spesimen'); ?></span>
 							</div>		
 						</div>	
+						<div class="form-group row">
+							<label class="control-label col-md-2">Status</label>									
+							<div class="col-md-4">
+								<select name="persetujuanStatus" class="form-control">
+									<option value="">--silahkan Pilih--</option>
+									<option value="1">DISAHKAN</option>
+									<option value="2">DICATAT</option>
+								</select>
+								<span class="help-block text-red"><?php echo form_error('persetujuanStatus'); ?></span>
+							</div>		
+						</div>	
+						
 					</form>
 				</div>
 				<div class="modal-footer">
@@ -474,7 +486,8 @@
 					$('#skModal [name=spesimenTaspen]').val(r.entry[0].usul_spesimen);
 					$('#skModal input[name=layananId]').val(r.entry[0].layanan_id);
 					$('#skModal [name=jandaDuda]').val(r.entry[0].jd_dd_status);
-
+					$('#skModal [name=persetujuanStatus]').val(r.entry[0].persetujuan_status);
+	
 					if(r.entry[0].layanan_id == 15)
 					{	
 						$('.meninggal').addClass( "hidden" ); 

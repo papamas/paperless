@@ -691,7 +691,7 @@ ORDER  by e.PNS_PNSNAM ASC
 		$gaji_pokok			= $data['gaji_pokok_terakhir'];
 		$usul_spesimen		= $data['usul_spesimen'];
 		$jd_dd_status       = $data['jd_dd_status'];
-		
+		$persetujuanStatus  = $data['persetujuan_status'];
 		
 		$set['usul_no_persetujuan']    	=   strtoupper($nomor); 
 		$set['usul_tgl_persetujuan']   	=   $tanggal; 
@@ -705,6 +705,7 @@ ORDER  by e.PNS_PNSNAM ASC
 		$set['gaji_pokok_terakhir']		=   $gaji_pokok;
 		$set['usul_spesimen']		    =   $usul_spesimen;
 		$set['jd_dd_status']		    =   (!empty($jd_dd_status) ? $jd_dd_status : NULL);
+		$set['persetujuan_status']		=   $persetujuanStatus;
 		
 		$this->db->where('usul_id',$usul_id);
 		$this->db->where('nip',$nip);

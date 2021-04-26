@@ -321,6 +321,7 @@ class Verifikasi extends MY_Controller {
 		{	$row      = $this->verifikasi->getAgendaData($id)->row();
 			$baris    = $this->verifikasi->getUserLayananRole($row->layanan_id,$row->agenda_ins);
 			
+			/*
 			if($baris->num_rows() > 0)
 			{
 				foreach($baris->result() as $value)
@@ -339,7 +340,8 @@ class Verifikasi extends MY_Controller {
 												
 					}					
 				}		
-			}		
+			}	
+			*/	
 			
 			$data['pesan']		= 'Berkas sudah dikirim ke Teknis';
 			$this->output
@@ -380,12 +382,14 @@ class Verifikasi extends MY_Controller {
 			$this->db->trans_commit();
 			
 			// kirim notifikasi berdasarkan agenda dan layanan
+			
 			for($j=0;$j < count($agenda_unik);$j++){
 			   
 				$id       = $agenda_unik[$j];
 				$row      = $this->verifikasi->getAgendaData($id)->row();
 				$baris    = $this->verifikasi->getUserLayananRole($row->layanan_id,$row->agenda_ins);
 				
+				/*
 				if($baris->num_rows() > 0)
 				{
 					foreach($baris->result() as $value)
@@ -405,6 +409,7 @@ class Verifikasi extends MY_Controller {
 						}					
 					}			
 				}	
+				*/
 			}		
 			
 			$data['pesan']		= 'Berkas sudah dikirim ke Teknis';
