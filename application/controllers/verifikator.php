@@ -315,7 +315,7 @@ class Verifikator extends MY_Controller {
 			}
 			else
 			{			   
-				$this->send_to_Telegram($data);
+				//$this->send_to_Telegram($data);
 				
 				$this->db->trans_commit();				
 				

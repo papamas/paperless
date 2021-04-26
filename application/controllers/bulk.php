@@ -85,7 +85,7 @@ class Bulk extends MY_Controller {
 			$this->pdf->SetAutoPageBreak(false, 5);
 			$this->pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 			
-			$this->pdf->SetFont('freeSerif', '', 12);
+			$this->pdf->SetFont('freeSerif', '', 4);
 			
 			$this->pdf->AddPage('P', 'A4');
 			
@@ -111,8 +111,24 @@ class Bulk extends MY_Controller {
 			{
 				$this->pdf->Image(base_url() . 'photo/'.$instansi.'/'.$value->orig_name, $x, $y, 20, 30, 'JPG', '', 'T', false, '', 'T', false, false, 0, false, false, false);
 				
+			    $xnama      = explode(" ",$value->PNS_PNSNAM,2);
+
+				if(count($xnama) == 2)
+				{
+					$fn 	= $xnama[0];
+					$ln		= $xnama[1];
+				}
+				else
+				{
+					$fn		= $xnama[0];
+					$ln		= '';
+				}  
+				
 				$counter ++;
-				$this->pdf->Text($x1, $y1, $counter);
+
+				$this->pdf->Text($x1, $y1, $counter.".".$value->PNS_PNSNAM);
+				
+				
 				
 				if($counter % 56 === 0)
 				{
