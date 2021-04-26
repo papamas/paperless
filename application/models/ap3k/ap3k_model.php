@@ -174,7 +174,7 @@ class Ap3k_model extends CI_Model {
 		LEFT JOIN mirror.pupns c ON b.nip = c.PNS_NIPBARU
 		LEFT JOIN layanan d ON a.layanan_id = d.layanan_id	
 		LEFT JOIn mirror.instansi e ON a.agenda_ins = e.INS_KODINS
-		WHERE a.agenda_id='$id' ";
+		WHERE a.agenda_id='$id' ORDER BY c.PNS_PNSNAM ASC  ";
 		return $this->db->query($sql);	
 	}
 	

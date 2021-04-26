@@ -588,8 +588,10 @@ class Entry extends MY_Controller {
 		$text2='an.Kepala Kantor Regional XI Badan Kepegawaian Negara '.$row->jabatan;
 		$this->pdf->writeHTMLCell(60,125,130,180,$text2,0,0,false,true,'L',true);
 		
-		$this->pdf->Text(130, 215, $row->nama_spesimen.', '.$row->gelar_spesimen);
-		$this->pdf->Text(130, 220, 'NIP.'.$row->nip_spesimen);
+		//$this->pdf->Text(130, 215, $row->nama_spesimen.', '.$row->gelar_spesimen);
+		//$this->pdf->Text(130, 220, 'NIP.'.$row->nip_spesimen);
+		
+		$this->pdf->Text(130, 220, '$');
 		
 		$this->pdf->Text(20, 225, 'Tembusan, Yth :');
 		$this->pdf->Text(20, 230, '1. Kepala Kantor Regional XI sebagai laporan;');
@@ -1362,7 +1364,7 @@ class Entry extends MY_Controller {
 		$text1='Mengingat bahwa bukti pendaftaran tersebut sangat penting sebagai kelengkapan permohonan pensiun Janda/Duda sebagai Isteri/Suami/Anak/Saudara, kami harapkan agar formulir tersebut disimpan dengan baik.';
 		$this->pdf->writeHTMLCell(175,'',30,125,$text1,0,0,false,false,'J',true);
 		
-		if($row->persetujuan_status == 1)
+		if($row->persetujuan_status == 2)
 		{	
 			$this->pdf->Text(25, 145, '3.');
 			$text1='Perlu kami jelaskan bahwa pendaftaran yang saudara lakukan telah melebihi batas waktu 1 (satu) tahun setelah terjadinya perkawinan tersebut sebagaimana ditetapkan dalam pasal 19 ayat 6 Undang-Undang Nomor 11 Tahun 1969, maka pendaftaran tersebut hanya kami catat, tetapi tidak disahkan.';
