@@ -10,6 +10,48 @@ class Hook extends CI_Controller {
 		$this->load->model('telegram/telegram_model', 'bot');		
     }
 	
+	public function tes()
+	{
+		$this->telegram->sendApiAction("882025162");
+		$text  = "<pre>Hello, <strong> Nur Muhamad Holik</strong>";
+		$text .= "\n Tanggal:".date('d-m-Y H:i:s')."  Kirim Pesan Tes";
+		$text .= "</pre>";
+		$this->telegram->sendApiMsg("882025162", $text , false, 'HTML');	
+	
+	}
+	
+	public function bot()
+	{
+		$idfile = 'telegram/botID.txt';
+		$update_id = 0;
+        
+		 
+		if (file_exists($idfile)) {
+			$update_id = (int) file_get_contents($idfile);
+			var_dump($update_id);
+			echo '-';
+		}
+
+        $this->load->library('Telegram');
+
+        $this->telegram->setOffset($update_id);
+		$updates = $this->telegram->getApiUpdate();
+
+		foreach ($updates as $message) {
+			var_dump($message);
+			$update_id = $this->_prosesApiMessage($message);
+			file_put_contents($idfile, $update_id + 1);
+            echo '+';
+		} 
+		
+		
+		 
+		//$entityBody = file_get_contents('php://input');
+		//$message = json_decode($entityBody, true);
+		
+		
+		 
+	}
 	
 	public function index()
 	{
@@ -17,9 +59,11 @@ class Hook extends CI_Controller {
 		
 		$entityBody = file_get_contents('php://input');
 		$message = json_decode($entityBody, true);
+		var_dump($message);
 		
 		$this->_prosesApiMessage($message);	 
 	}
+	
 	
 	function _prosesApiMessage($sumber)
 	{
@@ -50,7 +94,7 @@ class Hook extends CI_Controller {
 		$chatid 	= $message['chat']['id'];
 		$fromid 	= $message['from']['id'];
 		$first_name = $message['from']['first_name'];
-		$last_name  = $message['from']['last_name'];
+		$last_name  = (!empty($message['from']['last_name']) ? $message['from']['last_name'] : '');
 		
 		$reply_to_message = array();
 		
@@ -763,7 +807,7 @@ class Hook extends CI_Controller {
 		$chatid 		= $data['chat']['id'];
 		$fromid 		= $data['from']['id'];
 		$first_name 	= $data['from']['first_name'];
-		$last_name  	= $data['from']['last_name'];
+		$last_name  	= (!empty($data['from']['last_name']) ? $data['from']['last_name'] : '') ;
 		
 		if($detailUsul->num_rows() > 0)
 		{	
@@ -795,7 +839,7 @@ class Hook extends CI_Controller {
 		$chatid 		= $data['chat']['id'];
 		$fromid 		= $data['from']['id'];
 		$first_name 	= $data['from']['first_name'];
-		$last_name  	= $data['from']['last_name'];
+		$last_name  	= (!empty($data['from']['last_name']) ? $data['from']['last_name'] : '');
 		
 		if($listUsul->num_rows() > 0)
 		{	

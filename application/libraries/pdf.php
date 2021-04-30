@@ -48,8 +48,17 @@ class pdf extends TCPDF
 	public function Footer()
 	{
 		$this->SetY(-15);
-		$this->SetFont('helvetica', 'I', 8);
-		$this->Cell(0, 10, 'Dokumen ini dicetak pada tanggal :' . date('d-m-Y H:i'), 0, false, 'R', 0, '', 0, false, 'T', 'M');
+		$this->SetFont('helvetica', '', 6);
+		$text2='- UU ITE No. 11 Tahun 2008 Pasal 5 Ayat 1
+“Informasi Elektronik dan/atau Dokumen dan/atau hasil cetaknya merupakan alat bukti hukum yang sah”<br/>		 
+- Dokumen ini telah ditandatangani secara elektronik menggunakan sertifikat elektronik yang diterbitkan BSrE
+';
+		$this->writeHTMLCell(150,10,10,-15,$text2,0,0,false,true,'L',true);
+		//$this->Cell(0, 10, 'Dokumen ini dicetak pada tanggal :' . date('d-m-Y H:i'), 0, false, 'R', 0, '', 0, false, 'T', 'M');
+		
+		$bsre = base_url() . 'assets/dist/img/bsre.png';
+		$this->Image($bsre, 165, 275, 40, 20, 'PNG', '', 'T', false, 150, 'R', false, false, 0, false, false, false);
+		
 	}
 
 	public function Header()
