@@ -399,7 +399,8 @@ GROUP BY a.nip,b.layanan_id,a.agenda_id";
 		// jika layanan pindah instansi hanya eselon 2 spesimen
 		// eselon 4 dan 3 hanya periksa , kalau PG eselon 4 periksa 
 		// eselon 3 ttd surat
-		if($layanan_id == 13 || $layanan_id == 14)
+		// layanan perbaikan golongan berakhir di esleon 3
+		if($layanan_id == 13 || $layanan_id == 14 || $layanan_id == 20)
 		{
 	        $set['tahapan_id']   	  = 7;
 	    }

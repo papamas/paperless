@@ -541,7 +541,7 @@
 		
 		if($tipe == 2)
 		{
-		    if($layanan_id == 13 || $layanan_id == 14)
+		    if($layanan_id == 13 || $layanan_id == 14 || $layanan_id == 20)
 			{
 				// jika layanan pindah instansi sembunyikan konfirmasi berkas finish
 				$hidden = "hidden";	

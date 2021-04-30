@@ -536,8 +536,8 @@ class Entry extends MY_Controller {
 		$this->pdf->Text(10, 89, 'di '.$row->lokasi_daerah);	
 		
 
-        $text='&nbsp;&nbsp;&nbsp;Sehubungan Dengan Surat Saudara Nomor '.$row->agenda_nousul.' tanggal '.$row->tanggal_agenda.' perihal Pencantuman Gelar Akademik, dengan ini kami sampaikan hal sebagai berikut :';
-        $this->pdf->writeHTMLCell(180,10,10,100,$text,0,0,false,false,'J',true);
+        $text='&nbsp;&nbsp;Sehubungan Dengan Surat Saudara Nomor '.$row->agenda_nousul.' tanggal '.$row->tanggal_agenda.' perihal Pencantuman Gelar Akademik, dengan ini kami sampaikan hal sebagai berikut :';
+        $this->pdf->writeHTMLCell(180,10,10,100,$text,0,0,false,false,'J',false);
 
 
         $this->pdf->Text(10, 112, 'a.');		
@@ -563,8 +563,8 @@ class Entry extends MY_Controller {
 		
 		$this->pdf->Text(10, 155, 'b. Berdasarakan ketentuan yang berlaku maka permohonan Saudara telah Memenuhi Syarat.');		
 
-       	$text1='&nbsp;&nbsp;&nbsp;Sehubungan dengan hal tersebut kami cantumkan Gelar A.Md.Kep sebagaimana yang telah di sesuaikan dengan ijazah terbaru yang bersangkutan ke dalam Data Induk Pegawai Negeri Sipil, sehingga di kemudian hari dapat di gunakan pada Mutasi Kepegawaiannya.<br/>&nbsp;&nbsp;&nbsp;Atas Perhatian Bapak/Ibu/Saudara, Kami Ucapkan Terima Kasih.';
-		$this->pdf->writeHTMLCell(180,15,10,165,$text1,0,0,false,false,'J',true);
+       	$text1='&nbsp;&nbsp;Sehubungan dengan hal tersebut kami cantumkan Gelar A.Md.Kep sebagaimana yang telah di sesuaikan dengan ijazah terbaru yang bersangkutan ke dalam Data Induk Pegawai Negeri Sipil, sehingga di kemudian hari dapat di gunakan pada Mutasi Kepegawaiannya.<br/>&nbsp;&nbsp;Atas Perhatian Bapak/Ibu/Saudara, Kami Ucapkan Terima Kasih.';
+		$this->pdf->writeHTMLCell(180,15,12,165,$text1,0,0,false,false,'J',false);
 		
 		
 		//$this->pdf->writeHTMLCell(180,5,10,180,'&nbsp;&nbsp;&nbsp;&nbsp;  ',0,0,false,false,'J',true);
