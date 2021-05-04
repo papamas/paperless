@@ -48,8 +48,17 @@ class pdf extends TCPDF
 	public function Footer()
 	{
 		$this->SetY(-15);
-		$this->SetFont('helvetica', 'I', 8);
-		$this->Cell(0, 10, 'Dokumen ini dicetak pada tanggal :' . date('d-m-Y H:i'), 0, false, 'R', 0, '', 0, false, 'T', 'M');
+		$this->SetFont('helvetica', '', 6);
+		$text2='- UU ITE No. 11 Tahun 2008 Pasal 5 Ayat 1
+“Informasi Elektronik dan/atau Dokumen dan/atau hasil cetaknya merupakan alat bukti hukum yang sah”<br/>		 
+- Dokumen ini telah ditandatangani secara elektronik menggunakan sertifikat elektronik yang diterbitkan BSrE
+';
+		$this->writeHTMLCell(150,10,10,-15,$text2,0,0,false,true,'L',true);
+		//$this->Cell(0, 10, 'Dokumen ini dicetak pada tanggal :' . date('d-m-Y H:i'), 0, false, 'R', 0, '', 0, false, 'T', 'M');
+		
+		$bsre = base_url() . 'assets/dist/img/bsre.png';
+		$this->Image($bsre, 165, 275, 40, 20, 'PNG', '', 'T', false, 150, 'R', false, false, 0, false, false, false);
+		
 	}
 
 	public function Header()
@@ -58,20 +67,27 @@ class pdf extends TCPDF
 		$this->SetAuthor('Nur Muhamad Holik');
 				
 		$garuda = base_url() . 'assets/dist/img/garuda.png';
-		$this->Image($garuda, 5, 8, 23, '', 'PNG', '', 'T', false, 145, 'C', false, false, 0, false, false, false);
+		$this->Image($garuda, 5, 2, 23, '', 'PNG', '', 'T', false, 145, 'C', false, false, 0, false, false, false);
 		
-		$this->SetFont('helvetica', 'B', 12);
-		$this->Text(5, 35,'BADAN KEPEGAWAIAN NEGARA', false, false, true, 0, 4, 'C', false, '', 0, false, 'T', 'M', false);
-		$this->Text(5, 40, 'KANTOR REGIONAL XI', false, false, true, 0, 4, 'C', false, '', 0, false, 'T', 'M', false);
+		$this->SetFont('helvetica', 'B', 13);
+		$this->Text(5, 27,'BADAN KEPEGAWAIAN NEGARA', false, false, true, 0, 4, 'C', false, '', 0, false, 'T', 'M', false);
+		$this->Text(5, 32, 'KANTOR REGIONAL XI', false, false, true, 0, 4, 'C', false, '', 0, false, 'T', 'M', false);
 		
+		$this->SetFont('helvetica', '', 12);
+		$this->Text(5, 37, 'Jalan Alexander Andries Maramis Kilometer 8 Mapanget, Manado, Sulawesi Utara 95256', false, false, true, 0, 4, 'C', false, '', 0, false, 'T', 'M', false);
+        $this->Text(5, 42, 'Telepon (0431) 811090', false, false, true, 0, 4, 'C', false, '', 0, false, 'T', 'M', false);
+        $this->Text(5, 47, 'Laman: manado.bkn.go.id; Pos-el: kanreg11.manado@bkn.go.id', false, false, true, 0, 4, 'C', false, '', 0, false, 'T', 'M', false);
+
+
 		$style = array(
-			'width' => 0.29999999999999999,
+			'width' => 0.5,
 			'cap'   => 'butt',
 			'join'  => 'miter',
 			'dash'  => 0,
 			'color' => array(0, 0, 0)
 			);
-		$this->Line(5, 46, $this->getPageWidth() - 5, 46, $style);
+		$this->Line(10, 53, $this->getPageWidth() - 10, 53, $style);
+		/*
 		$style1 = array(
 			'width' => 1,
 			'cap'   => 'butt',
@@ -79,7 +95,7 @@ class pdf extends TCPDF
 			'dash'  => 0,
 			'color' => array(0, 0, 0)
 			);
-		$this->Line(5, 47, $this->getPageWidth() - 5, 47, $style1);
+		$this->Line(5, 47, $this->getPageWidth() - 5, 47, $style1);*/
 	}
 
 	public function Header2()
@@ -105,6 +121,39 @@ class pdf extends TCPDF
 			'color' => array(0, 0, 0)
 			);
 		$this->Line(10, 171, $this->getPageWidth() - 10, 171, $style1);
+	}
+	
+	public function HeaderOld()
+	{
+		$this->SetCreator(PDF_CREATOR);
+		$this->SetAuthor('Nur Muhamad Holik');
+				
+		$garuda = base_url() . 'assets/dist/img/garuda.png';
+		$this->Image($garuda, 5, 8, 23, '', 'PNG', '', 'T', false, 145, 'C', false, false, 0, false, false, false);
+		
+		$this->SetFont('helvetica', 'B', 12);
+		$this->Text(5, 35,'BADAN KEPEGAWAIAN NEGARA', false, false, true, 0, 4, 'C', false, '', 0, false, 'T', 'M', false);
+		$this->Text(5, 40, 'KANTOR REGIONAL XI', false, false, true, 0, 4, 'C', false, '', 0, false, 'T', 'M', false);
+		$this->SetFont('helvetica', '', 12);
+
+		$this->Text(5, 45, 'Jalan Alexander Andries Maramis Kilometer 8 Mapanget, Manado, Sulawesi Utara 95256', false, false, true, 0, 4, 'C', false, '', 0, false, 'T', 'M', false);
+		
+		$style = array(
+			'width' => 0.29999999999999999,
+			'cap'   => 'butt',
+			'join'  => 'miter',
+			'dash'  => 0,
+			'color' => array(0, 0, 0)
+			);
+		$this->Line(5, 46, $this->getPageWidth() - 5, 46, $style);
+		$style1 = array(
+			'width' => 1,
+			'cap'   => 'butt',
+			'join'  => 'miter',
+			'dash'  => 0,
+			'color' => array(0, 0, 0)
+			);
+		$this->Line(5, 47, $this->getPageWidth() - 5, 47, $style1);
 	}
 }
 

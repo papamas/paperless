@@ -7,8 +7,9 @@
  * @version		1.0.0
  */
 class Telegram {
-
-    var $token  = '1084269408:AAHIX0dyay5S5xHk0Eq5YCHy-JsGoHfOevU';
+	
+	// https://api.telegram.org/bot1084269408:AAGdyQTsCBn2l5lnOEv2LQlQi6LciUnyRAY/setWebhook?url=https://satupintu.my.id/index.php/hook
+    var $token  = '1084269408:AAGdyQTsCBn2l5lnOEv2LQlQi6LciUnyRAY';
 	var $method;
 	var $url     = 'https://api.telegram.org/bot';
 	var $offset  = 0;
