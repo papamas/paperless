@@ -563,7 +563,7 @@ class Entry extends MY_Controller {
 		
 		$this->pdf->Text(10, 155, 'b. Berdasarakan ketentuan yang berlaku maka permohonan Saudara telah Memenuhi Syarat.');		
 
-       	$text1='&nbsp;&nbsp;Sehubungan dengan hal tersebut kami cantumkan Gelar A.Md.Kep sebagaimana yang telah di sesuaikan dengan ijazah terbaru yang bersangkutan ke dalam Data Induk Pegawai Negeri Sipil, sehingga di kemudian hari dapat di gunakan pada Mutasi Kepegawaiannya.<br/>&nbsp;&nbsp;Atas Perhatian Bapak/Ibu/Saudara, Kami Ucapkan Terima Kasih.';
+       	$text1='&nbsp;&nbsp;Sehubungan dengan hal tersebut kami cantumkan Gelar '.$row->nama_gelar.' sebagaimana yang telah di sesuaikan dengan ijazah terbaru yang bersangkutan ke dalam Data Induk Pegawai Negeri Sipil, sehingga di kemudian hari dapat di gunakan pada Mutasi Kepegawaiannya.<br/>&nbsp;&nbsp;Atas Perhatian Bapak/Ibu/Saudara, Kami Ucapkan Terima Kasih.';
 		$this->pdf->writeHTMLCell(180,15,12,165,$text1,0,0,false,false,'J',false);
 		
 		
