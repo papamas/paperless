@@ -509,39 +509,88 @@ class Entry extends MY_Controller {
 		$this->pdf->SetAutoPageBreak(false, PDF_MARGIN_BOTTOM);
 		$this->pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 		
-		$this->pdf->SetFont('freeSerif', '', 12);
+		$this->pdf->SetFont('arial', '', 12);
+		
+		$this->pdf->AddPage('P', array(210,297));
+		$this->pdf->Text(25, 65, 'Nomor');
+		$this->pdf->Text(40, 65, ':');
+		$this->pdf->Text(42, 65, trim($row->nomi_persetujuan));
+		
+		//$this->pdf->Text(131,65, 'Manado, '.$row->tanggal_acc);
+		$this->pdf->writeHTMLCell(160,5,28,65,'Manado, '.$row->tanggal_acc,0,0,false,true,'R',true);
+
+		
+		$this->pdf->Text(25, 71, 'Sifat');
+		$this->pdf->Text(40, 71, ':');
+		$this->pdf->Text(42, 71, 'Biasa');
+		
+		$this->pdf->Text(25, 77, 'Hal');
+		$this->pdf->Text(40, 77, ':');
+		$this->pdf->Text(42, 77, 'Peningkatan Pendidikan dan/atau Pencantuman Gelar Akademik');
+		
+		$this->pdf->Text(42, 83, 'PNS atas nama '.$row->nama.', '.$row->gelar);
+		$this->pdf->Text(42, 89, 'NIP. '.$row->nip);
+		
+		$this->pdf->Text(25, 109, 'Yth.');
+		$this->pdf->writeHTMLCell(155,5,33,109,trim($row->nama_jabatan),0,0,false,true,'J',true);
+		$this->pdf->writeHTMLCell(155,5,33,115,trim($row->nama_daerah),0,0,false,true,'J',true);
+		$this->pdf->Text(25, 121, 'di '.$row->lokasi_daerah);	
+		
+		$text='&nbsp;&nbsp;&nbsp;&nbsp;Sesuai dengan surat Saudara Nomor '.$row->agenda_nousul.' tanggal '.$row->tanggal_agenda.' perihal Usul Peningkatan Pendidikan , dengan hormat kami sampaikan hal-hal sebagai berikut:';
+        $this->pdf->writeHTMLCell(165,10,25,140,$text,0,0,false,true,'J',false);
+		
+		$this->pdf->Text(25, 158, 'a.');
+		$text='Bahwa berdasarkan Peraturan Pemerintah Nomor 11 Tahun 2017 pasal 175 ayat (1) dinyatakan bahwa Profil Pegawai Negeri Sipil dikelola dan dimutakhirkan oleh pejabat yang berwenang sesuai dengan perkembangan atau perubahan informasi kepegawaian masing-masing Instansi Pemerintah untuk selanjutnya diintegrasikan ke data Sistem Informasi Aparatur Sipil Negara secara nasional yang dikelola oleh Badan Kepegawaian Negara.';
+		$this->pdf->writeHTMLCell(160,15,29,158,$text,0,0,false,true,'J',true);
+		
+		$this->pdf->Text(25, 192, 'b.');
+		$text='Bahwa berdasarkan '.$row->nama_ijazah.', pada Program Studi '.$row->prodi.' '.$row->kampus.' yang dikeluarkan di '.$row->lokasi_kampus.', atas nama:';
+		$this->pdf->writeHTMLCell(160,15,29,192,$text,0,0,false,true,'J',true);
+		
+		$this->pdf->Text(29, 210, 'Nama');
+		$this->pdf->Text(77, 210, ':');
+		$this->pdf->Text(79, 210, $row->nama.', '.$row->gelar);
+		
+		$this->pdf->Text(29, 216, 'NIP');
+		$this->pdf->Text(77, 216, ':');
+		$this->pdf->Text(79, 216, $row->nip);
+		
+		$this->pdf->Text(29, 222, 'Pangkat/Gol.Ruang/TMT');
+		$this->pdf->Text(77, 222, ':');
+	    $this->pdf->Text(79, 222, $row->pangkat.' / '. $row->nama_golongan.' / '. $row->tmt_golongan);
+		
+		$this->pdf->Text(29, 228, 'Nomor Ijazah/Tgl.Lulus');
+		$this->pdf->Text(77, 228, ':');
+		$this->pdf->Text(79, 228, $row->nomor_ijazah.' / '. $row->tgl_ijazah);
+		
+		$this->pdf->Text(25, 236, 'c.');
+		$text='Bahwa berdasarkan ketentuan yang berlaku, maka permohonan Saudara telah memenuhi syarat dan telah kami cantumkan dalam Data Induk Pegawai Sipil, kepada yang bersangkutan berhak mencantumkan gelar '.$row->nama_gelar.' pada Mutasi Kepegawaiannya.';
+		$this->pdf->writeHTMLCell(160,15,29,236,$text,0,0,false,true,'J',true);
+		
 		
 		$this->pdf->AddPage('P', 'A4');
-		$this->pdf->Text(10, 55, 'Nomor');
-		$this->pdf->Text(40, 55, ':');
-		$this->pdf->Text(45, 55, trim($row->nomi_persetujuan));
+		$this->pdf->Text(29,70,'Atas perhatian Bapak/Ibu/Saudara, kami ucapkan terima kasih');
+
+		$this->pdf->Text(124, 85, 'an.');
+		$text2='Kepala Kantor Regional XI Badan Kepegawaian Negara '.$row->jabatan;
+		$this->pdf->writeHTMLCell(60,20,130,85,$text2,0,0,false,true,'J',true);
 		
-		$this->pdf->Text(150, 55, 'Manado, '.$row->tanggal_acc);
+	
 		
+		$this->pdf->Text(130, 125, '$');
 		
-		$this->pdf->Text(10, 60, 'Lampiran');
-		$this->pdf->Text(40, 60, ':');
-		$this->pdf->Text(45, 60, '-');
-		
-		$this->pdf->Text(10, 65, 'Perihal');
-		$this->pdf->Text(40, 65, ':');
-		$this->pdf->Text(45, 65, 'Pencantuman Gelar Akademik');
-		
-		$this->pdf->Text(45, 69, $row->nama.', '.$row->gelar);
-		$this->pdf->Text(45, 73, 'NIP. '.$row->nip);
-		
-		$this->pdf->Text(10, 79, 'Yth.');
-		$this->pdf->writeHTMLCell(175,5,18,79,trim($row->nama_jabatan),0,0,false,true,'J',true);
-		$this->pdf->writeHTMLCell(175,5,18,84,trim($row->nama_daerah),0,0,false,true,'J',true);
-		$this->pdf->Text(10, 89, 'di '.$row->lokasi_daerah);	
+		$this->pdf->Text(29, 155, 'Tembusan, Yth :');
+		$this->pdf->Text(29, 163, '1. Kepala Kantor Regional XI sebagai laporan;');
+		$this->pdf->Text(29, 168, '2. Kepala Bidang Informasi Kepegawaian  Kanreg  XI BKN;');
+		$this->pdf->Text(29, 173, '3. Saudara '.$row->nama);
 		
 
-        $text='&nbsp;&nbsp;&nbsp;Sehubungan Dengan Surat Saudara Nomor '.$row->agenda_nousul.' tanggal '.$row->tanggal_agenda.' perihal Pencantuman Gelar Akademik, dengan ini kami sampaikan hal sebagai berikut :';
-        $this->pdf->writeHTMLCell(180,10,10,100,$text,0,0,false,false,'J',true);
-
-
+       
+		
+        /*
+		
         $this->pdf->Text(10, 112, 'a.');		
-        $text='Bahwa berdasarkan '.$row->nama_ijazah.', Program Studi '.$row->prodi.', pada '.$row->kampus.' yang dikeluarkan di '.$row->lokasi_kampus.' atas nama:';
+        $text='Bahwa berdasarkan '.$row->nama_ijazah.', pada Program Studi '.$row->prodi.' '.$row->kampus.' yang dikeluarkan di '.$row->lokasi_kampus.', atas nama:';
 		$this->pdf->writeHTMLCell(175,15,14,112,$text,0,0,false,true,'',true);
 		
 		$this->pdf->Text(15, 130, 'Nama');
@@ -556,23 +605,21 @@ class Entry extends MY_Controller {
 		$this->pdf->Text(70, 140, ':');
 		$this->pdf->Text(75, 140, $row->pangkat.' / '. $row->nama_golongan.' / '. $row->tmt_golongan);
 		
-		$this->pdf->Text(15, 145, 'Nomor/Tgl.Ijazah');
+		$this->pdf->Text(15, 145, 'Nomor Ijazah/Tgl.Lulus');
 		$this->pdf->Text(70, 145, ':');
 		$this->pdf->Text(75, 145, $row->nomor_ijazah.' / '. $row->tgl_ijazah);
 		
 		
-		$this->pdf->Text(10, 155, 'b. Berdasarakan ketentuan yang berlaku maka permohonan Saudara telah Memenuhi Syarat.');		
-
-       	$text1='&nbsp;&nbsp;&nbsp;Sehubungan dengan hal tersebut kami cantumkan Gelar A.Md.Kep sebagaimana yang telah di sesuaikan dengan ijazah terbaru yang bersangkutan ke dalam Data Induk Pegawai Negeri Sipil, sehingga di kemudian hari dapat di gunakan pada Mutasi Kepegawaiannya.<br/>&nbsp;&nbsp;&nbsp;Atas Perhatian Bapak/Ibu/Saudara, Kami Ucapkan Terima Kasih.';
-		$this->pdf->writeHTMLCell(180,15,10,165,$text1,0,0,false,false,'J',true);
-		
-		
+		$this->pdf->Text(10, 155, 'b. ');	
+		$text1='Berdasarkan ketentuan yang berlaku maka permohonan Saudara telah memenuhi syarat dan telah kami cantumkan dalam Data Induk Pegawai Sipil, kepada yang bersangkutan berhak mencantumkan gelar '.$row->nama_gelar.' pada Mutasi Kepegawaiannya.';
+		$this->pdf->writeHTMLCell(180,15,14,155,$text1,0,0,false,false,'J',false);
 		//$this->pdf->writeHTMLCell(180,5,10,180,'&nbsp;&nbsp;&nbsp;&nbsp;  ',0,0,false,false,'J',true);
+		
+		$this->pdf->Text(14,175,'Atas perhatian Bapak/Ibu/Saudara, kami ucapkan terima kasih');
 
-		
-		
-			
-		// set style for barcode
+        */  
+		//set style for barcode
+		/*
 		$style = array(
 			'border' => false,
 			'padding' => 0,
@@ -582,15 +629,19 @@ class Entry extends MY_Controller {
 			'module_height' => 1 // height of a single module in points
 		);
 		
-		//$code  = 'Pencantuman Gelar PNS dengan NIP '.$row->nip.' atas nama '.$row->nama;
-		//$code .= ' telah disetujui dengan nomor surat '.$row->nomi_persetujuan.' pada tanggal '.$row->tanggal_acc;
-		//$code .= ' dengan gelar '.$row->nama_gelar.' Program Studi '.$row->prodi.' dan Nomor Ijazah '.$row->nomor_ijazah;
+		$code  = 'Pencantuman Gelar PNS dengan NIP '.$row->nip.' atas nama '.$row->nama;
+		$code .= ' telah disetujui dengan nomor surat '.$row->nomi_persetujuan.' pada tanggal '.$row->tanggal_acc;
+		$code .= ' dengan gelar '.$row->nama_gelar.' Program Studi '.$row->prodi.' dan Nomor Ijazah '.$row->nomor_ijazah;
 		
 		$code   = 'Pencantuman Gelar PNS dengan NIP '.$row->nip.' atas nama '.$row->nama;
 		$code  .= ' Nomor : '.$row->nomi_persetujuan;
 		
 		$this->pdf->write2DBarcode($code, 'QRCODE,Q', 20, 200, 35, 35, $style, 'N');
        
+	    */
+		
+		/*
+		
 		$this->pdf->Text(125, 195, 'an.');
 		$text2='Kepala Kantor Regional XI Badan Kepegawaian Negara '.$row->jabatan;
 		$this->pdf->writeHTMLCell(55,125,130,195,$text2,0,0,false,true,'L',true);
@@ -602,7 +653,7 @@ class Entry extends MY_Controller {
 		$this->pdf->Text(10, 240, 'Tembusan, Yth :');
 		$this->pdf->Text(10, 245, '1. Kepala Kantor Regional XI sebagai laporan;');
 		$this->pdf->Text(10, 250, '2. Kepala Bidang Informasi Kepegawaian  Kanreg  XI BKN;');
-		$this->pdf->Text(10, 255, '3. Saudara '.$row->nama);
+		$this->pdf->Text(10, 255, '3. Saudara '.$row->nama);*/
 		
 		$this->pdf->Output('cetakSurat.pdf', 'D');
 		

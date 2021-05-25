@@ -47,17 +47,16 @@ class pdf extends TCPDF
 
 	public function Footer()
 	{
-		$this->SetY(-15);
-		$this->SetFont('helvetica', '', 6);
-		$text2='- UU ITE No. 11 Tahun 2008 Pasal 5 Ayat 1
-“Informasi Elektronik dan/atau Dokumen dan/atau hasil cetaknya merupakan alat bukti hukum yang sah”<br/>		 
+		//$this->SetY(-30);
+		$this->SetFont('bookos', '', 8);
+		$text2='- UU ITE No. 11 Tahun 2008 Pasal 5 Ayat 1<br/>“Informasi Elektronik dan/atau Dokumen dan/atau hasil cetaknya merupakan alat bukti hukum yang sah”<br/>		 
 - Dokumen ini telah ditandatangani secara elektronik menggunakan sertifikat elektronik yang diterbitkan BSrE
 ';
-		$this->writeHTMLCell(150,10,10,-15,$text2,0,0,false,true,'L',true);
+		$this->writeHTMLCell(160,10,5,-25,$text2,0,0,false,true,'L',true);
 		//$this->Cell(0, 10, 'Dokumen ini dicetak pada tanggal :' . date('d-m-Y H:i'), 0, false, 'R', 0, '', 0, false, 'T', 'M');
 		
 		$bsre = base_url() . 'assets/dist/img/bsre.png';
-		$this->Image($bsre, 165, 275, 40, 20, 'PNG', '', 'T', false, 150, 'R', false, false, 0, false, false, false);
+		$this->Image($bsre, '', 267, 40, 20, 'PNG', '', 'R', false, 100, 'R', false, false, 0, false, false, false);
 		
 	}
 
@@ -67,16 +66,16 @@ class pdf extends TCPDF
 		$this->SetAuthor('Nur Muhamad Holik');
 				
 		$garuda = base_url() . 'assets/dist/img/garuda.png';
-		$this->Image($garuda, 5, 2, 23, '', 'PNG', '', 'T', false, 145, 'C', false, false, 0, false, false, false);
+		$this->Image($garuda, 5, 10, 23, '', 'PNG', '', 'T', false, 145, 'C', false, false, 0, false, false, false);
 		
-		$this->SetFont('helvetica', 'B', 13);
-		$this->Text(5, 27,'BADAN KEPEGAWAIAN NEGARA', false, false, true, 0, 4, 'C', false, '', 0, false, 'T', 'M', false);
-		$this->Text(5, 32, 'KANTOR REGIONAL XI', false, false, true, 0, 4, 'C', false, '', 0, false, 'T', 'M', false);
+		$this->SetFont('bookos', 'B', 13);
+		$this->Text(5, 37,'BADAN KEPEGAWAIAN NEGARA', false, false, true, 0, 4, 'C', false, '', 0, false, 'T', 'M', false);
+		$this->Text(5, 42, 'KANTOR REGIONAL XI', false, false, true, 0, 4, 'C', false, '', 0, false, 'T', 'M', false);
 		
-		$this->SetFont('helvetica', '', 12);
-		$this->Text(5, 37, 'Jalan Alexander Andries Maramis Kilometer 8 Mapanget, Manado, Sulawesi Utara 95256', false, false, true, 0, 4, 'C', false, '', 0, false, 'T', 'M', false);
-        $this->Text(5, 42, 'Telepon (0431) 811090', false, false, true, 0, 4, 'C', false, '', 0, false, 'T', 'M', false);
-        $this->Text(5, 47, 'Laman: manado.bkn.go.id; Pos-el: kanreg11.manado@bkn.go.id', false, false, true, 0, 4, 'C', false, '', 0, false, 'T', 'M', false);
+		$this->SetFont('arial', '', 10);
+		$this->Text(5, 47, 'Jalan Alexander Andries Maramis Kilometer 8 Mapanget, Manado, Sulawesi Utara 95256', false, false, true, 0, 4, 'C', false, '', 0, false, 'T', 'M', false);
+        $this->Text(5, 52, 'Telepon (0431) 811090', false, false, true, 0, 4, 'C', false, '', 0, false, 'T', 'M', false);
+        $this->Text(5, 57, 'Laman: manado.bkn.go.id; Pos-el: kanreg11.manado@bkn.go.id', false, false, true, 0, 4, 'C', false, '', 0, false, 'T', 'M', false);
 
 
 		$style = array(
@@ -86,7 +85,7 @@ class pdf extends TCPDF
 			'dash'  => 0,
 			'color' => array(0, 0, 0)
 			);
-		$this->Line(10, 53, $this->getPageWidth() - 10, 53, $style);
+		$this->Line(25, 63, $this->getPageWidth() - 25, 63, $style);
 		/*
 		$style1 = array(
 			'width' => 1,
@@ -102,7 +101,7 @@ class pdf extends TCPDF
 	{
 		//$garuda = base_url() . 'assets/img/logo-garuda.png';
 		//$this->Image($garuda, 10, 145, 20, '', 'PNG', '', 'T', false, 145, '', false, false, 0, false, false, false);
-		$this->SetFont('helvetica', 'B', 12);
+		$this->SetFont('bookmanoldstyles', 'B', 12);
 		$this->Text(5, 150, $this->title_subject,false, false, true, 0, 4, 'C', false, '', 0, 'T', 'M', false);
 		$this->Text(5, 155, $this->title_header, false, false, true, 0, 4, 'C', false, '', 0, false, 'T', 'M', false);
 		$style = array(
@@ -131,10 +130,10 @@ class pdf extends TCPDF
 		$garuda = base_url() . 'assets/dist/img/garuda.png';
 		$this->Image($garuda, 5, 8, 23, '', 'PNG', '', 'T', false, 145, 'C', false, false, 0, false, false, false);
 		
-		$this->SetFont('helvetica', 'B', 12);
+		$this->SetFont('bookmanoldstyles', 'B', 12);
 		$this->Text(5, 35,'BADAN KEPEGAWAIAN NEGARA', false, false, true, 0, 4, 'C', false, '', 0, false, 'T', 'M', false);
 		$this->Text(5, 40, 'KANTOR REGIONAL XI', false, false, true, 0, 4, 'C', false, '', 0, false, 'T', 'M', false);
-		$this->SetFont('helvetica', '', 12);
+		$this->SetFont('bookmanoldstyles', '', 12);
 
 		$this->Text(5, 45, 'Jalan Alexander Andries Maramis Kilometer 8 Mapanget, Manado, Sulawesi Utara 95256', false, false, true, 0, 4, 'C', false, '', 0, false, 'T', 'M', false);
 		
