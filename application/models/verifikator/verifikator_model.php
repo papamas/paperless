@@ -399,7 +399,8 @@ GROUP BY a.nip,b.layanan_id,a.agenda_id";
 		// jika layanan pindah instansi hanya eselon 2 spesimen
 		// eselon 4 dan 3 hanya periksa , kalau PG eselon 4 periksa 
 		// eselon 3 ttd surat
-		if($layanan_id == 13 || $layanan_id == 14)
+		// layanan perbaikan golongan berakhir di esleon 3
+		if($layanan_id == 13 || $layanan_id == 14 || $layanan_id == 20)
 		{
 	        $set['tahapan_id']   	  = 7;
 	    }
@@ -631,13 +632,14 @@ GROUP BY a.nip,b.layanan_id,a.agenda_id";
 		c.INS_NAMINS instansi,
 		d.nip, d.nomi_status, d.nomi_alasan,d.status_level_satu, d.status_level_dua,d.status_level_tiga,
 		e.PNS_PNSNAM,e.PNS_GLRDPN, e.PNS_GLRBLK,
-		f.tahapan_nama
+		f.tahapan_nama,g.telegram_id, g.first_name, g.last_name
 		FROM $this->tableagenda a
 		LEFT JOIN $this->tablelayanan  b ON a.layanan_id = b.layanan_id
 		LEFT JOIN $this->tableinstansi c ON a.agenda_ins = c.INS_KODINS
 		LEFT JOIN $this->tablenom d ON a.agenda_id  = d.agenda_id
 		LEFT JOIN $this->tablepupns e ON e.PNS_NIPBARU = d.nip
 		LEFT JOIN $this->tabletahapan f ON f.tahapan_id = d.tahapan_id
+		LEFT JOIN app_user g ON a.agenda_created_by = g.user_id
 		WHERE a.agenda_id='$id_agenda' AND d.nip='$nip' ";
     	return $this->db->query($sql);
 	}
@@ -1076,10 +1078,11 @@ AND  f.usul_id='$usul_id' ";
 		
 		$sql ="SELECT a.* ,
 		b.layanan_nama,
-		c.tahapan_nama
+		c.tahapan_nama,d.first_name, d.last_name, d.telegram_id
 		FROM $this->usul a
 		LEFT JOIN $this->tablelayanan b ON a.layanan_id = b.layanan_id
 		LEFT JOIN $this->tabletahapan c ON a.usul_tahapan_id = c.tahapan_id
+		LEFT JOIN app_user d ON a.kirim_bkn_by = d.user_id
 		WHERE a.usul_id='$usul_id' AND a.nip=trim('$nip')  ";
 		return $this->db->query($sql);
 	}
