@@ -13,7 +13,7 @@
 	.marquee {
 	  width: 100%; /* the plugin works for responsive layouts so width is not necessary */
 	  overflow: hidden;
-	  border:0px solid #ccc;
+	  /*border:0px solid #ccc;*/
 	  height: 100vh;
 	  /* height:405px; */
 	}

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<?php echo $this->load->view('vheader');?> 
+<?php  $this->load->view('vheader');?> 
 <link rel="stylesheet" href="<?php echo base_url(); ?>assets/plugins/sweetalert2/sweetalert2.min.css">
 <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>assets/plugins/datepicker/bootstrap-datetimepicker.min.css" />
 </head> 	
@@ -12,13 +12,13 @@
 <div class="wrapper">	
 	<header class="main-header">
         <!-- Logo -->
-        <?php echo $this->load->view('vlogo');?>
+        <?php  $this->load->view('vlogo');?>
         <!-- navbar header-->
-		<?php echo $this->load->view('vnavbar-header');?>
+		<?php  $this->load->view('vnavbar-header');?>
         <!-- end navbar header -->
        </header>
        <!-- Left side column -->
-        <?php echo $this->load->view('vleft-side');?>
+        <?php  $this->load->view('vleft-side');?>
        <!-- End Left side column -->
 	   
 		<!-- Content Wrapper. Contains page content -->

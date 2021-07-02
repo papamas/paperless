@@ -67,10 +67,10 @@ class Usul_model extends CI_Model {
 			
 		if (!$this->db->insert($this->usul, $data))
 		{
-			$error = $this->db->_error_message();
-			if(!empty($error))
+			$error = $this->db->error();
+			if(!empty($error['message']))
 			{
-                $data['pesan']		= $error;   
+                $data['pesan']		= $error['message'];   
 				$data['response'] 	= FALSE;
 			}
             	
@@ -93,10 +93,10 @@ class Usul_model extends CI_Model {
 		$this->db->where('usul_id',$data['usul_id']);	
 		if (!$this->db->update($this->usul, $data))
 		{
-			$error = $this->db->_error_message();
-			if(!empty($error))
+			$error = $this->db->error();
+			if(!empty($error['message']))
 			{
-                $data['pesan']		= $error;   
+                $data['pesan']		= $error['message'];   
 				$data['response'] 	= FALSE;
 			}
             	
@@ -177,8 +177,8 @@ class Usul_model extends CI_Model {
 		
 		if ($this->db->update($this->usul))
 		{
-			$error = $this->db->_error_message(); 
-			if(!empty($error))
+			$error = $this->db->error(); 
+			if(!empty($error['message']))
 			{
 				$r = FALSE;
 			}
@@ -295,10 +295,10 @@ class Usul_model extends CI_Model {
 		$this->db->db_debug = FALSE; 	
 		if (!$this->db->insert($this->tempistri, $data))
 		{
-			$error = $this->db->_error_message();
-			if(!empty($error))
+			$error = $this->db->error();
+			if(!empty($error['message']))
 			{
-                $data['pesan']		= $error;   
+                $data['pesan']		= $error['message'];   
 				$data['response'] 	= FALSE;
 			}
             	
@@ -334,10 +334,10 @@ class Usul_model extends CI_Model {
 		$this->db->where('mutasi_id',$temp_id);
 		if (!$this->db->update($this->tempistri, $data))
 		{
-			$error = $this->db->_error_message();
-			if(!empty($error))
+			$error = $this->db->error();
+			if(!empty($error['message']))
 			{
-                $data['pesan']		= $error;   
+                $data['pesan']		= $error['message'];   
 				$data['response'] 	= FALSE;
 			}
             	
@@ -397,10 +397,10 @@ class Usul_model extends CI_Model {
 		$this->db->db_debug = FALSE; 	
 		if (!$this->db->insert($this->tempanak, $data))
 		{
-			$error = $this->db->_error_message();
-			if(!empty($error))
+			$error = $this->db->error();
+			if(!empty($error['message']))
 			{
-                $data['pesan']		= $error;   
+                $data['pesan']		= $error['message'];   
 				$data['response'] 	= FALSE;
 			}
             	
@@ -432,10 +432,10 @@ class Usul_model extends CI_Model {
 		$this->db->where('mutasi_id',$temp_id);
 		if (!$this->db->update($this->tempanak, $data))
 		{
-			$error = $this->db->_error_message();
-			if(!empty($error))
+			$error = $this->db->error();
+			if(!empty($error['message']))
 			{
-                $data['pesan']		= $error;   
+                $data['pesan']		= $error['message'];   
 				$data['response'] 	= FALSE;
 			}
             	
@@ -479,10 +479,10 @@ class Usul_model extends CI_Model {
 		$this->db->db_debug = FALSE; 	
 		if (!$this->db->insert('jd_dd_anak', $data))
 		{
-			$error = $this->db->_error_message();
-			if(!empty($error))
+			$error = $this->db->error();
+			if(!empty($error['message']))
 			{
-                $data['pesan']		= $error;   
+                $data['pesan']		= $error['message'];   
 				$data['response'] 	= FALSE;
 			}
             	
@@ -514,10 +514,10 @@ class Usul_model extends CI_Model {
 		$this->db->where('jd_dd_anak_id',$temp_id);
 		if (!$this->db->update('jd_dd_anak', $data))
 		{
-			$error = $this->db->_error_message();
-			if(!empty($error))
+			$error = $this->db->error();
+			if(!empty($error['message']))
 			{
-                $data['pesan']		= $error;   
+                $data['pesan']		= $error['message'];   
 				$data['response'] 	= FALSE;
 			}
             	

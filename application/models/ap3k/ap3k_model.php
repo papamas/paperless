@@ -78,11 +78,11 @@ class Ap3k_model extends CI_Model {
 		
 		if (!$this->ap3k->insert('pengantar',$data)) 
 		{
-			$error = $this->ap3k->_error_message(); 
+			$error = $this->ap3k->error(); 
 			
-			if(!empty($error))
+			if(!empty($error['message']))
 			{
-				$data['pesan']			= $error;
+				$data['pesan']			= $error['message'];
 				$data['response']       = FALSE;				
 			}
 			else
@@ -125,11 +125,11 @@ class Ap3k_model extends CI_Model {
 		$this->ap3k->where('kd_pengantar',$kdPengantar);
 		if (!$this->ap3k->update('pengantar',$data)) 
 		{
-			$error = $this->ap3k->_error_message(); 
+			$error = $this->ap3k->error(); 
 			
-			if(!empty($error))
+			if(!empty($error['message']))
 			{
-				$data['pesan']			= $error;
+				$data['pesan']			= $error['message'];
 				$data['response']       = FALSE;				
 			}
 			else

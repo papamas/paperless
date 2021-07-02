@@ -69,10 +69,10 @@ class Pmk_model extends CI_Model {
 		$this->db->where('agenda_id',$this->input->post('agendaId'));		
 		if (!$this->db->update('usul_pmk', $data))
 		{
-			$error = $this->db->_error_message();
-			if(!empty($error))
+			$error = $this->db->error();
+			if(!empty($error['message']))
 			{
-                $data['pesan']		= $error;   
+                $data['pesan']		= $error['message'];   
 				$data['response'] 	= FALSE;
 			}
             	

@@ -12,8 +12,7 @@ class Home extends MY_Controller {
 		//var_dump($this->session->all_userdata());
 		
 		$data['menu']     =  $this->menu->build_menu();
-		
-		$data['message']  = '';
+	    $data['message']  = '';
 		$data['lname']    =  $this->auth->getLastName();        
 		$data['name']     =  $this->auth->getName();
         $data['jabatan']  =  $this->auth->getJabatan();

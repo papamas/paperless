@@ -360,8 +360,8 @@ GROUP BY a.nip,b.layanan_id,a.agenda_id";
 		$this->db->where('nip', $data['nip']);
 		if (!$this->db->update($this->tablenom))
 		{
-			$error = $this->db->_error_message(); 
-			if(!empty($error))
+			$error = $this->db->error(); 
+			if(!empty($error['message']))
 			{
 				$r = FALSE;
 			}
@@ -577,7 +577,7 @@ GROUP BY a.nip,b.layanan_id,a.agenda_id";
 		}
 		
 		
-		// jika layanan KARIS/KARSU/KARPEG LANGSUNG FINISH ACC HANYA SAMPAI LEVEL 1
+		// jika layanan KARIS/KARSU/KARPEG/PERBAIKAN GOLONGAN SAPK LANGSUNG FINISH ACC HANYA SAMPAI LEVEL 1
 		switch($layanan_id){
 		    case 9:
 			    $set['nomi_status']   	  = $data['status'];
@@ -592,6 +592,12 @@ GROUP BY a.nip,b.layanan_id,a.agenda_id";
 				$this->db->set('verify_date','NOW()',FALSE);
 			break;
 			case 11:
+			    $set['nomi_status']   	  = $data['status'];
+				$set['nomi_alasan']		  = $data['catatan'];
+				$set['nomi_verifby']	  = $this->session->userdata('user_id');
+				$this->db->set('verify_date','NOW()',FALSE);
+			break;
+			case 20:
 			    $set['nomi_status']   	  = $data['status'];
 				$set['nomi_alasan']		  = $data['catatan'];
 				$set['nomi_verifby']	  = $this->session->userdata('user_id');
@@ -943,8 +949,8 @@ AND  f.usul_id='$usul_id' ";
 		$this->db->where('nip', $data['nip']);
 		if (!$this->db->update($this->usul))
 		{
-			$error = $this->db->_error_message(); 
-			if(!empty($error))
+			$error = $this->db->error(); 
+			if(!empty($error['message']))
 			{
 				$r = FALSE;
 			}
@@ -1232,10 +1238,10 @@ AND  f.usul_id='$usul_id' ";
 		$this->db->db_debug = FALSE; 	
 		if (!$this->db->insert('jd_dd_anak', $data))
 		{
-			$error = $this->db->_error_message();
-			if(!empty($error))
+			$error = $this->db->error();
+			if(!empty($error['message']))
 			{
-                $data['pesan']		= $error;   
+                $data['pesan']		= $error['message'];   
 				$data['response'] 	= FALSE;
 			}            	
         }
@@ -1266,10 +1272,10 @@ AND  f.usul_id='$usul_id' ";
 		$this->db->where('jd_dd_anak_id',$temp_id);
 		if (!$this->db->update('jd_dd_anak', $data))
 		{
-			$error = $this->db->_error_message();
-			if(!empty($error))
+			$error = $this->db->error();
+			if(!empty($error['message']))
 			{
-                $data['pesan']		= $error;   
+                $data['pesan']		= $error['message'];   
 				$data['response'] 	= FALSE;
 			}
             	
@@ -1306,10 +1312,10 @@ AND  f.usul_id='$usul_id' ";
 		$this->db->db_debug = FALSE; 	
 		if (!$this->db->insert('mutasi_anak', $data))
 		{
-			$error = $this->db->_error_message();
-			if(!empty($error))
+			$error = $this->db->error();
+			if(!empty($error['message']))
 			{
-                $data['pesan']		= $error;   
+                $data['pesan']		= $error['message'];   
 				$data['response'] 	= FALSE;
 			}
             	
@@ -1342,10 +1348,10 @@ AND  f.usul_id='$usul_id' ";
 		$this->db->where('mutasi_id',$temp_id);
 		if (!$this->db->update('mutasi_anak', $data))
 		{
-			$error = $this->db->_error_message();
-			if(!empty($error))
+			$error = $this->db->error();
+			if(!empty($error['message']))
 			{
-                $data['pesan']		= $error;   
+                $data['pesan']		= $error['message'];   
 				$data['response'] 	= FALSE;
 			}
             	
@@ -1386,10 +1392,10 @@ AND  f.usul_id='$usul_id' ";
 		$this->db->db_debug = FALSE; 	
 		if (!$this->db->insert('mutasi_istri_suami', $data))
 		{
-			$error = $this->db->_error_message();
-			if(!empty($error))
+			$error = $this->db->error();
+			if(!empty($error['message']))
 			{
-                $data['pesan']		= $error;   
+                $data['pesan']		= $error['message'];   
 				$data['response'] 	= FALSE;
 			}
             	
@@ -1425,10 +1431,10 @@ AND  f.usul_id='$usul_id' ";
 		$this->db->where('mutasi_id',$temp_id);
 		if (!$this->db->update('mutasi_istri_suami', $data))
 		{
-			$error = $this->db->_error_message();
-			if(!empty($error))
+			$error = $this->db->error();
+			if(!empty($error['message']))
 			{
-                $data['pesan']		= $error;   
+                $data['pesan']		= $error['message'];   
 				$data['response'] 	= FALSE;
 			}
             	
@@ -1567,10 +1573,10 @@ LEFT JOIN KANREG0.KEDUDUKAN_HUKUM g ON a.KEDUDUKAN_HUKUM_ID = g.ID";
 		$this->db->where('agenda_id',$this->input->post('agendaId'));		
 		if (!$this->db->update('usul_pmk', $data))
 		{
-			$error = $this->db->_error_message();
-			if(!empty($error))
+			$error = $this->db->error();
+			if(!empty($error['message']))
 			{
-                $data['pesan']		= $error;   
+                $data['pesan']		= $error['message'];   
 				$data['response'] 	= FALSE;
 			}
             	

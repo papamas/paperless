@@ -48,7 +48,7 @@ class Bulk_model extends CI_Model {
 			   $sql = " AND  UPPER(trim(a.agenda_nousul))=UPPER('$search') ";
             break;
 			default:
-                $sql = " AND a.nip = '999999999' ";		
+                $sql = " AND b.nip = '999999999' ";		
 		}
 		
 		$sql="SELECT a.*, e.PNS_NIPBARU, e.PNS_PNSNAM, f.orig_name FROM $this->tableagenda a
@@ -60,6 +60,7 @@ class Bulk_model extends CI_Model {
 		WHERE 1=1
 		-- b.nomi_status='ACC' 
 		$sql_instansi $sql_layanan  $sql
+		GROUP BY b.nip
     	ORDER BY e.PNS_PNSNAM ASC";
 		//var_dump($sql);exit;
 		

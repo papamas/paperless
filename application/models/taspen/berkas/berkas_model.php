@@ -86,8 +86,8 @@ class Berkas_model extends CI_Model {
 		
 		if ($this->db->update($this->usul))
 		{
-			$error = $this->db->_error_message(); 
-			if(!empty($error))
+			$error = $this->db->error(); 
+			if(!empty($error['message']))
 			{
 				$r = FALSE;
 			}

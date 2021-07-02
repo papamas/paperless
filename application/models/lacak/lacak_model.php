@@ -152,8 +152,8 @@ $sql";
 		
 		if ($this->db->update($this->tablenominatif))
 		{
-			$error = $this->db->_error_message(); 
-			if(!empty($error))
+			$error = $this->db->error(); 
+			if(!empty($error['message']))
 			{
 				$r = FALSE;
 			}
@@ -189,8 +189,8 @@ $sql";
 		
 		if ($this->db->update($this->tablenominatif))
 		{
-			$error = $this->db->_error_message(); 
-			if(!empty($error))
+			$error = $this->db->error(); 
+			if(!empty($error['message']))
 			{
 				$r = FALSE;
 			}

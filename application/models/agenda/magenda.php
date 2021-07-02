@@ -80,10 +80,10 @@ class Magenda extends CI_Model {
 			
 		if (!$this->db->insert('agenda', $data))
 		{
-			$error = $this->db->_error_message();
-			if(!empty($error))
+			$error = $this->db->error();
+			if(!empty($error['message']))
 			{
-                $data['pesan']		= $error;   
+                $data['pesan']		= $error['message'];   
 				$data['response'] 	= FALSE;
 			}
             	
@@ -482,10 +482,10 @@ LEFT JOIN mirror.pupns_pengadaan_info c ON a.PNS_NIPBARU = c.NIP LIMIT 1 ";
 		
 		if (!$this->db->insert('usul_pmk', $data))
 		{
-			$error = $this->db->_error_message();
-			if(!empty($error))
+			$error = $this->db->error();
+			if(!empty($error['message']))
 			{
-				$data['pesan']		= $error;   
+				$data['pesan']		= $error['message'];   
 				$data['response'] 	= FALSE;
 			}
 				

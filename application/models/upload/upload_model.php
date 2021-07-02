@@ -21,6 +21,7 @@ class Upload_model extends CI_Model {
 		$data['upload_by']      = $this->session->userdata('user_id');
 		$number 				= $this->_extract_numbers($data['raw_name']);
 		
+		
 		foreach($number as $value){
 		    if (strlen($value) == 18){
                 $data['nip']    = $value;
@@ -37,10 +38,10 @@ class Upload_model extends CI_Model {
 			
 		if (!$this->db->insert($this->table, $data))
 		{
-			$error = $this->db->_error_message();
-			if(!empty($error))
+			$error = $this->db->error();
+			if(!empty($error['message']))
 			{
-                $data['pesan']		= $error;   
+                $data['pesan']		= $error['message'];   
 				$data['response'] 	= FALSE;
 			}
             	
@@ -98,6 +99,7 @@ class Upload_model extends CI_Model {
 	{
 	    $r = FALSE;
 		$find    = $data;
+		
 		
 	    $query = $this->db->query("SELECT * FROM (SELECT *,locate(nama_dokumen,'$find') result from dokumen ) a
  WHERE a.result = 1 AND a.aktif IS NOT NULL"); 

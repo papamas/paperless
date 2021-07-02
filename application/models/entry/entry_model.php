@@ -300,10 +300,10 @@ ORDER  by e.PNS_PNSNAM ASC
 			
 		if (!$this->db->insert($this->table, $data))
 		{
-			$error = $this->db->_error_message();
-			if(!empty($error))
+			$error = $this->db->error();
+			if(!empty($error['message']))
 			{
-                $data['pesan']		= $error;   
+                $data['pesan']		= $error['message'];   
 				$data['response'] 	= FALSE;
 			}
             	
@@ -435,10 +435,10 @@ ORDER  by e.PNS_PNSNAM ASC
 			
 		if (!$this->db->insert('nomor_pmk', $data))
 		{
-			$error = $this->db->_error_message();
-			if(!empty($error))
+			$error = $this->db->error();
+			if(!empty($error['message']))
 			{
-                $data['pesan']		= $error;   
+                $data['pesan']		= $error['message'];   
 				$data['response'] 	= FALSE;
 			}
             	
@@ -474,10 +474,10 @@ ORDER  by e.PNS_PNSNAM ASC
 		$this->db->set('tanggal_persetujuan','NOW()',FALSE);
 		if (!$this->db->update($this->tablenom))
 		{
-			$error = $this->db->_error_message();
-			if(!empty($error))
+			$error = $this->db->error();
+			if(!empty($error['message']))
 			{
-                $data['pesan']		= $error;   
+                $data['pesan']		= $error['message'];   
 				$data['response'] 	= FALSE;
 			}
             	
@@ -735,10 +735,10 @@ ORDER  by e.PNS_PNSNAM ASC
 			
 		if (!$this->db->insert($this->uploadtaspen, $data))
 		{
-			$error = $this->db->_error_message();
-			if(!empty($error))
+			$error = $this->db->error();
+			if(!empty($error['message']))
 			{
-                $data['pesan']		= $error;   
+                $data['pesan']		= $error['message'];   
 				$data['response'] 	= FALSE;
 			}
             	
