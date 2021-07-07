@@ -443,4 +443,140 @@ class Api_model extends CI_Model{
 		$sql ="DELETE FROM upload_photo WHERE id_instansi='$instansi' AND orig_name='$file'  ";
 		return $this->db->query($sql);	
 	}	
+	
+	
+	/*TASPEN*/
+	public function insertUploadTaspen($data)
+	{
+		$number 				= $this->_extract_numbers($data['raw_name']);
+			
+		$db_debug 			= $this->db->db_debug; 
+		$this->db->db_debug = FALSE; 
+			
+		if (!$this->db->insert('upload_dokumen_taspen', $data))
+		{
+			$error = $this->db->error();
+			
+			
+			if(!empty($error['message']))
+			{
+                $data['pesan']		= $error['message'];   
+				$data['response'] 	= FALSE;
+			}
+            	
+        }
+		else
+		{
+			$data['pesan']		= "File Berhasil Tersimpan";
+			$data['response']	= TRUE;
+		}	
+        $this->db->db_debug = $db_debug; //restore setting	
+
+        return $data;		
+		
+	}
+	
+	function  updateFileTaspen($data)
+	{
+				
+		unset($data['pesan']);
+		unset($data['response']);	
+		
+		$this->db->where('raw_name',$data['raw_name']);
+		$this->db->set('flag_update',1);
+		$this->db->set('update_date','NOW()',FALSE);
+		return $this->db->update('upload_dokumen_taspen',$data);
+		
+	}	
+	
+	
+	public function getDaftarTaspen($data)
+	{
+	   	$searchby		= $data['searchby'];
+		$search			= $data['search'];
+			
+		if($searchby   == 1)
+		{
+			$sql_nip  = " AND a.nip='$search'";
+		}
+		else
+		{
+			$sql_nip  = " ";
+		}
+		
+		
+		
+		$sql=" SELECT a.raw_name, a.file_name,a.file_type,a.file_size, a.file_ext,
+		a.nip,a.minor_dok,a.flag_update, a.upload_by, c.first_name upload_name,
+		a.created_date, a.update_date,
+		b.nama_dokumen,b.keterangan,
+		c.first_name upload_name,
+		d.nama_pns
+		FROM upload_dokumen_taspen a
+		LEFT JOIN dokumen_taspen b ON a.id_dokumen = b.id_dokumen		
+		LEFT JOIN app_user c ON a.upload_by = c.user_id
+		LEFT JOIN usul_taspen d ON a.nip = d.nip
+		WHERE 1=1 $sql_nip  
+		GROUP BY a.id_dokumen
+		ORDER BY b.keterangan ASC";	
+		
+				
+		return $this->db->query($sql);
+		
+	}	
+	
+	
+	function hapusFileTaspen($data)
+	{
+		$instansi  = $data['instansi'];
+		$file      = $data['file'];
+		
+		$sql ="DELETE FROM upload_dokumen_taspen WHERE orig_name='$file'  ";
+		return $this->db->query($sql);	
+	}	
+	
+	
+	public function getValidasiSK($data)
+	{
+	    $instansi 		= $data['instansi'];
+		$searchby		= $data['searchby'];
+		$search			= $data['search'];
+		
+		if(!empty($instansi))
+		{
+			$sql_instansi  = " AND a.id_instansi='$instansi' ";
+		}
+		else
+		{
+			$sql_instansi  = " ";
+		}
+		
+		if($searchby   == 1)
+		{
+			$sql_nip  = " AND a.nip='$search' ";
+		}
+		else
+		{
+			$sql_nip  = " ";
+		}
+		
+		
+		
+		$sql="SELECT a.raw_name, a.file_name,a.file_type,a.file_size, a.file_ext,
+		a.nip, d.nama_dokumen , a.flag_update, a.upload_by, e.first_name upload_name,
+		b.INS_NAMINS instansi_name, b.INS_KODINS instansi_kode,
+		c.PNS_PNSNAM nama_pns,c.PNS_NIPBARU nip_pns, c.PNS_PNSNIP nip_lama              		
+		FROM upload_dokumen a  
+		LEFT JOIN mirror.instansi b ON a.id_instansi = b.INS_KODINS
+		LEFT JOIN mirror.pupns c ON a.nip = c.PNS_NIPBARU
+		LEFT JOIN dokumen d ON a.id_dokumen = d.id_dokumen
+		LEFT JOIN app_user e ON a.upload_by  = e.user_id
+		WHERE 1=1   AND a.id_dokumen IN(55,56)  
+		$sql_instansi $sql_nip 
+		ORDER BY d.nama_dokumen ASC";	
+		
+		
+		return $this->db->query($sql);
+		
+	}	
 }

@@ -169,7 +169,7 @@ class Pensiun extends MY_Controller {
 						$html .= "<td class=str>{$r->nip}</td>";	
 						$html .= "<td>{$r->nama_pns}</td>";
 						$html .= "<td>{$r->nama_janda_duda}</td>";
-						$html .= "<td>TASPEN</td>";	
+						$html .= "<td>TASPEN ".$r->nama_taspen."</td>";	
 						$html .= "<td>{$r->layanan_nama}</td>";	
 						$html .= "<td>{$r->nomor_usul}</td>";	
 						$html .= "<td>{$r->tgl_usul}</td>";	

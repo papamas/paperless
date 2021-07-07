@@ -386,6 +386,79 @@ class Api extends REST_Controller {
 		
 	}	 		
 
+
+    /* GET CONTENT DOKUMEN*/
+	public function dokumen_get()
+	{
+		$headers = $this->input->request_headers();
+		
+		// cek token dulu
+		if (array_key_exists('Token', $headers) && !empty($headers['Token']))
+		{
+			
+			try {
+			    
+				// try decode
+				$decoded 		= $this->token->validateToken($headers['Token']);
+			    $userId 		= $decoded->user_id;	
+				$instansi		= $decoded->instansi;
+				
+				$rules = array(					
+					array(
+						'field' => 'name',
+						'label' => 'name',
+						'rules' => 'required'
+					)
+				);	
+				
+				$this->form_validation->set_data($this->get());
+				$this->form_validation->set_rules($rules);
+
+				if($this->form_validation->run() == FALSE)
+				{
+				    $invalidLogin    = ['response'   =>  FALSE, 
+					                    'message' => 'Bad Request '];	
+				    $this->response($invalidLogin, REST_Controller::HTTP_BAD_REQUEST);
+				
+				}		
+				else
+				{
+					$path      ='/var/www/html/uploads/'.$instansi.'/';
+					$file      = $this->get('name');
+					$flok      = $path.$instansi.'/'.$file;
+					
+					if(file_exists($flok))
+					{
+					    $out['response']     		 = TRUE;
+						$out['file_name']            = $file;
+						$out['file_content'] 	     = base64_encode(file_get_contents($flok));
+						$this->set_response($out, REST_Controller::HTTP_OK);
+					}
+					else
+					{
+						$out['response']     		 = FALSE;
+						$out['message']     		 = "File dokumen tidak ditemukan";
+						$this->set_response($out, REST_Controller::HTTP_BAD_REQUEST);
+
+					}		
+					
+				}	
+				
+			} catch (Exception $e) {
+					$invalid = ['response'  =>  FALSE, 'message' => $e->getMessage()]; 
+					$this->response($invalid, REST_Controller::HTTP_BAD_REQUEST);//400					
+			}  	
+		}
+		else
+		{	
+
+			$output['message']         = "The given data was invalid";
+			$output['response']        = FALSE; 
+			$this->set_response($output, REST_Controller::HTTP_BAD_REQUEST);
+		}
+		
+		
+	}	
    
    
     /* upload photo */   
@@ -668,10 +741,611 @@ class Api extends REST_Controller {
             
 			$error = array( 'response'     => FALSE,
 							'message'      => strip_tags($this->image_lib->display_errors()));
-			$this->set_response($error, REST_Controller::HTTP_NOT_ACCEPTABLE);
+			$this->set_response($error, REST_Controller::HTTP_BAD_REQUEST);
 			
 			
         }
         $this->image_lib->clear();
     }	
+	
+	
+	/* TASPEN */
+	public function taspenUpload_post()
+	{
+
+		$headers = $this->input->request_headers();
+		
+        if (array_key_exists('Token', $headers) && !empty($headers['Token']))
+		{
+			try {
+			    
+				// try decode
+				$decoded 		= $this->token->validateToken($headers['Token']);
+			    $userId 		= $decoded->user_id;	
+				
+				$rules = array(					
+					array(
+						'field' => 'jenis',
+						'label' => 'jenis',
+						'rules' => 'required'
+					),
+					array(
+						'field' => 'nip',
+						'label' => 'nip',
+						'rules' => 'required'
+					)
+				);	
+				
+				$this->form_validation->set_data($this->post());
+				$this->form_validation->set_rules($rules);
+
+				if($this->form_validation->run() == FALSE)
+				{
+				    $out    = [ 'response'   =>  FALSE, 'message' => 'Bad Request '];
+					$this->response($out, REST_Controller::HTTP_BAD_REQUEST);
+				
+				}
+                else	
+                {					
+					
+					$jenis						= $this->post('jenis');
+					$nip						= $this->post('nip');
+					
+					switch($jenis){
+						case 1:
+							$name  = 'SURAT_NIKAH_'.$nip;				
+						break;
+						case 2:
+							$name  = 'SPTB_'.$nip;				
+						break;
+						case 3:
+							$name  = 'SUKET_KEMATIAN_'.$nip;				
+						break;
+						case 4:
+							$name  = 'SUKET_JANDA_DUDA_'.$nip;				
+						break;
+						case 5:
+							$name  = 'PHOTO_'.$nip;				
+						break;
+						case 6:
+							$name  = 'SP4B_'.$nip;				
+						break;
+						case 7:
+							$name  = 'SK_PENSIUN_'.$nip;				
+						break;
+						case 8:
+							$name  = 'AKTA_ANAK_'.$nip;				
+						break;
+						case 9:
+							$name  = 'SUKET_KEMATIAN_CERAI_'.$nip;				
+						break;
+						case 10:
+							$name  = 'BINTANG_JASA_'.$nip;				
+						break;
+						case 11:
+							$name  = 'SUKET_MENETAP_'.$nip;				
+						break;
+						case 12:
+							$name  = 'USUL_PK_'.$nip;				
+						break;
+						case 13:
+							$name  = 'USUL_JD_'.$nip;				
+						break;
+						case 14:
+							$name  = 'SK_JD_'.$nip;				
+						break;
+						case 15:
+							$name  = 'SK_PK_'.$nip;				
+						break;
+						case 16:
+							$name  = 'SUKET_ANAK_'.$nip;				
+						break;
+						case 17:
+							$name  = 'SURAT_PERWALIAN_'.$nip;				
+						break;
+						case 18:
+							$name  = 'USUL_YP_'.$nip;				
+						break;
+						case 19:
+							$name  = 'SK_YP_'.$nip;				
+						break;
+						case 20:
+							$name  = 'FORMULIR_MUTASI_KELUARGA_'.$nip;				
+						break;
+					}
+					
+					$target_dir						= './uploads/taspen';			
+					$config['upload_path']          = $target_dir;			
+					$config['max_size']             = 3024;
+					$config['encrypt_name']			= FALSE;	
+					$config['overwrite']			= TRUE;	
+					$config['detect_mime']			= TRUE;
+					$config['file_name']            = $name;
+					
+					if(!is_dir($target_dir)){
+						mkdir($target_dir, 0777, TRUE);
+					}
+					
+					
+					if($jenis == 5 )
+					{
+						$config['allowed_types']        = 'jpg|JPG|JPEG|jpeg';
+					}
+					else
+					{
+						$config['allowed_types']        = 'pdf';
+					} 
+					
+					
+					$this->load->library('upload', $config);	
+					$this->upload->display_errors('', '');
+
+					if ( ! $this->upload->do_upload('file'))
+					{
+						$error = array( 'response'     => FALSE,
+						                'message'      => strip_tags($this->upload->display_errors()));
+					    $this->set_response($error, REST_Controller::HTTP_NOT_ACCEPTABLE);			
+					}
+					else
+					{
+						
+						$data 			= $this->upload->data();
+						$is_image       = $data['is_image'];
+						
+						if($is_image === TRUE)
+						{
+							$this->resizeImageTaspen($data);
+						}
+						
+						
+						$data['upload_by'] 		= $userId;	
+				        $data['id_dokumen']		= $jenis;
+						$data['nip']            = $nip;
+					    $data['api']            = 1;
+					
+                        $result         = $this->api_model->insertUploadTaspen($data);
+						
+						$response       = $result['response'];
+						
+						if($response === TRUE)
+						{					
+							$out['response']    = TRUE;
+						    $out['insert']      = $response;
+						    $out['message'] 	= $result['pesan'];
+							$out['file_name'] 	= $data['file_name'];
+							$out['file_type'] 	= $data['file_type'];
+							$out['file_size'] 	= $data['file_size'];
+							$out['file_ext'] 	= $data['file_ext'];
+							$out['is_image'] 	= $data['is_image'];
+                            $this->set_response($out, REST_Controller::HTTP_OK);							
+						}
+						else
+						{
+						  	$out['response']    = TRUE;
+						    $out['update']      = $this->api_model->updateFileTaspen($data);
+							$out['message']	    = 'File telah ada, overwrite file';
+							$out['file_name'] 	= $data['file_name'];
+							$out['file_type'] 	= $data['file_type'];
+							$out['file_size'] 	= $data['file_size'];
+							$out['file_ext'] 	= $data['file_ext'];
+							$out['is_image'] 	= $data['is_image'];
+							
+							$this->set_response($out, REST_Controller::HTTP_OK);
+
+						}                							
+					}
+					
+				
+				}
+				
+			} catch (Exception $e) {
+					$invalid = ['response'  =>  FALSE, 'message' => $e->getMessage()]; 
+					$this->response($invalid, REST_Controller::HTTP_BAD_REQUEST);//400					
+			}  		
+		}
+		else
+		{	
+
+			$output['message']         = "The given data was invalid";
+			$output['response']        = FALSE; 
+			$this->set_response($output, REST_Controller::HTTP_BAD_REQUEST);
+		}				
+		
+		
+	}	
+	
+	
+	/* GET TASPEN UPLOAD*/
+	public function taspenUpload_get()
+	{
+
+		$headers = $this->input->request_headers();
+		
+		
+		// cek token dulu
+		if (array_key_exists('Token', $headers) && !empty($headers['Token']))
+		{
+			
+			try {
+			    
+				// try decode
+				$decoded 		= $this->token->validateToken($headers['Token']);
+			    $userId 		= $decoded->user_id;	
+				
+				$rules = array(					
+					array(
+						'field' => 'nip',
+						'label' => 'nip',
+						'rules' => 'required'
+					)
+				);	
+				
+				$this->form_validation->set_data($this->get());
+				$this->form_validation->set_rules($rules);
+
+				if($this->form_validation->run() == FALSE)
+				{
+				    $invalidLogin    = ['response'   =>  FALSE, 
+					                    'message' => 'Bad Request '];	
+				    $this->response($invalidLogin, REST_Controller::HTTP_BAD_REQUEST);
+				
+				}		
+				else
+				{
+					$data['searchby']       = 1;
+					$data['search']         = $this->get('nip');
+					$q				        = $this->api_model->getDaftarTaspen($data);
+					
+					$out['response']  = TRUE;
+					$out['message']   = ($q->num_rows() > 0 ? 'List Of Files' :  'No Files' );
+					$out['size']      =  $q->num_rows();
+					$out['files']     =  $q->result_array();
+					$this->set_response($out, REST_Controller::HTTP_OK);
+				}	
+				
+			} catch (Exception $e) {
+					$invalid = ['response'  =>  FALSE, 'message' => $e->getMessage()]; 
+					$this->response($invalid, REST_Controller::HTTP_BAD_REQUEST);//400					
+			}  	
+		}
+		else
+		{	
+
+			$output['message']         = "The given data was invalid";
+			$output['response']        = FALSE; 
+			$this->set_response($output, REST_Controller::HTTP_BAD_REQUEST);
+		}
+		
+	}	 	
+	
+	/* HAPUS DOKUMEN TASPEN*/
+	 public function taspenUpload_delete()
+	{
+
+		$headers = $this->input->request_headers();
+		// cek token dulu
+		if (array_key_exists('Token', $headers) && !empty($headers['Token']))
+		{
+			
+			try {
+			    
+				// try decode
+				$decoded 		= $this->token->validateToken($headers['Token']);
+			    $userId 		= $decoded->user_id;	
+				
+				$rules = array(					
+					array(
+						'field' => 'name',
+						'label' => 'name',
+						'rules' => 'required'
+					)
+				);	
+				
+				$this->form_validation->set_data($this->delete());
+				$this->form_validation->set_rules($rules);
+
+				if($this->form_validation->run() == FALSE)
+				{
+				    $invalidLogin    = ['response'   =>  FALSE, 
+					                    'message' => 'Bad Request '];	
+				    $this->response($invalidLogin, REST_Controller::HTTP_BAD_REQUEST);
+				
+				}		
+				else
+				{
+					$path ='/var/www/html/uploads/taspen/';
+					$file = $this->delete('name');
+					$data['file']             = $file;
+					
+					
+				    if(@unlink($path.$file) && $this->api_model->hapusFileTaspen($data))
+					{
+						$out['response']  = TRUE;
+						$out['pesan'] 	 = 'File berhasil dihapus';
+						$this->set_response($out, REST_Controller::HTTP_OK);
+					}
+					else
+					{
+						$out['response']  = FALSE;
+						$out['pesan'] 	 = 'File Gagal dihapus';
+						$this->set_response($out, REST_Controller::HTTP_BAD_REQUEST);	
+					}
+
+                }	
+				
+			} catch (Exception $e) {
+					$invalid = ['response'  =>  FALSE, 'message' => $e->getMessage()]; 
+					$this->response($invalid, REST_Controller::HTTP_BAD_REQUEST);//400					
+			}  	
+		}
+		else
+		{	
+
+			$output['message']         = "The given data was invalid";
+			$output['response']        = FALSE; 
+			$this->set_response($output, REST_Controller::HTTP_BAD_REQUEST);
+		}
+		
+	}	 		
+
+	
+	function resizeImageTaspen($data)
+    {	  
+	    $source_path = $data['full_path'];
+        $target_path = $data['full_path'];	  
+	  
+        //Compress Image
+		$config['image_library']		= 'gd2';
+		$config['source_image']			= $source_path;
+		$config['create_thumb']			= FALSE;
+		$config['maintain_ratio']		= FALSE;
+		$config['width']				= 300;
+		$config['height']				= 450;
+		$config['new_image']			=  $target_path;
+		$config['quality']				= '100%';
+		$this->load->library('image_lib', $config);
+		
+        if (!$this->image_lib->resize()) {
+            $error = array('response'     => FALSE,'error' => $this->image_lib->display_errors());
+			$this->set_response($error, REST_Controller::HTTP_BAD_REQUEST);
+        }
+        $this->image_lib->clear();
+    }
+	
+	/* GET CONTENT DOKUMEN*/
+	public function taspenDokumen_get()
+	{
+		$headers = $this->input->request_headers();
+		
+		// cek token dulu
+		if (array_key_exists('Token', $headers) && !empty($headers['Token']))
+		{
+			
+			try {
+			    
+				// try decode
+				$decoded 		= $this->token->validateToken($headers['Token']);
+			    $userId 		= $decoded->user_id;	
+				
+				$rules = array(					
+					array(
+						'field' => 'name',
+						'label' => 'name',
+						'rules' => 'required'
+					)
+				);	
+				
+				$this->form_validation->set_data($this->get());
+				$this->form_validation->set_rules($rules);
+
+				if($this->form_validation->run() == FALSE)
+				{
+				    $invalidLogin    = ['response'   =>  FALSE, 
+					                    'message' => 'Bad Request '];	
+				    $this->response($invalidLogin, REST_Controller::HTTP_BAD_REQUEST);
+				
+				}		
+				else
+				{
+					$path      ='d:/xampp/htdocs/paperless/uploads/taspen/';
+					$file      = $this->get('name');
+					$flok      = $path.$file;
+					
+					if(file_exists($flok))
+					{
+                        $this->load->helper('file');
+
+						$path                        = pathinfo($flok);
+						$out['response']     		 = TRUE;
+						$out['file_name']            = $file;
+						$out['file_ext']             = $path['extension'];
+						$out['file_mime']            = get_mime_by_extension($file);
+						$out['file_content'] 	     = base64_encode(file_get_contents($flok));
+						$this->set_response($out, REST_Controller::HTTP_OK);
+							
+						
+							
+					}
+					else
+					{
+						$out['response']     		 = FALSE;
+						$out['message']     		 = "File dokumen tidak ditemukan";
+						$this->set_response($out, REST_Controller::HTTP_BAD_REQUEST);
+
+					}		
+					
+				}	
+				
+			} catch (Exception $e) {
+					$invalid = ['response'  =>  FALSE, 'message' => $e->getMessage()]; 
+					$this->response($invalid, REST_Controller::HTTP_BAD_REQUEST);//400					
+			}  	
+		}
+		else
+		{	
+
+			$output['message']         = "The given data was invalid";
+			$output['response']        = FALSE; 
+			$this->set_response($output, REST_Controller::HTTP_BAD_REQUEST);
+		}
+		
+		
+	}	
+	
+	/* VALIDASI SK*/
+	public function validasiSK_get()
+	{
+		$headers = $this->input->request_headers();
+		
+		// cek token dulu
+		if (array_key_exists('Token', $headers) && !empty($headers['Token']))
+		{
+			
+			try {
+			    
+				// try decode
+				$decoded 		= $this->token->validateToken($headers['Token']);
+			    $userId 		= $decoded->user_id;	
+				
+				$rules = array(					
+					array(
+						'field' => 'nip',
+						'label' => 'nip',
+						'rules' => 'required'
+					)
+				);	
+				
+				$this->form_validation->set_data($this->get());
+				$this->form_validation->set_rules($rules);
+
+				if($this->form_validation->run() == FALSE)
+				{
+				    $invalidLogin    = ['response'   =>  FALSE, 
+					                    'message' => 'Bad Request '];	
+				    $this->response($invalidLogin, REST_Controller::HTTP_BAD_REQUEST);
+				
+				}
+				else
+				{
+					$data['instansi']       = '';
+					$data['searchby']       = 1;
+					$data['search']         = $this->get('nip');
+					$q				        = $this->api_model->getValidasiSK($data);
+					
+					$out['response']  = TRUE;
+					$out['message']   = ($q->num_rows() > 0 ? 'List Of Files' :  'No Files' );
+					$out['size']      = $q->num_rows();
+					$files            = $q->result_array();
+					
+										
+					$out['files']     = $files;
+					$this->set_response($out, REST_Controller::HTTP_OK);
+					
+
+				}	
+
+				
+			} catch (Exception $e) {
+					$invalid = ['response'  =>  FALSE, 'message' => $e->getMessage()]; 
+					$this->response($invalid, REST_Controller::HTTP_BAD_REQUEST);//400					
+			}  	
+		}
+		else
+		{	
+
+			$output['message']         = "The given data was invalid";
+			$output['response']        = FALSE; 
+			$this->set_response($output, REST_Controller::HTTP_BAD_REQUEST);
+		}
+		
+	}	
+	
+	
+	/* GET CONTENT DOKUMEN PERTEK DAN SK PENSIUN*/
+	public function validasiSKDokumen_get()
+	{
+		$headers = $this->input->request_headers();
+		
+		// cek token dulu
+		if (array_key_exists('Token', $headers) && !empty($headers['Token']))
+		{
+			try {
+			    
+				// try decode
+				$decoded 		= $this->token->validateToken($headers['Token']);
+			    $userId 		= $decoded->user_id;	
+				
+				$rules = array(					
+					array(
+						'field' => 'name',
+						'label' => 'name',
+						'rules' => 'required'
+					),
+					array(
+						'field' => 'instansi',
+						'label' => 'instansi',
+						'rules' => 'required'
+					)
+				);	
+				
+				$this->form_validation->set_data($this->get());
+				$this->form_validation->set_rules($rules);
+
+				if($this->form_validation->run() == FALSE)
+				{
+				    $invalidLogin    = ['response'   =>  FALSE, 
+					                    'message' => 'Bad Request '];	
+				    $this->response($invalidLogin, REST_Controller::HTTP_BAD_REQUEST);
+				
+				}		
+				else
+				{
+					$file          = $this->get('name');
+					$instansi      = $this->get('instansi');
+					
+					$path      ='d:/xampp/htdocs/paperless/uploads/'.$instansi.'/';
+					$flok      = $path.$file;
+					
+					
+					if(file_exists($flok))
+					{
+                        $this->load->helper('file');
+
+						$path                        = pathinfo($flok);
+						$out['response']     		 = TRUE;
+						$out['file_name']            = $file;
+						$out['file_ext']             = $path['extension'];
+						$out['file_mime']            = get_mime_by_extension($file);
+						$out['file_content'] 	     = base64_encode(file_get_contents($flok));
+						$this->set_response($out, REST_Controller::HTTP_OK);
+							
+						
+							
+					}
+					else
+					{
+						$out['response']     		 = FALSE;
+						$out['message']     		 = "File dokumen tidak ditemukan";
+						$this->set_response($out, REST_Controller::HTTP_BAD_REQUEST);
+
+					}		
+					
+				}	
+				
+			} catch (Exception $e) {
+					$invalid = ['response'  =>  FALSE, 'message' => $e->getMessage()]; 
+					$this->response($invalid, REST_Controller::HTTP_BAD_REQUEST);//400					
+			}  	
+		}
+		else
+		{	
+
+			$output['message']         = "The given data was invalid";
+			$output['response']        = FALSE; 
+			$this->set_response($output, REST_Controller::HTTP_BAD_REQUEST);
+		}
+		
+		
+	}	
+				
 }
