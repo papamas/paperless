@@ -39,8 +39,8 @@ class Manual extends CI_Controller {
 		curl_setopt($CurlConnect, CURLOPT_URL, 'https://satupintu.my.id/index.php/api/login');
 		curl_setopt($CurlConnect, CURLOPT_HTTPHEADER, $headers);
 		curl_setopt($CurlConnect, CURLOPT_POST, 1);
-		curl_setopt($CurlConnect, CURLOPT_POSTFIELDS,  json_encode(array("username" => "198105122015031001" ,
-                                                           		  "password" => "120581" )));
+		curl_setopt($CurlConnect, CURLOPT_POSTFIELDS,  json_encode(array("username" => "19810512201503XXXX" ,
+                                                           		  "password" => "IniAdalahRahasiaAku" )));
 		curl_setopt($CurlConnect, CURLOPT_RETURNTRANSFER, 1 );
 		$Result = curl_exec($CurlConnect);
 		if(!$Result){die("Connection Failure");}
