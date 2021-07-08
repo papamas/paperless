@@ -96,7 +96,7 @@
 																					 
 								</div>					
 								<div class="box-footer">
-								    <span><small>Male_o 1.9 &copy 2019 BKN XI </small></span>
+								    <span><small>Male_o 1.9 &copy 2021 BKN XI </small></span>
 									<button type="submit" class="btn bg-red-active btn-flat pull-right">Sign in</button>
 								</div>
 							</form>	

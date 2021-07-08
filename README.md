@@ -11,4 +11,4 @@ Aplikasi Paper Less  Kantor Regional XI BKN untuk layanan kepegawaian
 7. Pengajuan dan penetapan surat keputusan pemberian hak Pensiun Janda/Duda dari Pensiuan PNS yang meninggal dunia dan yang dalam surat keputusan pensiun pegawai belum ditetapkan    secara otomatis pensiun janda/dudanya; dan
 8. Pengajuan dan pengesahan atau pencatatan pendaftaran isteri (isteri-isteri)/suami atau anak dari Pensiunan PNS
 9. Pemberian Pertimbangan Teknis Peninjauan Masa Kerja
-10. Peremajaan Data Pegawai
+10. Perbaikan Golongan/Ruang SAPK
