@@ -303,6 +303,14 @@ if (isset($_SERVER["REQUEST_URI"]) &&
     else {
         $config['csrf_protection'] = FALSE;
     }
+	
+	if (stripos($_SERVER["REQUEST_URI"],'/api') === false )  { // Verify if POST Request is not for API
+        $config['csrf_protection'] = TRUE;
+    }
+    else {
+        $config['csrf_protection'] = FALSE;
+    }
+	
 } else {
     $config['csrf_protection'] = TRUE;
 }

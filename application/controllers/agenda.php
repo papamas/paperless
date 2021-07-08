@@ -583,6 +583,41 @@ class Agenda extends MY_Controller {
 			}
 		}
 		
+		// validasi jika layanan PMK
+		if($layanan_id == 19)
+		{
+			
+			// cek by nip apakah ada dokumen usul	
+			$cekpmk  = TRUE;
+			$nippmk  = array();
+			
+			$resultpmk    = $this->magenda->getNominatifPMK($agenda_id)->result_array();
+			
+			for($i=0;$i < count($resultpmk);$i++)
+			{
+				$res     		=  $this->magenda->cekPMK($resultpmk[$i]['nip']);
+				$cekpmk        &=  $res['response'];
+				
+				if($res['response'] == FALSE)
+				{	
+					$nippmk[]  = $res['nip'];	
+				}
+			}	
+			
+			
+			
+			if(!boolval($cekpmk))
+			{	
+				$p  = implode(",",$nippmk);
+				$this->session->set_flashdata('gagal', "Gagal Kirim, NIP ".$p." belum lengkap datanya");
+				redirect('agenda/nominatif/'.$agenda_id);
+			}
+
+		}
+
+		
+		
+			
 		$this->db->trans_begin();
 
 	    $this->magenda->mkirim_usul1($agenda_id);
@@ -600,7 +635,7 @@ class Agenda extends MY_Controller {
 			$this->session->set_flashdata('berhasil', "Usul Berhasil dikirim");
 		}
 
-		redirect('agenda');
+		redirect('agenda'); 
 	  
 	}
 

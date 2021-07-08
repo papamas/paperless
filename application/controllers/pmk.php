@@ -304,18 +304,36 @@ class Pmk extends MY_Controller {
     </tr>
 	<tr style="">
 		<td align="center"></td>
-	</tr>
-	<tr style="">
-		<td colspan="3"> JUMLAH SELURUHNYA</td>
-		<td align="center">'.($row->tahun_honor+$row->tahun_pegawai).'</td>
-		<td align="center">'.($row->bulan_honor+$row->bulan_pegawai).'</td>
-		<td align="center"></td>
-		<td align="center">'.($row->tahun_honor+$row->tahun_pegawai).'</td>
-		<td align="center">'.($row->bulan_honor+$row->bulan_pegawai).'</td>
-		<td align="center"></td>
-    </tr>
+	</tr>';
 	
-</table>';
+	$jumlahBln = $row->bulan_honor+$row->bulan_pegawai;
+	if($jumlahBln >= 12)
+	{
+        $hasilbagi     = $jumlahBln / 12;
+		$sisabagi      = $jumlahBln % 12;
+		$tahun         = ($row->tahun_honor+$row->tahun_pegawai) + ROUND($hasilbagi);
+		$bulan         = $sisabagi;
+    }
+	else
+	{
+		$hasilbagi     = 0;
+		$sisabagi      = 0;
+		$tahun         = ($row->tahun_honor+$row->tahun_pegawai) + $hasilbagi;
+		$bulan         = ($row->bulan_honor+$row->bulan_pegawai) + $sisabagi;
+		
+    }			
+	
+	$html .= '<tr style="">
+		<td colspan="3"> JUMLAH SELURUHNYA</td>
+		<td align="center">'.($tahun).'</td>
+		<td align="center">'.($bulan).'</td>
+		<td align="center"></td>
+		<td align="center">'.($tahun).'</td>
+		<td align="center">'.($bulan).'</td>
+		<td align="center"></td>
+    </tr>';
+	
+   $html .='</table>';
 
 	// Print text using writeHTMLCell()
 	$this->pdf->writeHTMLCell(0, 125, 5, 60, $html, 0, 0, false, true, 'L', true);
@@ -467,22 +485,40 @@ class Pmk extends MY_Controller {
 	<tr style="">		
 		<td>&nbsp;'.$row->tanggal_persetujuan.'</td>
 		
-    </tr>
-	<tr style="">
+    </tr>';
+	
+	$jumlahBlnDinilai  = $row->dinilai_bulan_honor+$row->dinilai_bulan_pegawai;
+	if($jumlahBlnDinilai >= 12)
+	{
+        $hasilbagiDinilai     = $jumlahBlnDinilai / 12;
+		$sisabagiDinilai      = $jumlahBlnDinilai % 12;
+		$tahunDinilai         = ($row->dinilai_tahun_honor+$row->dinilai_tahun_pegawai) + ROUND($hasilbagiDinilai);
+		$bulanDinilai         = $sisabagiDinilai;
+    }
+	else
+	{
+		$hasilbagiDinilai     = 0;
+		$sisabagiDinilai      = 0;
+		$tahunDinilai         = ($row->dinilai_tahun_honor+$row->dinilai_tahun_pegawai) + $hasilbagiDinilai;
+		$bulanDinilai         = ($row->dinilai_bulan_honor+$row->dinilai_bulan_pegawai) + $sisabagiDinilai;
+		
+    }			
+	
+	$html .='<tr style="">
 		<td rowspan="3"  width="20px" align="center">BARU</td>
 		<td>1. MASA KERJA GOL</td>
-		<td>&nbsp;'.($row->dinilai_tahun_honor+$row->dinilai_tahun_pegawai).'  TAHUN  '.($row->dinilai_bulan_honor+$row->dinilai_bulan_pegawai).' BL</td>
+		<td>&nbsp;'.($tahunDinilai).'  TAHUN  '.($bulanDinilai).' BL</td>
 		
     </tr>
 	<tr style="">
 		<td>2. GAJI POKOK</td>
-		<td>&nbsp;Rp. '.number_format($row->baru_gaji_pokok,0).'</td>
+		<td>&nbsp;Rp. '.number_format($row->acc_gaji_pokok,0).'</td>
 		<td width="20px" style="font-size:11px">&nbsp;D.</td>
 		<td colspan="3" style="font-size:11px">&nbsp;Surat Keputusan</td>
     </tr>
 	<tr style="">
 		<td>BERLAKU TERHITUNG MULAI TANGGAL</td>
-		<td>&nbsp;'.$row->baru_tmt_gaji.'</td>
+		<td>&nbsp;'.$row->acc_tmt_gaji.'</td>
 		<td width="20px"></td>
 		<td colspan="3" style="font-size:10px">&nbsp;'.$row->sk_pangkat.'</td>
     </tr>
@@ -527,19 +563,40 @@ class Pmk extends MY_Controller {
     </tr>
 	<tr style="">
 		<td align="center"></td>
-	</tr>
-	<tr style="">
+	</tr>';
+	
+	$jumlahBlnUsul = $row->bulan_honor+$row->bulan_pegawai;
+	if($jumlahBlnUsul >= 12)
+	{
+        $hasilbagiUsul     = $jumlahBlnUsul / 12;
+		$sisabagiUsul      = $jumlahBlnUsul % 12;
+		$tahunUsul         = ($row->tahun_honor+$row->tahun_pegawai) + ROUND($hasilbagiUsul);
+		$bulanUsul         = $sisabagiUsul;
+    }
+	else
+	{
+		$hasilbagiUsul     = 0;
+		$sisabagiUsul      = 0;
+		$tahunUsul         = ($row->tahun_honor+$row->tahun_pegawai) + $hasilbagiUsul;
+		$bulanUsul         = ($row->bulan_honor+$row->bulan_pegawai) + $sisabagiUsul;
+		
+    }			
+	
+	
+	
+	
+	$html .='<tr style="">
 		<td colspan="3"> JUMLAH SELURUHNYA</td>
-		<td align="center">'.($row->tahun_honor+$row->tahun_pegawai).'</td>
-		<td align="center">'.($row->bulan_honor+$row->bulan_pegawai).'</td>
+		<td align="center">'.($tahunUsul).'</td>
+		<td align="center">'.($bulanUsul).'</td>
 		<td align="center"></td>
-		<td align="center">'.($row->dinilai_tahun_honor+$row->dinilai_tahun_pegawai).'</td>
-		<td align="center">'.($row->dinilai_bulan_honor+$row->dinilai_bulan_pegawai).'</td>
+		<td align="center">'.($tahunDinilai).'</td>
+		<td align="center">'.($bulanDinilai).'</td>
 		<td align="center"></td>
-    </tr>
+    </tr>';
 	
 	
-</table>';
+    $html .='</table>';
 
 	// Print text using writeHTMLCell()
 	$this->pdf->writeHTMLCell(0, 125, 5, 70, $html, 0, 0, false, true, 'L', true);
@@ -553,10 +610,13 @@ class Pmk extends MY_Controller {
 	$this->pdf->writeHTMLCell(0,125,90,225,'a.n. Kepala Kantor Regional XI Badan Kepegawaian Negara',0,0,false,true,'C',true);
 	$this->pdf->writeHTMLCell(0,125,90,230,$row->jabatan,0,0,false,true,'C',true);
 	
-	$this->pdf->writeHTMLCell(0,125,90,260,$row->glrdpn_acc.' '.$row->nama_acc.' '.$row->glrblk_acc,0,0,false,true,'C',true);
-	$this->pdf->writeHTMLCell(0,125,90,264,'NIP.'.$row->nip_acc,0,0,false,true,'C',true);
+	$this->pdf->writeHTMLCell(0,125,105,255,'$',0,0,false,true,'L',true);
+
+	//$this->pdf->writeHTMLCell(0,125,90,260,$row->glrdpn_acc.' '.$row->nama_acc.' '.$row->glrblk_acc,0,0,false,true,'C',true);
+	//$this->pdf->writeHTMLCell(0,125,90,264,'NIP.'.$row->nip_acc,0,0,false,true,'C',true);
 
 	// set style for barcode
+	/*
 	$style = array(
 		'border' => false,
 		'padding' => 0,
@@ -569,6 +629,17 @@ class Pmk extends MY_Controller {
 	$code  = 'Persetujuan PMK Nomor '.$row->nomi_persetujuan.' '.$row->PNS_PNSNAM.' NIP.'.$row->nip;
 	
 	$this->pdf->write2DBarcode($code, 'QRCODE', 15, 220, 35, 35, $style, 'N');
+	*/
+	
+	// footer
+	$this->pdf->SetFont('bookos', '', 8);
+	$text2='- UU ITE No. 11 Tahun 2008 Pasal 5 Ayat 1<br/>“Informasi Elektronik dan/atau Dokumen dan/atau hasil cetaknya merupakan alat bukti hukum yang sah”<br/>		 
+- Dokumen ini telah ditandatangani secara elektronik menggunakan sertifikat elektronik yang diterbitkan BSrE
+';
+	$this->pdf->writeHTMLCell(160,10,5,-25,$text2,0,0,false,true,'L',true);
+		
+	$bsre = base_url() . 'assets/dist/img/bsre.png';
+	$this->pdf->Image($bsre, '', 268, 37, 18, 'PNG', '', 'R', false, 100, 'R', false, false, 0, false, false, false);
 	$this->pdf->Output('PERTEK_PMK_'.$row->nip.'.pdf', 'D');
 	
 	}	

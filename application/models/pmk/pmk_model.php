@@ -150,6 +150,7 @@ where a.nip='$nip' AND a.agenda_id='$agenda'";
 		a.dinilai_tahun_honor,a.dinilai_tahun_pegawai,a.dinilai_bulan_honor,
 		a.dinilai_bulan_pegawai,a.baru_gaji_pokok,a.sk_pangkat,a.tahun_honor,
 		a.bulan_honor,a.tahun_pegawai,a.bulan_pegawai,a.keterangan,
+		a.acc_gaji_pokok,formatTanggal(a.acc_tmt_gaji) acc_tmt_gaji,
 		DATE_FORMAT(tanggal_lahir,'%d-%m-%Y') tanggal_lahir,
 		DATE_FORMAT(tanggal_ijazah1,'%d-%m-%Y') tanggal_ijazah1,
 		DATE_FORMAT(tanggal_ijazah2,'%d-%m-%Y') tanggal_ijazah2,

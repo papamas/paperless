@@ -525,6 +525,62 @@ LEFT JOIN mirror.pupns_pengadaan_info c ON a.PNS_NIPBARU = c.NIP LIMIT 1 ";
 		return $this->db->query($sql);
 		
 	}	
+	
+	
+	/* PMK Kirim Validasi*/
+	function cekPMK($nip)
+	{
+		$sql="SELECT IF(ISNULL(old_masa_kerja_tahun),FALSE,TRUE )  AND IF(ISNULL(old_masa_kerja_bulan),FALSE,TRUE)   AND 
+       IF(ISNULL(old_gaji_pokok),FALSE,TRUE )        AND IF(ISNULL(old_tmt_gaji),FALSE,TRUE)           AND
+       IF(ISNULL(nomor_persetujuan ),FALSE,TRUE )    AND IF(ISNULL(tanggal_persetujuan),FALSE,TRUE)    AND
+       IF(ISNULL(baru_masa_kerja_tahun ),FALSE,TRUE) AND IF(ISNULL(baru_masa_kerja_bulan),FALSE,TRUE)  AND 			                IF(ISNULL(baru_gaji_pokok ),FALSE,TRUE)       AND IF(ISNULL(baru_tmt_gaji),FALSE,TRUE)         AND
+       IF(ISNULL(mulai_honor ),FALSE,TRUE)           AND IF(ISNULL(sampai_honor),FALSE,TRUE)           AND
+       IF(ISNULL(tahun_honor),FALSE,TRUE)            AND IF(ISNULL(bulan_honor),FALSE,TRUE)            AND 
+       IF(ISNULL(mulai_pegawai),FALSE,TRUE)          AND IF(ISNULL(sampai_pegawai),FALSE,TRUE)         AND
+       IF(ISNULL(tahun_pegawai),FALSE,TRUE)          AND IF(ISNULL(bulan_pegawai),FALSE,TRUE)          AND
+       IF(ISNULL(salinan_sah ),FALSE,TRUE)           AND IF(ISNULL(sk_pangkat),FALSE,TRUE)             AND
+       IF(ISNULL(tingkat1),FALSE,TRUE)               AND IF(ISNULL(nomor_ijazah1) ,FALSE,TRUE)         AND                   
+       IF(ISNULL(tanggal_ijazah1 ),FALSE,TRUE)       AND IF(ISNULL(tingkat2) ,FALSE,TRUE)              AND
+       IF(ISNULL(nomor_ijazah2),FALSE,TRUE)          AND IF(ISNULL(tanggal_ijazah2) ,FALSE,TRUE)       AND
+       IF(ISNULL(tingkat3 ),FALSE,TRUE)              AND IF(ISNULL(nomor_ijazah3) ,FALSE,TRUE)         AND
+       IF(ISNULL(tanggal_ijazah3),FALSE,TRUE)        AND IF(ISNULL(lokasi_ttd) ,FALSE,TRUE)            AND
+       IF(ISNULL(tanggal_ttd),FALSE,TRUE)            AND IF(ISNULL(jabatan_ttd) ,FALSE,TRUE)           AND
+       IF(ISNULL(nama_ttd),FALSE,TRUE)               AND IF(ISNULL(pangkat_ttd) ,FALSE,TRUE)           AND 
+       IF(ISNULL(nip_ttd ),FALSE,TRUE)   AS result   FROM usul_pmk where nip='$nip'";	
+
+		$query =  $this->db->query($sql);
+		
+		if($query->num_rows() > 0)
+		{	
+	        $row  = $query->row();
+					
+		    if(!empty($row->result))
+			{
+				$r['response'] = TRUE;
+				$r['nip']      = $nip;
+			}
+			else
+			{
+				$r['response'] = FALSE;
+				$r['nip']      = $nip;
+			}		
+		}
+		else
+		{
+			$r['response'] = FALSE;
+			$r['nip']      = $nip;
+			
+		}
+		
+		return $r;
+	}	
+	
+	
+	function getNominatifPMK($agenda_id)
+	{
+		$sql="SELECT agenda_id, nip FROM usul_pmk WHERE agenda_id='$agenda_id' ";	
+		return $this->db->query($sql);
+	}	
 
 }
 
