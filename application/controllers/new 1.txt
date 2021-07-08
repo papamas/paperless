@@ -1,0 +1,56 @@
+1.5222598247458388, 124.92137566785932 -- bkn
+1.5190369007535427, 124.91958295436542 -- indogrosir
+1.5220306196906292, 124.92203719527227
+1.3068406012471652,124.93412704415411 -- kecamatan
+Jl.Tumou Kel.Sasaran Kec. Tondano Utara
+
+{
+    "status": true,
+    "message": "List of presence by user",
+    "data": [
+        {
+            "user_id": "8",
+            "status": "1",
+            "username": "199203172012061001",
+            "pns_id": "ff808081328568bd01328f5159ed1def",
+            "detail": [
+                {
+                    "time_clock": "24-03-2021 18:45:42",
+                    "device_id": "Android",
+                    "date_check": "2021-03-24",
+                    "presensi_type": "3",
+                    "location_name": "Jl. A.A. Maramis No.291, Paniki Bawah, Kec. Mapanget, Kota Manado, Sulawesi Utara, Indonesia",
+                    "location_lat": "1.5220767",
+                    "location_lang": "124.921385",
+                    "work_type": "WFO",
+                    "nama": "JASTIA ROMI RINTJAP",
+                    "nama_check_in": "Check-in Sore"
+                },
+                {
+                    "time_clock": "24-03-2021 20:12:41",
+                    "device_id": "Android",
+                    "date_check": "2021-03-24",
+                    "presensi_type": "4",
+                    "location_name": "Jl. Loreng, Bailang, Bunaken, Kota Manado, Sulawesi Utara, Indonesia",
+                    "location_lat": "1.5308036",
+                    "location_lang": "124.8510468",
+                    "work_type": "WFH",
+                    "nama": "JASTIA ROMI RINTJAP",
+                    "nama_check_in": "Check-in Lembur"
+                },
+                {
+                    "time_clock": "25-03-2021 15:43:57",
+                    "device_id": "Android",
+                    "date_check": "2021-03-25",
+                    "presensi_type": "3",
+                    "location_name": "Jl. A.A. Maramis No.291, Paniki Bawah, Kec. Mapanget, Kota Manado, Sulawesi Utara, Indonesia",
+                    "location_lat": "1.5220767",
+                    "location_lang": "124.921385",
+                    "work_type": "WFO",
+                    "nama": "JASTIA ROMI RINTJAP",
+                    "nama_check_in": "Check-in Sore"
+                }
+            ]
+        }
+    ]
+}
