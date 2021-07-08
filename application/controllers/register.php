@@ -5,7 +5,7 @@ class Register extends CI_Controller {
 	function __construct()
 	{
 	    parent::__construct();		
-	    $this->load->library(array('Auth','form_validation','Telegram'));
+	    $this->load->library(array('Auth','form_validation','Maleodua'));
 		$this->load->model('users_model', 'user');			
 	} 
 	
@@ -154,12 +154,12 @@ class Register extends CI_Controller {
 			{
 				$instansi		= $this->_getInstansi_name_by_id($data['id_instansi']);
 				// send to telegram API
-				$this->telegram->sendApiAction($value->telegram_id);
+				$this->maleodua->sendApiAction($value->telegram_id);
 				$text = "<pre>Hello, <strong>".$value->first_name ." ".$value->last_name. "</strong> Ada Member baru nih";
 				$text .= "\n Nama :". $data['first_name']." ".$data['last_name'];
 				$text .= "\n NIP  :". $data['nip'];
 				$text .= "\n Instansi  :". $instansi.'</pre>';
-				$this->telegram->sendApiMsg($value->telegram_id, $text , false, 'HTML');
+				$this->maleodua->sendApiMsg($value->telegram_id, $text , false, 'HTML');
 			}
 		}
 	}	

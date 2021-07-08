@@ -288,7 +288,7 @@ class Taspen extends MY_Controller {
 			
 			if($jenis == 5 )
 			{
-				$config['allowed_types']        = 'jpg';
+				$config['allowed_types']        = 'jpg|JPG|JPEG|jpeg';
 			}
 			else
 			{
@@ -313,6 +313,8 @@ class Taspen extends MY_Controller {
                 }	
                 
 				$result         = $this->uploadFile->insertUpload($data);
+				
+				
 				$data['upload'] = $data;
                 $response       = $result['response'];
 				

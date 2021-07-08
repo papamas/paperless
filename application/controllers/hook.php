@@ -59,8 +59,7 @@ class Hook extends CI_Controller {
 		
 		$entityBody = file_get_contents('php://input');
 		$message = json_decode($entityBody, true);
-		var_dump($message);
-		
+		//var_dump($message);
 		$this->_prosesApiMessage($message);	 
 	}
 	

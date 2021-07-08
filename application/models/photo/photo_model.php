@@ -49,10 +49,10 @@ class Photo_model extends CI_Model {
 			
 		if (!$this->db->insert($this->table, $data))
 		{
-			$error = $this->db->_error_message();
-			if(!empty($error))
+			$error = $this->db->error();
+			if(!empty($error['message']))
 			{
-                $data['pesan']		= $error;   
+                $data['pesan']		= $error['message'];   
 				$data['response'] 	= FALSE;
 			}
             	
@@ -70,12 +70,14 @@ class Photo_model extends CI_Model {
 	
 	function  updateFile($data)
 	{
-				
+		unset($data['pesan']);
+		unset($data['response']);		
+		
 		$this->db->where('raw_name',$data['raw_name']);
 		$this->db->where('id_instansi',$data['id_instansi']);
 		$this->db->set('flag_update',1);
 		$this->db->set('update_date','NOW()',FALSE);
-		return $this->db->update($this->table);
+		return $this->db->update($this->table,$data);
 		
 	}	
 	
@@ -187,6 +189,15 @@ class Photo_model extends CI_Model {
 		
 		return $this->db->query($sql);
 		
+	}	
+	
+	function hapusFile()
+	{
+		$instansi  = $this->myencrypt->decode($this->input->post('instansi'));
+		$file      = $this->myencrypt->decode($this->input->post('file'));
+		
+		$sql ="DELETE FROM upload_photo WHERE id_instansi='$instansi' AND orig_name='$file'  ";
+		return $this->db->query($sql);	
 	}	
 	
 }

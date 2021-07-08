@@ -248,11 +248,11 @@ class Agenda extends MY_Controller {
 		$cond = array('agenda_id' => $id);
 		
 		if (!$this->magenda->mubah_agenda($data, $cond)) {
-			$error = $this->db->_error_message(); 
+			$error = $this->db->error(); 
 			
-			if(!empty($error))
+			if(!empty($error['message']))
 			{
-				$this->session->set_flashdata('gagal', $error);
+				$this->session->set_flashdata('gagal', $error['message']);
 			}
 			else
 			{
@@ -453,11 +453,11 @@ class Agenda extends MY_Controller {
 		if (!$this->magenda->mtambah_nominatif($data)) 
 		{
 			
-			$error = $this->db->_error_message(); 
+			$error = $this->db->error(); 
 			
-			if(!empty($error))
+			if(!empty($error['message']))
 			{
-				$this->session->set_flashdata('gagal', $error);
+				$this->session->set_flashdata('gagal', $error['message']);
 			}
 			else
 			{

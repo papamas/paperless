@@ -90,10 +90,10 @@ class Profile_model extends CI_Model {
 		{			
 			if (!$this->db->insert('spesimen_instansi', $data))
 			{
-				$error = $this->db->_error_message();
-				if(!empty($error))
+				$error = $this->db->error();
+				if(!empty($error['message']))
 				{
-					$data['pesan']		= $error;   
+					$data['pesan']		= $error['message'];   
 					$data['response'] 	= FALSE;
 				}
 					
@@ -121,10 +121,10 @@ class Profile_model extends CI_Model {
 			
 			if (!$this->db->update('spesimen_instansi', $data))
 			{
-				$error = $this->db->_error_message();
-				if(!empty($error))
+				$error = $this->db->error();
+				if(!empty($error['message']))
 				{
-					$data['pesan']		= $error;   
+					$data['pesan']		= $error['message'];   
 					$data['response'] 	= FALSE;
 				}
 					

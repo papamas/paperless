@@ -608,7 +608,8 @@ class Pmk extends MY_Controller {
 	$this->pdf->writeHTMLCell(0,125,90,217,'Manado, '.$row->tanggal_persetujuan_nota,0,0,false,true,'L',true);
 
 	$this->pdf->writeHTMLCell(0,125,90,225,'a.n. Kepala Kantor Regional XI Badan Kepegawaian Negara',0,0,false,true,'C',true);
-	$this->pdf->writeHTMLCell(0,125,90,230,$row->jabatan,0,0,false,true,'C',true);
+    $this->pdf->writeHTMLCell(0,125,90,230,'Kepala Bidang Mutasi dan Status Kepegawaian',0,0,false,true,'C',true);
+    //$this->pdf->writeHTMLCell(0,125,90,230,$row->jabatan,0,0,false,true,'C',true);
 	
 	$this->pdf->writeHTMLCell(0,125,105,255,'$',0,0,false,true,'L',true);
 

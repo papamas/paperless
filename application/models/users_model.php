@@ -101,10 +101,10 @@ class Users_model extends CI_Model
         {			
 			if (!$this->db->insert($this->app_user, $data))
 			{
-				$error = $this->db->_error_message();
-				if(!empty($error))
+				$error = $this->db->error();
+				if(!empty($error['message']))
 				{
-					$data['pesan']		= $error;   
+					$data['pesan']		= $error['message'];   
 					$data['response'] 	= FALSE;
 				}					
 			}
@@ -141,10 +141,10 @@ class Users_model extends CI_Model
 		$this->db->where('user_id', $user_id);
 		if (!$this->db->update($this->app_user, $data))
 		{
-			$error = $this->db->_error_message();
-			if(!empty($error))
+			$error = $this->db->error();
+			if(!empty($error['message']))
 			{
-				$data['pesan']		= $error;   
+				$data['pesan']		= $error['message'];   
 				$data['response'] 	= FALSE;
 			}				
 		}
@@ -247,10 +247,10 @@ class Users_model extends CI_Model
 		$this->db->where('user_id', $user_id);
 		if (!$this->db->delete($this->app_user))
 		{
-			$error = $this->db->_error_message();
-			if(!empty($error))
+			$error = $this->db->error();
+			if(!empty($error['message']))
 			{
-				$data['pesan']		= $error;   
+				$data['pesan']		= $error['message'];   
 				$data['response'] 	= FALSE;
 			}
 				
@@ -277,10 +277,10 @@ class Users_model extends CI_Model
 		$this->db->where('user_id', $user_id);
 		if (!$this->db->update($this->app_user))
 		{
-			$error = $this->db->_error_message();
-			if(!empty($error))
+			$error = $this->db->error();
+			if(!empty($error['message']))
 			{
-				$data['pesan']		= $error;   
+				$data['pesan']		= $error['message'];   
 				$data['response'] 	= FALSE;
 			}
 				

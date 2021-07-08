@@ -139,8 +139,8 @@ $sql_instansi  $sql_layanan";
 		
 		if ($this->db->update($this->tablenominatif))
 		{
-			$error = $this->db->_error_message(); 
-			if(!empty($error))
+			$error = $this->db->error(); 
+			if(!empty($error['message']))
 			{
 				$r = FALSE;
 			}
@@ -176,8 +176,8 @@ $sql_instansi  $sql_layanan";
 		
 		if ($this->db->update($this->tablenominatif))
 		{
-			$error = $this->db->_error_message(); 
-			if(!empty($error))
+			$error = $this->db->error(); 
+			if(!empty($error['message']))
 			{
 				$r = FALSE;
 			}
@@ -276,8 +276,8 @@ $sql_instansi  $sql_layanan";
 		
 		if ($this->db->update('usul_taspen'))
 		{
-			$error = $this->db->_error_message(); 
-			if(!empty($error))
+			$error = $this->db->error(); 
+			if(!empty($error['message']))
 			{
 				$r = FALSE;
 			}
@@ -316,8 +316,8 @@ $sql_instansi  $sql_layanan";
 		
 		if ($this->db->update('usul_taspen'))
 		{
-			$error = $this->db->_error_message(); 
-			if(!empty($error))
+			$error = $this->db->error(); 
+			if(!empty($error['message']))
 			{
 				$r = FALSE;
 			}

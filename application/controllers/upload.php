@@ -443,8 +443,9 @@ class upload extends MY_Controller {
 	{
 		$instansi  = $this->myencrypt->decode($this->input->post('instansi'));
 		$file      = $this->myencrypt->decode($this->input->post('file'));
+		$path      = $this->myencrypt->decode($this->input->post('path'));
 		
-		if(@unlink($_SERVER['DOCUMENT_ROOT']."/uploads/".$instansi."/".$file) && $this->uploadFile->hapusFile())
+		if(@unlink($path.$file) && $this->uploadFile->hapusFile())
 		{
 			$result['response']  = FALSE;
 			$result['pesan'] 	 = 'File dokumen berhasil dihapus';
@@ -614,7 +615,7 @@ class upload extends MY_Controller {
 			
 			$html .='<tr>
 				<td><button class="btn btn-primary btn-xs" data-tooltip="tooltip"  title="Lihat SK" data-toggle="modal" data-target="#skModal" data-id="?id='.$this->myencrypt->encode($value->id_instansi).'&f='.$this->myencrypt->encode($value->orig_name).'"><i class="fa fa-search"></i></button>&nbsp;
-				<button class="btn btn-danger btn-xs" data-tooltip="tooltip"  title="Delete SK" data-toggle="modal" data-target="#dskModal" data-instansi="'.$this->myencrypt->encode($value->id_instansi).'" data-file="'.$this->myencrypt->encode($value->orig_name).'"><i class="fa fa-remove"></i></button></td> 
+				<button class="btn btn-danger btn-xs" data-tooltip="tooltip"  title="Delete SK" data-toggle="modal" data-target="#dskModal" data-instansi="'.$this->myencrypt->encode($value->id_instansi).'" data-file="'.$this->myencrypt->encode($value->orig_name).'"  data-path="'.$this->myencrypt->encode($value->file_path).'"><i class="fa fa-remove"></i></button></td> 
 				<td>'.$value->nama_dokumen.$n.'</td>
 				<td>'.$value->instansi.'</td>
 				<td>'.$value->nip.'</td>

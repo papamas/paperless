@@ -137,11 +137,15 @@ GROUP BY a.nip,b.layanan_id,a.agenda_id
 		$this->db->set('kirim_date','NOW()',FALSE);
 		$this->db->where('agenda_id', $agenda_id);		
 		$this->db->where('nip', $nip);	
+	
 		
 		if ($this->db->update($this->tablenom))
 		{
-			$error = $this->db->_error_message(); 
-			if(!empty($error))
+			$error = $this->db->error(); 
+			
+			
+			
+			if(!empty($error['message']))
 			{
 				$r = FALSE;
 			}
@@ -153,6 +157,8 @@ GROUP BY a.nip,b.layanan_id,a.agenda_id
         $this->db->db_debug = $db_debug; //restore setting			
 		
 		return $r;
+		
+		
 	}
 	
 	function getAlasan($data){
@@ -189,8 +195,8 @@ GROUP BY a.nip,b.layanan_id,a.agenda_id
 			
 		if (!$this->db->insert($this->table, $data))
 		{
-			$error = $this->db->_error_message();
-			if(!empty($error))
+			$error = $this->db->error();
+			if(!empty($error['message']))
 			{
                 $data['pesan']		= $error;   
 				$data['response'] 	= FALSE;

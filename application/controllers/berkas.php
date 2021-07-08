@@ -309,6 +309,7 @@ class Berkas extends MY_Controller {
 	{
 		$instansi  = $this->myencrypt->decode($this->input->get('id'));
 		$file      = $this->myencrypt->decode($this->input->get('f'));
+		
 						
 		header('Pragma:public');
 		header('Cache-Control:no-store, no-cache, must-revalidate');
@@ -333,6 +334,7 @@ class Berkas extends MY_Controller {
 		
         $agenda_id          = $this->myencrypt->decode($this->input->post('agenda'));
 		$data['response']	= $this->berkas->KirimUlang($data);		
+		
 		
 		if ($this->db->trans_status() === FALSE)
 		{
@@ -660,16 +662,17 @@ class Berkas extends MY_Controller {
             // remove old file
             @unlink($_SERVER['DOCUMENT_ROOT']."/agenda/".$instansi."/".$filePengantar->agenda_dokumen);			
 			$result		          			= $this->berkas->updatePengantar($dataUpdate);
+			
 				
 			
-			if(!$result['response'])
+			if($result)
 			{
-				$data['response'] 	= $result['response'];
+				
 				$data['pesan']		= 'Sukses Update File Surat Pengantar';
-				$error = $this->db->_error_message();
-				if(!empty($error))
+				$error = $this->db->error();
+				if(!empty($error['message']))
 				{
-					$data['pesan']		= $error;   
+					$data['pesan']		= $error['message'];   
 				}
 				
 				$this->output
@@ -681,7 +684,6 @@ class Berkas extends MY_Controller {
 			{
 				
 				$data['pesan']		= 'Gagal Update File Surat Pengantar';
-				$data['response']	= TRUE;
 				
 				$this->output
 					->set_status_header(406)

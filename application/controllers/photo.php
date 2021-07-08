@@ -52,7 +52,7 @@ class Photo extends MY_Controller {
 		$instansi						= $this->session->userdata('session_instansi');		
 		$target_dir						='./photo/'.$instansi;		
 		$config['upload_path']          = $target_dir;
-		$config['allowed_types']        = 'jpeg|jpg';
+		$config['allowed_types']        = 'jpeg|jpg|JPG|JPEG';
 		$config['max_size']             = 1024;
 		$config['encrypt_name']			= FALSE;	
 		$config['overwrite']			= TRUE;	
@@ -75,7 +75,6 @@ class Photo extends MY_Controller {
 			return FALSE;		
 		}		
 		
-		$this->load->library('upload', $config);	
 		
 		if(! $this->uploadFile->_is_photo($_FILES['file']['name'])){
             $error = array('error' => 'File bukan photo yang diizinkan');
@@ -87,6 +86,27 @@ class Photo extends MY_Controller {
 			return FALSE;			
 		}	
 						
+		
+		$haystack = $_FILES['file']['name'];
+		
+
+        if( stripos( $haystack, "KARIS" ) !== false) {
+			$nip                            = $this->uploadFile->_extract_numbers($haystack);
+			$config['file_name']            = 'KARIS_'.$nip[0];
+		}		
+		
+		if( stripos( $haystack, "KARSU" ) !== false) {
+			$nip                            = $this->uploadFile->_extract_numbers($haystack);
+			$config['file_name']            = 'KARSU_'.$nip[0];
+		}	
+		
+		if( stripos( $haystack, "KARPEG" ) !== false) {
+			$nip                            = $this->uploadFile->_extract_numbers($haystack);
+			$config['file_name']            = 'KARPEG_'.$nip[0];
+		}									
+						
+       
+ 	    $this->load->library('upload', $config);	
 
 		if ( ! $this->upload->do_upload('file'))
 		{
@@ -117,7 +137,7 @@ class Photo extends MY_Controller {
 					$result['updated']  = $this->uploadFile->updateFile($result);
 					$result['error'] 	= 'Photo sudah ada, overwrite file';
 					$this->output
-						->set_status_header(406)
+						->set_status_header(200)
 						->set_content_type('application/json', 'utf-8')
 						->set_output(json_encode($result));
 
@@ -307,6 +327,67 @@ class Photo extends MY_Controller {
 	}
 
 	
+	public function hapus()
+	{
+		$instansi  = $this->myencrypt->decode($this->input->post('instansi'));
+		$file      = $this->myencrypt->decode($this->input->post('file'));
+		$path      = $this->myencrypt->decode($this->input->post('path'));
+		
+		if(@unlink($path.$file) && $this->uploadFile->hapusFile())
+		{
+			$result['response']  = FALSE;
+			$result['pesan'] 	 = 'Photo berhasil dihapus';
+			$this->output
+				->set_status_header(200)
+				->set_content_type('application/json', 'utf-8')
+				->set_output(json_encode($result));	
+		}
+		else
+		{
+			$result['response']  = FALSE;
+			$result['pesan'] 	 = 'Photo Gagal dihapus';
+			$this->output
+				->set_status_header(400)
+				->set_content_type('application/json', 'utf-8')
+				->set_output(json_encode($result));	
+		}		
+	}	
+	
+	
+	public function getDaftarAll()
+	{
+		$daftar			  = $this->input->post();
+		$q				  = $this->uploadFile->getDaftar($daftar);
+		
+		$html = '';
+		$html .='<table id="tb-daftar" class="table table-striped table-condensed">
+						<thead>
+						    <tr>
+								<th></th>
+								<th>INSTANSI</th>
+								<th>NIP</th>
+								<th>NAMA</th>
+								<th>LAYANAN</th>
+								<th>UPLOAD DATE</th>						
+						    </tr>
+					</thead><tbody>';
+		foreach($q->result() as $value)
+		{
+			$html .='<tr>
+					<td><button class="btn btn-primary btn-xs" data-tooltip="tooltip"  title="Lihat Photo" data-toggle="modal" data-target="#photoModal" data-id="?s='.$this->myencrypt->encode($value->file_size).'&id='.$this->myencrypt->encode($value->id_instansi).'&f='.$this->myencrypt->encode($value->orig_name).'&n='.$this->myencrypt->encode($value->nip).'"><i class="fa fa-search"></i></button>&nbsp;
+					<button class="btn btn-danger btn-xs" data-tooltip="tooltip"  title="Delete Photo" data-toggle="modal" data-target="#dphotoModal" data-instansi="'.$this->myencrypt->encode($value->id_instansi).'" data-file="'.$this->myencrypt->encode($value->orig_name).'" data-path="'.$this->myencrypt->encode($value->file_path).'"><i class="fa fa-remove"></i></button></td>
+					<td>'.$value->instansi.'</td>
+					<td>'.$value->nip.'</td>
+					<td>'.$value->nama.'</td>
+					<td>'.$value->layanan_nama.'</td>
+					<td>'.$value->created_date.'</td>						
+				</tr>';
+
+		}		
+		
+		$html .='</tbody></table>';
+		echo $html;	
+	}	
 }
 
 /* End of file welcome.php */

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
  <head>
-    <?php echo $this->load->view('vheader');?>	  
+    <?php  $this->load->view('vheader');?>	  
   </head> 	
 	
 	<style>
@@ -12,13 +12,13 @@
   <div class="wrapper">	
 	 <header class="main-header">
         <!-- Logo -->
-        <?php echo $this->load->view('vlogo');?>
+        <?php  $this->load->view('vlogo');?>
         <!-- navbar header-->
-		<?php echo $this->load->view('vnavbar-header');?>
+		<?php  $this->load->view('vnavbar-header');?>
         <!-- end navbar header -->
        </header>
        <!-- Left side column -->
-        <?php echo $this->load->view('vleft-side');?>
+        <?php  $this->load->view('vleft-side');?>
        <!-- End Left side column -->
 	
 	<!-- Content Wrapper. Contains page content -->
@@ -44,7 +44,7 @@
 						  <h3 class="box-title">Daftar Photo</h3>
 						</div><!-- /.box-header -->
 						<!-- form start -->
-						<form class="form-horizontal" role="form" method="post" action="<?php echo site_url()?>/photo/getDaftar">
+						<form name="frmDaftar" class="form-horizontal" role="form" method="post" action="<?php echo site_url()?>/photo/getDaftar">
 						  <div class="box-body">
 							<input type="hidden" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash();?>" style="display: none">
 							
@@ -92,7 +92,7 @@
 						<hr/>
 						<?php if($show):?>
 						<div class="table-responsive">
-						<table class="table table-striped">
+						<table id="tb-daftar" class="table table-striped">
 						<thead>
 							<tr>
 								<th></th>
@@ -107,7 +107,8 @@
 							<?php if($daftar->num_rows() > 0):?>
 							<?php  foreach($daftar->result() as $value):?>							
 							<tr>
-								<td><button class="btn btn-primary btn-xs" data-tooltip="tooltip"  title="Lihat Photo" data-toggle="modal" data-target="#photoModal" data-id="?s=<?php echo $this->myencrypt->encode($value->file_size)?>&id=<?php echo $this->myencrypt->encode($value->id_instansi)?>&f=<?php echo $this->myencrypt->encode($value->orig_name)?>&n=<?php echo $this->myencrypt->encode($value->nip)?>"><i class="fa fa-search"></i></button></td>
+								<td><button class="btn btn-primary btn-xs" data-tooltip="tooltip"  title="Lihat Photo" data-toggle="modal" data-target="#photoModal" data-id="?s=<?php echo $this->myencrypt->encode($value->file_size)?>&id=<?php echo $this->myencrypt->encode($value->id_instansi)?>&f=<?php echo $this->myencrypt->encode($value->orig_name)?>&n=<?php echo $this->myencrypt->encode($value->nip)?>"><i class="fa fa-search"></i></button>&nbsp;
+								<button class="btn btn-danger btn-xs" data-tooltip="tooltip"  title="Delete Photo" data-toggle="modal" data-target="#dphotoModal" data-instansi="<?php echo $this->myencrypt->encode($value->id_instansi)?>" data-file="<?php echo $this->myencrypt->encode($value->orig_name)?>" data-path="<?php echo $this->myencrypt->encode($value->file_path)?>"><i class="fa fa-remove"></i></button></td>
 								<td><?php echo $value->instansi?></td>
 								<td><?php echo $value->nip?></td>
 								<td><?php echo $value->nama?></td>
@@ -145,6 +146,30 @@
       </div><!-- /.content-wrapper -->     
     </div><!-- ./wrapper -->
 
+    <div class="modal fade" id="dphotoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+					
+					<h4 class="modal-title" id="myModalLabel"><span id="msg"></span></h4>
+				</div>
+				<div class="modal-body">
+				    
+					<form id="nfrmdphoto">
+					    <input type="hidden" name="<?php echo $this->security->get_csrf_token_name()?>" value="<?php echo $this->security->get_csrf_hash()?>" style="display: none">
+						<p>Anda Yakin akan menghapus photo ini ?</p>					   	
+                        <input type="hidden" name="instansi"/>	
+					    <input type="hidden" name="file"/>		
+						 <input type="hidden" name="path"/>			
+					</form>
+				 </div>
+				<div class="modal-footer">
+					<button type="button" class="btn bg-maroon" id="nBtnHapus">OK Hapus !</button>
+				</div>
+			</div>
+		</div>	
+	</div>
 	
 	
 	<script src="<?php echo base_url()?>assets/plugins/jQuery/jQuery-2.1.4.min.js"></script>    
@@ -160,6 +185,63 @@
 			var iframe = $('#frame');
 			iframe.attr('src', '<?php echo site_url()?>'+'/photo/getInline/'+id);			
 	    });
+		
+		$('#dphotoModal').on('show.bs.modal',function(e){
+		     $('#dphotoModal #msg').text('Konfirmasi Hapus Photo')
+			.removeClass( "text-green")
+			.removeClass( "text-danger")
+		    .removeClass( "text-blue" ); 
+			
+			var instansi		=  $(e.relatedTarget).attr('data-instansi');
+			var file 		    =  $(e.relatedTarget).attr('data-file');
+			var path 		    =  $(e.relatedTarget).attr('data-path');
+			
+			$('#dphotoModal input[name=instansi]').val(instansi);
+			$('#dphotoModal input[name=file]').val(file);
+			$('#dphotoModal input[name=path]').val(path);
+		});
+		
+		$("#nBtnHapus").on("click",function(e){
+			e.preventDefault();
+			var data = $('#nfrmdphoto').serialize();
+			
+			$('#dphotoModal #msg').text('Updating Please Wait.....')
+                     .removeClass( "text-green")
+				     .addClass( "text-blue" );  
+			
+			$.ajax({
+				type: "POST",
+				url : "<?php echo site_url()?>/photo/hapus",
+				data: data,
+				success: function(r){					
+					$('#dphotoModal #msg').text(r.pesan)
+						.removeClass( "text-blue")
+						.addClass( "text-green" );
+					refreshTable();				
+			    }, // akhir fungsi sukses
+				error : function(r) {
+					$('#dphotoModal #msg').text(r.responseJSON.pesan)
+						.removeClass( "text-blue")
+						.removeClass( "text-green")
+						.addClass( "text-danger" );
+				}			
+		    });
+			return false;
+		});
+		
+		
+		function refreshTable(){						
+			$.ajax({   
+			    type: 'POST',   
+			    url: '<?php echo site_url()?>/photo/getDaftarAll',   
+			    data: $('form[name=frmDaftar]').serialize(),
+			    success: function(res) {
+					$("#tb-daftar").html(res);
+					
+				},
+			});
+		}
+		
 	});	
    </script>
 	</body>

@@ -128,10 +128,10 @@ class Telegram_model extends CI_Model {
 			
 			if ($this->db->affected_rows() == 0)
 			{
-				$error = $this->db->_error_message();
-				if(!empty($error))
+				$error = $this->db->error();
+				if(!empty($error['message']))
 				{
-					$data['pesan']		= $error;   
+					$data['pesan']		= $error['message'];   
 					$data['response'] 	= FALSE;
 				}
 				else
@@ -175,10 +175,10 @@ class Telegram_model extends CI_Model {
 			
 			if ($this->db->affected_rows() == 0)
 			{
-				$error = $this->db->_error_message();
-				if(!empty($error))
+				$error = $this->db->error();
+				if(!empty($error['message']))
 				{
-					$data['pesan']		= $error;   
+					$data['pesan']		= $error['message'];   
 					$data['response'] 	= FALSE;
 				}
 				else
@@ -221,10 +221,10 @@ class Telegram_model extends CI_Model {
 			
 			if ($this->db->affected_rows() == 0)
 			{
-				$error = $this->db->_error_message();
-				if(!empty($error))
+				$error = $this->db->error();
+				if(!empty($error['message']))
 				{
-					$data['pesan']		= $error;   
+					$data['pesan']		= $error['message'];   
 					$data['response'] 	= FALSE;
 				}
 				else
@@ -268,10 +268,10 @@ class Telegram_model extends CI_Model {
 			
 			if ($this->db->affected_rows() == 0)
 			{
-				$error = $this->db->_error_message();
-				if(!empty($error))
+				$error = $this->db->error();
+				if(!empty($error['message']))
 				{
-					$data['pesan']		= $error;   
+					$data['pesan']		= $error['message'];   
 					$data['response'] 	= FALSE;
 				}
 				else
@@ -315,10 +315,10 @@ class Telegram_model extends CI_Model {
 			
 			if ($this->db->affected_rows() == 0)
 			{
-				$error = $this->db->_error_message();
-				if(!empty($error))
+				$error = $this->db->error();
+				if(!empty($error['message']))
 				{
-					$data['pesan']		= $error;   
+					$data['pesan']		= $error['message'];   
 					$data['response'] 	= FALSE;
 				}
 				else
@@ -539,7 +539,7 @@ class Telegram_model extends CI_Model {
 			}
 			else
 			{
-				$error = $this->db->_error_message();
+				$error = $this->db->error();
 				if(!empty($error))
 				{
 					$data['pesan']		= $error;   
