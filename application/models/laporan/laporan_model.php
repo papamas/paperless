@@ -216,7 +216,8 @@ $sql_order ";
 		f.first_name usul_kirim_name,
 		g.first_name usul_lock_name,
 		h.first_name usul_verif_name,
-		i.first_name usul_entry_name
+		i.first_name usul_entry_name,
+		j.nama_taspen
 		FROM $this->usul a
 		LEFT JOIN $this->tablelayanan b ON a.layanan_id = b.layanan_id	
 		LEFT JOIN $this->tabletahapan c ON c.tahapan_id = a.usul_tahapan_id
@@ -226,6 +227,7 @@ $sql_order ";
 		LEFT JOIN $this->tableuser g ON g.user_id = a.usul_lock_by
 		LEFT JOIN $this->tableuser h ON h.user_id = a.usul_verif_by
 		LEFT JOIN $this->tableuser i ON i.user_id = a.usul_entry_by
+		LEFT JOIN kantor_taspen j ON j.id_taspen = a.kantor_taspen
         WHERE 1=1 $sql_layanan   $sql_date  $sql_status $sql_order";
 		
 		

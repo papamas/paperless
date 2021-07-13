@@ -112,7 +112,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		
 		
 		<p>BODY PARAMETER multipart/form-data:</p>
-		<code>file : SK_CPNS_19900704201903xxxx.pdf</code>
+		<code>{ "file" : "SK_CPNS_19900704201903xxxx.pdf" }</code>
 		
 		
 		<p>RESPONSE:</p>
@@ -140,7 +140,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		
 		
 		<p>QUERY PARAMETER:</p>
-		<code>nip: 19900704201903xxxx</code>
+		<code> { "nip" : "19900704201903xxxx" } </code>
 		
 		<p>RESPONSE:</p>
 		<code>{
@@ -280,7 +280,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		joiNDAxMSIsImlhdCI6MTYyNTAxNTM2MiwiZXhwIjoxNjI1MDMzMzYyfQ.G531nkFF2-cpo_1AWx_kiN4t9es131dVOBbJOQCZO7U</code>
 		
 		<p>BODY PARAMETER x-www-form-urlencoded:</p>
-		<code>name : SK_CPNS_19900704201903xxxx.pdf</code>
+		<code>{ "name" : "SK_CPNS_19900704201903xxxx.pdf" }</code>
 		
 		<p>RESPONSE</p>
 		<code>{
@@ -289,7 +289,38 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 }</code>
 		
 		
-		 <h1>5. UPLOAD PHOTO REQUEST</h1>
+		 <h1>5. CONTENT DOKUMEN REQUEST</h1>
+
+		<p>METHOD GET WITH END POINT:</p>
+		<code>https://satupintu.my.id/index.php/api/dokumen</code>
+		
+		<p>HEADER PARAMETER:</p>
+		<code>Token : eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMSIsImFjdGl2ZSI6IjEiLCJ1c2VybmFtZSI6IjE5ODEwNTEyMjAxNTAzMTAwMSIsImluc3RhbnNpI
+		joiNDAxMSIsImlhdCI6MTYyNTAxNTM2MiwiZXhwIjoxNjI1MDMzMzYyfQ.G531nkFF2-cpo_1AWx_kiN4t9es131dVOBbJOQCZO7U</code>
+		
+		
+		<p>QUERY PARAMETER:</p>
+		<code>{ "nip": "IJAZAH_30_19810512201503XXXX.pdf"} </code>
+		
+		<p>RESPONSE:</p>
+		<code>{
+    "response": true,
+    "file_name": "IJAZAH_30_19810512201503XXXX.pdf",
+    "file_content": "JVBERi0xLjMNJeLjz9MNCjggMCBvYmoNCjw8IC9MaW5lYXJpemVkIDEgDS9MIDMxNjU3OCANL0ggWyAxMTI0IDIxNSBdIA0
+	vTyAxMSANL0UgMTQ2MzM1IA0vTiAyIA0vVCAzMTYzMDEgDT4+IA1lbmRvYmoNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA
+	gICAgICAgICAgICAgICAgDQp4cmVmDTggMzEgDTAwMDAwMDAwMTYgMDAwMDAgbg0KMDAwMDAwMDk5MyAwMDAwMCBuDQowMDAwMDAxMDQ5IDAwMDA
+	wIG4NCjAwMDAwMDEzMzkgMDAwMDAgbg0KMDAwMDAwMTQ3NiAwMDAwMCBuDQowMDAwMDAxNjIyIDAwMDAwIG4NCjAwMDAwMDI5NTcgMDAwMDAgbg0
+	KMDAwMDAwMjk4MSAwMDAwMCBuDQowMDAwMDk3NTEyIDAwMDAwIG4NCjAwMDAwOTc1MzcgMDAwMDAgbg0KMDAwMDA5ODI4MyAwMDAwMCBuDQowMDA
+	wMDk4NTg2IDAwMDAwIG4NCjAwMDAxMTE1NjYgMDAwMDAgbg0KMDAwMDExMTU5MSAwMDAwMCBuDQowMDAwMTExNjE2IDAwMDAwIG4NCjAwMDAxMTI
+	0MDggMDAwMDAgbg0KMDAwMDExMjcwMiAwMDAwMCBuDQowMDAwMTMyMzU1IDAwMDAwIG4NCjAwMDAxMzIzODAgMDAwMDAgbg0KMDAwMDEzMjQwNSA
+	wMDAwMCBuDQowMDAwMTMzMDk2IDAwMDAwIG4NCjAwMDAxMzM0MDggMDAwMDAgbg0KMDAwMDEzOTk0OCAwMDAwMCBuDQowMDAwMTM5OTcyIDAwMDA
+	wIG4NCjAwMDAxMzk5OTcgMDAwMDAgbg0KMDAwMDE0MDY2NSAwMDAwMCBuDQowMDAwMTQwOTQxIDAwMDAwIG4NCjAwMDAxNDYxNTMgMDAwMDAgbg0
+	KMDAwMDE0NjE3NyAwMDAwMCBuDQowMDAwMDAxMTI0IDAwMDAwIG4NCjAwMDAwMDEzMTYgMDAwMDAgbg0KdHJhaWxlcg08PA0vU2l6ZSAzOQ0vUHJ
+	ldiAzMTYyOTANL0luZm8gNyAwIFIgDS9Sb290IDkgMCBSIA0vSURbPDcxNjQzNzcwODMxM2Y5ODIyODY2ZjRmY2M5NTY3YzY3Pjw3MTY0Mzc3MDg"
+	}</code>
+		
+		
+		 <h1>6. UPLOAD PHOTO REQUEST</h1>
 
 		<p>METHOD POST WITH END POINT:</p>
 		<code>https://satupintu.my.id/index.php/api/uploadPhoto</code>
@@ -300,7 +331,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		
 		
 		<p>BODY PARAMETER multipart/form-data:</p>
-		<code>file : KARPEG_19900704201903xxxx.jpeg</code>
+		<code>{ "file" : "KARPEG_19900704201903xxxx.jpeg" }</code>
 		
 		<p>RESPONSE:</p>
 		<code>{
@@ -315,7 +346,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 }</code>
 		
 		
-		<h1>6. LIST UPLOAD PHOTO REQUEST</h1>
+		<h1>7. LIST UPLOAD PHOTO REQUEST</h1>
 
 		<p>METHOD GET WITH END POINT:</p>
 		<code>https://satupintu.my.id/index.php/api/listUploadPhoto</code>
@@ -326,7 +357,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		
 		
 		<p>QUERY PARAMETER:</p>
-		<code>nip: 19900704201903xxxx</code>
+		<code>{ "nip" : "19900704201903xxxx" } </code>
 		
 		<p>RESPONSE:</p>
 		<code>{
@@ -370,7 +401,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 }</code>
 
 
-    <h1>7. HAPUS PHOTO REQUEST</h1>
+    <h1>8. HAPUS PHOTO REQUEST</h1>
 
 		<p>METHOD DELETE WITH END POINT:</p>
 		<code>https://satupintu.my.id/index.php/api/hapusPhoto</code>
@@ -380,7 +411,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		joiNDAxMSIsImlhdCI6MTYyNTAxNTM2MiwiZXhwIjoxNjI1MDMzMzYyfQ.G531nkFF2-cpo_1AWx_kiN4t9es131dVOBbJOQCZO7U</code>
 		
 		<p>BODY PARAMETER x-www-form-urlencoded:</p>
-		<code>name : KARPEG_19900704201903xxxx.jpeg</code>
+		<code>{ "name" : "KARPEG_19900704201903xxxx.jpeg" }</code>
 		
 		<p>RESPONSE</p>
 		<code>{
