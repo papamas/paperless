@@ -39,8 +39,8 @@ class Manual extends CI_Controller {
 		curl_setopt($CurlConnect, CURLOPT_URL, 'https://satupintu.my.id/index.php/api/login');
 		curl_setopt($CurlConnect, CURLOPT_HTTPHEADER, $headers);
 		curl_setopt($CurlConnect, CURLOPT_POST, 1);
-		curl_setopt($CurlConnect, CURLOPT_POSTFIELDS,  json_encode(array("username" => "19810512201503XXXX" ,
-                                                           		  "password" => "IniAdalahRahasiaAku" )));
+		curl_setopt($CurlConnect, CURLOPT_POSTFIELDS,  json_encode(array("username" => "198105122015031001" ,
+                                                           		  "password" => "120581" )));
 		curl_setopt($CurlConnect, CURLOPT_RETURNTRANSFER, 1 );
 		$Result = curl_exec($CurlConnect);
 		if(!$Result){die("Connection Failure");}
@@ -49,25 +49,21 @@ class Manual extends CI_Controller {
 		
 	}	
 	
-	
 	public function dokumen()
 	{
 	    $headers = array(
-		    "Content-Type: application/json",
-		    "Token :eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMTgzIiwiYWN0aXZlIjoiMSIsInVzZXJuYW1lIjoiMzM2MSIsImluc3RhbnNpIjoiOSIsImlhdCI6MTYyNjE4NDUwOCwiZXhwIjoxNjI2MjAyNTA4fQ.F3MZE9FbavS-G_Sj_FoqROE06zCPjOdXObIeaH9hDyM"
+		    'Token:eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMSIsImFjdGl2ZSI6IjEiLCJ1c2VybmFtZSI6IjE5ODEwNTEyMjAxNTAzMTAwMSIsImluc3RhbnNpIjoiNDAxMSIsImlhdCI6MTYyNTU1NTE2NCwiZXhwIjoxNjI1NTczMTY0fQ.4dt5p4LBP8bYq4wo-P6VH7-gZjbBewNtOIM7E8B-izU'
         );
 		
 		$CurlConnect = curl_init();
-		curl_setopt($CurlConnect, CURLOPT_URL, 'http://127.0.0.1/paperless/index.php/api/validasiSKDokumen?instansi=7000&name=PERTEK_PENSIUN_196307091986031022.pdf');
-		curl_setopt($CurlConnect, CURLOPT_HTTPHEADER, $headers);
+		curl_setopt($CurlConnect, CURLOPT_URL, 'https://satupintu.my.id/index.php/api/dokumen?name=IJAZAH_30_198105122015031001.pdf');
+		curl_setopt($CurlConnect, CURLOPT_HTTPHEADER,$headers);
 		curl_setopt($CurlConnect, CURLOPT_RETURNTRANSFER, 1 );
 		$Result = curl_exec($CurlConnect);
 		if(!$Result){die("Connection Failure");}
 		curl_close($CurlConnect);
-
-
-		$json   = json_decode($Result,true);
 		
+		$json   = json_decode($Result,true);
 		
 		
 		header('Pragma:public');

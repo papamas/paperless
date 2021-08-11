@@ -275,6 +275,20 @@ class Entry extends MY_Controller {
 		$data['prodi']				= $this->input->post('prodi');
 		$data['lokasi_kampus']		= $this->input->post('lokasi_kampus');
 		$data['nama_gelar']			= $this->input->post('nama_gelar');
+		$data['lokasi_instansi']	= $this->input->post('lokasi_instansi');
+		$data['name_instansi']	    = $this->input->post('name_instansi');
+		$data['jabatan_instansi']	= $this->input->post('jabatan_instansi');
+		
+		// pendidikan dua
+		$data['persetujuan_dua']		= $this->input->post('persetujuan_dua');
+		$data['tanggal_dua']			= $this->input->post('tanggal_dua');
+		$data['kode_ijazah_dua']		= $this->input->post('kode_ijazah_dua');
+		$data['nomor_ijazah_dua']		= $this->input->post('nomor_ijazah_dua');		
+		$data['tgl_ijazah_dua']			= $this->input->post('tgl_ijazah_dua');
+		$data['kampus_dua']				= $this->input->post('kampus_dua');
+		$data['prodi_dua']				= $this->input->post('prodi_dua');
+		$data['lokasi_kampus_dua']		= $this->input->post('lokasi_kampus_dua');
+		$data['nama_gelar_dua']			= $this->input->post('nama_gelar_dua');
 		
 		$this->form_validation->set_rules('persetujuan', 'Persetujuan', 'required');
 		$this->form_validation->set_rules('tanggal', 'Tanggal', 'required');
@@ -302,9 +316,9 @@ class Entry extends MY_Controller {
 			$this->db->db_debug = FALSE; 
 			if (!$this->entry->simpanPersetujuanPG($data))
 			{
-				$error 				= $this->db->_error_message(); 
-				$data['pesan']		= $error;
-				if(!empty($error))
+				$error 				= $this->db->error(); 
+				$data['pesan']		= $error['message'];
+				if(!empty($error['message']))
 				{
 					$this->output
 						->set_status_header(406)
@@ -373,9 +387,9 @@ class Entry extends MY_Controller {
 		$this->db->db_debug = FALSE; 
 		if (!$this->entry->simpanTahapan($data))
 		{
-			$error 				= $this->db->_error_message(); 
-			$data['pesan']		= $error;
-			if(!empty($error))
+			$error 				= $this->db->error(); 
+			$data['pesan']		= $error['message'];
+			if(!empty($error['message']))
 			{
 				$this->output
 					->set_status_header(406)
@@ -532,9 +546,19 @@ class Entry extends MY_Controller {
 		$this->pdf->Text(42, 89, 'NIP. '.$row->nip);
 		
 		$this->pdf->Text(25, 109, 'Yth.');
-		$this->pdf->writeHTMLCell(155,5,33,109,trim($row->nama_jabatan),0,0,false,true,'J',true);
-		$this->pdf->writeHTMLCell(155,5,33,115,trim($row->nama_daerah),0,0,false,true,'J',true);
-		$this->pdf->Text(25, 121, 'di '.$row->lokasi_daerah);	
+		$this->pdf->writeHTMLCell(155,5,33,109,trim(!empty($row->jabatan_instansi) ?  $row->jabatan_instansi :  $row->nama_jabatan),0,0,false,true,'J',true);
+	
+		if(!empty($row->nama_daerah))
+		{
+			$this->pdf->writeHTMLCell(155,5,33,115,trim(!empty($row->name_instansi) ? $row->name_instansi : $row->nama_daerah  ),0,0,false,true,'J',true);
+			$this->pdf->Text(25, 121, 'di '. (!empty($row->lokasi_instansi) ? $row->lokasi_instansi : $row->lokasi_daerah) );	
+		
+		}
+		else
+		{
+			$this->pdf->Text(25, 115, 'di '. (!empty($row->lokasi_instansi) ? $row->lokasi_instansi : $row->lokasi_daerah) );	
+
+		}	
 		
 		$text='&nbsp;&nbsp;&nbsp;&nbsp;Sesuai dengan surat Saudara Nomor '.$row->agenda_nousul.' tanggal '.$row->tanggal_agenda.' perihal Usul Peningkatan Pendidikan , dengan hormat kami sampaikan hal-hal sebagai berikut:';
         $this->pdf->writeHTMLCell(165,10,25,140,$text,0,0,false,true,'J',false);
@@ -584,6 +608,90 @@ class Entry extends MY_Controller {
 		$this->pdf->Text(29, 168, '2. Kepala Bidang Informasi Kepegawaian  Kanreg  XI BKN;');
 		$this->pdf->Text(29, 173, '3. Saudara '.$row->nama);
 		
+		if(!empty($row->persetujuan_dua))
+		{
+			$this->pdf->AddPage('P', 'A4');
+			$this->pdf->Text(25, 65, 'Nomor');
+			$this->pdf->Text(40, 65, ':');
+			$this->pdf->Text(42, 65, trim($row->persetujuan_dua));
+			
+			$this->pdf->writeHTMLCell(160,5,28,65,'Manado, '.$row->tanggal_dua,0,0,false,true,'R',true);
+
+			
+			$this->pdf->Text(25, 71, 'Sifat');
+			$this->pdf->Text(40, 71, ':');
+			$this->pdf->Text(42, 71, 'Biasa');
+			
+			$this->pdf->Text(25, 77, 'Hal');
+			$this->pdf->Text(40, 77, ':');
+			$this->pdf->Text(42, 77, 'Peningkatan Pendidikan dan/atau Pencantuman Gelar Akademik');
+			
+			$this->pdf->Text(42, 83, 'PNS atas nama '.$row->nama.', '.$row->gelar);
+			$this->pdf->Text(42, 89, 'NIP. '.$row->nip);
+			
+			$this->pdf->Text(25, 109, 'Yth.');
+			$this->pdf->writeHTMLCell(155,5,33,109,trim(!empty($row->jabatan_instansi) ?  $row->jabatan_instansi :  $row->nama_jabatan),0,0,false,true,'J',true);
+		
+			if(!empty($row->nama_daerah))
+			{
+				$this->pdf->writeHTMLCell(155,5,33,115,trim(!empty($row->name_instansi) ? $row->name_instansi : $row->nama_daerah  ),0,0,false,true,'J',true);
+				$this->pdf->Text(25, 121, 'di '. (!empty($row->lokasi_instansi) ? $row->lokasi_instansi : $row->lokasi_daerah) );	
+			
+			}
+			else
+			{
+				$this->pdf->Text(25, 115, 'di '. (!empty($row->lokasi_instansi) ? $row->lokasi_instansi : $row->lokasi_daerah) );	
+
+			}	
+			
+			$text='&nbsp;&nbsp;&nbsp;&nbsp;Sesuai dengan surat Saudara Nomor '.$row->agenda_nousul.' tanggal '.$row->tanggal_agenda.' perihal Usul Peningkatan Pendidikan , dengan hormat kami sampaikan hal-hal sebagai berikut:';
+			$this->pdf->writeHTMLCell(165,10,25,140,$text,0,0,false,true,'J',false);
+			
+			$this->pdf->Text(25, 158, 'a.');
+			$text='Bahwa berdasarkan Peraturan Pemerintah Nomor 11 Tahun 2017 pasal 175 ayat (1) dinyatakan bahwa Profil Pegawai Negeri Sipil dikelola dan dimutakhirkan oleh pejabat yang berwenang sesuai dengan perkembangan atau perubahan informasi kepegawaian masing-masing Instansi Pemerintah untuk selanjutnya diintegrasikan ke data Sistem Informasi Aparatur Sipil Negara secara nasional yang dikelola oleh Badan Kepegawaian Negara.';
+			$this->pdf->writeHTMLCell(160,15,29,158,$text,0,0,false,true,'J',true);
+			
+			$this->pdf->Text(25, 192, 'b.');
+			$text='Bahwa berdasarkan '.$row->nama_ijazah_dua.', pada Program Studi '.$row->prodi_dua.' '.$row->kampus_dua.' yang dikeluarkan di '.$row->lokasi_kampus_dua.', atas nama:';
+			$this->pdf->writeHTMLCell(160,15,29,192,$text,0,0,false,true,'J',true);
+			
+			$this->pdf->Text(29, 210, 'Nama');
+			$this->pdf->Text(77, 210, ':');
+			$this->pdf->Text(79, 210, $row->nama.', '.$row->gelar);
+			
+			$this->pdf->Text(29, 216, 'NIP');
+			$this->pdf->Text(77, 216, ':');
+			$this->pdf->Text(79, 216, $row->nip);
+			
+			$this->pdf->Text(29, 222, 'Pangkat/Gol.Ruang/TMT');
+			$this->pdf->Text(77, 222, ':');
+			$this->pdf->Text(79, 222, $row->pangkat.' / '. $row->nama_golongan.' / '. $row->tmt_golongan);
+			
+			$this->pdf->Text(29, 228, 'Nomor Ijazah/Tgl.Lulus');
+			$this->pdf->Text(77, 228, ':');
+			$this->pdf->Text(79, 228, $row->nomor_ijazah_dua.' / '. $row->tgl_ijazah_dua);
+			
+			$this->pdf->Text(25, 236, 'c.');
+			$text='Bahwa berdasarkan ketentuan yang berlaku, maka permohonan Saudara telah memenuhi syarat dan telah kami cantumkan dalam Data Induk Pegawai Sipil, kepada yang bersangkutan berhak mencantumkan gelar '.$row->nama_gelar_dua.' pada Mutasi Kepegawaiannya.';
+			$this->pdf->writeHTMLCell(160,15,29,236,$text,0,0,false,true,'J',true);
+			
+			$this->pdf->AddPage('P', 'A4');
+			$this->pdf->Text(29,70,'Atas perhatian Bapak/Ibu/Saudara, kami ucapkan terima kasih');
+
+			$this->pdf->Text(124, 85, 'an.');
+			$text2='Kepala Kantor Regional XI Badan Kepegawaian Negara '.$row->jabatan;
+			$this->pdf->writeHTMLCell(60,20,130,85,$text2,0,0,false,true,'J',true);
+			
+		
+			
+			$this->pdf->Text(130, 125, '$');
+			
+			$this->pdf->Text(29, 155, 'Tembusan, Yth :');
+			$this->pdf->Text(29, 163, '1. Kepala Kantor Regional XI sebagai laporan;');
+			$this->pdf->Text(29, 168, '2. Kepala Bidang Informasi Kepegawaian  Kanreg  XI BKN;');
+			$this->pdf->Text(29, 173, '3. Saudara '.$row->nama);
+
+        }			
 
        
 		

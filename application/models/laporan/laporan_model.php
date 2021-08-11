@@ -228,7 +228,7 @@ $sql_order ";
 		LEFT JOIN $this->tableuser h ON h.user_id = a.usul_verif_by
 		LEFT JOIN $this->tableuser i ON i.user_id = a.usul_entry_by
 		LEFT JOIN kantor_taspen j ON j.id_taspen = a.kantor_taspen
-        WHERE 1=1 $sql_layanan   $sql_date  $sql_status $sql_order";
+		WHERE 1=1 $sql_layanan   $sql_date  $sql_status $sql_order";
 		
 		
 	    $query 		= $this->db->query($q);		

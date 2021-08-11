@@ -77,7 +77,7 @@ class Pupns extends MY_Controller {
 			{					
 				if (!$this->pupns->insertPupns()) {
 					$error = $this->db->error();  			
-                    if(!empty($error['message']))			
+					if(!empty($error['message']))
 					{
 						$data['response']		= FALSE;
 						$data['pesan']			= '<div class="box box-warning"><div class="callout callout-warning">

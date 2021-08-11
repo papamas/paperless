@@ -326,71 +326,181 @@
 				
 				<div class="modal-body">
 					<form id="nfrmPersetujuanPG">
-					    <input class="form-control" type="hidden" name="<?php echo $this->security->get_csrf_token_name()?>" value="<?php echo $this->security->get_csrf_hash()?>">
+						<input class="form-control" type="hidden" name="<?php echo $this->security->get_csrf_token_name()?>" value="<?php echo $this->security->get_csrf_hash()?>">
 		                <input class="form-control" type="hidden" value="" name="nip" />
 						<input class="form-control" type="hidden" value="" name="agenda" />
+					
+					    <div class="nav-tabs-custom">
+							<ul class="nav nav-tabs">
+							    <li class="active"> <a href="#pendidikanSatu" data-toggle="tab">Persetujuan Satu</a></li>
+							    <li><a href="#pendidikanDua" data-toggle="tab">Persetujuan Dua</a></li>
+							</ul>
+							
+							<div class="tab-content">					   
+								<div class="active tab-pane" id="pendidikanSatu">  
+									<div class="form-group row">
+										<label class="col-sm-2 col-md-2 col-xs-2 control-label">Nomor</label>
+										<div class="col-sm-4 col-md-4 col-xs-4">
+											<input class="form-control" type="text" value="" name="persetujuan" />
+										</div>
+										<label class="col-sm-2 col-md-2 col-xs-2 control-label">Tanggal</label>	
+										<div class="col-md-4 col-sm-4 col-xs-4">									
+											<div class='input-group date'>
+												<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+												<input  id='dttimepicker' pattern="^\d{1,2}\-\d{1,2}\-\d{4}$" type='text' required name="tanggal" value="<?php echo date('d-m-Y')?>" class="form-control" />
+																				
+											</div>								
+										</div>									
+									</div>	
+									
+									<div class="form-group row">
+										<label class="col-sm-2 col-md-2 col-xs-2 control-label">Ijazah</label>
+										<div class="col-sm-10 col-md-10 col-xs-10">
+											<select id="kode_ijazah" name="kode_ijazah" class="form-control">
+												<option value="">--</option>
+												<?php foreach($ijazah->result() as $value):?>
+												<option value="<?php echo $value->kode_ijazah?>"><?php echo $value->nama_ijazah?></option>
+												<?php endforeach;?>
+											</select>	
+										</div>						   
+									</div>
+									
+									<div class="form-group row">
+										<label class="col-sm-2 col-md-2 col-xs-2 control-label">No.Ijazah</label>
+										<div class="col-sm-4 col-md-4 col-xs-4">
+											<input class="form-control" type="text" value="" name="nomor_ijazah" />	
+										</div>
+										<label class="col-sm-2 col-md-2 col-xs-2 control-label">Tgl.Ijazah</label>
+										<div class="col-sm-4 col-md-4 col-xs-4">
+											<div class='input-group date'>
+												<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+												<input  id='dttimepicker2' pattern="^\d{1,2}\-\d{1,2}\-\d{4}$" type='text' required name="tgl_ijazah" value="" class="form-control" />
+																				
+											</div>	
+										</div>
+									</div>
 						
-						<div class="form-group row">
-							<label class="col-sm-2 col-md-2 col-xs-2 control-label">Nomor</label>
-							<div class="col-sm-4 col-md-4 col-xs-4">
-							    <input class="form-control" type="text" value="" name="persetujuan" />
-							</div>
-							<label class="col-sm-2 col-md-2 col-xs-2 control-label">Tanggal</label>	
-							<div class="col-md-4 col-sm-4 col-xs-4">									
-								<div class='input-group date'>
-									<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-									<input  id='dttimepicker' pattern="^\d{1,2}\-\d{1,2}\-\d{4}$" type='text' required name="tanggal" value="<?php echo date('d-m-Y')?>" class="form-control" />
-																	
-								</div>								
-							</div>									
-						</div>							
-						<div class="form-group row">
-						    <label class="col-sm-2 col-md-2 col-xs-2 control-label">Ijazah</label>
-							<div class="col-sm-10 col-md-10 col-xs-10">
-								<select id="kode_ijazah" name="kode_ijazah" class="form-control">
-									<option value="">--</option>
-									<?php foreach($ijazah->result() as $value):?>
-									<option value="<?php echo $value->kode_ijazah?>"><?php echo $value->nama_ijazah?></option>
-									<?php endforeach;?>
-								</select>	
-                            </div>						   
-						</div>
-						<div class="form-group row">
-						    <label class="col-sm-2 col-md-2 col-xs-2 control-label">No.Ijazah</label>
-							<div class="col-sm-4 col-md-4 col-xs-4">
-								<input class="form-control" type="text" value="" name="nomor_ijazah" />	
-                            </div>
-							<label class="col-sm-2 col-md-2 col-xs-2 control-label">Tgl.Ijazah</label>
-							<div class="col-sm-4 col-md-4 col-xs-4">
-								<div class='input-group date'>
-									<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-									<input  id='dttimepicker2' pattern="^\d{1,2}\-\d{1,2}\-\d{4}$" type='text' required name="tgl_ijazah" value="" class="form-control" />
-																	
-								</div>	
-                            </div>
-						</div>
-						
-						<div class="form-group row">						    
-							<label class="col-sm-2 col-md-2 col-xs-2 control-label">Nama Kampus</label>
-							<div class="col-sm-6 col-md-6 col-xs-6">
-								<input class="form-control" type="text" value="" name="kampus" />	
-                            </div>
-							<label class="col-sm-1 col-md-1 col-xs-1 control-label">Lokasi</label>
-							<div class="col-sm-3 col-md-3 col-xs-3">
-								<input class="form-control" type="text" value="" name="lokasi_kampus" />	
-                            </div>
-						</div>
+									<div class="form-group row">						    
+										<label class="col-sm-2 col-md-2 col-xs-2 control-label">Nama Kampus</label>
+										<div class="col-sm-6 col-md-6 col-xs-6">
+											<input class="form-control" type="text" value="" name="kampus" />	
+										</div>
+										<label class="col-sm-1 col-md-1 col-xs-1 control-label">Lokasi</label>
+										<div class="col-sm-3 col-md-3 col-xs-3">
+											<input class="form-control" type="text" value="" name="lokasi_kampus" />	
+										</div>
+									</div>
 					  
-					    <div class="form-group row">
-						    <label class="col-sm-2 col-md-2 col-xs-2 control-label">Program Studi</label>
-							<div class="col-sm-6 col-md-6 col-xs-6">
-								<input class="form-control" type="text" value="" name="prodi" />	
-                            </div>
-							<label class="col-sm-1 col-md-1 col-xs-1 control-label">Gelar</label>
-							<div class="col-sm-3 col-md-3 col-xs-3">
-								<input class="form-control" type="text" value="" name="nama_gelar" />	
-                            </div>
-						</div>
+									<div class="form-group row">
+										<label class="col-sm-2 col-md-2 col-xs-2 control-label">Program Studi</label>
+										<div class="col-sm-6 col-md-6 col-xs-6">
+											<input class="form-control" type="text" value="" name="prodi" />	
+										</div>
+										<label class="col-sm-1 col-md-1 col-xs-1 control-label">Gelar</label>
+										<div class="col-sm-3 col-md-3 col-xs-3">
+											<input class="form-control" type="text" value="" name="nama_gelar" />	
+										</div>
+									</div>
+						
+									<div class="form-group row">
+										<label class="col-sm-2 col-md-2 col-xs-2 control-label">Jabatan Instansi</label>
+										<div class="col-sm-10 col-md-10 col-xs-10">
+											<input class="form-control" type="text" value="" name="jabatan_instansi" />	
+										</div>
+										
+									</div>
+									<!--
+									<div class="form-group row">
+										<label class="col-sm-2 col-md-2 col-xs-2 control-label">Nama Instansi</label>
+										<div class="col-sm-10 col-md-10 col-xs-10">
+											<input class="form-control" type="text" value="" name="name_instansi" />	
+										</div>
+										
+									</div>
+									!-->
+									
+									<div class="form-group row">
+										<label class="col-sm-2 col-md-2 col-xs-2 control-label">Lokasi Instansi</label>
+										<div class="col-sm-10 col-md-10 col-xs-10">
+											<input class="form-control" type="text" value="" name="lokasi_instansi" />	
+										</div>
+										
+									</div>
+								</div>
+								
+								<div class="tab-pane" id="pendidikanDua">
+								
+									<div class="form-group row">
+										<label class="col-sm-2 col-md-2 col-xs-2 control-label">Nomor</label>
+										<div class="col-sm-4 col-md-4 col-xs-4">
+											<input class="form-control" type="text" value="" name="persetujuan_dua" />
+										</div>
+										<label class="col-sm-2 col-md-2 col-xs-2 control-label">Tanggal</label>	
+										<div class="col-md-4 col-sm-4 col-xs-4">									
+											<div class='input-group date'>
+												<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+												<input  id='dttimepicker4' pattern="" type='text' required name="tanggal_dua" value="<?php echo date('d-m-Y')?>" class="form-control" />
+																				
+											</div>								
+										</div>									
+									</div>	
+									
+									<div class="form-group row">
+										<label class="col-sm-2 col-md-2 col-xs-2 control-label">Ijazah</label>
+										<div class="col-sm-10 col-md-10 col-xs-10">
+											<select id="kode_ijazah_dua" name="kode_ijazah_dua" class="form-control">
+												<option value="">--</option>
+												<?php foreach($ijazah->result() as $value):?>
+												<option value="<?php echo $value->kode_ijazah?>"><?php echo $value->nama_ijazah?></option>
+												<?php endforeach;?>
+											</select>	
+										</div>						   
+									</div>
+									
+									<div class="form-group row">
+										<label class="col-sm-2 col-md-2 col-xs-2 control-label">No.Ijazah</label>
+										<div class="col-sm-4 col-md-4 col-xs-4">
+											<input class="form-control" type="text" value="" name="nomor_ijazah_dua" />	
+										</div>
+										<label class="col-sm-2 col-md-2 col-xs-2 control-label">Tgl.Ijazah</label>
+										<div class="col-sm-4 col-md-4 col-xs-4">
+											<div class='input-group date'>
+												<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+												<input  id='dttimepicker3' pattern="" type='text' required name="tgl_ijazah_dua" value="" class="form-control" />
+																				
+											</div>	
+										</div>
+									</div>
+						
+									<div class="form-group row">						    
+										<label class="col-sm-2 col-md-2 col-xs-2 control-label">Nama Kampus</label>
+										<div class="col-sm-6 col-md-6 col-xs-6">
+											<input class="form-control" type="text" value="" name="kampus_dua" />	
+										</div>
+										<label class="col-sm-1 col-md-1 col-xs-1 control-label">Lokasi</label>
+										<div class="col-sm-3 col-md-3 col-xs-3">
+											<input class="form-control" type="text" value="" name="lokasi_kampus_dua" />	
+										</div>
+									</div>
+					  
+									<div class="form-group row">
+										<label class="col-sm-2 col-md-2 col-xs-2 control-label">Program Studi</label>
+										<div class="col-sm-6 col-md-6 col-xs-6">
+											<input class="form-control" type="text" value="" name="prodi_dua" />	
+										</div>
+										<label class="col-sm-1 col-md-1 col-xs-1 control-label">Gelar</label>
+										<div class="col-sm-3 col-md-3 col-xs-3">
+											<input class="form-control" type="text" value="" name="nama_gelar_dua" />	
+										</div>
+									</div>
+								</div>
+								
+								
+							</div>
+						</div>			
+											
+					   
+						
 						
 					</form>
 				</div>
@@ -483,6 +593,19 @@
 		   format:'DD-MM-YYYY',
 		});
 		
+		
+		$('#dttimepicker3').datetimepicker({
+		   sideBySide: true,
+		   locale: 'id',
+		   format:'DD-MM-YYYY',
+		});
+		
+		$('#dttimepicker4').datetimepicker({
+		   sideBySide: true,
+		   locale: 'id',
+		   format:'DD-MM-YYYY',
+		});
+		
 		$('#skModal').on('show.bs.modal',function(e){
 		    var agenda		=  $(e.relatedTarget).attr('data-agenda');
 			var nip   		=  $(e.relatedTarget).attr('data-nip');
@@ -568,7 +691,20 @@
 					$('#skModalPG input[name=kampus]').val(r.entry[0].kampus);	
 					$('#skModalPG input[name=lokasi_kampus]').val(r.entry[0].lokasi_kampus);	
 					$('#skModalPG input[name=prodi]').val(r.entry[0].prodi);
-					$('#skModalPG input[name=nama_gelar]').val(r.entry[0].nama_gelar);	
+					$('#skModalPG input[name=nama_gelar]').val(r.entry[0].nama_gelar);
+					$('#skModalPG input[name=jabatan_instansi]').val(r.entry[0].jabatan_instansi);
+					$('#skModalPG input[name=name_instansi]').val(r.entry[0].name_instansi);
+					$('#skModalPG input[name=lokasi_instansi]').val(r.entry[0].lokasi_instansi);	
+
+					$('#skModalPG input[name=persetujuan_dua]').val(r.entry[0].persetujuan_dua);	
+                    $('#skModalPG input[name=tanggal_dua]').val(r.entry[0].format_tanggal_dua);	
+					$('#skModalPG [name=kode_ijazah_dua]').val(r.entry[0].kode_ijazah_dua);					
+                    $('#skModalPG input[name=nomor_ijazah_dua]').val(r.entry[0].nomor_ijazah_dua);	
+                    $('#skModalPG input[name=tgl_ijazah_dua]').val(r.entry[0].format_tgl_ijazah_dua);
+					$('#skModalPG input[name=kampus_dua]').val(r.entry[0].kampus_dua);	
+					$('#skModalPG input[name=lokasi_kampus_dua]').val(r.entry[0].lokasi_kampus_dua);	
+					$('#skModalPG input[name=prodi_dua]').val(r.entry[0].prodi_dua);
+					$('#skModalPG input[name=nama_gelar_dua]').val(r.entry[0].nama_gelar_dua);	
 				},
 			});	
 		});

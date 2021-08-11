@@ -216,9 +216,108 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 }</code>
 		
 		
+	 <h1>5. CONTENT DOKUMEN REQUEST</h1>
+
+		<p>METHOD GET WITH END POINT:</p>
+		<code>https://satupintu.my.id/index.php/api/taspenDokumen</code>
+		
+		<p>HEADER PARAMETER:</p>
+		<code>Token : eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMSIsImFjdGl2ZSI6IjEiLCJ1c2VybmFtZSI6IjE5ODEwNTEyMjAxNTAzMTAwMSIsImluc3RhbnNpI
+		joiNDAxMSIsImlhdCI6MTYyNTAxNTM2MiwiZXhwIjoxNjI1MDMzMzYyfQ.G531nkFF2-cpo_1AWx_kiN4t9es131dVOBbJOQCZO7U</code>
 		
 		
+		<p>QUERY PARAMETER:</p>
+		<code>{ "name": "AKTA_ANAK_010019427.pdf"} </code>
 		
+		<p>RESPONSE:</p>
+		<code>{
+    "response": true,
+    "file_name": "AKTA_ANAK_010019427.pdf",
+    "file_ext": "pdf",
+    "file_mime": "application/pdf",
+    "file_content": "JVBERi0xLjMNJeLjz9MNCjggMCBvYmoNCjw8IC9MaW5lYXJpemVkIDEgDS9MIDMxNjU3OCANL0ggWyAxMTI0IDIxNSBdIA0
+	vTyAxMSANL0UgMTQ2MzM1IA0vTiAyIA0vVCAzMTYzMDEgDT4+IA1lbmRvYmoNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA
+	gICAgICAgICAgICAgICAgDQp4cmVmDTggMzEgDTAwMDAwMDAwMTYgMDAwMDAgbg0KMDAwMDAwMDk5MyAwMDAwMCBuDQowMDAwMDAxMDQ5IDAwMDA
+	wIG4NCjAwMDAwMDEzMzkgMDAwMDAgbg0KMDAwMDAwMTQ3NiAwMDAwMCBuDQowMDAwMDAxNjIyIDAwMDAwIG4NCjAwMDAwMDI5NTcgMDAwMDAgbg0
+	KMDAwMDAwMjk4MSAwMDAwMCBuDQowMDAwMDk3NTEyIDAwMDAwIG4NCjAwMDAwOTc1MzcgMDAwMDAgbg0KMDAwMDA5ODI4MyAwMDAwMCBuDQowMDA
+	wMDk4NTg2IDAwMDAwIG4NCjAwMDAxMTE1NjYgMDAwMDAgbg0KMDAwMDExMTU5MSAwMDAwMCBuDQowMDAwMTExNjE2IDAwMDAwIG4NCjAwMDAxMTI
+	0MDggMDAwMDAgbg0KMDAwMDExMjcwMiAwMDAwMCBuDQowMDAwMTMyMzU1IDAwMDAwIG4NCjAwMDAxMzIzODAgMDAwMDAgbg0KMDAwMDEzMjQwNSA
+	wMDAwMCBuDQowMDAwMTMzMDk2IDAwMDAwIG4NCjAwMDAxMzM0MDggMDAwMDAgbg0KMDAwMDEzOTk0OCAwMDAwMCBuDQowMDAwMTM5OTcyIDAwMDA
+	wIG4NCjAwMDAxMzk5OTcgMDAwMDAgbg0KMDAwMDE0MDY2NSAwMDAwMCBuDQowMDAwMTQwOTQxIDAwMDAwIG4NCjAwMDAxNDYxNTMgMDAwMDAgbg0
+	KMDAwMDE0NjE3NyAwMDAwMCBuDQowMDAwMDAxMTI0IDAwMDAwIG4NCjAwMDAwMDEzMTYgMDAwMDAgbg0KdHJhaWxlcg08PA0vU2l6ZSAzOQ0vUHJ
+	ldiAzMTYyOTANL0luZm8gNyAwIFIgDS9Sb290IDkgMCBSIA0vSURbPDcxNjQzNzcwODMxM2Y5ODIyODY2ZjRmY2M5NTY3YzY3Pjw3MTY0Mzc3MDg"
+	}</code>	
+		
+		
+	 <h1>6. VALIDASI SK PENSIUN REQUEST</h1>
+
+		<p>METHOD GET WITH END POINT:</p>
+		<code>https://satupintu.my.id/index.php/api/validasiSK</code>
+		
+		<p>HEADER PARAMETER:</p>
+		<code>Token : eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMSIsImFjdGl2ZSI6IjEiLCJ1c2VybmFtZSI6IjE5ODEwNTEyMjAxNTAzMTAwMSIsImluc3RhbnNpI
+		joiNDAxMSIsImlhdCI6MTYyNTAxNTM2MiwiZXhwIjoxNjI1MDMzMzYyfQ.G531nkFF2-cpo_1AWx_kiN4t9es131dVOBbJOQCZO7U</code>
+		
+		
+		<p>QUERY PARAMETER:</p>
+		<code>{ "nip": "19630605198602XXXX"} </code>
+		
+		<p>RESPONSE:</p>	
+		<code>{
+    "response": true,
+    "message": "List Of Files",
+    "size": 1,
+    "files": [
+        {
+            "raw_name": "PERTEK_PENSIUN_19630605198602XXXX",
+            "file_name": "PERTEK_PENSIUN_19630605198602XXXX.pdf",
+            "file_type": "application/pdf",
+            "file_size": "244.35",
+            "file_ext": ".pdf",
+            "nip": "19630605198602XXXX",
+            "nama_dokumen": "PERTEK_PENSIUN",
+            "flag_update": null,
+            "upload_by": "51",
+            "upload_name": "DEDY ",
+            "instansi_name": "Pemerintah Provinsi Sulawesi Utara",
+            "instansi_kode": "7000",
+            "nama_pns": "JACOB PONGAJOUW",
+            "nip_pns": "19630605198602XXXX",
+            "nip_lama": "560011077"
+        }
+    ]
+}</code>
+		
+	<h1>7. CONTENT DOKUMEN VALIDASI SK  PENSIUN REQUEST</h1>
+
+		<p>METHOD GET WITH END POINT:</p>
+		<code>https://satupintu.my.id/index.php/api/validasiSKDokumen</code>
+		
+		<p>HEADER PARAMETER:</p>
+		<code>Token : eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMSIsImFjdGl2ZSI6IjEiLCJ1c2VybmFtZSI6IjE5ODEwNTEyMjAxNTAzMTAwMSIsImluc3RhbnNpI
+		joiNDAxMSIsImlhdCI6MTYyNTAxNTM2MiwiZXhwIjoxNjI1MDMzMzYyfQ.G531nkFF2-cpo_1AWx_kiN4t9es131dVOBbJOQCZO7U</code>
+		
+		
+		<p>QUERY PARAMETER:</p>
+		<code>{ "name": "PERTEK_PENSIUN_19630709198603XXXX.pdf", "instansi":"7000"} </code>
+		
+		<p>RESPONSE:</p>
+		<code>{
+    "response": true,
+    "file_name": "PERTEK_PENSIUN_196307091986031022.pdf",
+    "file_ext": "pdf",
+    "file_mime": "application/pdf",
+	"file_content": "JVBERi0xLjMNJeLjz9MNCjggMCBvYmoNCjw8IC9MaW5lYXJpemVkIDEgDS9MIDMxNjU3OCANL0ggWyAxMTI0IDIxNSBdIA0
+	vTyAxMSANL0UgMTQ2MzM1IA0vTiAyIA0vVCAzMTYzMDEgDT4+IA1lbmRvYmoNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA
+	gICAgICAgICAgICAgICAgDQp4cmVmDTggMzEgDTAwMDAwMDAwMTYgMDAwMDAgbg0KMDAwMDAwMDk5MyAwMDAwMCBuDQowMDAwMDAxMDQ5IDAwMDA
+	wIG4NCjAwMDAwMDEzMzkgMDAwMDAgbg0KMDAwMDAwMTQ3NiAwMDAwMCBuDQowMDAwMDAxNjIyIDAwMDAwIG4NCjAwMDAwMDI5NTcgMDAwMDAgbg0
+	KMDAwMDAwMjk4MSAwMDAwMCBuDQowMDAwMDk3NTEyIDAwMDAwIG4NCjAwMDAwOTc1MzcgMDAwMDAgbg0KMDAwMDA5ODI4MyAwMDAwMCBuDQowMDA
+	wMDk4NTg2IDAwMDAwIG4NCjAwMDAxMTE1NjYgMDAwMDAgbg0KMDAwMDExMTU5MSAwMDAwMCBuDQowMDAwMTExNjE2IDAwMDAwIG4NCjAwMDAxMTI
+	0MDggMDAwMDAgbg0KMDAwMDExMjcwMiAwMDAwMCBuDQowMDAwMTMyMzU1IDAwMDAwIG4NCjAwMDAxMzIzODAgMDAwMDAgbg0KMDAwMDEzMjQwNSA
+	wMDAwMCBuDQowMDAwMTMzMDk2IDAwMDAwIG4NCjAwMDAxMzM0MDggMDAwMDAgbg0KMDAwMDEzOTk0OCAwMDAwMCBuDQowMDAwMTM5OTcyIDAwMDA
+	wIG4NCjAwMDAxMzk5OTcgMDAwMDAgbg0KMDAwMDE0MDY2NSAwMDAwMCBuDQowMDAwMTQwOTQxIDAwMDAwIG4NCjAwMDAxNDYxNTMgMDAwMDAgbg0
+	KMDAwMDE0NjE3NyAwMDAwMCBuDQowMDAwMDAxMTI0IDAwMDAwIG4NCjAwMDAwMDEzMTYgMDAwMDAgbg0KdHJhaWxlcg08PA0vU2l6ZSAzOQ0vUHJ
+	ldiAzMTYyOTANL0luZm8gNyAwIFIgDS9Sb290IDkgMCBSIA0vSURbPDcxNjQzNzcwODMxM2Y5ODIyODY2ZjRmY2M5NTY3YzY3Pjw3MTY0Mzc3MDg"}</code>
 		
 	</div>
 

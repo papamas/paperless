@@ -219,6 +219,19 @@ ORDER  by e.PNS_PNSNAM ASC
 		$set['prodi']                	= $data['prodi'];
 		$set['lokasi_kampus']           = $data['lokasi_kampus'];
 		$set['nama_gelar']              = $data['nama_gelar'];
+		$set['lokasi_instansi']         = $data['lokasi_instansi'];
+		$set['name_instansi']           = $data['name_instansi'];
+		$set['jabatan_instansi']        = $data['jabatan_instansi'];
+		
+		$set['persetujuan_dua']    	        = (!empty($data['persetujuan_dua'])   ? strtoupper($data['persetujuan_dua']) : NULL ); 
+		$set['tanggal_dua']					= (!empty($data['tanggal_dua'])       ? date('Y-m-d',strtotime($data['tanggal_dua'])) : NULL );
+		$set['kode_ijazah_dua']				= (!empty($data['kode_ijazah_dua'])   ? $data['kode_ijazah_dua']  : NULL );
+		$set['nomor_ijazah_dua']            = (!empty($data['nomor_ijazah_dua'])  ? $data['nomor_ijazah_dua'] : NULL );		
+		$set['tgl_ijazah_dua']              = (!empty($data['tgl_ijazah_dua'])    ? date('Y-m-d',strtotime($data['tgl_ijazah_dua'])) : NULL );
+		$set['kampus_dua']                	= (!empty($data['kampus_dua'])        ? $data['kampus_dua']       : NULL );
+		$set['prodi_dua']                	= (!empty($data['prodi_dua'])         ? $data['prodi_dua']        : NULL );
+		$set['lokasi_kampus_dua']           = (!empty($data['lokasi_kampus_dua']) ? $data['lokasi_kampus_dua']: NULL );
+		$set['nama_gelar_dua']              = (!empty($data['nama_gelar_dua'])    ? $data['nama_gelar_dua']   : NULL );
 		
 		$this->db->where('agenda_id',$agenda);
 		$this->db->where('nip',$nip);
@@ -246,11 +259,16 @@ ORDER  by e.PNS_PNSNAM ASC
 		
 		$sql   = "SELECT 
 		a.nip, a.nomi_persetujuan,formatTanggal(a.tanggal_persetujuan) tanggal_acc,date_format(a.tanggal_persetujuan, '%d-%m-%Y') date_format,
-		a.nomor_ijazah,formatTanggal(a.tgl_ijazah) tgl_ijazah,date_format(a.tgl_ijazah,'%d-%m-%Y') format_tgl_ijazah, a.lokasi_kampus,a.kampus,a.nama_gelar,a.prodi,a.kode_ijazah,
+		a.nomor_ijazah,formatTanggal(a.tgl_ijazah) tgl_ijazah,date_format(a.tgl_ijazah,'%d-%m-%Y') format_tgl_ijazah, a.lokasi_kampus,a.kampus,
+		a.nama_gelar,a.prodi,a.kode_ijazah,formatTanggal(a.tanggal_dua) tanggal_dua,
+		a.persetujuan_dua,date_format(a.tanggal_dua, '%d-%m-%Y') format_tanggal_dua, a.nomor_ijazah_dua,
+		formatTanggal(a.tgl_ijazah_dua) tgl_ijazah_dua,date_format(a.tgl_ijazah_dua,'%d-%m-%Y') format_tgl_ijazah_dua,
+		a.lokasi_kampus_dua,a.kampus_dua,a.nama_gelar_dua,a.prodi_dua,a.kode_ijazah_dua,
+		a.jabatan_instansi, a.name_instansi, a.lokasi_instansi,
 		b.PNS_PNSNAM nama,b.PNS_GLRBLK gelar, formatTanggal(b.PNS_TMTGOL) tmt_golongan,
 		c.agenda_nousul,formatTanggal(c.agenda_timestamp) tanggal_agenda,
 		d.nama_jabatan , d.nama_daerah ,d.lokasi_daerah,
-		e.nama_ijazah,		
+		e.nama_ijazah,k.nama_ijazah nama_ijazah_dua,		
 		f.GOl_PKTNAM pangkat, f.GOL_GOLNAM nama_golongan,
 		g.jabatan,
 		h.PNS_PNSNAM nama_spesimen,h.PNS_GLRBLK gelar_spesimen,h.PNS_NIPBARU nip_spesimen,
@@ -264,6 +282,7 @@ ORDER  by e.PNS_PNSNAM ASC
 		LEFT JOIN $this->tableuser g ON g.user_id = a.nomi_verifby
 		LEFT JOIN $this->tablepupns h ON g.nip = h.PNS_NIPBARU
 		LEFT JOIN paperless.nomor_pmk i ON (i.agenda_id = a.agenda_id AND i.nip = a.nip) 
+		LEFT JOIN $this->tableijazah k ON k.kode_ijazah = a.kode_ijazah_dua
 		WHERE a.agenda_id='$agenda' AND a.nip='$nip' ";
 		
 		$query 	=   $this->db->query($sql);

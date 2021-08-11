@@ -132,9 +132,12 @@ DATE_FORMAT(mulai_honor,'%d-%m-%Y') mulai_honor,
 DATE_FORMAT(sampai_honor,'%d-%m-%Y') sampai_honor
 from usul_pmk a
 LEFT JOIN mirror.pupns b ON a.nip = b.PNS_NIPBARU
-LEFT JOIN paperless.agenda c ON c.agenda_id = a.agenda_id
+LEFT JOIN agenda c ON c.agenda_id = a.agenda_id
 LEFT JOIN mirror.instansi d ON d.INS_KODINS = c.agenda_ins
 where a.nip='$nip' AND a.agenda_id='$agenda'";
+
+     //var_dump($sql);exit;
+	 
 		return $this->db->query($sql);
 	}	
 	

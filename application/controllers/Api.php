@@ -386,9 +386,8 @@ class Api extends REST_Controller {
 		
 	}	 		
 
-
     /* GET CONTENT DOKUMEN*/
-	public function dokumen_get()
+    public function dokumen_get()
 	{
 		$headers = $this->input->request_headers();
 		
@@ -425,12 +424,18 @@ class Api extends REST_Controller {
 				{
 					$path      ='/var/www/html/uploads/'.$instansi.'/';
 					$file      = $this->get('name');
-					$flok      = $path.$instansi.'/'.$file;
+					$flok      = $path.'/'.$file;
+					
 					
 					if(file_exists($flok))
 					{
-					    $out['response']     		 = TRUE;
+					    $this->load->helper('file');
+
+						$path                        = pathinfo($flok);
+						$out['response']     		 = TRUE;
 						$out['file_name']            = $file;
+						$out['file_ext']             = $path['extension'];
+						$out['file_mime']            = get_mime_by_extension($file);
 						$out['file_content'] 	     = base64_encode(file_get_contents($flok));
 						$this->set_response($out, REST_Controller::HTTP_OK);
 					}
@@ -459,8 +464,7 @@ class Api extends REST_Controller {
 		
 		
 	}	
-   
-   
+	
     /* upload photo */   
     public function uploadPhoto_post()
 	{
@@ -1112,6 +1116,7 @@ class Api extends REST_Controller {
         $this->image_lib->clear();
     }
 	
+	
 	/* GET CONTENT DOKUMEN*/
 	public function taspenDokumen_get()
 	{
@@ -1147,7 +1152,7 @@ class Api extends REST_Controller {
 				}		
 				else
 				{
-					$path      ='d:/xampp/htdocs/paperless/uploads/taspen/';
+					$path      ='/var/www/html/uploads/taspen/';
 					$file      = $this->get('name');
 					$flok      = $path.$file;
 					
@@ -1303,7 +1308,7 @@ class Api extends REST_Controller {
 					$file          = $this->get('name');
 					$instansi      = $this->get('instansi');
 					
-					$path      ='d:/xampp/htdocs/paperless/uploads/'.$instansi.'/';
+					$path      ='/var/www/html/uploads/'.$instansi.'/';
 					$flok      = $path.$file;
 					
 					
@@ -1347,5 +1352,4 @@ class Api extends REST_Controller {
 		
 		
 	}	
-				
 }

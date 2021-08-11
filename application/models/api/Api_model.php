@@ -458,6 +458,7 @@ class Api_model extends CI_Model{
 			$error = $this->db->error();
 			
 			
+			
 			if(!empty($error['message']))
 			{
                 $data['pesan']		= $error['message'];   
@@ -534,7 +535,6 @@ class Api_model extends CI_Model{
 		$sql ="DELETE FROM upload_dokumen_taspen WHERE orig_name='$file'  ";
 		return $this->db->query($sql);	
 	}	
-	
 	
 	public function getValidasiSK($data)
 	{

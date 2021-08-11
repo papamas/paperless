@@ -300,12 +300,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		
 		
 		<p>QUERY PARAMETER:</p>
-		<code>{ "nip": "IJAZAH_30_19810512201503XXXX.pdf"} </code>
+		<code>{ "name": "IJAZAH_30_19810512201503XXXX.pdf"} </code>
 		
 		<p>RESPONSE:</p>
 		<code>{
     "response": true,
-    "file_name": "IJAZAH_30_19810512201503XXXX.pdf",
+    "file_name": "IJAZAH_30_19810512201503XXXX.pdf","file_ext": "pdf",
+    "file_mime": "application/pdf",
     "file_content": "JVBERi0xLjMNJeLjz9MNCjggMCBvYmoNCjw8IC9MaW5lYXJpemVkIDEgDS9MIDMxNjU3OCANL0ggWyAxMTI0IDIxNSBdIA0
 	vTyAxMSANL0UgMTQ2MzM1IA0vTiAyIA0vVCAzMTYzMDEgDT4+IA1lbmRvYmoNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA
 	gICAgICAgICAgICAgICAgDQp4cmVmDTggMzEgDTAwMDAwMDAwMTYgMDAwMDAgbg0KMDAwMDAwMDk5MyAwMDAwMCBuDQowMDAwMDAxMDQ5IDAwMDA

@@ -136,6 +136,9 @@ class Pmk extends MY_Controller {
 		$agenda_id  = $this->myencrypt->decode($this->input->get('i'));
 		$nip        = $this->myencrypt->decode($this->input->get('n'));
 		
+		//var_dump($nip);
+		//var_dump($agenda_id);exit;
+		
 		$row        =  $this->pmk->getCetakUsul($agenda_id,$nip)->row();
 		
 		
