@@ -43,9 +43,9 @@ class Importexcel extends MY_Controller {
 			$this->db->db_debug = FALSE; 
 			
 			if (!$this->magenda->minput_nominatif($data_excel)) {
-				$error = $this->db->_error_message(); 
+				$error = $this->db->error(); 
 				
-			    if(!empty($error))
+			    if(!empty($error['message']))
 				{
 					$this->session->set_flashdata('gagal', $error);
                 }
