@@ -1,43 +1,60 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-class Pupns_model extends CI_Model {
-
-    function __construct()
+class Scheduller_model extends CI_Model {
+	
+	function __construct()
     {
         parent::__construct();
+		$this->load->database();
 		$this->oracle   = $this->load->database('oracle', TRUE);
+
 	}
 	
-	function getInstansi()
+	function getNominatif()
 	{
-		$this->db->select('*');
-		return $this->db->get('mirror.instansi');
+		/*
+		$sql="SELECT c.layanan_grup, a.nip , a.agenda_id FROM `nominatif` a
+LEFT JOIN agenda b ON b.agenda_id = a.agenda_id
+LEFt JOIN layanan c ON c.layanan_id = b.layanan_id
+WHERE a.`nomi_status` = 'ACC' AND c.layanan_grup='KP'
+AND update_mirror IS NULL  
+LIMIT 10";*/
+
+		$sql ="SELECT c.layanan_grup, a.nip , a.agenda_id, b.*  FROM `nominatif` a
+LEFT JOIN agenda b ON b.agenda_id = a.agenda_id
+LEFt JOIN layanan c ON c.layanan_id = b.layanan_id
+WHERE b.layanan_id IN ('1','2','3','12','13','14')
+AND update_mirror IS NULL  
+LIMIT 10";
+		return $this->db->query($sql);		
 	}	
 	
-	function getGolru()
-	{
-		$this->db->select('GOL_KODGOL kode, GOL_GOLNAM nama, GOL_PKTNAM pangkat');
-		return $this->db->get('mirror.golru');
-	}
 	
-	function cekPupns()
+	function flagNominatif($id,$nip)
 	{
-		$nip   = $this->input->post('nip');
+		
+		$this->db->set('update_mirror',1);
+		$this->db->where('agenda_id', $id);
+		$this->db->where('nip', $nip);
+		return $this->db->update('nominatif');
+
+	}	
+	
+	function cekPupns($nip)
+	{
 		$this->db->where('PNS_NIPBARU',$nip);
 		return $this->db->get('mirror.pupns');
 	}	
 	
-	function updatePupns()
+	function updatePupns($nip)
 	{
-		$nip 		= $this->input->post('nip');	
 		$psnOracle  = $this->getPnsDataOracle($nip)->row_array();
 
 		$this->db->where('PNS_NIPBARU',$nip);
 		return $this->db->update('mirror.pupns',$psnOracle);
 	}	
 	
-	function insertPupns()
+	function insertPupns($nip)
 	{
-		$nip 		= $this->input->post('nip');		
 		$psnOracle  = $this->getPnsDataOracle($nip)->row_array();
 	
 		return $this->db->insert('mirror.pupns',$psnOracle);
@@ -75,51 +92,6 @@ class Pupns_model extends CI_Model {
 		left join KANREG0.JABATAN_FUNGSIONAL jabfun on jabfun.id = p.jabatan_fungsional_id
 	    WHERE p.nip_baru='$nip' ";
 		return $this->oracle->query($sql);	
-	}	
-	
-	function getPns()
-	{
-		$nip   = $this->input->get('q');		 
-		$sql="SELECT p.nip_lama, p.nip_baru, o.nama
-		 FROM KANREG0.PNS p
-		 inner join KANREG0.ORANG o on O.ID = P.ID
-		 WHERE p.nip_baru='$nip'";
-		return $this->oracle->query($sql);
-		
-	}	
-	
-	function getPnsdata()
-	{		
-		$nip   = $this->input->get('q');
-		
-		$sql="SELECT p.nip_lama, p.nip_baru, o.nama, 
-		o.gelar_depan, o.gelar_blk, tptLahir.cepat_kode, 
-		TO_CHAR(o.tgl_lhr,'DD-MM-YYYY') tgl_lhr, 
-		o.tgl_lhr tgl_lhr_dt,CASE O.JENIS_KELAMIN 
-        WHEN 'M' THEN 1
-        WHEN 'F' THEN 2 END sex ,
-		O.TK_PENDIDIKAN_ID, 
-		P.GOLONGAN_AWAL_ID,
-		P.tmt_cpns, p.tmt_pns,
-        P.JENIS_PEGAWAI_ID, INSDUK.CEPAT_KODE instansi_induk, INSKER.CEPAT_KODE instansi_kerja,
-		U.CEPAT_KODE, p.jenis_jabatan_id, 
-        p.eselon_id, jabfun.cepat_kode, p.tmt_jabatan, p.golongan_id, p.tmt_golongan, p.mk_tahun, p.mk_bulan,
-        tptKerja.cepat_kode, o.jenis_kawin_id, 0, o.anak_tanggungan, p.kedudukan_hukum_id,
-        p.rumah, p.tabrum, p.gunrum, o.alamat, O.KODE_POS, p.unor_id, O.AGAMA_ID, O.JENIS_ID_DOKUMEN_ID, O.NOMOR_ID_DOCUMENT,
-        P.STATUS_CPNS_PNS, O.EMAIL, O.NOMOR_HP, O.NOMOR_TELPON, P.KARTU_PEGAWAI,
-        p.latihan_struktural_nama, p.sk_konv_nomor, p.sk_konv_tanggal, p.sk_konv_urut, sk.kanreg_id, o.id   
-        FROM KANREG0.PNS p
-		inner join KANREG0.ORANG o on O.ID = P.ID
-		inner join KANREG0.INSTANSI insduk on insduk.id = P.INSTANSI_INDUK_ID
-		inner join KANREG0.INSTANSI insker on INSKER.ID = P.INSTANSI_KERJA_ID
-		inner join KANREG0.SATUAN_KERJA sk on SK.ID = P.SATUAN_KERJA_KERJA_ID
-		inner join KANREG0.SATUAN_KERJA sk1 on SK1.ID = P.satuan_kerja_induk_id
-		inner join KANREG0.UNOR u on u.ID = P.unor_id
-		left join KANREG0.LOKASI tptLahir on tptLahir.id = o.kabupaten_id
-		left join KANREG0.lokasi tptKerja on tptKerja.id = p.lokasi_kerja_id
-		left join KANREG0.JABATAN_FUNGSIONAL jabfun on jabfun.id = p.jabatan_fungsional_id
-	    WHERE p.nip_baru='$nip' ";
-		return $this->oracle->query($sql);
 	}	
 	
 	
@@ -209,5 +181,4 @@ TO_CHAR(o.tgl_nota_persetujuan_kp,'YYYY-MM-DD') TGL_NOTA_PERSETUJUAN_KP
 		
 		return $this->oracle->query($sql);					
 	}
-	
-}
+}	

@@ -201,7 +201,7 @@
 							<tr>
 								<td>
 								<?php 
-								    echo '<a href="#dPhoto" class="btn btn-info btn-xs" data-tooltip="tooltip"  title="Unduh Photo" id="?id='.$this->myencrypt->encode($value->usul_id).'&n='.$this->myencrypt->encode($value->nip).'"><i class="fa fa-download"></i></a>';
+								    echo '<a href="#dPhoto" class="btn btn-info btn-xs" data-tooltip="tooltip"  title="Unduh Photo" id="?id='.$this->myencrypt->encode($value->usul_id).'&n='.$this->myencrypt->encode($value->nip).'&f='.$this->myencrypt->encode($value->file_name).'"><i class="fa fa-download"></i></a>';
 									echo '&nbsp;<a href="#cetakSurat" class="btn btn-danger btn-xs cetak" data-tooltip="tooltip"  title="Cetak Surat Persetujuan" id="?a='.$this->myencrypt->encode($value->usul_id).'&n='.$this->myencrypt->encode($value->nip).'&l='.$this->myencrypt->encode($value->layanan_id).'"><i class="fa fa-print"></i></a>';
 									echo '&nbsp;<button class="btn btn-primary btn-xs" data-tooltip="tooltip"  title="Input Persetujuan" data-toggle="modal" data-target="#skModal"   data-usul="'.$this->myencrypt->encode($value->usul_id).'" data-nip="'.$this->myencrypt->encode($value->nip).'"><i class="fa fa-edit"></i></button>';
 									echo '&nbsp;<button class="btn btn-danger btn-xs" data-tooltip="tooltip"  title="Upload Persetujuan" data-toggle="modal" data-target="#uploadModal" data-layanan="'.$value->layanan_id.'" data-usul="'.$value->usul_id.'" data-nip="'.$value->nip.'" ><i class="fa fa-upload"></i></button>';

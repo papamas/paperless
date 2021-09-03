@@ -195,9 +195,7 @@
 						  <li><a class="hidden zoom-fab zoom-btn-sm zoom-btn-feedback scale-transition scale-out" data-tooltip="tooltip" data-placement="top" title="'.$row->tahapan_nama.'"><i class="fa fa-bell"></i></a></li>
 						  <li><a id="kerja" class="zoom-fab zoom-btn-sm zoom-btn-person scale-transition scale-out" data-toggle="modal" data-target="'.($row->nomi_locked == '1' ? $target : '#kerjaModal').'" data-tooltip="tooltip" data-placement="top" title="'.($row->nomi_locked == '1' ? 'Berkas telah di kunci oleh '.$row->lock_name :  'Kerjakan berkas Layanan '.$row->layanan_nama.' atas nama '.$row->nama).'"><i id="fa-user" class="fa fa-user"></i></a></li>
 						  <li><a id="verifikasi" class="hidden zoom-fab zoom-btn-sm zoom-btn-doc scale-transition scale-out" data-toggle="modal" data-target="#verifikasiModal" data-tooltip="tooltip" data-placement="top" title="" data-original-title="Hasil Verifikasi berkas ASN atas nama '.$row->nama.'"><i class="fa fa-book"></i></a></li>
-						  <li><a class="hidden zoom-fab zoom-btn-sm zoom-btn-report scale-transition scale-out"><i class="fa fa-edit"></i></a></li>
-						  
-						  
+						  <li><a id="catatan" class="hidden zoom-fab zoom-btn-sm zoom-btn-report scale-transition scale-out" data-toggle="modal" data-target="#catatanModal" data-tooltip="tooltip" data-placement="top" title="" data-original-title="Catatan Pemeriksaan" data-agenda="'.$this->myencrypt->encode($row->agenda_id).'" data-nip="'.$this->myencrypt->encode($row->nip).'"><i class="fa fa-dashboard"></i></a></li>
 						</ul>				
 					</div>';	
 			}
@@ -229,7 +227,9 @@
 						<ul class="zoom-menu">
 						  <li><a class="hidden zoom-fab zoom-btn-sm zoom-btn-feedback scale-transition scale-out" data-tooltip="tooltip" data-placement="top" title="'.$row->tahapan_nama.'"><i class="fa fa-bell"></i></a></li>
 						  <li><a id="kerja" class="zoom-fab zoom-btn-sm zoom-btn-person scale-transition scale-out" data-toggle="modal" data-target="'.($row->nomi_locked == '1' ? $target : '#kerjaModal').'" data-tooltip="tooltip" data-placement="top" title="'.($row->nomi_locked == '1' ? 'Berkas telah di kunci oleh '.$row->lock_name :  'Kerjakan berkas Layanan '.$row->layanan_nama.' atas nama '.$row->nama).'"><i id="fa-user" class="fa fa-user"></i></a></li>
-						  <li><a id="verifikasi" class="hidden zoom-fab zoom-btn-sm zoom-btn-doc scale-transition scale-out" data-toggle="modal" data-target="#verifikasiModal" data-tooltip="tooltip" data-placement="top" title="" data-original-title="Hasil Verifikasi berkas ASN atas nama '.$row->nama.'"><i class="fa fa-book"></i></a></li>';
+						  <li><a id="verifikasi" class="hidden zoom-fab zoom-btn-sm zoom-btn-doc scale-transition scale-out" data-toggle="modal" data-target="#verifikasiModal" data-tooltip="tooltip" data-placement="top" title="" data-original-title="Hasil Verifikasi berkas ASN atas nama '.$row->nama.'" data-agenda="'.$this->myencrypt->encode($row->agenda_id).'" data-nip="'.$this->myencrypt->encode($row->nip).'"><i class="fa fa-book"></i></a></li>
+						  <li><a id="catatan" class="hidden zoom-fab zoom-btn-sm zoom-btn-report scale-transition scale-out" data-toggle="modal" data-target="#catatanModal" data-tooltip="tooltip" data-placement="top" title="" data-original-title="Catatan Pemeriksaan" data-agenda="'.$this->myencrypt->encode($row->agenda_id).'" data-nip="'.$this->myencrypt->encode($row->nip).'"><i class="fa fa-dashboard"></i></a></li>';
+						  
 						  
 							if($row->layanan_id == 19)
 							{  
@@ -284,8 +284,10 @@
 							if($tabs->num_rows() > 0)
 							{
 							    echo '<ul class="nav nav-pills">';
+								/*
 								echo '<li class=""><a href="#pnsData" data-toggle="tab">CPNS/PNS</a></li>';
-							    foreach($tabs->result() as $value){
+							    */
+								foreach($tabs->result() as $value){
 									$jenis_sk = $value->nama_dokumen;
 									
 								if( $jenis_sk === "SK_JABATAN" || $jenis_sk === "PAK" || $jenis_sk === "IJAZAH" || $jenis_sk === "SKP"  || $jenis_sk === "PPK" || $jenis_sk === "SK_KP"  || $jenis_sk === "SK_MUTASI" || $jenis_sk === "TRANSKRIP" || $jenis_sk === "STLUD" || $jenis_sk === "HONOR" ) {									
@@ -435,7 +437,8 @@
 											
 							?>
 
-                            <div class="tab-content">
+                            <div class="tab-content">				    
+							    
 							    <div class="tab-pane fade p-0 h-md-100 " id="pnsData">
 								   <div class="box box-widget">
 									<!-- Add the bg color to the header using any of the bg-* classes -->
@@ -613,6 +616,35 @@
 				</div>
 			</div>	
 		</div>';
+		
+		
+		echo '<div class="modal fade" id="catatanModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+						<h4 class="modal-title" id="myModalLabel"><span id="msg"></span></h4>
+					</div>
+					<div class="modal-body">
+						<form id="nfrmCatatan">
+						  <input type="hidden" name="'.$this->security->get_csrf_token_name().'" value="'.$this->security->get_csrf_hash().'" style="display: none">
+						  
+						  <div class="form-group">
+							<label for="catatan">Catatan</label>
+							<textarea name="catatan" class="form-control"></textarea>
+						  </div>				
+							
+							<input class="form-control" type="hidden" value="'.$row->agenda_id.'" name="id_agenda" />	
+							<input class="form-control" type="hidden" value="'.$row->nip.'" name="nip" />
+							<input class="form-control" type="hidden" value="'.$row->layanan_id.'" name="layanan_id">	
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn bg-maroon" id="nBtnCatatan">Simpan</button>
+					</div>
+				</div>
+			</div>	
+		</div>';
 	}
 	?>
 	
@@ -682,12 +714,12 @@
 										<td><input readonly class="form-control" type="text" placeholder="Tahun" name="baruTahun"></td>
 										<td><input class="form-control" type="text" placeholder="Tahun ACC" name="baruTahunAcc"></td>
 										<td><input readonly class="form-control" type="text" placeholder="Bulan" name="baruBulan"></td>
-										<td><input class="form-control" type="text" placeholder="Bulan ACC" name="baruBulanAcc"></td>
+										<td><input class="form-control" type="text" placeholder="Bulan ACC" name="baruBulanAcc" id="baruBulanAcc" title="Tekan ENTER untuk mengambil data GAJI"></td>
 									</tr>
 									<tr>
 										<td>2. GAJI POKOK</td>
 										<td colspan="2"><input readonly class="form-control" type="text" placeholder="Gaji Pokok" name="baruGaji"></td>
-										<td colspan="2"><input class="form-control" type="text" placeholder="Gaji Pokok ACC" name="baruGajiAcc"></td>
+										<td colspan="2"><input class="form-control" type="text" placeholder="Gaji Pokok ACC" name="baruGajiAcc" ></td>
 										
 									</tr>
 									<tr>
@@ -940,6 +972,8 @@
 			</div>
 		</div>	
 	</div>
+	
+	
     	
 	<!--[ SPINNER MODAL ]-->
 	<div class="modal fade" id="spinner-modal">
@@ -959,6 +993,40 @@
 	<script src="<?php echo base_url()?>assets/plugins/datepicker/bootstrap-datetimepicker.min.js"></script>	
 	<script>	
 	$(document).ready(function () {
+		
+		$("#baruBulanAcc").on("keypress",function(e){
+			if(e.which == 13) {
+				var data = $('#efrmPmk').serialize();
+		    
+				$('#epmkModal #msg').text('Mengambil data gaji, Please Wait.....')
+						 .removeClass( "text-green")
+						 .addClass( "text-blue" );  
+				
+				$.ajax({
+					type: "POST",
+					url : "<?php echo site_url()?>/verifikator/getGaji",
+					data: data,
+					dataType:'json',
+					success: function(r){
+						$('#epmkModal input[name=baruGajiAcc]').val(r.GAJI_POKOK);		
+						
+						$('#epmkModal #msg').text('Berhasil mengambil data Gaji')
+                             .removeClass( "text-blue")
+							 .removeClass( "text-red")
+				             .addClass( "text-green" ); 		 
+					}, 
+					error : function(e){
+						$('#epmkModal #msg').text(e.responseJSON.pesan)
+								 .removeClass( "text-blue")							 
+								 .removeClass( "text-green")
+								 .addClass( "text-red" ); 
+					}	
+				});
+				return false;
+			}		
+			
+		});
+		
 		
 		$("#nBtnAccPmk").on("click",function(e){
 			e.preventDefault();			
@@ -1131,6 +1199,8 @@
 			var berkas = $("#berkas");
 			var kerja = $("#kerja #fa-user");
 		    var pmk = $("#epmk");
+			var catatan = $("#catatan");
+
 			
 			$('#kerjaModal #msg').text('Updating Please Wait.....')
                      .removeClass( "text-green")
@@ -1148,12 +1218,67 @@
 					div.removeClass('hidden').addClass("visible"); 		
 					berkas.removeClass('hidden').addClass("visible"); 
 					pmk.removeClass('hidden').addClass("visible"); 
+					catatan.removeClass('hidden').addClass("visible"); 
 					kerja.removeClass('fa fa-user').addClass("fa fa-lock"); 
 					
 				}, // akhir fungsi sukses
 		    });
 			return false;
 		});
+		
+		
+		$('#catatanModal').on('show.bs.modal',function(event){
+		    $('#catatanModal #msg').text('Catatan Pemeriksaan Berkas') 
+			.removeClass( "text-green")
+		    .removeClass( "text-blue" ); 
+			
+			var agenda		=  $(event.relatedTarget).attr('data-agenda');
+			var nip   		=  $(event.relatedTarget).attr('data-nip');
+			
+			$.ajax({
+				type: "GET",
+				url : "<?php echo site_url()?>/verifikator/getCatatan",
+				data: {agenda:agenda,nip:nip},
+				dataType:'json',
+				success: function(r){
+					$('#catatanModal [name=catatan]').val(r.catatan[0].nomi_alasan);	
+				},
+			});	
+			
+		});
+		
+		$("#nBtnCatatan").on("click",function(e){
+			e.preventDefault();
+		    $('#catatanModal #msg').text('Updating Please Wait.....')
+                     .removeClass( "text-green")
+				     .addClass( "text-blue" );  
+					 
+			var data = $('#nfrmCatatan').serialize();
+			$.ajax({
+				type: "POST",
+				url : "<?php echo site_url()?>/verifikator/catatan",
+				data: data,
+				success: function(){
+					$('#catatanModal #msg').text('Catatan Pemeriksaan telah berhasil disimpan')
+                             .removeClass( "text-blue")
+				             .addClass( "text-green" );					
+				}, 
+				error : function(r) {				    
+					 $('#catatanModal #msg').text(r.responseJSON.error)
+                     .removeClass( "text-green")
+					 .removeClass( "text-blue")
+				     .addClass( "text-red" ); 
+				},
+				beforeSend: function () {
+                   $('#spinner-modal').modal('show');	 
+                },
+                complete: function () {
+                    $('#spinner-modal').modal('hide');
+                }	
+		    });
+			return false;
+		});
+		
 		
 		$('[data-tooltip="tooltip"]').tooltip();
 
@@ -1172,6 +1297,20 @@
 			
 			$('[name=status]').val('');
 			$('[name=catatan]').val('');
+			
+			var agenda		=  $(event.relatedTarget).attr('data-agenda');
+			var nip   		=  $(event.relatedTarget).attr('data-nip');
+			
+			$.ajax({
+				type: "GET",
+				url : "<?php echo site_url()?>/verifikator/getCatatan",
+				data: {agenda:agenda,nip:nip},
+				dataType:'json',
+				success: function(r){
+					$('#verifikasiModal [name=catatan]').val(r.catatan[0].nomi_alasan);	
+				},
+			});	
+			
 		});
 		
 		$("#nBtn").on("click",function(e){

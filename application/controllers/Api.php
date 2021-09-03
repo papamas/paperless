@@ -213,10 +213,25 @@ class Api extends REST_Controller {
 						}
 						else
 						{
-							$out['response']    = TRUE;
-							$out['update']      = $this->api_model->updateFile($result);
-							$out['message'] 	= 'File dokumen kepegawaian sudah ada, overwrite file';
-							$this->set_response($out, REST_Controller::HTTP_OK);
+							$statusFile 			= $this->api_model->getStatusFile($result); 
+					
+					
+							if(!empty($statusFile->gembok))
+							{
+								$error = array(  'response'   => FALSE,
+												 'message' 	  => 'File telah dikunci tidak bisa diupdate dan dihapus');
+								$this->set_response($error, REST_Controller::HTTP_NOT_ACCEPTABLE); 
+								return FALSE;	
+								
+							}
+							else
+							{
+								$out['response']    = TRUE;
+								$out['update']      = $this->api_model->updateFile($result);
+								$out['message'] 	= 'File dokumen kepegawaian sudah ada, overwrite file';
+								$this->set_response($out, REST_Controller::HTTP_OK);
+							}	
+							
 							
 						}			
 						
@@ -355,19 +370,33 @@ class Api extends REST_Controller {
 					$data['instansi']         = $instansi;
 					$data['file']             = $file;
 					
+					$statusFile = $this->api_model->getStatusFileByName($data);
 					
-				    if(@unlink($path.$file) && $this->api_model->hapusFile($data))
+					if(!empty($statusFile->gembok))
 					{
-						$out['response']  = TRUE;
-						$out['pesan'] 	 = 'File dokumen berhasil dihapus';
-						$this->set_response($out, REST_Controller::HTTP_OK);
+						$error = array(  'response'   => FALSE,
+										 'message' 	  => 'File telah dikunci tidak bisa diupdate dan dihapus');
+						$this->set_response($error, REST_Controller::HTTP_NOT_ACCEPTABLE); 
+						return FALSE;	
+						
 					}
 					else
 					{
-						$out['response']  = FALSE;
-						$out['pesan'] 	 = 'File dokumen Gagal dihapus';
-						$this->set_response($out, REST_Controller::HTTP_BAD_REQUEST);	
-					}
+						
+						if(@unlink($path.$file) && $this->api_model->hapusFile($data))
+						{
+							$out['response']  = TRUE;
+							$out['pesan'] 	 = 'File dokumen berhasil dihapus';
+							$this->set_response($out, REST_Controller::HTTP_OK);
+						}
+						else
+						{
+							$out['response']  = FALSE;
+							$out['pesan'] 	 = 'File dokumen Gagal dihapus';
+							$this->set_response($out, REST_Controller::HTTP_BAD_REQUEST);	
+						}
+						
+					}					
 
                 }	
 				

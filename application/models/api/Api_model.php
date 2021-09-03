@@ -75,6 +75,15 @@ class Api_model extends CI_Model{
 		
 	}	
 	
+	function getStatusFile($data)
+	{
+		$this->db->select('gembok,gembok_by,gembok_date,gembok_alasan');
+		$this->db->where('raw_name',$data['raw_name']);
+		$this->db->where('id_instansi',$data['id_instansi']);
+		return  $this->db->get($this->table)->row();
+		
+	}
+	
 	function _is_exist($data)
 	{  
 	    $r  = FALSE;		
@@ -211,7 +220,13 @@ class Api_model extends CI_Model{
 	    return $match[0];
 	}
 	
-	
+	function getStatusFileByName($data)
+	{
+		$this->db->select('gembok,gembok_by,gembok_date,gembok_alasan');
+		$this->db->where('orig_name',$data['file']);
+		$this->db->where('id_instansi',$data['instansi']);
+		return  $this->db->get($this->table)->row();			
+	}	
 	
 	function hapusFile($data)
 	{

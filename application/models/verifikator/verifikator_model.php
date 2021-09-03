@@ -630,6 +630,22 @@ GROUP BY a.nip,b.layanan_id,a.agenda_id";
 		return $this->db->update($this->tablenom);
 	}	
 	
+	public function getCatatan($data)
+	{
+		$this->db->where('agenda_id', $data['agenda']);		
+		$this->db->where('nip', $data['nip']);
+		return $this->db->get($this->tablenom);
+	}
+	
+	public function setCatatan($data)
+	{
+		$set['nomi_alasan']		  = $data['nomi_alasan'];
+		$this->db->set($set);		
+		$this->db->where('agenda_id', $data['agenda']);		
+		$this->db->where('nip', $data['nip']);
+		return $this->db->update($this->tablenom);
+	}
+	
 	
 	public function getAgenda_byid($id_agenda,$nip)
 	{    
@@ -1592,4 +1608,16 @@ LEFT JOIN KANREG0.KEDUDUKAN_HUKUM g ON a.KEDUDUKAN_HUKUM_ID = g.ID";
 		return $data;
 	}		
 	
+	
+	function getGaji($data)
+	{
+		$nip 					= $data['nip'];
+		$baruTahunAcc			= $data['baruTahunAcc'] ;	
+		
+		$sql="SELECT a.*, b.* FROM 
+(SELECT PNS_GOLRU FROM mirror.pupns WHERE PNS_NIPBARU='$nip') a
+LEFT JOIN mirror.gaji_pokok b ON a.PNS_GOLRU = b.GOLONGAN_ID
+WHERE (b.MKG=$baruTahunAcc OR b.MKG=$baruTahunAcc-1) AND TAHUN_BUAT='2019'";	
+		return $this->db->query($sql);
+	}	
 }

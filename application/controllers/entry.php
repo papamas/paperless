@@ -236,9 +236,9 @@ class Entry extends MY_Controller {
 			$this->db->db_debug = FALSE; 
 			if (!$this->entry->simpanPersetujuan($data))
 			{
-				$error 				= $this->db->_error_message(); 
-				$data['pesan']		= $error;
-				if(!empty($error))
+				$error 				= $this->db->error(); 
+				$data['pesan']		= $error['message'];
+				if(!empty($error['message']))
 				{
 					$this->output
 						->set_status_header(406)
@@ -684,7 +684,7 @@ class Entry extends MY_Controller {
 			
 		
 			
-			$this->pdf->Text(130, 125, '$');
+                	$this->pdf->Text(130, 125, '$');
 			
 			$this->pdf->Text(29, 155, 'Tembusan, Yth :');
 			$this->pdf->Text(29, 163, '1. Kepala Kantor Regional XI sebagai laporan;');
@@ -1838,12 +1838,13 @@ EOD;
 		$file      = $this->myencrypt->decode($this->input->get('f'));
 		$nip       = $this->myencrypt->decode($this->input->get('n'));
 		
-		ob_clean();		
+				
 		header('Pragma:public');
 		header('Cache-Control:no-store, no-cache, must-revalidate');
 		header('Content-type:image/jpeg');
-		header('Content-Disposition:attachment; filename='.$nip.'.jpeg');  
-		readfile(base_url().'uploads/taspen/'.'PHOTO_'.$nip.'.jpg');
+		header('Content-Disposition:attachment; filename='.$file);  
+		ob_clean();
+		readfile(base_url().'uploads/taspen/'.$file);
 	}	
 	
 	private function _getExcelTaspen($q)

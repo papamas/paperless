@@ -593,7 +593,7 @@ ORDER  by e.PNS_PNSNAM ASC
 		
 	    $bidang  = $this->session->userdata('session_bidang');
 		
-		$q ="SELECT a.*,DATE_FORMAT(a.tgl_usul,'%d-%m-%Y') tgl,
+		$q ="SELECT a.*, b.file_name  FROM (SELECT a.*,DATE_FORMAT(a.tgl_usul,'%d-%m-%Y') tgl,
 		CASE a.usul_status
 			WHEN 'ACC' THEN 'badge bg-green'
 			WHEN 'TMS' THEN 'badge bg-red'
@@ -620,9 +620,8 @@ ORDER  by e.PNS_PNSNAM ASC
 		$sql_filter 
 		$sql_date  
 		$sql_spesimen
-		$sql_status ";
-		
-		
+		$sql_status ) a
+		LEFT JOIN upload_dokumen_taspen b ON ( a.nip=b.nip AND b.id_dokumen='5')";
 		$query 		= $this->db->query($q);
         return      $query;		
     }

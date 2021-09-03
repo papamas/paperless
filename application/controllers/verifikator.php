@@ -329,6 +329,71 @@ class Verifikator extends MY_Controller {
 	}
 
 
+	public function getCatatan()
+	{
+		$data['agenda'] 			= $this->myencrypt->decode($this->input->get('agenda'));
+		$data['nip']       			= $this->myencrypt->decode($this->input->get('nip'));
+		
+		$catatan			        = $this->verifikator->getCatatan($data);
+				
+		$data['catatan']      = $catatan->result();
+		$this->output
+				->set_status_header(200)
+				->set_content_type('application/json', 'utf-8')
+				->set_output(json_encode($data));
+    }	
+
+
+    public function catatan()
+	{
+		$this->form_validation->set_rules('catatan','Catatan', 'required');
+		
+		
+		$data['nomi_alasan']    = $this->input->post('catatan');
+		$data['nip']		    = $this->input->post('nip');
+		$data['agenda']      = $this->input->post('id_agenda');
+		
+
+		if ($this->form_validation->run() == FALSE)
+		{
+			$data['error']	    = 'Lengkapi Form';
+			$this->output
+				->set_status_header(406)
+				->set_content_type('application/json', 'utf-8')
+				->set_output(json_encode($data));
+		}
+		else
+		{
+			$db_debug 			= $this->db->db_debug; 
+			$this->db->db_debug = FALSE; 
+			
+			if (!$this->verifikator->setCatatan($data))
+			{
+				$error 				= $this->db->error(); 
+				$data['pesan']		= $error['message'];
+				if(!empty($error['message']))
+				{
+					$this->output
+						->set_status_header(406)
+						->set_content_type('application/json', 'utf-8')
+						->set_output(json_encode($data));
+					return FALSE;	
+				}				
+			}
+			else
+			{
+			
+				$this->output
+						->set_status_header(200)
+						->set_content_type('application/json', 'utf-8')
+						->set_output(json_encode($data));
+			}
+
+			$this->db->db_debug = $db_debug; //restore setting
+			
+		}		
+	}
+	
 	public function kinerja()
 	{
 		$data['menu']     		=  $this->menu->build_menu();		
@@ -513,6 +578,32 @@ class Verifikator extends MY_Controller {
 		
 		$result     = $this->verifikator->getUsul($agenda,$nip);
 		echo json_encode($result->row());
+	}	
+	
+	public function getGaji()
+	{
+		$data['nip']        	= $this->input->post('nip');
+		$data['baruTahunAcc']   = $this->input->post('baruTahunAcc');
+		$data['baruBulanAcc']   = $this->input->post('baruBulanAcc');
+
+		$this->form_validation->set_rules('baruTahunAcc', 'baruTahunAcc', 'required|is_natural');
+		$this->form_validation->set_rules('baruBulanAcc', 'baruBulanAcc', 'required|is_natural');
+		
+		
+		if($this->form_validation->run() == FALSE)
+		{
+			$data['pesan']	= "Lengkapi/Perbaiki Form";
+			$this->output
+				->set_status_header(406)
+				->set_content_type('application/json', 'utf-8')
+				->set_output(json_encode($data));
+			return FALSE;	
+		}	
+		else
+		{
+			$query     = $this->verifikator->getGaji($data);
+			echo json_encode($query->row());
+		}	
 	}	
 
     public function saveAccPmk()

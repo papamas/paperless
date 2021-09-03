@@ -292,7 +292,7 @@
 							?>
 							<tr>
 								<td><button class="btn btn-primary btn-xs" data-tooltip="tooltip"  title="Lihat SK" data-toggle="modal" data-target="#skModal" data-id="?id=<?php echo $this->myencrypt->encode($value->id_instansi)?>&f=<?php echo $this->myencrypt->encode($value->orig_name)?>"><i class="fa fa-search"></i></button>&nbsp;
-								<button class="btn btn-danger btn-xs" data-tooltip="tooltip"  title="Delete SK" data-toggle="modal" data-target="#dskModal" data-instansi="<?php echo $this->myencrypt->encode($value->id_instansi)?>" data-file="<?php echo $this->myencrypt->encode($value->orig_name)?>" data-path="<?php echo $this->myencrypt->encode($value->file_path)?>"><i class="fa fa-remove"></i></button></td> 
+								<button class="btn btn-danger btn-xs" data-tooltip="tooltip"  title="Delete SK" data-toggle="modal" data-target="#dskModal" data-instansi="<?php echo $this->myencrypt->encode($value->id_instansi)?>" data-file="<?php echo $this->myencrypt->encode($value->orig_name)?>" data-path="<?php echo $this->myencrypt->encode($value->file_path)?>" data-lock="<?php echo $this->myencrypt->encode($value->gembok)?>"><i class="fa fa-remove"></i></button></td> 
 								<td><?php echo $value->nama_dokumen?> <?php echo $n?></td>
 								<td><?php echo $value->instansi?></td>
 								<td><?php echo $value->nip?></td>
@@ -349,7 +349,8 @@
 						<p>Anda Yakin akan menghapus dokumen SK ini ?</p>					   	
                         <input type="hidden" name="instansi"/>	
 					    <input type="hidden" name="file"/>		
-						 <input type="hidden" name="path"/>			
+						<input type="hidden" name="path"/>	
+						<input type="hidden" name="lock"/>		
 					</form>
 				 </div>
 				<div class="modal-footer">
@@ -391,10 +392,12 @@
 			var instansi		=  $(e.relatedTarget).attr('data-instansi');
 			var file 		    =  $(e.relatedTarget).attr('data-file');
 			var path 		    =  $(e.relatedTarget).attr('data-path');
+			var lock 		    =  $(e.relatedTarget).attr('data-lock');
 			
 			$('#dskModal input[name=instansi]').val(instansi);
 			$('#dskModal input[name=file]').val(file);
 			$('#dskModal input[name=path]').val(path);
+			$('#dskModal input[name=lock]').val(lock);
 		});
 		
 		$("#nBtnHapus").on("click",function(e){

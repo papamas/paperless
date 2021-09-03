@@ -155,8 +155,24 @@ class upload extends MY_Controller {
                 }
 				else
 				{
-					$result['updated']  = $this->uploadFile->updateFile($result);
-					$result['error'] 	= 'File dokumen kepegawaian sudah ada, overwrite file';
+					$statusFile 			= $this->uploadFile->getStatusFile($result); 
+					
+					
+					if(!empty($statusFile->gembok))
+					{
+						$error = array('error'      => 'File telah dikunci tidak bisa diupdate dan dihapus',
+									   'statusFile' => $statusFile);
+						$this->output
+								->set_status_header(406)
+								->set_content_type('application/json', 'utf-8')
+								->set_output(json_encode($error));
+						return FALSE;	
+						
+					}
+					
+					$result['statusFile']   = $statusFile;					
+					$result['updated']      = $this->uploadFile->updateFile($result);
+					$result['error'] 	    = 'File dokumen kepegawaian sudah ada, overwrite file';
 					$this->output
 						->set_status_header(200)
 						->set_content_type('application/json', 'utf-8')
@@ -444,6 +460,19 @@ class upload extends MY_Controller {
 		$instansi  = $this->myencrypt->decode($this->input->post('instansi'));
 		$file      = $this->myencrypt->decode($this->input->post('file'));
 		$path      = $this->myencrypt->decode($this->input->post('path'));
+		$lock      = $this->myencrypt->decode($this->input->post('lock'));
+		
+		if(!empty($lock))
+		{
+			$result['response']  = FALSE;
+			$result['pesan'] 	 = 'GAGAL, File STATUS LOCK';
+			$this->output
+				->set_status_header(400)
+				->set_content_type('application/json', 'utf-8')
+				->set_output(json_encode($result));		
+				
+			return;	
+		}
 		
 		if(@unlink($path.$file) && $this->uploadFile->hapusFile())
 		{

@@ -58,8 +58,8 @@ class Pupns extends MY_Controller {
 			{
 				if (!$this->pupns->updatePupns())
 				{
-					$error = $this->db->_error_message(); 			
-					if(!empty($error))
+					$error = $this->db->error(); 			
+					if(!empty($error['message']))
 					{
 						$data['response']		= FALSE;
 						$data['pesan']			= '<div class="box box-warning"><div class="callout callout-warning">
@@ -95,6 +95,35 @@ class Pupns extends MY_Controller {
 				}
 			
 			}
+			
+			// delete KP
+			$this->pupns->deleteKP($nip);
+			
+			// get NEW KP Data
+			$newKP  = $this->pupns->getKp_Oracle($nip)->result_array();
+			
+			//insert new KP
+			$this->pupns->insertKP($newKP);
+			
+			
+			// delete Pengadaan
+			$this->pupns->deletePengadaan($nip);
+			
+			// get Pengadaan Data
+			$pengadaan  = $this->pupns->getPengadaan_Oracle($nip)->result_array();
+			
+			//insert new KP
+			$this->pupns->insertPengadaan($pengadaan);
+			
+			// delete Pendidikan
+			$this->pupns->deletePendidikan($nip);
+			
+			// get Pendidikan Data
+			$pendidikan  = $this->pupns->getPendidikan_Oracle($nip)->result_array();
+			
+			//insert new Pendidikan
+			$this->pupns->insertPendidikan($pendidikan);
+					
 			$this->db->db_debug = $db_debug; //restore setting			
 			
 	    }
